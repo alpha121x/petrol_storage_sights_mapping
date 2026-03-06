@@ -46,7 +46,7 @@
 <body>
 
     <header class="bg-dark text-white text-center py-3">
-        <h4 class="mb-0">Petrol Storage Sights Mappiog</h4>
+        <h4 class="mb-0">Petrol Storage Sights Mapping</h4>
     </header>
 
     <div class="container-fluid bg-light py-2 border-bottom">
