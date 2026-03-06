@@ -1,7 +1,7 @@
 <?php
 
 $host = "172.20.82.84";
-$db   = "db_petrol_pumps_survey";
+$db   = "price_control_punjab";
 $user = "postgres";
 $pass = "diamondx";
 $port = "5432";
