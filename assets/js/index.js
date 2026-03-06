@@ -199,6 +199,7 @@ require([
     title: "Petrol Pumps",
     outFields: ["*"],
     popupEnabled: true,
+    legendEnabled: false,
     popupTemplate: {
       title: "{pump_name}",
       content: (feature) => buildPumpPopupContent(feature.graphic?.attributes),
@@ -210,6 +211,7 @@ require([
     title: "Petrol Availability Status",
     outFields: ["*"],
     popupEnabled: true,
+    legendEnabled: false,
     popupTemplate: {
       title: "{district}",
       content: (feature) =>
