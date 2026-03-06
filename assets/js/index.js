@@ -199,7 +199,7 @@ require([
     title: "Petrol Pumps",
     outFields: ["*"],
     popupEnabled: true,
-    legendEnabled: false,
+    legendEnabled: true,
     popupTemplate: {
       title: "{pump_name}",
       content: (feature) => buildPumpPopupContent(feature.graphic?.attributes),
@@ -211,26 +211,11 @@ require([
     title: "Petrol Availability Status",
     outFields: ["*"],
     popupEnabled: true,
-    legendEnabled: false,
+    legendEnabled: true,
     popupTemplate: {
       title: "{district}",
       content: (feature) =>
         buildAvailabilityPopupContent(feature.graphic?.attributes),
-    },
-  });
-
-  const districtHighlightLayer = new FeatureLayer({
-    url: `${MAP_SERVICE_URL}/2`,
-    title: "District Highlight",
-    popupEnabled: false,
-    definitionExpression: "1=0",
-    renderer: {
-      type: "simple",
-      symbol: {
-        type: "simple-fill",
-        color: [180, 180, 180, 0.35],
-        outline: { color: [80, 80, 80, 1], width: 2 },
-      },
     },
   });
 
@@ -249,7 +234,6 @@ require([
       availabilityLayer,
       petrolPumpsLayer,
       boundariesLayer,
-      districtHighlightLayer,
     ],
   });
 
@@ -364,8 +348,6 @@ require([
     applyFilters();
 
     if (selectedDistrict) {
-      districtHighlightLayer.definitionExpression = `district_id = ${selectedDistrict}`;
-
       fetch(`services/get_district_extent.php?district_id=${selectedDistrict}`)
         .then((res) => res.json())
         .then((ext) => {
@@ -383,7 +365,6 @@ require([
         })
         .catch(() => hideLoader());
     } else {
-      districtHighlightLayer.definitionExpression = "1=0";
       view.goTo({ center: [72.7097, 31.1704], zoom: 8 }).finally(hideLoader);
     }
   });
