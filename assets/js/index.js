@@ -19,6 +19,9 @@ require([
   Search,
   Extent,
 ) {
+  const MAP_SERVICE_URL =
+    "https://map3.urbanunit.gov.pk:6443/arcgis/rest/services/Punjab/PB_Petrol_Pump_Availability_Survey_8433_06032026/MapServer";
+
   let selectedDistrict = "";
   let startDate = "";
   let endDate = "";
@@ -29,6 +32,132 @@ require([
 
   function hideLoader() {
     document.getElementById("mapLoader")?.classList.add("d-none");
+  }
+
+  function escapeHtml(value) {
+    const text = String(value ?? "");
+    return text
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  }
+
+  function buildPopupHtml(attributes) {
+    const entries = Object.entries(attributes || {});
+    if (!entries.length) {
+      return "<div>No data available.</div>";
+    }
+
+    const rows = entries
+      .map(
+        ([key, value]) => `
+          <tr>
+            <th style="text-align:left; padding:4px 8px; border:1px solid #ddd; background:#f7f7f7;">${escapeHtml(key)}</th>
+            <td style="padding:4px 8px; border:1px solid #ddd;">${escapeHtml(value)}</td>
+          </tr>
+        `,
+      )
+      .join("");
+
+    return `<table style="border-collapse:collapse; width:100%;">${rows}</table>`;
+  }
+
+  function getImageUrlFromAttributes(attributes) {
+    const imageFieldCandidates = [
+      "petrol_pic",
+      "cash_memo_pic",
+      "image",
+      "photo",
+      "pic",
+    ];
+
+    const urls = [];
+    imageFieldCandidates.forEach((field) => {
+      const value = attributes?.[field];
+      if (value && String(value).trim() !== "") {
+        urls.push({
+          field,
+          url: `${imageProxyUrl}${encodeURIComponent(String(value))}`,
+        });
+      }
+    });
+
+    return urls;
+  }
+
+  function buildAvailabilityPopupContent(attributes) {
+    const detailsTable = buildPopupHtml(attributes);
+    const images = getImageUrlFromAttributes(attributes);
+
+    if (!images.length) {
+      return detailsTable;
+    }
+
+    const imagesHtml = images
+      .map(
+        (item) => `
+          <div style="margin-top:8px;">
+            <div style="font-weight:600; margin-bottom:4px;">${escapeHtml(item.field)}</div>
+            <img src="${item.url}" alt="${escapeHtml(item.field)}" style="max-width:100%; border:1px solid #ddd; border-radius:4px;" />
+          </div>
+        `,
+      )
+      .join("");
+
+    return `${detailsTable}<div style="margin-top:8px;">${imagesHtml}</div>`;
+  }
+
+  function buildPumpPopupContent(attributes) {
+    const orderedFields = [
+      "pump_sr_no",
+      "district",
+      "petrol_pump_name",
+      "pump_name",
+      "brand_name",
+      "other_brand_name",
+      "owner_name",
+      "owner_cnic",
+      "owner_mobile",
+      "no_of_dispenser",
+      "capacity",
+      "noc_available",
+      "noc_justification",
+      "k_form_available",
+      "kform_justification",
+      "survey_date_time",
+      "district_id",
+      "user_id",
+      "lat",
+      "lng",
+      "db_date_time",
+    ];
+
+    const filteredAttributes = {};
+    orderedFields.forEach((field) => {
+      filteredAttributes[field] = attributes?.[field] ?? "";
+    });
+
+    const detailsTable = buildPopupHtml(filteredAttributes);
+    const images = getImageUrlFromAttributes(attributes);
+
+    if (!images.length) {
+      return detailsTable;
+    }
+
+    const imagesHtml = images
+      .map(
+        (item) => `
+          <div style="margin-top:8px;">
+            <div style="font-weight:600; margin-bottom:4px;">${escapeHtml(item.field)}</div>
+            <img src="${item.url}" alt="${escapeHtml(item.field)}" style="max-width:100%; border:1px solid #ddd; border-radius:4px;" />
+          </div>
+        `,
+      )
+      .join("");
+
+    return `${detailsTable}<div style="margin-top:8px;">${imagesHtml}</div>`;
   }
 
   function getNextDate(dateString) {
@@ -60,94 +189,36 @@ require([
     return "";
   }
 
-  const violationsLayer = new FeatureLayer({
-    url: "https://map3.urbanunit.gov.pk:6443/arcgis/rest/services/Punjab/PB_Price_Pop_Blocks_Price_Violations_8432_27022026/MapServer/1",
-    title: "Violations Counts",
-    outFields: ["*"],
-    popupEnabled: true,
-    labelsVisible: false,
-    labelingInfo: [],
-    popupTemplate: {
-      title: "Block: {block_code}",
-      content: [
-        {
-          type: "fields",
-          fieldInfos: [
-            { fieldName: "block_code", label: "Block Code" },
-            { fieldName: "violation_count", label: "Violation Count" },
-          ],
-        },
-      ],
-    },
-  });
-
-  const populationBlockLayer = new FeatureLayer({
-    url: "https://map3.urbanunit.gov.pk:6443/arcgis/rest/services/Punjab/PB_Price_Pop_Blocks_Price_Violations_8432_27022026/MapServer/4",
-    title: "Population Blocks",
-    outFields: ["*"],
-    popupEnabled: true,
-    labelsVisible: false,
-    popupTemplate: {
-      title: "Population Blocks",
-      content: [
-        {
-          type: "fields",
-          fieldInfos: [{ fieldName: "block_code", label: "Block Code" }],
-        },
-      ],
-    },
-  });
-
   const imageProxyUrl = new URL(
     "services/image_proxy.php?url=",
     window.location.href,
   ).toString();
 
-  const shopsLayer = new FeatureLayer({
-    url: "https://map3.urbanunit.gov.pk:6443/arcgis/rest/services/Punjab/PB_Price_Pop_Blocks_Price_Violations_8432_27022026/MapServer/0",
-    title: "Shops Rate List Status",
+  const petrolPumpsLayer = new FeatureLayer({
+    url: `${MAP_SERVICE_URL}/1`,
+    title: "Petrol Pumps",
     outFields: ["*"],
     popupEnabled: true,
-    labelsVisible: false,
     popupTemplate: {
-      title: "{shop_name}",
-      content: [
-        {
-          type: "fields",
-          fieldInfos: [
-            { fieldName: "shop_name", label: "Shop Name" },
-            { fieldName: "shop_owner_name", label: "Owner" },
-            { fieldName: "district_name", label: "District" },
-            { fieldName: "tehsil_name", label: "Tehsil" },
-            { fieldName: "city_name", label: "City" },
-            {
-              fieldName: "commodity_violation_status",
-              label: "Violation Status",
-            },
-            {
-              fieldName: "rate_list_displayed",
-              label: "Rate List Displayed",
-            },
-          ],
-        },
-        {
-          type: "media",
-          mediaInfos: [
-            {
-              title: "Shop Image",
-              type: "image",
-              value: {
-                sourceURL: `${imageProxyUrl}{image}`,
-              },
-            },
-          ],
-        },
-      ],
+      title: "{pump_name}",
+      content: (feature) => buildPumpPopupContent(feature.graphic?.attributes),
+    },
+  });
+
+  const availabilityLayer = new FeatureLayer({
+    url: `${MAP_SERVICE_URL}/0`,
+    title: "Petrol Availability Status",
+    outFields: ["*"],
+    popupEnabled: true,
+    popupTemplate: {
+      title: "{district}",
+      content: (feature) =>
+        buildAvailabilityPopupContent(feature.graphic?.attributes),
     },
   });
 
   const districtHighlightLayer = new FeatureLayer({
-    url: "https://map3.urbanunit.gov.pk:6443/arcgis/rest/services/Punjab/PB_Price_Pop_Blocks_Price_Violations_8432_27022026/MapServer/2",
+    url: `${MAP_SERVICE_URL}/2`,
     title: "District Highlight",
     popupEnabled: false,
     definitionExpression: "1=0",
@@ -162,7 +233,7 @@ require([
   });
 
   const boundariesLayer = new MapImageLayer({
-    url: "https://map3.urbanunit.gov.pk:6443/arcgis/rest/services/Punjab/PB_Price_Pop_Blocks_Price_Violations_8432_27022026/MapServer",
+    url: MAP_SERVICE_URL,
     title: "Boundaries",
     sublayers: [
       { id: 2, title: "Districts", visible: true },
@@ -173,10 +244,9 @@ require([
   const map = new Map({
     basemap: "gray-vector",
     layers: [
-      violationsLayer,
+      availabilityLayer,
+      petrolPumpsLayer,
       boundariesLayer,
-      populationBlockLayer,
-      shopsLayer,
       districtHighlightLayer,
     ],
   });
@@ -231,33 +301,9 @@ require([
       filters.push(dateCondition);
     }
 
-    shopsLayer.definitionExpression = filters.length ? filters.join(" AND ") : null;
+    availabilityLayer.definitionExpression = filters.length ? filters.join(" AND ") : null;
 
     setTimeout(hideLoader, 500);
-  }
-
-  function escapeHtml(value) {
-    const text = String(value ?? "");
-    return text
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/\"/g, "&quot;")
-      .replace(/'/g, "&#39;");
-  }
-
-  function formatArcDate(value) {
-    if (value === null || value === undefined || value === "") {
-      return "";
-    }
-
-    const numeric = Number(value);
-    if (!Number.isNaN(numeric) && numeric > 0) {
-      const d = new Date(numeric);
-      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")} ${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
-    }
-
-    return String(value);
   }
 
   async function downloadExcel() {
@@ -267,88 +313,23 @@ require([
     }
 
     showLoader();
-
     try {
-      const query = shopsLayer.createQuery();
-      query.where = shopsLayer.definitionExpression || "1=1";
-      query.outFields = [
-        "shop_name",
-        "shop_owner_name",
-        "district_name",
-        "tehsil_name",
-        "city_name",
-        "commodity_violation_status",
-        "rate_list_displayed",
-        "survey_date_time",
-      ];
-      query.returnGeometry = false;
-
-      const result = await shopsLayer.queryFeatures(query);
-      const features = result.features || [];
-
-      if (!features.length) {
-        alert("No records found for the selected filters.");
-        return;
+      const url = new URL(
+        "services/download_storage_raw_excel.php",
+        window.location.href,
+      );
+      if (selectedDistrict) {
+        url.searchParams.set("district_id", selectedDistrict);
+        if (startDate) {
+          url.searchParams.set("start_date", startDate);
+        }
+        if (endDate) {
+          url.searchParams.set("end_date", endDate);
+        }
       }
-
-      const rows = features
-        .map((feature) => {
-          const a = feature.attributes || {};
-          return `
-            <tr>
-              <td>${escapeHtml(a.shop_name)}</td>
-              <td>${escapeHtml(a.shop_owner_name)}</td>
-              <td>${escapeHtml(a.district_name)}</td>
-              <td>${escapeHtml(a.tehsil_name)}</td>
-              <td>${escapeHtml(a.city_name)}</td>
-              <td>${escapeHtml(a.commodity_violation_status)}</td>
-              <td>${escapeHtml(a.rate_list_displayed)}</td>
-              <td>${escapeHtml(formatArcDate(a.survey_date_time))}</td>
-            </tr>
-          `;
-        })
-        .join("");
-
-      const html = `
-        <html>
-          <head><meta charset="UTF-8"></head>
-          <body>
-            <table border="1">
-              <tr>
-                <th>Shop Name</th>
-                <th>Owner</th>
-                <th>District</th>
-                <th>Tehsil</th>
-                <th>City</th>
-                <th>Violation Status</th>
-                <th>Rate List Displayed</th>
-                <th>Survey Date Time</th>
-              </tr>
-              ${rows}
-            </table>
-          </body>
-        </html>
-      `;
-
-      const blob = new Blob(["\ufeff", html], {
-        type: "application/vnd.ms-excel;charset=utf-8;",
-      });
-
-      const downloadUrl = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      const safeStart = startDate || "all";
-      const safeEnd = endDate || "all";
-      a.href = downloadUrl;
-      a.download = `petrol_storage_sights_mappiog_${safeStart}_to_${safeEnd}.xls`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(downloadUrl);
-    } catch (err) {
-      console.error(err);
-      alert("Failed to download Excel data.");
+      window.location.href = url.toString();
     } finally {
-      hideLoader();
+      setTimeout(hideLoader, 500);
     }
   }
 

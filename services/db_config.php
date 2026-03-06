@@ -4,7 +4,7 @@ $host = "172.20.82.84";
 $db   = "db_petrol_pumps_survey";
 $user = "postgres";
 $pass = "diamondx";
-$port = "5432";
+$port = "5433";
 
 try {
 
