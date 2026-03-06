@@ -22,7 +22,8 @@ $allowedHosts = [
 ];
 
 $defaultBaseUrl = 'http://content2.urbanunit.gov.pk:8083/PETROL_PUMP/PICS/';
-$targetUrl = '';
+$fallbackBaseUrl = 'http://172.20.81.86:8083/PETROL_PUMP/PICS/';
+$targetUrls = [];
 
 if (is_array($parts) && isset($parts['scheme'], $parts['host'])) {
     $scheme = strtolower((string) $parts['scheme']);
@@ -40,7 +41,13 @@ if (is_array($parts) && isset($parts['scheme'], $parts['host'])) {
         exit;
     }
 
-    $targetUrl = $decodedUrl;
+    $targetUrls[] = $decodedUrl;
+
+    $path = (string) ($parts['path'] ?? '');
+    $query = isset($parts['query']) ? ('?' . $parts['query']) : '';
+    if ($path !== '') {
+        $targetUrls[] = 'http://172.20.81.86:8083' . $path . $query;
+    }
 } else {
     // If only filename is passed, map it to the known image base.
     $fileName = basename((string) $decodedUrl);
@@ -57,31 +64,61 @@ if (is_array($parts) && isset($parts['scheme'], $parts['host'])) {
         exit;
     }
 
-    $targetUrl = $defaultBaseUrl . rawurlencode($decodedFileName);
+    $encodedFileName = rawurlencode($decodedFileName);
+    $targetUrls[] = $defaultBaseUrl . $encodedFileName;
+    $targetUrls[] = $fallbackBaseUrl . $encodedFileName;
 }
 
-$ch = curl_init($targetUrl);
-if ($ch === false) {
-    http_response_code(500);
-    echo 'Failed to initialize proxy request.';
-    exit;
+// Try primary target first, then fallback(s) to handle server-side routing differences.
+$attempts = array_values(array_unique($targetUrls));
+$body = false;
+$status = 0;
+$contentType = '';
+$effectiveUrl = '';
+$errno = 0;
+$err = '';
+$usedUrl = '';
+
+foreach ($attempts as $attemptUrl) {
+    $ch = curl_init($attemptUrl);
+    if ($ch === false) {
+        continue;
+    }
+
+    curl_setopt_array($ch, [
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_CONNECTTIMEOUT => 5,
+        CURLOPT_TIMEOUT => 20,
+        CURLOPT_HTTPHEADER => ['Accept: image/*,*/*;q=0.8'],
+    ]);
+
+    $candidateBody = curl_exec($ch);
+    $candidateStatus = (int) curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
+    $candidateType = (string) curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
+    $candidateEffective = (string) curl_getinfo($ch, CURLINFO_EFFECTIVE_URL);
+    $candidateErrno = curl_errno($ch);
+    $candidateErr = curl_error($ch);
+    curl_close($ch);
+
+    if ($candidateBody !== false && $candidateStatus >= 200 && $candidateStatus < 300) {
+        $body = $candidateBody;
+        $status = $candidateStatus;
+        $contentType = $candidateType;
+        $effectiveUrl = $candidateEffective;
+        $errno = $candidateErrno;
+        $err = $candidateErr;
+        $usedUrl = $attemptUrl;
+        break;
+    }
+
+    $status = $candidateStatus;
+    $contentType = $candidateType;
+    $effectiveUrl = $candidateEffective;
+    $errno = $candidateErrno;
+    $err = $candidateErr;
+    $usedUrl = $attemptUrl;
 }
-
-curl_setopt_array($ch, [
-    CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_FOLLOWLOCATION => false,
-    CURLOPT_CONNECTTIMEOUT => 5,
-    CURLOPT_TIMEOUT => 15,
-    CURLOPT_HTTPHEADER => ['Accept: image/*,*/*;q=0.8'],
-]);
-
-$body = curl_exec($ch);
-$status = (int) curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
-$contentType = (string) curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
-$effectiveUrl = (string) curl_getinfo($ch, CURLINFO_EFFECTIVE_URL);
-$errno = curl_errno($ch);
-$err = curl_error($ch);
-curl_close($ch);
 
 if ($body === false || $status < 200 || $status >= 300) {
     http_response_code(502);
@@ -92,13 +129,14 @@ if ($body === false || $status < 200 || $status >= 300) {
         'curl_errno' => $errno,
     ];
     if ($debug) {
-        $payload['upstream_url'] = $targetUrl;
+        $payload['upstream_url'] = $usedUrl;
+        $payload['attempts'] = $attempts;
         $payload['effective_url'] = $effectiveUrl;
         $payload['curl_error'] = $err;
     }
     error_log(
         'image_proxy fetch failed'
-        . ' upstream=' . $targetUrl
+        . ' upstream=' . $usedUrl
         . ' status=' . $status
         . ' errno=' . $errno
         . ' error=' . $err
