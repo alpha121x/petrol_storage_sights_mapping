@@ -131,8 +131,8 @@ require([
       "lat",
       "lng",
       "db_date_time",
-      "petrol_pic",
-      "cash_memo_pic",
+      // "petrol_pic",
+      // "cash_memo_pic",
     ];
 
     const filteredAttributes = {};

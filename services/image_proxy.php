@@ -16,31 +16,49 @@ if ($rawUrl === '') {
 $decodedUrl = urldecode($rawUrl);
 $parts = parse_url($decodedUrl);
 
-if (!is_array($parts) || !isset($parts['path'])) {
-    http_response_code(400);
-    echo 'Invalid URL.';
-    exit;
-}
+$allowedHosts = [
+    'content2.urbanunit.gov.pk',
+    '172.20.81.86',
+];
 
-$fileName = basename((string) $parts['path']);
-if ($fileName === '' || $fileName === '.' || $fileName === '..') {
-    http_response_code(400);
-    echo 'Invalid image path.';
-    exit;
-}
+$defaultBaseUrl = 'http://content2.urbanunit.gov.pk:8083/PETROL_PUMP/PICS/';
+$targetUrl = '';
 
-$decodedFileName = rawurldecode($fileName);
-if (!preg_match('/^[A-Za-z0-9._-]+$/', $decodedFileName)) {
-    http_response_code(400);
-    echo 'Invalid image filename.';
-    exit;
-}
+if (is_array($parts) && isset($parts['scheme'], $parts['host'])) {
+    $scheme = strtolower((string) $parts['scheme']);
+    $host = strtolower((string) $parts['host']);
 
-// Force all image fetches to a fixed internal endpoint.
-$forcedHost = '172.20.81.86';
-$forcedPort = 8083;
-$forcedBasePath = '/PPC_V822_SURVEY/';
-$targetUrl = 'http://' . $forcedHost . ':' . $forcedPort . $forcedBasePath . rawurlencode($decodedFileName);
+    if (!in_array($scheme, ['http', 'https'], true)) {
+        http_response_code(400);
+        echo 'Unsupported URL scheme.';
+        exit;
+    }
+
+    if (!in_array($host, $allowedHosts, true)) {
+        http_response_code(400);
+        echo 'Host not allowed.';
+        exit;
+    }
+
+    $targetUrl = $decodedUrl;
+} else {
+    // If only filename is passed, map it to the known image base.
+    $fileName = basename((string) $decodedUrl);
+    if ($fileName === '' || $fileName === '.' || $fileName === '..') {
+        http_response_code(400);
+        echo 'Invalid image path.';
+        exit;
+    }
+
+    $decodedFileName = rawurldecode($fileName);
+    if (!preg_match('/^[A-Za-z0-9._-]+$/', $decodedFileName)) {
+        http_response_code(400);
+        echo 'Invalid image filename.';
+        exit;
+    }
+
+    $targetUrl = $defaultBaseUrl . rawurlencode($decodedFileName);
+}
 
 $ch = curl_init($targetUrl);
 if ($ch === false) {
