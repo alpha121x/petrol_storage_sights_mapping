@@ -25,6 +25,10 @@ require([
   let selectedDistrict = "";
   let startDate = "";
   let endDate = "";
+  const imageProxyUrl = new URL(
+    "services/image_proxy.php?url=",
+    window.location.href,
+  ).toString();
 
   function showLoader() {
     document.getElementById("mapLoader")?.classList.remove("d-none");
@@ -79,7 +83,7 @@ require([
       if (value && String(value).trim() !== "") {
         urls.push({
           field,
-          url: String(value),
+          url: `${imageProxyUrl}${encodeURIComponent(String(value))}`,
         });
       }
     });
@@ -127,6 +131,8 @@ require([
       "lat",
       "lng",
       "db_date_time",
+      "petrol_pic",
+      "cash_memo_pic",
     ];
 
     const filteredAttributes = {};
