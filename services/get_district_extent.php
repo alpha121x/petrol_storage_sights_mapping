@@ -1,8 +1,7 @@
 <?php
-include "./db_config_2.php";
+include "./db_config.php";
 
 header('Content-Type: application/json');
-
 if (!isset($_GET['district_id'])) {
     echo json_encode([
         "error" => "district_id is required"
