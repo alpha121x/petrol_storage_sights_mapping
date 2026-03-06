@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Petrol Storage Sights Mappiog</title>
+    <title>Petrol Storage Sights Mapping</title>
 
     <link rel="icon" href="public/gop_favicon.png" type="image/x-icon">
 

@@ -79,7 +79,7 @@ require([
       if (value && String(value).trim() !== "") {
         urls.push({
           field,
-          url: `${imageProxyUrl}${encodeURIComponent(String(value))}`,
+          url: String(value),
         });
       }
     });
@@ -122,13 +122,8 @@ require([
       "owner_mobile",
       "no_of_dispenser",
       "capacity",
-      "noc_available",
-      "noc_justification",
-      "k_form_available",
-      "kform_justification",
       "survey_date_time",
       "district_id",
-      "user_id",
       "lat",
       "lng",
       "db_date_time",
@@ -189,11 +184,6 @@ require([
     return "";
   }
 
-  const imageProxyUrl = new URL(
-    "services/image_proxy.php?url=",
-    window.location.href,
-  ).toString();
-
   const petrolPumpsLayer = new FeatureLayer({
     url: `${MAP_SERVICE_URL}/1`,
     title: "Petrol Pumps",
@@ -212,6 +202,7 @@ require([
     outFields: ["*"],
     popupEnabled: true,
     legendEnabled: true,
+    visible: false,
     popupTemplate: {
       title: "{district}",
       content: (feature) =>
