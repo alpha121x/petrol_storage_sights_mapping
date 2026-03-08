@@ -61,11 +61,24 @@ require([
 
   /* ---------------- LEGEND ---------------- */
 
-  const legend = new Legend({
-    view: view
-  });
+ /* ---------------- LEGEND ---------------- */
 
-  view.ui.add(legend, "bottom-left");
+const legend = new Legend({
+  view: view,
+  layerInfos: [
+    {
+      layer: fuelLayer,
+      title: "Fuel Availability"
+    },
+    {
+      layer: priceLayer,
+      title: "Overpriced Status"
+    }
+  ]
+});
+
+view.ui.add(legend, "bottom-left");
+
 
   /* ---------------- LAYER TOGGLE CONTROL ---------------- */
 
@@ -73,25 +86,30 @@ require([
     view: view,
     listItemCreatedFunction: function(event){
 
-      const item = event.item;
+  const item = event.item;
 
-      if(item.layer === fuelLayer || item.layer === priceLayer){
+  if(item.layer === boundaryLayer){
+    item.visible = true;
+    item.panel = null;
+  }
 
-        item.watch("visible", function(val){
+  if(item.layer === fuelLayer || item.layer === priceLayer){
 
-          if(item.layer === fuelLayer && val){
-            priceLayer.visible = false;
-          }
+    item.watch("visible", function(val){
 
-          if(item.layer === priceLayer && val){
-            fuelLayer.visible = false;
-          }
-
-        });
-
+      if(item.layer === fuelLayer && val){
+        priceLayer.visible = false;
       }
 
-    }
+      if(item.layer === priceLayer && val){
+        fuelLayer.visible = false;
+      }
+
+    });
+
+  }
+
+}
   });
 
   view.ui.add(layerList, "top-right");
