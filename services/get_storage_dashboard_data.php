@@ -63,17 +63,31 @@ try {
             COUNT(DISTINCT district_id)::int AS total_districts,
             COUNT(DISTINCT user_id)::int AS active_users,
 
-            SUM(CASE
-                WHEN lower(COALESCE(sale_availability::text,'')) IN ('yes','y','available','true','1')
-                THEN 1 ELSE 0 END)::int AS sale_available_count,
+            SUM(
+                CASE
+                    WHEN lower(sale_availability) LIKE '%sale%'
+                    AND lower(sale_availability) NOT LIKE '%no%'
+                    THEN 1
+                    ELSE 0
+                END
+            )::int AS sale_available_count,
 
-            SUM(CASE
-                WHEN lower(COALESCE(overpriced::text,'')) IN ('yes','y','true','1')
-                THEN 1 ELSE 0 END)::int AS overpriced_count,
+            SUM(
+                CASE
+                    WHEN lower(COALESCE(overpriced::text,'')) LIKE '%yes%'
+                    OR lower(COALESCE(overpriced::text,'')) LIKE '%over%'
+                    THEN 1
+                    ELSE 0
+                END
+            )::int AS overpriced_count,
 
-            SUM(CASE
-                WHEN COALESCE(NULLIF(trim(COALESCE(\"queue\"::text,'')),''),'0') <> '0'
-                THEN 1 ELSE 0 END)::int AS queue_count
+            SUM(
+                CASE
+                    WHEN COALESCE(NULLIF(trim(COALESCE(\"queue\"::text,'')),''),'0') <> '0'
+                    THEN 1
+                    ELSE 0
+                END
+            )::int AS queue_count
 
         FROM petrol_storage.v_storage_final
         WHERE {$whereSql}
@@ -93,20 +107,20 @@ try {
     /* ---------------- SALE DISTRIBUTION ---------------- */
 
     $saleSql = "
-SELECT
-CASE
-    WHEN lower(sale_availability) LIKE '%limited%' THEN 'Limited Sale'
-    WHEN lower(sale_availability) LIKE '%sale%' 
-         AND lower(sale_availability) NOT LIKE '%no%' THEN 'Sale Available'
-    WHEN lower(sale_availability) LIKE '%no%' THEN 'No Sale'
-    ELSE 'Unknown'
-END AS label,
-COUNT(*)::int AS total
-FROM petrol_storage.v_storage_final
-WHERE {$whereSql}
-GROUP BY 1
-ORDER BY total DESC
-";
+        SELECT
+        CASE
+            WHEN lower(sale_availability) LIKE '%limited%' THEN 'Limited Sale'
+            WHEN lower(sale_availability) LIKE '%sale%' 
+                 AND lower(sale_availability) NOT LIKE '%no%' THEN 'Sale Available'
+            WHEN lower(sale_availability) LIKE '%no%' THEN 'No Sale'
+            ELSE 'Unknown'
+        END AS label,
+        COUNT(*)::int AS total
+        FROM petrol_storage.v_storage_final
+        WHERE {$whereSql}
+        GROUP BY 1
+        ORDER BY total DESC
+    ";
 
     /* ---------------- DAILY TREND ---------------- */
 
@@ -141,22 +155,13 @@ ORDER BY total DESC
             COUNT(*)::int AS total
         FROM petrol_storage.v_storage_final
         WHERE {$whereSql}
-        AND lower(COALESCE(overpriced::text,'')) IN ('yes','y','true','1')
+        AND (
+            lower(COALESCE(overpriced::text,'')) LIKE '%yes%'
+            OR lower(COALESCE(overpriced::text,'')) LIKE '%over%'
+        )
         GROUP BY district
         ORDER BY total DESC
         LIMIT 10
-    ";
-
-    /* ---------------- FUEL STATUS SUMMARY ---------------- */
-
-    $statusSql = "
-        SELECT
-            SUM(CASE WHEN lower(COALESCE(sale_availability::text,'')) IN ('yes','available','true','1') THEN 1 ELSE 0 END)::int AS available,
-            SUM(CASE WHEN lower(COALESCE(overpriced::text,'')) IN ('yes','true','1') THEN 1 ELSE 0 END)::int AS overpriced,
-            SUM(CASE WHEN COALESCE(NULLIF(trim(COALESCE(\"queue\"::text,'')),''),'0') <> '0' THEN 1 ELSE 0 END)::int AS queue,
-            COUNT(*)::int AS total
-        FROM petrol_storage.v_storage_final
-        WHERE {$whereSql}
     ";
 
     /* ---------------- DISTRICT LIST ---------------- */
@@ -168,7 +173,7 @@ ORDER BY total DESC
         ORDER BY district
     ";
 
-    /* ---------------- EXECUTION HELPER ---------------- */
+    /* ---------------- EXECUTION ---------------- */
 
     $run = function ($sql, $params) use ($conn) {
         $stmt = $conn->prepare($sql);
@@ -179,33 +184,26 @@ ORDER BY total DESC
         return $stmt;
     };
 
-    /* ---------------- RUN QUERIES ---------------- */
-
     $summary = $run($summarySql, $params)->fetch(PDO::FETCH_ASSOC) ?: [];
     $districts = $run($districtSql, $params)->fetchAll(PDO::FETCH_ASSOC);
     $sale = $run($saleSql, $params)->fetchAll(PDO::FETCH_ASSOC);
     $trend = $run($trendSql, $params)->fetchAll(PDO::FETCH_ASSOC);
     $users = $run($userSql, $params)->fetchAll(PDO::FETCH_ASSOC);
     $overprice = $run($overpriceSql, $params)->fetchAll(PDO::FETCH_ASSOC);
-    $status = $run($statusSql, $params)->fetch(PDO::FETCH_ASSOC);
     $districtList = $run($districtListSql, [])->fetchAll(PDO::FETCH_ASSOC);
-
-    /* ---------------- RESPONSE ---------------- */
 
     echo json_encode([
         "summary" => $summary,
         "district_breakdown" => $districts,
         "sale_breakdown" => $sale,
         "daily_trend" => $trend,
-
         "top_users" => $users,
         "overprice_districts" => $overprice,
-        "fuel_status" => $status,
-
         "districts" => $districtList
     ]);
 
     exit;
+
 } catch (Throwable $e) {
 
     http_response_code(500);
