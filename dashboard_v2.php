@@ -101,7 +101,6 @@
         <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
             <div>
                 <h4 class="mb-0">Petrol Storage Analytics Dashboard</h4>
-                <small class="text-light-subtle">Source: petrol_storage.v_storage_final</small>
             </div>
             <div class="badge text-bg-light px-3 py-2" id="recordBadge">Records: 0</div>
         </div>
@@ -134,7 +133,7 @@
         <div class="row g-3 mb-1">
             <div class="col-md-4 col-lg-2">
                 <div class="kpi-card">
-                    <div class="kpi-label">Total Surveys</div>
+                    <div class="kpi-label">Total Records</div>
                     <div class="kpi-value" id="kpiTotal">0</div>
                 </div>
             </div>
@@ -173,7 +172,7 @@
         <div class="row g-3 mt-1">
             <div class="col-lg-6">
                 <div class="chart-card">
-                    <h6 class="chart-title">District-wise Surveys (Top 10)</h6>
+                    <h6 class="chart-title">District-wise Records (Top 10)</h6>
                     <div id="districtChart" class="chart-box"></div>
                 </div>
             </div>
