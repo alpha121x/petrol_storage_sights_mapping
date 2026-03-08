@@ -102,7 +102,7 @@
             <div>
                 <h4 class="mb-0">Petrol Storage Analytics Dashboard</h4>
             </div>
-            <div class="badge text-bg-light px-3 py-2" id="recordBadge">Records: 0</div>
+            <div class="badge text-bg-light px-3 py-2" id="recordBadge">Pumps Surveyed: 0</div>
         </div>
     </header>
 
@@ -134,7 +134,7 @@
         <div class="row g-3 mb-1">
             <div class="col-md-4 col-lg-2">
                 <div class="kpi-card">
-                    <div class="kpi-label">Total Records</div>
+                    <div class="kpi-label">Total Pumps Surveyed</div>
                     <div class="kpi-value" id="kpiTotal">0</div>
                 </div>
             </div>
@@ -146,13 +146,13 @@
             </div>
             <div class="col-md-4 col-lg-2">
                 <div class="kpi-card">
-                    <div class="kpi-label">Queue Reported</div>
+                    <div class="kpi-label">Queue's Reported</div>
                     <div class="kpi-value" id="kpiQueue">0</div>
                 </div>
             </div>
             <div class="col-md-4 col-lg-2">
                 <div class="kpi-card">
-                    <div class="kpi-label">Overpriced</div>
+                    <div class="kpi-label">Overpriced Pumps</div>
                     <div class="kpi-value" id="kpiOverpriced">0</div>
                 </div>
             </div>
