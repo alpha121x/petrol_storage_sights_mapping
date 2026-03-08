@@ -1,14 +1,16 @@
+// SPDX-License-Identifier: LicenseRef-Highcharts
 /**
- * @license Highcharts JS v12.3.0 (2025-06-21)
+ * @license Highcharts JS v12.5.0 (2026-01-12)
  * @module highcharts/modules/sonification
  * @requires highcharts
  *
  * Sonification module
  *
- * (c) 2010-2025 Highsoft AS
+ * (c) 2010-2026 Highsoft AS
  * Author: Øystein Moseng
  *
- * License: www.highcharts.com/license
+ * A commercial license may be required depending on use.
+ * See www.highcharts.com/license
  */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
@@ -108,13 +110,14 @@ var highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default 
 ;// ./code/es5/es-modules/Extensions/Sonification/Options.js
 /* *
  *
- *  (c) 2009-2025 Øystein Moseng
+ *  (c) 2009-2026 Highsoft AS
+ *  Author: Øystein Moseng
  *
  *  Default options for sonification.
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -1031,7 +1034,7 @@ var Options = {
     },
     /**
      * @optionparent lang
-     * @private
+     * @internal
      */
     lang: {
         /**
@@ -1156,14 +1159,15 @@ var Options = {
 ;// ./code/es5/es-modules/Extensions/Sonification/SynthPatch.js
 /* *
  *
- *  (c) 2009-2025 Øystein Moseng
+ *  (c) 2009-2026 Highsoft AS
+ *  Author: Øystein Moseng
  *
  *  Class representing a Synth Patch, used by Instruments in the
  *  sonification.js module.
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -1184,7 +1188,7 @@ var clamp = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts
  * Get the multiplier value from a pitch tracked multiplier. The parameter
  * specifies the multiplier at ca 3200Hz. It is 1 at ca 50Hz. In between
  * it is mapped logarithmically.
- * @private
+ * @internal
  * @param {number} multiplier The multiplier to track.
  * @param {number} freq The current frequency.
  */
@@ -1195,7 +1199,7 @@ function getPitchTrackedMultiplierVal(multiplier, freq) {
 }
 /**
  * Schedule a mini ramp to volume at time - avoid clicks/pops.
- * @private
+ * @internal
  * @param {Object} gainNode The gain node to schedule for.
  * @param {number} time The time in seconds to start ramp.
  * @param {number} vol The volume to ramp to.
@@ -1207,7 +1211,7 @@ function miniRampToVolAtTime(gainNode, time, vol) {
 }
 /**
  * Schedule a gain envelope for a gain node.
- * @private
+ * @internal
  * @param {Array<Object>} envelope The envelope to schedule.
  * @param {string} type Type of envelope, attack or release.
  * @param {number} time At what time (in seconds) to start envelope.
@@ -1236,7 +1240,7 @@ function scheduleGainEnvelope(envelope, type, time, gainNode, volumeMultiplier) 
  * Combines two sawtooth oscillators to create a pulse by phase inverting and
  * delaying one of them.
  * @class
- * @private
+ * @internal
  */
 var PulseOscNode = /** @class */ (function () {
     function PulseOscNode(context, options) {
@@ -1306,7 +1310,7 @@ var PulseOscNode = /** @class */ (function () {
 /**
  * Internal class used by SynthPatch
  * @class
- * @private
+ * @internal
  */
 var Oscillator = /** @class */ (function () {
     function Oscillator(audioContext, options, destination) {
@@ -1676,7 +1680,7 @@ var SynthPatch = /** @class */ (function () {
     };
     /**
      * Create nodes for master EQ
-     * @private
+     * @internal
      */
     SynthPatch.prototype.createEqChain = function (outputNode) {
         var _this = this;
@@ -1691,7 +1695,7 @@ var SynthPatch = /** @class */ (function () {
     };
     /**
      * Fade by release envelopes at time
-     * @private
+     * @internal
      */
     SynthPatch.prototype.releaseAtTime = function (time) {
         var maxReleaseDuration = 0;
@@ -1892,13 +1896,14 @@ var SynthPatch = /** @class */ (function () {
 ;// ./code/es5/es-modules/Extensions/Sonification/InstrumentPresets.js
 /* *
  *
- *  (c) 2009-2025 Øystein Moseng
+ *  (c) 2009-2026 Highsoft AS
+ *  Author: Øystein Moseng
  *
  *  Presets for SynthPatch.
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -2768,13 +2773,14 @@ var InstrumentPresets = {
 ;// ./code/es5/es-modules/Extensions/Sonification/SonificationInstrument.js
 /* *
  *
- *  (c) 2009-2025 Øystein Moseng
+ *  (c) 2009-2026 Highsoft AS
+ *  Author: Øystein Moseng
  *
  *  Class representing an Instrument with mappable parameters for sonification.
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -2909,7 +2915,7 @@ var SonificationInstrument = /** @class */ (function () {
     };
     /**
      * Schedule a pan value at a given time offset.
-     * @private
+     * @internal
      */
     SonificationInstrument.prototype.setPanAtTime = function (time, pan) {
         if (this.panNode) {
@@ -2918,7 +2924,7 @@ var SonificationInstrument = /** @class */ (function () {
     };
     /**
      * Schedule a filter configuration at a given time offset.
-     * @private
+     * @internal
      */
     SonificationInstrument.prototype.setFilterAtTime = function (filter, time, frequency, resonance) {
         var node = this[filter + 'Node'],
@@ -2934,7 +2940,7 @@ var SonificationInstrument = /** @class */ (function () {
     };
     /**
      * Schedule a volume value at a given time offset.
-     * @private
+     * @internal
      */
     SonificationInstrument.prototype.setVolumeAtTime = function (time, volume) {
         if (this.volumeNode) {
@@ -2943,7 +2949,7 @@ var SonificationInstrument = /** @class */ (function () {
     };
     /**
      * Schedule a tremolo configuration at a given time offset.
-     * @private
+     * @internal
      */
     SonificationInstrument.prototype.setTremoloAtTime = function (time, depth, speed) {
         var audioTime = this.audioContext.currentTime + time;
@@ -2956,7 +2962,7 @@ var SonificationInstrument = /** @class */ (function () {
     };
     /**
      * Create audio nodes according to instrument capabilities
-     * @private
+     * @internal
      */
     SonificationInstrument.prototype.createNodesFromCapabilities = function (capabilities) {
         var ctx = this.audioContext;
@@ -2987,7 +2993,7 @@ var SonificationInstrument = /** @class */ (function () {
     /**
      * Connect audio node chain from output down to input, depending on which
      * nodes exist.
-     * @private
+     * @internal
      */
     SonificationInstrument.prototype.connectCapabilityNodes = function (input, output) {
         [
@@ -3004,7 +3010,7 @@ var SonificationInstrument = /** @class */ (function () {
     /**
      * Get number of notes from C0 from a string like "F#4"
      * @static
-     * @private
+     * @internal
      */
     SonificationInstrument.noteStringToC0Distance = function (note) {
         var match = note.match(/^([a-g][#b]?)([0-8])$/i), semitone = match ? match[1] : 'a', wholetone = semitone[0].toLowerCase(), accidental = semitone[1], octave = match ? parseInt(match[2], 10) : 4, accidentalOffset = accidental === '#' ?
@@ -3142,13 +3148,14 @@ var SonificationInstrument = /** @class */ (function () {
 ;// ./code/es5/es-modules/Extensions/Sonification/SonificationSpeaker.js
 /* *
  *
- *  (c) 2009-2025 Øystein Moseng
+ *  (c) 2009-2026 Highsoft AS
+ *  Author: Øystein Moseng
  *
  *  Class representing a speech synthesis voice.
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -3227,7 +3234,7 @@ var SonificationSpeaker = /** @class */ (function () {
     };
     /**
      * Stop speech and release any used resources
-     * @private
+     * @internal
      */
     SonificationSpeaker.prototype.destroy = function () {
         // Ran on TimelineChannel.destroy
@@ -3247,7 +3254,7 @@ var SonificationSpeaker = /** @class */ (function () {
     };
     /**
      * Set the active synthesis voice for the speaker.
-     * @private
+     * @internal
      */
     SonificationSpeaker.prototype.setVoice = function () {
         if (this.synthesis) {
@@ -3316,20 +3323,21 @@ var SonificationSpeaker = /** @class */ (function () {
 ;// ./code/es5/es-modules/Extensions/Sonification/TimelineChannel.js
 /* *
  *
- *  (c) 2009-2025 Øystein Moseng
+ *  (c) 2009-2026 Highsoft AS
+ *  Author: Øystein Moseng
  *
  *  Class representing a TimelineChannel with sonification events to play.
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
 /**
  * Represents a channel of TimelineEvents for an engine (either an instrument
  * or a speaker).
- * @private
+ * @internal
  */
 var TimelineChannel = /** @class */ (function () {
     function TimelineChannel(type, engine, showPlayMarker, events, muted) {
@@ -3414,13 +3422,14 @@ var TimelineChannel = /** @class */ (function () {
 ;// ./code/es5/es-modules/Extensions/Sonification/MIDI.js
 /* *
  *
- *  (c) 2009-2025 Øystein Moseng
+ *  (c) 2009-2026 Highsoft AS
+ *  Author: Øystein Moseng
  *
  *  Small MIDI file writer for sonification export.
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 /* eslint-disable no-multi-spaces */
@@ -3562,7 +3571,7 @@ varLenEnc = function (n) {
  *
  * Outputs multi-track MIDI for Timelines with multiple channels.
  *
- * @private
+ * @internal
  */
 function toMIDI(channels) {
     var channelsToAdd = channels.filter(function (c) { return !!c.events.length; }),
@@ -3576,14 +3585,15 @@ function toMIDI(channels) {
 }
 /* harmony default export */ var MIDI = (toMIDI);
 
-;// ./code/es5/es-modules/Extensions/DownloadURL.js
+;// ./code/es5/es-modules/Shared/DownloadURL.js
 /* *
  *
- *  (c) 2015-2025 Oystein Moseng
+ *  (c) 2015-2026 Highsoft AS
+ *  Author: Oystein Moseng
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  *  Mixin for downloading content in the browser
  *
@@ -3612,7 +3622,7 @@ var domurl = win.URL || win.webkitURL || win;
 /**
  * Convert base64 dataURL to Blob if supported, otherwise returns undefined.
  *
- * @private
+ * @internal
  * @function Highcharts.dataURLtoBlob
  *
  * @param {string} dataURL
@@ -3646,7 +3656,7 @@ function dataURLtoBlob(dataURL) {
 /**
  * Download a data URL in the browser. Can also take a blob as first param.
  *
- * @private
+ * @internal
  * @function Highcharts.downloadURL
  *
  * @param {string | global.URL} dataURL
@@ -3706,7 +3716,7 @@ function downloadURL(dataURL, filename) {
 /**
  * Asynchronously downloads a script from a provided location.
  *
- * @private
+ * @internal
  * @function Highcharts.getScript
  *
  * @param {string} scriptLocation
@@ -3724,47 +3734,87 @@ function getScript(scriptLocation) {
         };
         // Reject in case of fail
         script.onerror = function () {
-            reject(error("Error loading script ".concat(scriptLocation)));
+            var msg = "Error loading script ".concat(scriptLocation);
+            error(msg);
+            reject(new Error(msg));
         };
         // Append the newly created script
         head.appendChild(script);
     });
+}
+/**
+ * Get a blob object from content, if blob is supported.
+ *
+ * @internal
+ * @function Highcharts.getBlobFromContent
+ *
+ * @param {string} content
+ * The content to create the blob from.
+ * @param {string} type
+ * The type of the content.
+ *
+ * @return {string | undefined}
+ * The blob object, or undefined if not supported.
+ *
+ * @requires modules/exporting
+ * @requires modules/export-data
+ */
+function getBlobFromContent(content, type) {
+    var nav = win.navigator,
+        domurl = win.URL || win.webkitURL || win;
+    try {
+        // MS specific
+        if ((nav.msSaveOrOpenBlob) && win.MSBlobBuilder) {
+            var blob = new win.MSBlobBuilder();
+            blob.append(content);
+            return blob.getBlob('image/svg+xml');
+        }
+        return domurl.createObjectURL(new win.Blob(['\uFEFF' + content], // #7084
+        { type: type }));
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    }
+    catch (e) {
+        // Ignore
+    }
 }
 /* *
  *
  *  Default Export
  *
  * */
+/** @internal */
 var DownloadURL = {
     dataURLtoBlob: dataURLtoBlob,
     downloadURL: downloadURL,
+    getBlobFromContent: getBlobFromContent,
     getScript: getScript
 };
-/* harmony default export */ var Extensions_DownloadURL = (DownloadURL);
+/** @internal */
+/* harmony default export */ var Shared_DownloadURL = ((/* unused pure expression or super */ null && (DownloadURL)));
 
 ;// ./code/es5/es-modules/Extensions/Sonification/SonificationTimeline.js
 /* *
  *
- *  (c) 2009-2025 Øystein Moseng
+ *  (c) 2009-2026 Highsoft AS
+ *  Author: Øystein Moseng
  *
  *  Class representing a Timeline with sonification events to play.
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
 
 
 
-var SonificationTimeline_downloadURL = Extensions_DownloadURL.downloadURL;
 
 var SonificationTimeline_defined = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).defined, find = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).find, merge = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).merge;
 /**
  * Get filtered channels. Timestamps are compensated, so that the first
  * event starts immediately.
- * @private
+ * @internal
  */
 function filterChannels(filter, channels) {
     var filtered = channels.map(function (channel) {
@@ -3786,7 +3836,7 @@ function filterChannels(filter, channels) {
  * The SonificationTimeline class. This class represents a timeline of
  * audio events scheduled to play. It provides functionality for manipulating
  * and navigating the timeline.
- * @private
+ * @internal
  */
 var SonificationTimeline = /** @class */ (function () {
     function SonificationTimeline(options, chart) {
@@ -4235,7 +4285,7 @@ var SonificationTimeline = /** @class */ (function () {
                     this.chart.options.title &&
                     this.chart.options.title.text ||
                 'chart') + '.mid', blob = new Blob([data], { type: 'application/octet-stream' }), url = window.URL.createObjectURL(blob);
-        SonificationTimeline_downloadURL(url, name);
+        downloadURL(url, name);
         window.URL.revokeObjectURL(url);
     };
     SonificationTimeline.prototype.resetPlayState = function () {
@@ -4284,13 +4334,14 @@ var highcharts_Templating_commonjs_highcharts_Templating_commonjs2_highcharts_Te
 ;// ./code/es5/es-modules/Extensions/Sonification/TimelineFromChart.js
 /* *
  *
- *  (c) 2009-2025 Øystein Moseng
+ *  (c) 2009-2026 Highsoft AS
+ *  Author: Øystein Moseng
  *
  *  Build a timeline from a chart.
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -4317,7 +4368,7 @@ var isNoteDefinition = function (str) {
 };
 /**
  * Get the value of a point property from string.
- * @private
+ * @internal
  */
 function getPointPropValue(point, prop) {
     var ret;
@@ -4333,7 +4384,7 @@ function getPointPropValue(point, prop) {
 /**
  * Get chart wide min/max for a set of props, as well as per
  * series min/max for selected props.
- * @private
+ * @internal
  */
 function getChartExtremesForProps(chart, props, perSeriesProps) {
     var series = chart.series,
@@ -4388,7 +4439,7 @@ function getChartExtremesForProps(chart, props, perSeriesProps) {
 /**
  * Build a cache of prop extremes for the chart. Goes through
  * options to find out which props are needed.
- * @private
+ * @internal
  */
 function getPropMetrics(chart) {
     var globalOpts = chart.options.sonification ||
@@ -4477,7 +4528,7 @@ function getPropMetrics(chart) {
 }
 /**
  * Map a relative value onto a virtual axis.
- * @private
+ * @internal
  */
 function mapToVirtualAxis(value, valueExtremes, virtualAxisExtremes, invert, logarithmic // Virtual axis is logarithmic
 ) {
@@ -4513,7 +4564,7 @@ function mapToVirtualAxis(value, valueExtremes, virtualAxisExtremes, invert, log
 }
 /**
  * Get the value of a mapped parameter for a point.
- * @private
+ * @internal
  */
 function getMappingParameterValue(context, propMetrics, useSeriesExtremes, defaultMapping, mappingOptions, contextValueProp) {
     if (typeof mappingOptions === 'number') {
@@ -4607,7 +4658,7 @@ function getMappingParameterValue(context, propMetrics, useSeriesExtremes, defau
 }
 /**
  * Get mapping parameter value with defined fallback and defaults.
- * @private
+ * @internal
  */
 function getParamValWithDefault(context, propMetrics, useSeriesExtremes, mappingParamOptions, fallback, defaults, contextValueProp) {
     return TimelineFromChart_pick(getMappingParameterValue(context, propMetrics, useSeriesExtremes, TimelineFromChart_extend({
@@ -4616,7 +4667,7 @@ function getParamValWithDefault(context, propMetrics, useSeriesExtremes, mapping
 }
 /**
  * Get time value for a point event.
- * @private
+ * @internal
  */
 function getPointTime(point, startTime, duration, timeMappingOptions, propMetrics, useSeriesExtremes) {
     var time = getParamValWithDefault({ point: point,
@@ -4630,7 +4681,7 @@ function getPointTime(point, startTime, duration, timeMappingOptions, propMetric
 }
 /**
  * Get duration for a series
- * @private
+ * @internal
  */
 function getAvailableDurationForSeries(series, totalDuration, propMetrics, afterSeriesWait) {
     var timeProp,
@@ -4668,7 +4719,7 @@ function getAvailableDurationForSeries(series, totalDuration, propMetrics, after
 }
 /**
  * Build and add a track to the timeline.
- * @private
+ * @internal
  */
 function addTimelineChannelFromTrack(timeline, audioContext, destinationNode, options) {
     var speechOpts = options,
@@ -4693,7 +4744,7 @@ function addTimelineChannelFromTrack(timeline, audioContext, destinationNode, op
 }
 /**
  * Add event from a point to a mapped instrument track.
- * @private
+ * @internal
  */
 function addMappedInstrumentEvent(context, channel, mappingOptions, propMetrics, roundToMusicalNotes, contextValueProp) {
     var getParam = function (param,
@@ -4779,7 +4830,7 @@ function addMappedInstrumentEvent(context, channel, mappingOptions, propMetrics,
 }
 /**
  * Get the message value to speak for a point.
- * @private
+ * @internal
  */
 function getSpeechMessageValue(context, messageParam) {
     return format(typeof messageParam === 'function' ?
@@ -4788,7 +4839,7 @@ function getSpeechMessageValue(context, messageParam) {
 }
 /**
  * Add an event from a point to a mapped speech track.
- * @private
+ * @internal
  */
 function addMappedSpeechEvent(context, channel, mappingOptions, propMetrics, contextValueProp) {
     var getParam = function (param,
@@ -4816,7 +4867,7 @@ function addMappedSpeechEvent(context, channel, mappingOptions, propMetrics, con
 }
 /**
  * Add events to a channel for a point&track combo.
- * @private
+ * @internal
  */
 function addMappedEventForPoint(context, channel, trackOptions, propMetrics) {
     var eventsAdded = [];
@@ -4837,7 +4888,7 @@ function addMappedEventForPoint(context, channel, trackOptions, propMetrics) {
 }
 /**
  * Get a reduced set of points from a list, depending on grouping opts.
- * @private
+ * @internal
  */
 function getGroupedPoints(pointGroupOpts, points) {
     var alg = pointGroupOpts.algorithm || 'minmax',
@@ -4888,7 +4939,7 @@ function getGroupedPoints(pointGroupOpts, points) {
 }
 /**
  * Should a track be active for this event?
- * @private
+ * @internal
  */
 function isActive(context, activeWhen, lastPropValue) {
     if (typeof activeWhen === 'function') {
@@ -4926,7 +4977,7 @@ function isActive(context, activeWhen, lastPropValue) {
 }
 /**
  * Build a new timeline object from a chart.
- * @private
+ * @internal
  */
 function timelineFromChart(audioContext, destinationNode, chart) {
     var options = chart.options.sonification ||
@@ -5180,13 +5231,14 @@ function timelineFromChart(audioContext, destinationNode, chart) {
 ;// ./code/es5/es-modules/Extensions/Sonification/Sonification.js
 /* *
  *
- *  (c) 2009-2025 Øystein Moseng
+ *  (c) 2009-2026 Highsoft AS
+ *  Author: Øystein Moseng
  *
  *  Sonification module.
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -5241,7 +5293,7 @@ var Sonification = /** @class */ (function () {
             this.audioContext.suspend();
             this.audioDestination = this.audioContext.destination;
         }
-        catch (e) { /* Ignore */ }
+        catch ( /* Ignore */_a) { /* Ignore */ }
     }
     /**
      * Set the audio destination node to something other than the default
@@ -5460,7 +5512,7 @@ var Sonification = /** @class */ (function () {
     };
     /**
      * Implementation of chart.sonify
-     * @private
+     * @internal
      */
     Sonification.prototype.sonifyChart = function (resetAfter, onEnd) {
         if (!this.ready(this.sonifyChart.bind(this, resetAfter, onEnd))) {
@@ -5474,7 +5526,7 @@ var Sonification = /** @class */ (function () {
     };
     /**
      * Implementation of series.sonify
-     * @private
+     * @internal
      */
     Sonification.prototype.sonifySeries = function (series, resetAfter, onEnd) {
         if (!this.ready(this.sonifySeries.bind(this, series, resetAfter, onEnd))) {
@@ -5490,7 +5542,7 @@ var Sonification = /** @class */ (function () {
     };
     /**
      * Implementation of point.sonify
-     * @private
+     * @internal
      */
     Sonification.prototype.sonifyPoint = function (point, onEnd) {
         if (!this.ready(this.sonifyPoint.bind(this, point, onEnd))) {
@@ -5505,7 +5557,7 @@ var Sonification = /** @class */ (function () {
     /**
      * Set the overall/master volume for the sonification.
      * Usually handled through chart update.
-     * @private
+     * @internal
      */
     Sonification.prototype.setMasterVolume = function (vol) {
         if (this.timeline) {
@@ -5514,7 +5566,7 @@ var Sonification = /** @class */ (function () {
     };
     /**
      * Destroy the sonification capabilities
-     * @private
+     * @internal
      */
     Sonification.prototype.destroy = function () {
         this.unbindKeydown();
@@ -5536,7 +5588,7 @@ var Sonification = /** @class */ (function () {
      * automatically. Note that the [sonification.updateInterval](https://api.highcharts.com/highcharts/sonification.updateInterval)
      * option can stop updates from happening in rapid succession, including
      * manual calls to this function.
-     * @private
+     * @internal
      */
     Sonification.prototype.update = function () {
         var sOpts = this.chart.options && this.chart.options.sonification;
@@ -5571,7 +5623,7 @@ var Sonification = /** @class */ (function () {
     /**
      * Only continue if sonification enabled. If audioContext is
      * suspended, retry up to 20 times with a small delay.
-     * @private
+     * @internal
      */
     Sonification.prototype.ready = function (whenReady) {
         var _this = this;
@@ -5602,7 +5654,7 @@ var Sonification = /** @class */ (function () {
     };
     /**
      * Call beforePlay event handler if exists
-     * @private
+     * @internal
      */
     Sonification.prototype.beforePlay = function () {
         var opts = this.chart.options.sonification,
@@ -5613,7 +5665,7 @@ var Sonification = /** @class */ (function () {
     };
     /**
      * Initialize the builtin boundary hit instrument
-     * @private
+     * @internal
      */
     Sonification.prototype.initBoundaryInstrument = function () {
         if (!this.boundaryInstrument) {
@@ -5624,7 +5676,7 @@ var Sonification = /** @class */ (function () {
     };
     /**
      * The default boundary hit sound
-     * @private
+     * @internal
      */
     Sonification.prototype.defaultBoundaryHit = function () {
         if (this.boundaryInstrument) {
@@ -5638,7 +5690,7 @@ var Sonification = /** @class */ (function () {
     var composedClasses = [];
     /**
      * Update sonification object on chart.
-     * @private
+     * @internal
      */
     function updateSonificationEnabled() {
         var sonification = this.sonification,
@@ -5659,7 +5711,7 @@ var Sonification = /** @class */ (function () {
     }
     /**
      * Destroy with chart.
-     * @private
+     * @internal
      */
     function chartOnDestroy() {
         if (this && this.sonification) {
@@ -5668,7 +5720,7 @@ var Sonification = /** @class */ (function () {
     }
     /**
      * Update on render
-     * @private
+     * @internal
      */
     function chartOnRender() {
         if (this.updateSonificationEnabled) {
@@ -5677,7 +5729,7 @@ var Sonification = /** @class */ (function () {
     }
     /**
      * Update
-     * @private
+     * @internal
      */
     function chartOnUpdate(e) {
         var newOptions = e.options.sonification;
@@ -5688,7 +5740,7 @@ var Sonification = /** @class */ (function () {
     }
     /**
      * Compose
-     * @private
+     * @internal
      */
     function compose(ChartClass, SeriesClass, PointClass) {
         // Extend chart
@@ -5856,13 +5908,14 @@ Sonification_merge(true, defaultOptions, Sonification_Options);
 ;// ./code/es5/es-modules/Extensions/Sonification/Scales.js
 /* *
  *
- *  (c) 2009-2025 Øystein Moseng
+ *  (c) 2009-2026 Highsoft AS
+ *  Author: Øystein Moseng
  *
  *  Musical scales for sonification.
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 

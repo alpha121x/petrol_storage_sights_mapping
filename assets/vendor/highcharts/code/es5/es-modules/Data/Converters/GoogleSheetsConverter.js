@@ -1,16 +1,17 @@
 /* *
  *
- *  (c) 2009-2025 Highsoft AS
+ *  (c) 2009-2026 Highsoft AS
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  *  Authors:
  *  - Torstein Hønsi
  *  - Gøran Slettemark
  *  - Wojciech Chmiel
  *  - Sophie Bremer
+ *  - Kamil Kubik
  *
  * */
 'use strict';
@@ -41,6 +42,7 @@ var __assign = (this && this.__assign) || function () {
     return __assign.apply(this, arguments);
 };
 import DataConverter from './DataConverter.js';
+import DataConverterUtils from './DataConverterUtils.js';
 import U from '../../Core/Utilities.js';
 var merge = U.merge, uniqueKey = U.uniqueKey;
 /* *
@@ -63,14 +65,13 @@ var GoogleSheetsConverter = /** @class */ (function (_super) {
     /**
      * Constructs an instance of the GoogleSheetsConverter.
      *
-     * @param {GoogleSheetsConverter.UserOptions} [options]
+     * @param {Partial<GoogleSheetsConverterOptions>} [options]
      * Options for the GoogleSheetsConverter.
      */
     function GoogleSheetsConverter(options) {
         var _this = this;
         var mergedOptions = merge(GoogleSheetsConverter.defaultOptions, options);
         _this = _super.call(this, mergedOptions) || this;
-        _this.columns = [];
         _this.header = [];
         _this.options = mergedOptions;
         return _this;
@@ -83,7 +84,7 @@ var GoogleSheetsConverter = /** @class */ (function (_super) {
     /**
      * Initiates the parsing of the Google Sheet
      *
-     * @param {GoogleSheetsConverter.UserOptions}[options]
+     * @param {Partial<GoogleSheetsConverterOptions>}[options]
      * Options for the parser
      *
      * @param {DataEvent.Detail} [eventDetail]
@@ -95,55 +96,43 @@ var GoogleSheetsConverter = /** @class */ (function (_super) {
     GoogleSheetsConverter.prototype.parse = function (options, eventDetail) {
         var _a;
         var converter = this, parseOptions = merge(converter.options, options);
-        var columns = (((_a = parseOptions.json) === null || _a === void 0 ? void 0 : _a.values) || []).map(function (column) { return column.slice(); });
-        if (columns.length === 0) {
-            return false;
+        var columnsArray = (((_a = parseOptions.json) === null || _a === void 0 ? void 0 : _a.values) || []).map(function (column) { return column.slice(); });
+        if (columnsArray.length === 0) {
+            return {};
         }
         converter.header = [];
-        converter.columns = [];
         converter.emit({
             type: 'parse',
-            columns: converter.columns,
+            columns: [],
             detail: eventDetail,
             headers: converter.header
         });
         // If beforeParse is defined, use it to modify the data
         var beforeParse = parseOptions.beforeParse, json = parseOptions.json;
         if (beforeParse && json) {
-            columns = beforeParse(json.values);
+            columnsArray = beforeParse(json.values);
         }
         var column;
-        converter.columns = columns;
-        for (var i = 0, iEnd = columns.length; i < iEnd; i++) {
-            column = columns[i];
+        for (var i = 0, iEnd = columnsArray.length; i < iEnd; i++) {
+            column = columnsArray[i];
             converter.header[i] = (parseOptions.firstRowAsNames ?
                 "".concat(column.shift()) :
                 uniqueKey());
             for (var j = 0, jEnd = column.length; j < jEnd; ++j) {
-                if (column[j] && typeof column[j] === 'string') {
-                    var cellValue = converter.asGuessedType(column[j]);
-                    if (cellValue instanceof Date) {
-                        cellValue = cellValue.getTime();
-                    }
-                    converter.columns[i][j] = cellValue;
+                var cellValue = column[j];
+                if (isDateObject(cellValue)) {
+                    cellValue = cellValue.getTime();
                 }
+                columnsArray[i][j] = cellValue;
             }
         }
         converter.emit({
             type: 'afterParse',
-            columns: converter.columns,
+            columns: columnsArray,
             detail: eventDetail,
             headers: converter.header
         });
-    };
-    /**
-     * Handles converting the parsed data to a table.
-     *
-     * @return {DataTable}
-     * Table from the parsed Google Sheet
-     */
-    GoogleSheetsConverter.prototype.getTable = function () {
-        return DataConverter.getTableFromColumns(this.columns, this.header);
+        return DataConverterUtils.getColumnsCollection(columnsArray, converter.header);
     };
     /* *
      *
@@ -163,3 +152,13 @@ DataConverter.registerType('GoogleSheets', GoogleSheetsConverter);
  *
  * */
 export default GoogleSheetsConverter;
+/**
+ * Check if a value is a Date object
+ *
+ * @param {unknown} value to verify
+ * @return {boolean}
+ * True if the value is a Date object, false otherwise.
+ */
+function isDateObject(value) {
+    return Object.prototype.toString.call(value) === '[object Date]';
+}

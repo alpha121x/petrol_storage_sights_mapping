@@ -1,10 +1,11 @@
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -22,7 +23,6 @@ var destroyObjectProperties = U.destroyObjectProperties, fireEvent = U.fireEvent
 /**
  * The class for stacks. Each stack, on a specific X value and either negative
  * or positive, has its own stack item.
- * @private
  */
 var StackItem = /** @class */ (function () {
     /* *
@@ -30,6 +30,7 @@ var StackItem = /** @class */ (function () {
      *  Constructor
      *
      * */
+    /** @internal */
     function StackItem(axis, options, negativeValue, x, stackOption) {
         var inverted = axis.chart.inverted, reversed = axis.reversed;
         this.axis = axis;
@@ -72,15 +73,13 @@ var StackItem = /** @class */ (function () {
      *  Functions
      *
      * */
-    /**
-     * @private
-     */
+    /** @internal */
     StackItem.prototype.destroy = function () {
         destroyObjectProperties(this, this.axis);
     };
     /**
      * Renders the stack total label and adds it to the stack label group.
-     * @private
+     * @internal
      */
     StackItem.prototype.render = function (group) {
         var chart = this.axis.chart, options = this.options, formatOption = options.format, 
@@ -121,7 +120,7 @@ var StackItem = /** @class */ (function () {
     /**
      * Sets the offset that the stack has from the x value and repositions the
      * label.
-     * @private
+     * @internal
      */
     StackItem.prototype.setOffset = function (xOffset, width, boxBottom, boxTop, defaultX, xAxis) {
         var _a = this, alignOptions = _a.alignOptions, axis = _a.axis, label = _a.label, options = _a.options, textAlign = _a.textAlign, chart = axis.chart, stackBox = this.getStackBox({
@@ -186,8 +185,10 @@ var StackItem = /** @class */ (function () {
      * Adjust the stack BBox position, to take into consideration the alignment
      * of the dataLabel. This is necessary to make the stackDataLabel work with
      * core methods like `SVGLabel.adjust` and `Series.justifyDataLabel`.
+     * @internal
      * @param AdjustStackPositionProps
-     * @return {{x: number, y: number}} Adjusted BBox position of the stack.
+     * @return {{x: number, y: number}}
+     * Adjusted BBox position of the stack.
      */
     StackItem.prototype.adjustStackPosition = function (_a) {
         var labelBox = _a.labelBox, verticalAlign = _a.verticalAlign, textAlign = _a.textAlign;
@@ -199,9 +200,10 @@ var StackItem = /** @class */ (function () {
     };
     /**
      * Get the bbox of the stack.
-     * @private
+     * @internal
      * @function Highcharts.StackItem#getStackBox
-     * @return {BBoxObject} The x, y, height, width of the stack.
+     * @return {BBoxObject}
+     * The x, y, height, width of the stack.
      */
     StackItem.prototype.getStackBox = function (stackBoxProps) {
         var stackItem = this, axis = this.axis, chart = axis.chart, boxTop = stackBoxProps.boxTop, defaultX = stackBoxProps.defaultX, xOffset = stackBoxProps.xOffset, width = stackBoxProps.width, boxBottom = stackBoxProps.boxBottom, totalStackValue = axis.stacking.usePercentage ?

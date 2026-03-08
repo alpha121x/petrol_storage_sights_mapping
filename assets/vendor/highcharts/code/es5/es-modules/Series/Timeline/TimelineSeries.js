@@ -2,13 +2,13 @@
  *
  *  Timeline Series.
  *
- *  (c) 2010-2025 Highsoft AS
+ *  (c) 2010-2026 Highsoft AS
  *
  *  Author: Daniel Studencki
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -221,6 +221,7 @@ var TimelineSeries = /** @class */ (function (_super) {
         }));
     };
     TimelineSeries.prototype.markerAttribs = function (point, state) {
+        var _a, _b;
         var series = this, seriesMarkerOptions = series.options.marker, pointMarkerOptions = point.marker || {}, symbol = (pointMarkerOptions.symbol || seriesMarkerOptions.symbol), width = pick(pointMarkerOptions.width, seriesMarkerOptions.width, series.closestPointRangePx), height = pick(pointMarkerOptions.height, seriesMarkerOptions.height);
         var seriesStateOptions, pointStateOptions, radius = 0;
         // Call default markerAttribs method, when the xAxis type
@@ -230,13 +231,11 @@ var TimelineSeries = /** @class */ (function (_super) {
         }
         // Handle hover and select states
         if (state) {
-            seriesStateOptions =
-                seriesMarkerOptions.states[state] || {};
-            pointStateOptions = pointMarkerOptions.states &&
-                pointMarkerOptions.states[state] || {};
-            radius = pick(pointStateOptions.radius, seriesStateOptions.radius, radius + (seriesStateOptions.radiusPlus || 0));
+            seriesStateOptions = (_a = seriesMarkerOptions.states) === null || _a === void 0 ? void 0 : _a[state];
+            pointStateOptions = (_b = pointMarkerOptions.states) === null || _b === void 0 ? void 0 : _b[state];
+            radius = pick(pointStateOptions === null || pointStateOptions === void 0 ? void 0 : pointStateOptions.radius, seriesStateOptions === null || seriesStateOptions === void 0 ? void 0 : seriesStateOptions.radius, radius + ((seriesStateOptions === null || seriesStateOptions === void 0 ? void 0 : seriesStateOptions.radiusPlus) || 0));
         }
-        point.hasImage = (symbol && symbol.indexOf('url') === 0);
+        point.hasImage = !!(symbol && symbol.indexOf('url') === 0);
         var attribs = {
             x: Math.floor(point.plotX) - (width / 2) - (radius / 2),
             y: point.plotY - (height / 2) - (radius / 2),

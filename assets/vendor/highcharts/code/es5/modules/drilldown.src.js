@@ -1,14 +1,16 @@
+// SPDX-License-Identifier: LicenseRef-Highcharts
 /**
- * @license Highcharts JS v12.3.0 (2025-06-21)
+ * @license Highcharts JS v12.5.0 (2026-01-12)
  * @module highcharts/modules/drilldown
  * @requires highcharts
  *
  * Highcharts Drilldown module
  *
- * (c) 2009-2025 Torstein Honsi
+ * (c) 2009-2026 Highsoft AS
  *
  * Author: Torstein Honsi
- * License: www.highcharts.com/license
+ * A commercial license may be required depending on use.
+ * See www.highcharts.com/license
  *
  */
 (function webpackUniversalModuleDefinition(root, factory) {
@@ -113,9 +115,9 @@ var highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default 
  *
  *  Authors: Grzegorz Blachlinski, Karol Kolodziej
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -129,10 +131,10 @@ var highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default 
  */
 var lang = {
     /**
+     * The text for the main breadcrumb.
+     *
      * @since   10.0.0
      * @product highcharts highmaps
-     *
-     * @private
      */
     mainBreadcrumb: 'Main'
 };
@@ -147,6 +149,13 @@ var lang = {
  * @optionparent navigation.breadcrumbs
  */
 var options = {
+    /**
+     * The default padding for each button and separator in each direction.
+     *
+     * @type  {number}
+     * @since 10.0.0
+     */
+    buttonSpacing: 5,
     /**
      * A collection of attributes for the buttons. The object takes SVG
      * attributes like `fill`, `stroke`, `stroke-width`, as well as `style`,
@@ -184,13 +193,6 @@ var options = {
             color: "#334eff" /* Palette.highlightColor80 */
         }
     },
-    /**
-     * The default padding for each button and separator in each direction.
-     *
-     * @type  {number}
-     * @since 10.0.0
-     */
-    buttonSpacing: 5,
     /**
      * Fires when clicking on the breadcrumbs button. Two arguments are
      * passed to the function. First breadcrumb button as an SVG element.
@@ -320,6 +322,7 @@ var options = {
          *
          * In styled mode, the breadcrumbs separators are styled by the
          * `.highcharts-separator` rule with its different states.
+         *
          *  @type  {Highcharts.CSSObject}
          *  @since 10.0.0
          */
@@ -369,10 +372,12 @@ var options = {
  *  Default Export
  *
  * */
+/** @internal */
 var BreadcrumbsDefaults = {
     lang: lang,
     options: options
 };
+/** @internal */
 /* harmony default export */ var Breadcrumbs_BreadcrumbsDefaults = (BreadcrumbsDefaults);
 
 // EXTERNAL MODULE: external {"amd":["highcharts/highcharts","Templating"],"commonjs":["highcharts","Templating"],"commonjs2":["highcharts","Templating"],"root":["Highcharts","Templating"]}
@@ -385,9 +390,9 @@ var highcharts_Templating_commonjs_highcharts_Templating_commonjs2_highcharts_Te
  *
  *  Authors: Grzegorz Blachlinski, Karol Kolodziej
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -405,7 +410,7 @@ var addEvent = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcha
  * */
 /**
  * Shift the drillUpButton to make the space for resetZoomButton, #8095.
- * @private
+ * @internal
  */
 function onChartAfterShowResetZoom() {
     var chart = this;
@@ -422,7 +427,7 @@ function onChartAfterShowResetZoom() {
 }
 /**
  * Remove resize/afterSetExtremes at chart destroy.
- * @private
+ * @internal
  */
 function onChartDestroy() {
     if (this.breadcrumbs) {
@@ -432,7 +437,7 @@ function onChartDestroy() {
 }
 /**
  * Logic for making space for the buttons above the plot area
- * @private
+ * @internal
  */
 function onChartGetMargins() {
     var breadcrumbs = this.breadcrumbs;
@@ -458,15 +463,13 @@ function onChartGetMargins() {
         }
     }
 }
-/**
- * @private
- */
+/** @internal */
 function onChartRedraw() {
     this.breadcrumbs && this.breadcrumbs.redraw();
 }
 /**
  * After zooming out, shift the drillUpButton to the previous position, #8095.
- * @private
+ * @internal
  */
 function onChartSelection(event) {
     if (event.resetSelection === true &&
@@ -482,7 +485,7 @@ function onChartSelection(event) {
 /**
  * The Breadcrumbs class
  *
- * @private
+ * @internal
  * @class
  * @name Highcharts.Breadcrumbs
  *
@@ -545,12 +548,6 @@ var Breadcrumbs = /** @class */ (function () {
     };
     /**
      * Set breadcrumbs list.
-     * @function Highcharts.Breadcrumbs#setList
-     *
-     * @param {Highcharts.Breadcrumbs} this
-     *        Breadcrumbs class.
-     * @param {Highcharts.BreadcrumbsOptions} list
-     *        Breadcrumbs list.
      */
     Breadcrumbs.prototype.setList = function (list) {
         this.list = list;
@@ -761,10 +758,7 @@ var Breadcrumbs = /** @class */ (function () {
             breadcrumbsOptions = breadcrumbs.options,
             buttonTheme = merge(breadcrumbsOptions.buttonTheme);
         var button = chart.renderer
-                .button(breadcrumbs.getButtonText(breadcrumb),
-            posX,
-            posY,
-            function (e) {
+                .button(breadcrumbs.getButtonText(breadcrumb), posX, posY, function (e /* @todo (Event|any) */) {
                 // Extract events from button object and call
                 var buttonEvents = breadcrumbsOptions.events &&
                     breadcrumbsOptions.events.click;
@@ -825,17 +819,6 @@ var Breadcrumbs = /** @class */ (function () {
         }
         return separator;
     };
-    /**
-     * Update.
-     * @function Highcharts.Breadcrumbs#update
-     *
-     * @param {Highcharts.Breadcrumbs} this
-     *        Breadcrumbs class.
-     * @param {Highcharts.BreadcrumbsOptions} options
-     *        Breadcrumbs class.
-     * @param {boolean} redraw
-     *        Redraw flag
-     */
     Breadcrumbs.prototype.update = function (options) {
         merge(true, this.options, options);
         this.destroy();
@@ -1020,6 +1003,7 @@ var Breadcrumbs = /** @class */ (function () {
  *  Default Export
  *
  * */
+/** @internal */
 /* harmony default export */ var Breadcrumbs_Breadcrumbs = (Breadcrumbs);
 /* *
  *
@@ -1093,16 +1077,6 @@ var Breadcrumbs = /** @class */ (function () {
  * @name Highcharts.BreadcrumbsAlignOptions#y
  * @type {number}
  */
-/**
- * Options for all breadcrumbs.
- *
- * @interface Highcharts.BreadcrumbsOptions
- */
-/**
- * Button theme.
- * @name Highcharts.BreadcrumbsOptions#buttonTheme
- * @type { SVGAttributes | undefined }
- */
 (''); // Keeps doclets above in JS file
 
 ;// ./code/es5/es-modules/Extensions/Drilldown/DrilldownDefaults.js
@@ -1112,9 +1086,9 @@ var Breadcrumbs = /** @class */ (function () {
  *
  *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -1127,17 +1101,13 @@ var Breadcrumbs = /** @class */ (function () {
  * Options for drill down, the concept of inspecting increasingly high
  * resolution data through clicking on chart items like columns or pie slices.
  *
- * The drilldown feature requires the drilldown.js file to be loaded,
- * found in the modules directory of the download package, or online at
- * [code.highcharts.com/modules/drilldown.js
- * ](https://code.highcharts.com/modules/drilldown.js).
- *
  * @sample {highcharts} highcharts/series-organization/drilldown
  *         Organization chart drilldown
  *
  * @product      highcharts highmaps
  * @requires     modules/drilldown
  * @optionparent drilldown
+ * @internal
  */
 var DrilldownDefaults = {
     /**
@@ -1274,6 +1244,7 @@ var DrilldownDefaults = {
          * @type       {Highcharts.ButtonRelativeToValue}
          * @default    plotBox
          * @since      3.0.8
+         * @deprecated 9.3.2
          * @product    highcharts highmaps
          * @apioption  drilldown.drillUpButton.relativeTo
          */
@@ -1294,6 +1265,7 @@ var DrilldownDefaults = {
          *
          * @type      {Object}
          * @since     3.0.8
+         * @deprecated 9.3.2
          * @product   highcharts highmaps
          * @apioption drilldown.drillUpButton.theme
          */
@@ -1303,6 +1275,7 @@ var DrilldownDefaults = {
          *
          * @type    {Highcharts.AlignObject}
          * @since   3.0.8
+         * @deprecated 9.3.2
          * @product highcharts highmaps
          */
         position: {
@@ -1310,6 +1283,7 @@ var DrilldownDefaults = {
              * Vertical alignment of the button.
              *
              * @type      {Highcharts.VerticalAlignValue}
+             * @deprecated 9.3.2
              * @default   top
              * @product   highcharts highmaps
              * @apioption drilldown.drillUpButton.position.verticalAlign
@@ -1318,14 +1292,19 @@ var DrilldownDefaults = {
              * Horizontal alignment.
              *
              * @type {Highcharts.AlignValue}
+             * @deprecated 9.3.2
              */
             align: 'right',
             /**
              * The X offset of the button.
+             *
+             * @deprecated 9.3.2
              */
             x: -10,
             /**
              * The Y offset of the button.
+             *
+             * @deprecated 9.3.2
              */
             y: 10
         }
@@ -1431,6 +1410,7 @@ var DrilldownDefaults = {
  *  Default Export
  *
  * */
+/** @internal */
 /* harmony default export */ var Drilldown_DrilldownDefaults = (DrilldownDefaults);
 
 ;// ./code/es5/es-modules/Extensions/Drilldown/DrilldownSeries.js
@@ -1440,9 +1420,9 @@ var DrilldownDefaults = {
  *
  *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -1455,24 +1435,26 @@ var DrilldownSeries_addEvent = (highcharts_commonjs_highcharts_commonjs2_highcha
  *  Functions
  *
  * */
-/** @private */
+/** @internal */
 function applyCursorCSS(element, cursor, addClass, styledMode) {
     element[addClass ? 'addClass' : 'removeClass']('highcharts-drilldown-point');
     if (!styledMode) {
         element.css({ cursor: cursor });
     }
 }
-/** @private */
+/** @internal */
 function columnAnimateDrilldown(init) {
+    var _a,
+        _b;
     var series = this,
         chart = series.chart,
         drilldownLevels = chart.drilldownLevels,
-        animationOptions = animObject((chart.options.drilldown || {}).animation),
-        xAxis = this.xAxis,
-        styledMode = chart.styledMode;
+        styledMode = chart.styledMode,
+        animationOptions = animObject((_a = chart.options.drilldown) === null || _a === void 0 ? void 0 : _a.animation),
+        xAxis = this.xAxis;
     if (!init) {
         var animateFrom_1;
-        (drilldownLevels || []).forEach(function (level) {
+        drilldownLevels === null || drilldownLevels === void 0 ? void 0 : drilldownLevels.forEach(function (level) {
             if (series.options._ddSeriesId ===
                 level.lowerSeriesOptions._ddSeriesId) {
                 animateFrom_1 = level.shapeArgs;
@@ -1495,9 +1477,7 @@ function columnAnimateDrilldown(init) {
                     .animate(DrilldownSeries_extend(point.shapeArgs, { fill: point.color || series.color }), animationOptions);
             }
         });
-        if (chart.drilldown) {
-            chart.drilldown.fadeInGroup(this.dataLabelsGroup);
-        }
+        (_b = this.dataLabelsGroups) === null || _b === void 0 ? void 0 : _b.forEach(function (g) { var _a; return (_a = chart.drilldown) === null || _a === void 0 ? void 0 : _a.fadeInGroup(g); });
         // Reset to prototype
         delete this.animate;
     }
@@ -1506,20 +1486,27 @@ function columnAnimateDrilldown(init) {
  * When drilling up, pull out the individual point graphics from the lower
  * series and animate them into the origin point in the upper series.
  *
- * @private
+ * @internal
  * @function Highcharts.ColumnSeries#animateDrillupFrom
  * @param {Highcharts.DrilldownLevelObject} level
  *        Level container
  * @return {void}
  */
 function columnAnimateDrillupFrom(level) {
+    var _a;
     var series = this,
         animationOptions = animObject((series.chart.options.drilldown || {}).animation);
     // Cancel mouse events on the series group (#2787)
-    (series.trackerGroups || []).forEach(function (key) {
-        // We don't always have dataLabelsGroup
-        if (series[key]) {
-            series[key].on('mouseover');
+    (_a = series.trackerGroups) === null || _a === void 0 ? void 0 : _a.forEach(function (key) {
+        var _a,
+            _b;
+        if (key === 'dataLabelsGroup') {
+            (_a = series.dataLabelsGroups) === null || _a === void 0 ? void 0 : _a.forEach(function (g) {
+                g === null || g === void 0 ? void 0 : g.on('mouseover', function () { });
+            });
+        }
+        else {
+            (_b = series[key]) === null || _b === void 0 ? void 0 : _b.on('mouseover');
         }
     });
     var group = series.group;
@@ -1557,7 +1544,7 @@ function columnAnimateDrillupFrom(level) {
  * When drilling up, keep the upper series invisible until the lower series has
  * moved into place.
  *
- * @private
+ * @internal
  * @function Highcharts.ColumnSeries#animateDrillupTo
  * @param {boolean} [init=false]
  * Whether to initialize animation
@@ -1614,7 +1601,7 @@ function columnAnimateDrillupTo(init) {
         delete this.animate;
     }
 }
-/** @private */
+/** @internal */
 function compose(SeriesClass, seriesTypes) {
     var PointClass = SeriesClass.prototype.pointClass,
         pointProto = PointClass.prototype;
@@ -1651,22 +1638,21 @@ function compose(SeriesClass, seriesTypes) {
 }
 /**
  * Animate in the new series.
- * @private
+ * @internal
  */
 function mapAnimateDrilldown(init) {
+    var _a,
+        _b;
     var series = this,
         chart = series.chart,
         group = series.group;
     if (chart &&
         group &&
         series.options &&
-        chart.options.drilldown &&
-        chart.options.drilldown.animation) {
+        ((_a = chart.options.drilldown) === null || _a === void 0 ? void 0 : _a.animation)) {
         // Initialize the animation
         if (init && chart.mapView) {
-            group.attr({
-                opacity: 0.01
-            });
+            group.attr({ opacity: 0.01 });
             chart.mapView.allowTransformAnimation = false;
             // Stop duplicating and overriding animations
             series.options.inactiveOtherPoints = true;
@@ -1674,19 +1660,14 @@ function mapAnimateDrilldown(init) {
             // Run the animation
         }
         else {
-            group.animate({
-                opacity: 1
-            }, chart.options.drilldown.animation, function () {
+            group.animate({ opacity: 1 }, chart.options.drilldown.animation, function () {
+                var _a;
                 if (series.options) {
                     series.options.inactiveOtherPoints = false;
-                    series.options.enableMouseTracking =
-                        DrilldownSeries_pick((series.userOptions &&
-                            series.userOptions.enableMouseTracking), true);
+                    series.options.enableMouseTracking = DrilldownSeries_pick((_a = series.userOptions) === null || _a === void 0 ? void 0 : _a.enableMouseTracking, true);
                 }
             });
-            if (chart.drilldown) {
-                chart.drilldown.fadeInGroup(this.dataLabelsGroup);
-            }
+            (_b = series.dataLabelsGroups) === null || _b === void 0 ? void 0 : _b.forEach(function (g) { var _a; return (_a = chart.drilldown) === null || _a === void 0 ? void 0 : _a.fadeInGroup(g); });
         }
     }
 }
@@ -1694,12 +1675,12 @@ function mapAnimateDrilldown(init) {
  * When drilling up, pull out the individual point graphics from the
  * lower series and animate them into the origin point in the upper
  * series.
- * @private
+ * @internal
  */
 function mapAnimateDrillupFrom() {
     var series = this,
         chart = series.chart;
-    if (chart && chart.mapView) {
+    if (chart === null || chart === void 0 ? void 0 : chart.mapView) {
         chart.mapView.allowTransformAnimation = false;
     }
     // Stop duplicating and overriding animations
@@ -1710,9 +1691,10 @@ function mapAnimateDrillupFrom() {
 /**
  * When drilling up, keep the upper series invisible until the lower
  * series has moved into place.
- * @private
+ * @internal
  */
 function mapAnimateDrillupTo(init) {
+    var _a;
     var series = this,
         chart = series.chart,
         group = series.group;
@@ -1730,16 +1712,14 @@ function mapAnimateDrillupTo(init) {
         }
         else {
             group.animate({ opacity: 1 }, (chart.options.drilldown || {}).animation);
-            if (chart.drilldown) {
-                chart.drilldown.fadeInGroup(series.dataLabelsGroup);
-            }
+            (_a = series.dataLabelsGroups) === null || _a === void 0 ? void 0 : _a.forEach(function (g) { var _a; return (_a = chart.drilldown) === null || _a === void 0 ? void 0 : _a.fadeInGroup(g); });
         }
     }
 }
 /**
  * On initialization of each point, identify its label and make it clickable.
  * Also, provide a list of points associated to that label.
- * @private
+ * @internal
  */
 function onPointAfterInit() {
     var point = this;
@@ -1749,7 +1729,7 @@ function onPointAfterInit() {
     }
     return point;
 }
-/** @private */
+/** @internal */
 function onPointAfterSetState() {
     var point = this,
         series = point.series,
@@ -1761,7 +1741,7 @@ function onPointAfterSetState() {
         applyCursorCSS(series.halo, 'auto', false, styledMode);
     }
 }
-/** @private */
+/** @internal */
 function onPointClick(e) {
     var point = this,
         series = point.series;
@@ -1775,7 +1755,7 @@ function onPointClick(e) {
         point.runDrilldown(void 0, void 0, e);
     }
 }
-/** @private */
+/** @internal */
 function onPointUpdate(e) {
     var point = this,
         options = e.options || {};
@@ -1789,7 +1769,7 @@ function onPointUpdate(e) {
         point.unbindDrilldownClick = point.unbindDrilldownClick();
     }
 }
-/** @private */
+/** @internal */
 function onSeriesAfterDrawDataLabels() {
     var series = this,
         chart = series.chart,
@@ -1820,7 +1800,7 @@ function onSeriesAfterDrawDataLabels() {
 }
 /**
  * Mark the trackers with a pointer.
- * @private
+ * @internal
  */
 function onSeriesAfterDrawTracker() {
     var series = this,
@@ -1832,8 +1812,9 @@ function onSeriesAfterDrawTracker() {
         }
     }
 }
-/** @private */
+/** @internal */
 function pieAnimateDrilldown(init) {
+    var _a;
     var series = this,
         chart = series.chart,
         points = series.points,
@@ -1866,9 +1847,7 @@ function pieAnimateDrilldown(init) {
                     }))[animationOptions ? 'animate' : 'attr'](animateTo, animationOptions);
                 }
             }
-            if (chart.drilldown) {
-                chart.drilldown.fadeInGroup(series.dataLabelsGroup);
-            }
+            (_a = series.dataLabelsGroups) === null || _a === void 0 ? void 0 : _a.forEach(function (g) { var _a; return (_a = chart.drilldown) === null || _a === void 0 ? void 0 : _a.fadeInGroup(g); });
             // Reset to prototype
             delete series.animate;
         }
@@ -1885,13 +1864,13 @@ function pieAnimateDrilldown(init) {
  *
  * @function Highcharts.Point#doDrilldown
  *
- * @sample {highcharts} highcharts/drilldown/programmatic
+ * @sample highcharts/drilldown/programmatic
  *         Programmatic drilldown
  */
 function pointDoDrilldown() {
     this.runDrilldown();
 }
-/** @private */
+/** @internal */
 function pointRunDrilldown(holdRedraw, category, originalEvent) {
     var point = this,
         series = point.series,
@@ -1923,7 +1902,8 @@ function pointRunDrilldown(holdRedraw, category, originalEvent) {
         points: (typeof category !== 'undefined' &&
             series.xAxis.getDDPoints(category).slice(0))
     }, function (e) {
-        var chart = e.point.series && e.point.series.chart,
+        var _a;
+        var chart = (_a = e.point.series) === null || _a === void 0 ? void 0 : _a.chart,
             seriesOptions = e.seriesOptions;
         if (chart && seriesOptions) {
             if (holdRedraw) {
@@ -1940,9 +1920,11 @@ function pointRunDrilldown(holdRedraw, category, originalEvent) {
  *  Default Export
  *
  * */
+/** @internal */
 var DrilldownSeries = {
     compose: compose
 };
+/** @internal */
 /* harmony default export */ var Drilldown_DrilldownSeries = (DrilldownSeries);
 
 ;// ./code/es5/es-modules/Extensions/Drilldown/Drilldown.js
@@ -1952,9 +1934,9 @@ var DrilldownSeries = {
  *
  *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -1987,13 +1969,15 @@ var ddSeriesId = 1;
  *
  * @function Highcharts.Axis#drilldownCategory
  *
- * @sample {highcharts} highcharts/drilldown/programmatic
+ * @sample highcharts/drilldown/programmatic
  *         Programmatic drilldown
  *
  * @param {number} x
  *        The index of the category
  * @param {global.MouseEvent} [originalEvent]
  *        The original event, used internally.
+ *
+ * @requires modules/drilldown
  */
 function axisDrilldownCategory(x, originalEvent) {
     this.getDDPoints(x).forEach(function (point) {
@@ -2009,7 +1993,7 @@ function axisDrilldownCategory(x, originalEvent) {
 /**
  * Return drillable points for this specific X value.
  *
- * @private
+ * @internal
  * @function Highcharts.Axis#getDDPoints
  * @param {number} x
  *        Tick position
@@ -2023,7 +2007,7 @@ function axisGetDDPoints(x) {
  * This method creates an array of arrays containing a level number
  * with the corresponding series/point.
  *
- * @private
+ * @internal
  * @param {Highcharts.Chart} chart
  *        Highcharts Chart object.
  * @return {Array<Breadcrumbs.BreadcrumbOptions>}
@@ -2064,9 +2048,7 @@ function createBreadcrumbsList(chart) {
  *  Class
  *
  * */
-/**
- * @private
- */
+/** @internal */
 var ChartAdditions = /** @class */ (function () {
     /* *
      *
@@ -2099,6 +2081,8 @@ var ChartAdditions = /** @class */ (function () {
      *
      * @param {Highcharts.SeriesOptionsType} options
      * The series options for the new, detailed series.
+     *
+     * @requires modules/drilldown
      */
     ChartAdditions.prototype.addSeriesAsDrilldown = function (point, options) {
         var chart = (this.chart ||
@@ -2112,8 +2096,8 @@ var ChartAdditions = /** @class */ (function () {
                 // Stop duplicating and overriding animations
                 series.options.inactiveOtherPoints = true;
                 // Hide and disable dataLabels
-                (_a = series.dataLabelsGroup) === null || _a === void 0 ? void 0 : _a.destroy();
-                delete series.dataLabelsGroup;
+                (_a = series.dataLabelsGroups) === null || _a === void 0 ? void 0 : _a.forEach(function (g) { return g === null || g === void 0 ? void 0 : g.destroy(); });
+                series.dataLabelsGroups = [];
             });
             // #18925 map zooming is not working with geoJSON maps
             if (chart.options.drilldown &&
@@ -2164,7 +2148,7 @@ var ChartAdditions = /** @class */ (function () {
             chart.applyDrilldown();
         }
     };
-    /** @private */
+    /** @internal */
     ChartAdditions.prototype.addSingleSeriesAsDrilldown = function (point, ddOptions) {
         var chart = (this.chart ||
                 this),
@@ -2357,14 +2341,15 @@ var ChartAdditions = /** @class */ (function () {
      * When the chart is drilled down to a child series, calling
      * `chart.drillUp()` will drill up to the parent series.
      *
-     * @requires  modules/drilldown
-     *
      * @function Highcharts.Chart#drillUp
      *
-     * @sample {highcharts} highcharts/drilldown/programmatic
+     * @sample highcharts/drilldown/programmatic
      *         Programmatic drilldown
+     *
+     * @requires modules/drilldown
      */
     ChartAdditions.prototype.drillUp = function (isMultipleDrillUp) {
+        var _a;
         var chart = (this.chart ||
                 this);
         if (!chart.drilldownLevels || chart.drilldownLevels.length === 0) {
@@ -2494,10 +2479,10 @@ var ChartAdditions = /** @class */ (function () {
                     }
                     else {
                         // Hide and disable dataLabels
-                        if (oldSeries.dataLabelsGroup) {
-                            oldSeries.dataLabelsGroup.destroy();
-                            delete oldSeries.dataLabelsGroup;
-                        }
+                        (_a = oldSeries.dataLabelsGroups) === null || _a === void 0 ? void 0 : _a.forEach(function (g) {
+                            g === null || g === void 0 ? void 0 : g.destroy();
+                        });
+                        oldSeries.dataLabelsGroups = [];
                         if (chart.mapView && newSeries) {
                             if (zoomingDrill) {
                                 // Stop hovering while drilling down
@@ -2573,7 +2558,7 @@ var ChartAdditions = /** @class */ (function () {
      *
      * @requires modules/drilldown
      *
-     * @private
+     * @internal
      * @param {SVGElement} [group]
      *        The SVG element to be faded in.
      */
@@ -2592,7 +2577,7 @@ var ChartAdditions = /** @class */ (function () {
     };
     /**
      * Update function to be called internally from Chart.update (#7600, #12855)
-     * @private
+     * @internal
      */
     ChartAdditions.prototype.update = function (options, redraw) {
         var chart = this.chart;
@@ -2620,7 +2605,7 @@ var Drilldown;
      *  Functions
      *
      * */
-    /** @private */
+    /** @internal */
     function compose(AxisClass, ChartClass, highchartsDefaultOptions, SeriesClass, seriesTypes, SVGRendererClass, TickClass) {
         Drilldown_DrilldownSeries.compose(SeriesClass, seriesTypes);
         var DrilldownChart = ChartClass,
@@ -2653,7 +2638,7 @@ var Drilldown;
         }
     }
     Drilldown.compose = compose;
-    /** @private */
+    /** @internal */
     function onBreadcrumbsUp(e) {
         var chart = this.chart,
             drillUpsNumber = this.getLevel() - e.newLevel;
@@ -2665,7 +2650,7 @@ var Drilldown;
             chart.drillUp(isMultipleDrillUp);
         }
     }
-    /** @private */
+    /** @internal */
     function onChartAfterDrilldown() {
         var chart = this,
             drilldownOptions = chart.options.drilldown,
@@ -2675,7 +2660,7 @@ var Drilldown;
         }
         chart.breadcrumbs.updateProperties(createBreadcrumbsList(chart));
     }
-    /** @private */
+    /** @internal */
     function onChartAfterDrillUp() {
         var chart = this;
         if (chart.breadcrumbs) {
@@ -2685,26 +2670,26 @@ var Drilldown;
     /**
      * Add update function to be called internally from Chart.update (#7600,
      * #12855)
-     * @private
+     * @internal
      */
     function onChartAfterInit() {
         this.drilldown = new ChartAdditions(this);
     }
-    /** @private */
+    /** @internal */
     function onChartDrillup() {
         var chart = this;
         if (chart.resetZoomButton) {
             chart.resetZoomButton = chart.resetZoomButton.destroy();
         }
     }
-    /** @private */
+    /** @internal */
     function onChartDrillupall() {
         var chart = this;
         if (chart.resetZoomButton) {
             chart.showResetZoom();
         }
     }
-    /** @private */
+    /** @internal */
     function onChartRender() {
         (this.xAxis || []).forEach(function (axis) {
             axis.ddPoints = {};
@@ -2736,7 +2721,7 @@ var Drilldown;
             Drilldown_objectEach(axis.ticks, function (tick) { return tick.drillable(); });
         });
     }
-    /** @private */
+    /** @internal */
     function onChartUpdate(e) {
         var breadcrumbs = this.breadcrumbs,
             breadcrumbOptions = e.options.drilldown && e.options.drilldown.breadcrumbs;
@@ -2769,7 +2754,7 @@ var Drilldown;
     }
     /**
      * Make a tick label drillable, or remove drilling on update.
-     * @private
+     * @internal
      */
     function tickDrillable() {
         var pos = this.pos,
@@ -2847,7 +2832,7 @@ var Drilldown;
 * @name Highcharts.DrilldownEventObject#originalEvent
 * @type {global.Event|undefined}
 */ /**
-* Prevents the default behaviour of the event.
+* Prevents the default behavior of the event.
 * @name Highcharts.DrilldownEventObject#preventDefault
 * @type {Function}
 */ /**
@@ -2875,7 +2860,7 @@ var Drilldown;
 */
 /**
  * This gets fired after all the series have been drilled up. This is especially
- * usefull in a chart with multiple drilldown series.
+ * useful in a chart with multiple drilldown series.
  *
  * @callback Highcharts.DrillupAllCallbackFunction
  *
@@ -2890,7 +2875,7 @@ var Drilldown;
  *
  * @interface Highcharts.DrillupAllEventObject
  */ /**
-* Prevents the default behaviour of the event.
+* Prevents the default behavior of the event.
 * @name Highcharts.DrillupAllEventObject#preventDefault
 * @type {Function}
 */ /**
@@ -2918,7 +2903,7 @@ var Drilldown;
  *
  * @interface Highcharts.DrillupEventObject
  */ /**
-* Prevents the default behaviour of the event.
+* Prevents the default behavior of the event.
 * @name Highcharts.DrillupEventObject#preventDefault
 * @type {Function}
 */ /**

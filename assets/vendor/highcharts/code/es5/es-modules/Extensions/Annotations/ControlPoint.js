@@ -1,6 +1,5 @@
 /* *
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -62,7 +61,8 @@ var ControlPoint = /** @class */ (function (_super) {
         /**
          * List of events for `annotation.options.events` that should not be
          * added to `annotation.graphic` but to the `annotation`.
-         * @private
+         *
+         * @internal
          * @name Highcharts.AnnotationControlPoint#nonDOMEvents
          * @type {Array<string>}
          */
@@ -80,7 +80,7 @@ var ControlPoint = /** @class */ (function (_super) {
      * */
     /**
      * Destroy the control point.
-     * @private
+     * @internal
      */
     ControlPoint.prototype.destroy = function () {
         _super.prototype.destroy.call(this);
@@ -93,7 +93,8 @@ var ControlPoint = /** @class */ (function (_super) {
     };
     /**
      * Redraw the control point.
-     * @private
+     *
+     * @internal
      * @param {boolean} [animation]
      */
     ControlPoint.prototype.redraw = function (animation) {
@@ -101,7 +102,7 @@ var ControlPoint = /** @class */ (function (_super) {
     };
     /**
      * Render the control point.
-     * @private
+     * @internal
      */
     ControlPoint.prototype.render = function () {
         var chart = this.chart, options = this.options;

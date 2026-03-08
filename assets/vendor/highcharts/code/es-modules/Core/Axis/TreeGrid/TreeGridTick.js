@@ -1,33 +1,29 @@
 /* *
  *
- *  (c) 2016 Highsoft AS
+ *  (c) 2016-2026 Highsoft AS
  *  Authors: Jon Arild Nygard
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
 import U from '../../Utilities.js';
-const { addEvent, removeEvent, isObject, isNumber, pick, wrap } = U;
+const { addEvent, correctFloat, removeEvent, isObject, isNumber, pick, wrap } = U;
 /* *
  *
  *  Functions
  *
  * */
-/**
- * @private
- */
+/** @internal */
 function onTickInit() {
     const tick = this;
     if (!tick.treeGrid) {
         tick.treeGrid = new TreeGridTickAdditions(tick);
     }
 }
-/**
- * @private
- */
+/** @internal */
 function onTickHover(label) {
     label.addClass('highcharts-treegrid-node-active');
     if (!label.renderer.styledMode) {
@@ -36,9 +32,7 @@ function onTickHover(label) {
         });
     }
 }
-/**
- * @private
- */
+/** @internal */
 function onTickHoverExit(label, options) {
     const css = isObject(options.style) ? options.style : {};
     label.removeClass('highcharts-treegrid-node-active');
@@ -46,9 +40,7 @@ function onTickHoverExit(label, options) {
         label.css({ textDecoration: (css.textDecoration || 'none') });
     }
 }
-/**
- * @private
- */
+/** @internal */
 function renderLabelIcon(tick, params) {
     const treeGrid = tick.treeGrid, isNew = !treeGrid.labelIcon, renderer = params.renderer, labelBox = params.xy, options = params.options, width = options.width || 0, height = options.height || 0, padding = options.padding ?? tick.axis.linkedParent ? 0 : 5, iconCenter = {
         x: labelBox.x - (width / 2) - padding,
@@ -81,9 +73,7 @@ function renderLabelIcon(tick, params) {
         rotation: rotation
     });
 }
-/**
- * @private
- */
+/** @internal */
 function wrapGetLabelPosition(proceed, x, y, label, horiz, labelOptions, tickmarkOffset, index, step) {
     const tick = this, lbOptions = pick(tick.options?.labels, labelOptions), pos = tick.pos, axis = tick.axis, isTreeGrid = axis.type === 'treegrid', result = proceed.apply(tick, [x, y, label, horiz, lbOptions, tickmarkOffset, index, step]);
     let mapOfPosToGridNode, node, level;
@@ -104,9 +94,7 @@ function wrapGetLabelPosition(proceed, x, y, label, horiz, labelOptions, tickmar
     }
     return result;
 }
-/**
- * @private
- */
+/** @internal */
 function wrapRenderLabel(proceed) {
     const tick = this, { pos, axis, label, treeGrid: tickGrid, options: tickOptions } = tick, icon = tickGrid?.labelIcon, labelElement = label?.element, { treeGrid: axisGrid, options: axisOptions, chart, tickPositions } = axis, mapOfPosToGridNode = axisGrid.mapOfPosToGridNode, labelOptions = pick(tickOptions?.labels, axisOptions?.labels), symbolOptions = (labelOptions && isObject(labelOptions.symbol, true) ?
         labelOptions.symbol :
@@ -167,6 +155,7 @@ function wrapRenderLabel(proceed) {
         removeEvent(labelElement);
         label?.css({ cursor: 'default' });
         icon.destroy();
+        tickGrid.labelIcon = void 0;
     }
 }
 /* *
@@ -175,7 +164,7 @@ function wrapRenderLabel(proceed) {
  *
  * */
 /**
- * @private
+ * @internal
  * @class
  */
 class TreeGridTickAdditions {
@@ -184,9 +173,7 @@ class TreeGridTickAdditions {
      *  Static Functions
      *
      * */
-    /**
-     * @private
-     */
+    /** @internal */
     static compose(TickClass) {
         const tickProto = TickClass.prototype;
         if (!tickProto.toggleCollapse) {
@@ -210,9 +197,7 @@ class TreeGridTickAdditions {
      *  Constructors
      *
      * */
-    /**
-     * @private
-     */
+    /** @internal */
     constructor(tick) {
         this.tick = tick;
     }
@@ -226,7 +211,7 @@ class TreeGridTickAdditions {
      *
      * @see gantt/treegrid-axis/collapsed-dynamically/demo.js
      *
-     * @private
+     * @internal
      * @function Highcharts.Tick#collapse
      *
      * @param {boolean} [redraw=true]
@@ -234,30 +219,26 @@ class TreeGridTickAdditions {
      * {@link Highcharts.Chart#redraw}
      */
     collapse(redraw) {
-        const tick = this.tick, axis = tick.axis, brokenAxis = axis.brokenAxis;
-        if (brokenAxis &&
-            axis.treeGrid.mapOfPosToGridNode) {
-            const pos = tick.pos, node = axis.treeGrid.mapOfPosToGridNode[pos], breaks = axis.treeGrid.collapse(node);
-            brokenAxis.setBreaks(breaks, pick(redraw, true));
+        const { pos, axis } = this.tick, { treeGrid, brokenAxis } = axis, posMappedNodes = treeGrid.mapOfPosToGridNode;
+        if (brokenAxis && posMappedNodes) {
+            brokenAxis.setBreaks(treeGrid.collapse(posMappedNodes[pos]), redraw ?? true);
         }
     }
     /**
      * Destroy remaining labelIcon if exist.
      *
-     * @private
+     * @internal
      * @function Highcharts.Tick#destroy
      */
     destroy() {
-        if (this.labelIcon) {
-            this.labelIcon.destroy();
-        }
+        this.labelIcon?.destroy();
     }
     /**
      * Expand the grid cell. Used when axis is of type treegrid.
      *
      * @see gantt/treegrid-axis/collapsed-dynamically/demo.js
      *
-     * @private
+     * @internal
      * @function Highcharts.Tick#expand
      *
      * @param {boolean} [redraw=true]
@@ -267,8 +248,7 @@ class TreeGridTickAdditions {
     expand(redraw) {
         const { pos, axis } = this.tick, { treeGrid, brokenAxis } = axis, posMappedNodes = treeGrid.mapOfPosToGridNode;
         if (brokenAxis && posMappedNodes) {
-            const node = posMappedNodes[pos], breaks = treeGrid.expand(node);
-            brokenAxis.setBreaks(breaks, pick(redraw, true));
+            brokenAxis.setBreaks(treeGrid.expand(posMappedNodes[pos]), redraw ?? true);
         }
     }
     /**
@@ -277,19 +257,45 @@ class TreeGridTickAdditions {
      *
      * @see gantt/treegrid-axis/collapsed-dynamically/demo.js
      *
-     * @private
+     * @internal
      * @function Highcharts.Tick#toggleCollapse
      *
      * @param {boolean} [redraw=true]
      * Whether to redraw the chart or wait for an explicit call to
      * {@link Highcharts.Chart#redraw}
      */
-    toggleCollapse(redraw) {
-        const tick = this.tick, axis = tick.axis, brokenAxis = axis.brokenAxis;
-        if (brokenAxis &&
-            axis.treeGrid.mapOfPosToGridNode) {
-            const pos = tick.pos, node = axis.treeGrid.mapOfPosToGridNode[pos], breaks = axis.treeGrid.toggleCollapse(node);
-            brokenAxis.setBreaks(breaks, pick(redraw, true));
+    toggleCollapse(redraw = true) {
+        const { axis, pos } = this.tick, { brokenAxis, treeGrid } = axis;
+        if (brokenAxis && treeGrid.mapOfPosToGridNode) {
+            const scrollMode = !!(axis.scrollbar && axis.staticScale), maxPx = axis.pos + axis.len +
+                (treeGrid.pendingSizeAdjustment || 0);
+            treeGrid.pendingSizeAdjustment = 0;
+            brokenAxis.setBreaks(treeGrid.toggleCollapse(treeGrid.mapOfPosToGridNode[pos]), scrollMode && redraw);
+            if (scrollMode) {
+                const adjustedMax = axis.toValue(axis.toPixels(axis.dataMax));
+                let newMaxVal = axis.toValue(maxPx) - axis.tickmarkOffset, newMinVal = axis.userMin ?? axis.min;
+                // If dataMax is in a break.
+                treeGrid.adjustedMax = adjustedMax !== axis.dataMax ?
+                    adjustedMax - axis.tickmarkOffset :
+                    void 0;
+                if (newMaxVal > axis.dataMax) {
+                    let missingPx = maxPx -
+                        axis.toPixels(axis.dataMax + axis.tickmarkOffset);
+                    newMaxVal = treeGrid.adjustedMax ?? axis.dataMax;
+                    // Check if enough space available on the min end.
+                    newMinVal = axis.toValue(axis.toPixels(newMinVal - axis.tickmarkOffset) - missingPx) + axis.tickmarkOffset;
+                    if (newMinVal < axis.dataMin) {
+                        missingPx = axis.toPixels(axis.dataMin) -
+                            axis.toPixels(newMinVal);
+                        newMinVal = axis.dataMin;
+                        treeGrid.pendingSizeAdjustment = missingPx;
+                    }
+                }
+                axis.setExtremes(correctFloat(newMinVal), correctFloat(newMaxVal), false, false, { trigger: 'toggleCollapse' });
+            }
+            if (redraw) {
+                axis.chart.redraw();
+            }
         }
     }
 }
@@ -298,4 +304,5 @@ class TreeGridTickAdditions {
  *  Default Export
  *
  * */
+/** @internal */
 export default TreeGridTickAdditions;

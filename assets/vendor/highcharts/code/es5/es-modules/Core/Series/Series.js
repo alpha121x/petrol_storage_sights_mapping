@@ -1,10 +1,11 @@
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -248,7 +249,7 @@ var Series = /** @class */ (function () {
      * Set the xAxis and yAxis properties of cartesian series, and register
      * the series in the `axis.series` array.
      *
-     * @private
+     * @internal
      * @function Highcharts.Series#bindAxes
      */
     Series.prototype.bindAxes = function () {
@@ -302,7 +303,7 @@ var Series = /** @class */ (function () {
      * Define hasData functions for series. These return true if there
      * are data points on this series within the plot area.
      *
-     * @private
+     * @internal
      * @function Highcharts.Series#hasData
      */
     Series.prototype.hasData = function () {
@@ -316,7 +317,7 @@ var Series = /** @class */ (function () {
     /**
      * Determine whether the marker in a series has changed.
      *
-     * @private
+     * @internal
      * @function Highcharts.Series#hasMarkerChanged
      */
     Series.prototype.hasMarkerChanged = function (options, oldOptions) {
@@ -332,7 +333,7 @@ var Series = /** @class */ (function () {
      * pointInterval options. This is only used if an x value is not given
      * for the point that calls autoIncrement.
      *
-     * @private
+     * @internal
      * @function Highcharts.Series#autoIncrement
      */
     Series.prototype.autoIncrement = function (x) {
@@ -367,7 +368,7 @@ var Series = /** @class */ (function () {
      * Internal function to set properties for series if data sorting is
      * enabled.
      *
-     * @private
+     * @internal
      * @function Highcharts.Series#setDataSortingOptions
      */
     Series.prototype.setDataSortingOptions = function () {
@@ -387,7 +388,8 @@ var Series = /** @class */ (function () {
      * Set the series options by merging from the options tree. Called
      * internally on initializing and updating series. This function will
      * not redraw the series. For API usage, use {@link Series#update}.
-     * @private
+     *
+     * @internal
      * @function Highcharts.Series#setOptions
      * @param {Highcharts.SeriesOptionsType} itemOptions
      * The series options.
@@ -483,8 +485,18 @@ var Series = /** @class */ (function () {
         return (_a = this.options.name) !== null && _a !== void 0 ? _a : format(this.chart.options.lang.seriesName, this, this.chart);
     };
     /**
-     * @private
+     * Set series-specific properties for color and symbol. Called internally
+     * from Series.update().
+     *
+     * @internal
      * @function Highcharts.Series#getCyclic
+     *
+     * @param {'color'|'symbol'} prop
+     *        The property to set, either `color` or `symbol`.
+     * @param {*} [value]
+     *        The value to set. If not given, the next available value is used.
+     * @param {Highcharts.Dictionary<*>} [defaults]
+     *        The default values.
      */
     Series.prototype.getCyclic = function (prop, value, defaults) {
         var chart = this.chart, indexName = "".concat(prop, "Index"), counterName = "".concat(prop, "Counter"), len = (
@@ -522,7 +534,7 @@ var Series = /** @class */ (function () {
      * Get the series' color based on either the options or pulled from
      * global options.
      *
-     * @private
+     * @internal
      * @function Highcharts.Series#getColor
      */
     Series.prototype.getColor = function () {
@@ -540,7 +552,7 @@ var Series = /** @class */ (function () {
     /**
      * Get all points' instances created for this series.
      *
-     * @private
+     * @internal
      * @function Highcharts.Series#getPointsCollection
      */
     Series.prototype.getPointsCollection = function () {
@@ -550,7 +562,7 @@ var Series = /** @class */ (function () {
      * Get the series' symbol based on either the options or pulled from
      * global options.
      *
-     * @private
+     * @internal
      * @function Highcharts.Series#getSymbol
      */
     Series.prototype.getSymbol = function () {
@@ -560,18 +572,18 @@ var Series = /** @class */ (function () {
     /**
      * Shorthand to get one of the series' data columns from `Series.dataTable`.
      *
-     * @private
+     * @internal
      * @function Highcharts.Series#getColumn
      */
-    Series.prototype.getColumn = function (columnName, modified) {
-        return (modified ? this.dataTable.modified : this.dataTable)
-            .getColumn(columnName, true) || [];
+    Series.prototype.getColumn = function (columnId, modified) {
+        return (modified ? this.dataTable.getModified() : this.dataTable)
+            .getColumn(columnId, true) || [];
     };
     /**
      * Finds the index of an existing point that matches the given point
      * options.
      *
-     * @private
+     * @internal
      * @function Highcharts.Series#findPointIndex
      * @param {Highcharts.PointOptionsObject} optionsObject
      * The options of the point.
@@ -641,13 +653,13 @@ var Series = /** @class */ (function () {
      * to points. This also allows adding or removing points if the X-es
      * don't match.
      *
-     * @private
+     * @internal
      * @function Highcharts.Series#updateData
      */
     Series.prototype.updateData = function (data, animation) {
         var _this = this;
         var _a;
-        var _b = this, options = _b.options, requireSorting = _b.requireSorting, dataSorting = options.dataSorting, oldData = this.points, pointsToAdd = [], equalLength = data.length === oldData.length;
+        var _b = this, options = _b.options, requireSorting = _b.requireSorting, dataSorting = options.dataSorting, oldData = this.points, pointsToAdd = [], equalLength = data.length === oldData.length, oldXIncrement = this.xIncrement;
         var hasUpdatedByKey, i, point, lastIndex, succeeded = true;
         this.xIncrement = null;
         // Iterate the new data
@@ -736,7 +748,8 @@ var Series = /** @class */ (function () {
             _this.addPoint(point, false, void 0, void 0, false);
         }, this);
         var xData = this.getColumn('x');
-        if (this.xIncrement === null &&
+        if (oldXIncrement !== null &&
+            this.xIncrement === null &&
             xData.length) {
             this.xIncrement = arrayMax(xData);
             this.autoIncrement();
@@ -874,8 +887,8 @@ var Series = /** @class */ (function () {
                                 (_c = colArray_1[j]) === null || _c === void 0 ? void 0 : _c.push(pt[j - autoX]);
                             }
                         }
-                        table.setColumns(dataColumnKeys.reduce(function (columns, columnName, i) {
-                            columns[columnName] = colArray_1[i];
+                        table.setColumns(dataColumnKeys.reduce(function (columns, columnId, i) {
+                            columns[columnId] = colArray_1[i];
                             return columns;
                         }, {}));
                     }
@@ -918,8 +931,8 @@ var Series = /** @class */ (function () {
                 }
             }
             if (!runTurbo) {
-                var columns = dataColumnKeys.reduce(function (columns, columnName) {
-                    columns[columnName] = [];
+                var columns = dataColumnKeys.reduce(function (columns, columnId) {
+                    columns[columnId] = [];
                     return columns;
                 }, {});
                 for (i = 0; i < dataLength; i++) {
@@ -965,7 +978,7 @@ var Series = /** @class */ (function () {
     /**
      * Internal function to sort series data
      *
-     * @private
+     * @internal
      * @function Highcharts.Series#sortData
      * @param {Array<Highcharts.PointOptionsType>} data
      * Force data grouping.
@@ -1017,7 +1030,7 @@ var Series = /** @class */ (function () {
      * points if the series is longer than the crop threshold. This saves
      * computing time for large series.
      *
-     * @private
+     * @internal
      * @function Highcharts.Series#getProcessedData
      * @param {boolean} [forceExtremesFromAll]
      * Force getting extremes of a total series data range.
@@ -1082,7 +1095,7 @@ var Series = /** @class */ (function () {
      * Internal function to apply processed data.
      * In Highcharts Stock, this function is extended to provide data grouping.
      *
-     * @private
+     * @internal
      * @function Highcharts.Series#processData
      * @param {boolean} [force]
      * Force data grouping.
@@ -1112,7 +1125,7 @@ var Series = /** @class */ (function () {
      * object containing crop start/end cropped xData with corresponding
      * part of yData, dataMin and dataMax within the cropped range.
      *
-     * @private
+     * @internal
      * @function Highcharts.Series#cropData
      */
     Series.prototype.cropData = function (table, min, max) {
@@ -1149,14 +1162,14 @@ var Series = /** @class */ (function () {
      * Generate the data point after the data has been processed by cropping
      * away unused points and optionally grouped in Highcharts Stock.
      *
-     * @private
+     * @internal
      * @function Highcharts.Series#generatePoints
      */
     Series.prototype.generatePoints = function () {
-        var _a, _b, _c, _d, _e;
-        var series = this, options = series.options, dataOptions = series.processedData || options.data, table = series.dataTable.modified, xData = series.getColumn('x', true), PointClass = series.pointClass, processedDataLength = table.rowCount, cropStart = series.cropStart || 0, hasGroupedData = series.hasGroupedData, keys = options.keys, points = [], groupCropStartIndex = (((_a = options.dataGrouping) === null || _a === void 0 ? void 0 : _a.groupAll) ?
+        var _a, _b, _c, _d, _e, _f, _g, _h;
+        var series = this, options = series.options, dataOptions = series.processedData || options.data, table = series.dataTable.getModified(), xData = series.getColumn('x', true), PointClass = series.pointClass, processedDataLength = table.rowCount, cropStart = series.cropStart || 0, hasGroupedData = series.hasGroupedData, keys = options.keys, points = [], groupCropStartIndex = (((_a = options.dataGrouping) === null || _a === void 0 ? void 0 : _a.groupAll) ?
             cropStart :
-            0), categories = (_b = series.xAxis) === null || _b === void 0 ? void 0 : _b.categories, pointArrayMap = series.pointArrayMap || ['y'], 
+            0), pointArrayMap = series.pointArrayMap || ['y'], 
         // Create a configuration object out of a data row
         dataColumnKeys = this.dataColumnKeys();
         var dataLength, cursor, point, i, data = series.data, pOptions;
@@ -1181,34 +1194,31 @@ var Series = /** @class */ (function () {
                     pOptions !== void 0) {
                     data[cursor] = point = new PointClass(series, pOptions, xData[i]);
                 }
+                else if (point) {
+                    // Point properties for convenient access in tooltip and
+                    // data labels might need to be updated.
+                    point.category = (_d = (_c = (_b = series.xAxis) === null || _b === void 0 ? void 0 : _b.categories) === null || _c === void 0 ? void 0 : _c[point.x]) !== null && _d !== void 0 ? _d : point.x;
+                    point.key = (_e = point.name) !== null && _e !== void 0 ? _e : point.category;
+                }
             }
             else {
                 // Splat the y data in case of ohlc data array
                 point = new PointClass(series, table.getRow(i, dataColumnKeys) || []);
-                point.dataGroup = series.groupMap[groupCropStartIndex + i];
-                if ((_c = point.dataGroup) === null || _c === void 0 ? void 0 : _c.options) {
+                point.dataGroup = (_f = series.groupMap) === null || _f === void 0 ? void 0 : _f[groupCropStartIndex + i];
+                if ((_g = point.dataGroup) === null || _g === void 0 ? void 0 : _g.options) {
                     point.options = point.dataGroup.options;
                     extend(point, point.dataGroup.options);
                     // Collision of props and options (#9770)
                     delete point.dataLabels;
+                    // Update key in case name changed
+                    point.key = (_h = point.name) !== null && _h !== void 0 ? _h : point.category;
                 }
             }
             if (point) { // #6279
-                /**
-                 * Contains the point's index in the `Series.points` array.
-                 *
-                 * @name Highcharts.Point#index
-                 * @type {number}
-                 * @readonly
-                 */
                 // For faster access in Point.update
                 point.index = hasGroupedData ?
                     (groupCropStartIndex + i) : cursor;
                 points[i] = point;
-                // Set point properties for convenient access in tooltip and
-                // data labels
-                point.category = (_d = categories === null || categories === void 0 ? void 0 : categories[point.x]) !== null && _d !== void 0 ? _d : point.x;
-                point.key = (_e = point.name) !== null && _e !== void 0 ? _e : point.category;
             }
         }
         // Restore keys options (#6590)
@@ -1267,7 +1277,7 @@ var Series = /** @class */ (function () {
     /**
      * Get current X extremes for the visible data.
      *
-     * @private
+     * @internal
      * @function Highcharts.Series#getXExtremes
      * @param {Array<number>} xData
      * The data to inspect. Defaults to the current data within the visible
@@ -1283,7 +1293,7 @@ var Series = /** @class */ (function () {
      * Calculate Y extremes for the visible data. The result is returned
      * as an object with `dataMin` and `dataMax` properties.
      *
-     * @private
+     * @internal
      * @function Highcharts.Series#getExtremes
      * @param {Array<number>} [yData]
      * The data to inspect. Defaults to the current data within the visible
@@ -1298,7 +1308,7 @@ var Series = /** @class */ (function () {
             this.options.getExtremesFromAll, // #4599, #21003
         table = getExtremesFromAll && this.cropped ?
             this.dataTable :
-            this.dataTable.modified, rowCount = table.rowCount, customData = yData || this.stackedYData, yAxisData = customData ?
+            this.dataTable.getModified(), rowCount = table.rowCount, customData = yData || this.stackedYData, yAxisData = customData ?
             [customData] :
             ((_a = (this.keysAffectYAxis || this.pointArrayMap || ['y'])) === null || _a === void 0 ? void 0 : _a.map(function (key) { return table.getColumn(key, true) || []; })) || [], xData = this.getColumn('x', true), activeYData = [], 
         // Handle X outside the viewed area. This does not work with
@@ -1347,7 +1357,7 @@ var Series = /** @class */ (function () {
      * Series item. Use this only when the series properties should be
      * updated.
      *
-     * @private
+     * @internal
      * @function Highcharts.Series#applyExtremes
      */
     Series.prototype.applyExtremes = function () {
@@ -1375,7 +1385,7 @@ var Series = /** @class */ (function () {
     /**
      * Find and return the first non nullish point in the data
      *
-     * @private
+     * @internal
      * @function Highcharts.Series.getFirstValidPoint
      * @param {Array<Highcharts.PointOptionsType>} data
      *        Array of options for points
@@ -1417,7 +1427,7 @@ var Series = /** @class */ (function () {
          * Plotted coordinates need to be within a limited range. Drawing
          * too far outside the viewport causes various rendering issues
          * (#3201, #3923, #7555).
-         * @private
+         * @internal
          */
         function limitedRange(val) {
             return clamp(val, -1e9, 1e9);
@@ -1433,20 +1443,6 @@ var Series = /** @class */ (function () {
                 '') + series.stackKey]);
             plotX = xAxis.translate(// #3923
             xValue, false, false, false, true, pointPlacement);
-            /**
-             * The translated X value for the point in terms of pixels. Relative
-             * to the X axis position if the series has one, otherwise relative
-             * to the plot area. Depending on the series type this value might
-             * not be defined.
-             *
-             * In an inverted chart the x-axis is going from the bottom to the
-             * top so the `plotX` value is the number of pixels from the bottom
-             * of the axis.
-             *
-             * @see Highcharts.Point#pos
-             * @name Highcharts.Point#plotX
-             * @type {number|undefined}
-             */
             point.plotX = isNumber(plotX) ? correctFloat(// #5236
             limitedRange(plotX) // #3923
             ) : void 0;
@@ -1504,20 +1500,6 @@ var Series = /** @class */ (function () {
             else if (!isNumber(yValue) && nullYSubstitute) {
                 plotY = nullYSubstitute;
             }
-            /**
-             * The translated Y value for the point in terms of pixels. Relative
-             * to the Y axis position if the series has one, otherwise relative
-             * to the plot area. Depending on the series type this value might
-             * not be defined.
-             *
-             * In an inverted chart the y-axis is going from right to left
-             * so the `plotY` value is the number of pixels from the right
-             * of the `yAxis`.
-             *
-             * @see Highcharts.Point#pos
-             * @name Highcharts.Point#plotY
-             * @type {number|undefined}
-             */
             point.plotY = plotY;
             point.isInside = this.isPointInside(point);
             // Set client related positions for mouse tracking
@@ -1577,7 +1559,7 @@ var Series = /** @class */ (function () {
     /**
      * Get the shared clip key, creating it if it doesn't exist.
      *
-     * @private
+     * @internal
      * @function Highcharts.Series#getSharedClipKey
      */
     Series.prototype.getSharedClipKey = function () {
@@ -1589,12 +1571,13 @@ var Series = /** @class */ (function () {
      * Set the clipping for the series. For animated series the clip is later
      * modified.
      *
-     * @private
+     * @internal
      * @function Highcharts.Series#setClip
      */
     Series.prototype.setClip = function () {
         var _a = this, chart = _a.chart, group = _a.group, markerGroup = _a.markerGroup, sharedClips = chart.sharedClips, renderer = chart.renderer, clipBox = chart.getClipBox(this), sharedClipKey = this.getSharedClipKey(); // #4526
         var clipRect = sharedClips[sharedClipKey];
+        fireEvent(this, 'setClip', { clipBox: clipBox });
         // If a clipping rectangle for the same set of axes does not exist,
         // create it
         if (!clipRect) {
@@ -1694,7 +1677,7 @@ var Series = /** @class */ (function () {
     /**
      * This runs after animation to land on the final plot clipping.
      *
-     * @private
+     * @internal
      * @function Highcharts.Series#afterAnimate
      *
      * @emits Highcharts.Series#event:afterAnimate
@@ -1755,24 +1738,6 @@ var Series = /** @class */ (function () {
                     if (!graphic &&
                         isInside &&
                         ((markerAttribs.width || 0) > 0 || point.hasImage)) {
-                        /**
-                         * SVG graphic representing the point in the chart. In
-                         * some cases it may be a hidden graphic to improve
-                         * accessibility.
-                         *
-                         * Typically this is a simple shape, like a `rect`
-                         * for column charts or `path` for line markers, but
-                         * for some complex series types like boxplot or 3D
-                         * charts, the graphic may be a `g` element
-                         * containing other shapes. The graphic is generated
-                         * the first time {@link Series#drawPoints} runs,
-                         * and updated and moved on subsequent runs.
-                         *
-                         * @see Highcharts.Point#graphics
-                         *
-                         * @name Highcharts.Point#graphic
-                         * @type {Highcharts.SVGElement|undefined}
-                         */
                         point.graphic = graphic = chart.renderer
                             .symbol(symbol, markerAttribs.x, markerAttribs.y, markerAttribs.width, markerAttribs.height, hasPointMarker ?
                             pointMarkerOptions :
@@ -1875,7 +1840,7 @@ var Series = /** @class */ (function () {
      * those attributes that can also be set in CSS. In styled mode,
      * `pointAttribs` won't be called.
      *
-     * @private
+     * @internal
      * @function Highcharts.Series#pointAttribs
      *
      * @param {Highcharts.Point} [point]
@@ -1927,7 +1892,7 @@ var Series = /** @class */ (function () {
     /**
      * Clear DOM objects and free up memory.
      *
-     * @private
+     * @internal
      * @function Highcharts.Series#destroy
      *
      * @emits Highcharts.Series#event:destroy
@@ -1992,7 +1957,7 @@ var Series = /** @class */ (function () {
     /**
      * Clip the graphs into zones for colors and styling.
      *
-     * @private
+     * @internal
      * @function Highcharts.Series#applyZones
      */
     Series.prototype.applyZones = function () {
@@ -2154,7 +2119,7 @@ var Series = /** @class */ (function () {
      * series.dataLabelsGroup and series.markerGroup. On subsequent calls,
      * the group will only be adjusted to the updated plot size.
      *
-     * @private
+     * @internal
      * @function Highcharts.Series#plotGroup
      */
     Series.prototype.plotGroup = function (prop, name, visibility, zIndex, parent) {
@@ -2232,7 +2197,7 @@ var Series = /** @class */ (function () {
     };
     /**
      * Removes the event handlers attached previously with addEvents.
-     * @private
+     * @internal
      * @function Highcharts.Series#removeEvents
      */
     Series.prototype.removeEvents = function (keepEventsForUpdate) {
@@ -2323,7 +2288,8 @@ var Series = /** @class */ (function () {
     /**
      * Redraw the series. This function is called internally from
      * `chart.redraw` and normally shouldn't be called directly.
-     * @private
+     *
+     * @internal
      * @function Highcharts.Series#redraw
      */
     Series.prototype.redraw = function () {
@@ -2339,7 +2305,7 @@ var Series = /** @class */ (function () {
      * Whether to reserve space for the series, either because it is visible or
      * because the `chart.ignoreHiddenSeries` option is false.
      *
-     * @private
+     * @internal
      */
     Series.prototype.reserveSpace = function () {
         return this.visible || !this.chart.options.chart.ignoreHiddenSeries;
@@ -2380,7 +2346,7 @@ var Series = /** @class */ (function () {
      * tree where points are searched along the X axis, while scatter-like
      * series typically search in two dimensions, X and Y.
      *
-     * @private
+     * @internal
      * @function Highcharts.Series#buildKDTree
      */
     Series.prototype.buildKDTree = function (e) {
@@ -2391,7 +2357,7 @@ var Series = /** @class */ (function () {
             .indexOf('y') > -1 ? 2 : 1;
         /**
          * Internal function
-         * @private
+         * @internal
          */
         function kdtree(points, depth, dimensions) {
             var length = points === null || points === void 0 ? void 0 : points.length;
@@ -2413,7 +2379,7 @@ var Series = /** @class */ (function () {
         /**
          * Start the recursive build process with a clone of the points
          * array and null points filtered out. (#3873)
-         * @private
+         * @internal
          */
         function startRecursive() {
             series.kdTree = kdtree(series.getValidPoints(void 0, 
@@ -2428,8 +2394,24 @@ var Series = /** @class */ (function () {
         syncTimeout(startRecursive, seriesOptions.kdNow || (e === null || e === void 0 ? void 0 : e.type) === 'touchstart' ? 0 : 1);
     };
     /**
-     * @private
+     * Search the k-d-tree for the point closest to the given point.
+     *
+     * @internal
      * @function Highcharts.Series#searchKDTree
+     *
+     * @param {Highcharts.KDPointSearchObject} point
+     *        The point to search for.
+     * @param {boolean} [compareX=false]
+     *        Search only by the X value, not Y.
+     * @param {Highcharts.PointerEvent} [e]
+     *        The normalized pointer event.
+     * @param {Function} [suppliedPointEvaluator]
+     *        A custom point evaluator function.
+     * @param {Function} [suppliedBSideCheckEvaluator]
+     *        A custom b-side check evaluator function.
+     *
+     * @return {Highcharts.Point|undefined}
+     *         The closest point found.
      */
     Series.prototype.searchKDTree = function (point, compareX, e, suppliedPointEvaluator, suppliedBSideCheckEvaluator) {
         var series = this, _a = this.kdAxisArray, kdX = _a[0], kdY = _a[1], kdComparer = compareX ? 'distX' : 'dist', kdDimensions = (series.options.findNearestPointBy || '')
@@ -2445,7 +2427,7 @@ var Series = /** @class */ (function () {
         }), bSideCheckEvaluator = suppliedBSideCheckEvaluator || (function (a, b) { return a < b; });
         /**
          * Set the one and two dimensional distance on the point object.
-         * @private
+         * @internal
          */
         function setDistance(p1, p2) {
             var _a;
@@ -2454,7 +2436,22 @@ var Series = /** @class */ (function () {
             p2.distX = defined(x) ? (Math.abs(x) - radius) : Number.MAX_VALUE;
         }
         /**
-         * @private
+         * Search the kd-tree.
+         *
+         * @internal
+         * @function doSearch
+         *
+         * @param {Highcharts.KDPointSearchObject} search
+         *        The point to search for.
+         * @param {Highcharts.KDNode} tree
+         *        The kd-tree structure to search.
+         * @param {number} depth
+         *        The depth in the tree.
+         * @param {number} dimensions
+         *        The dimensions in the tree.
+         *
+         * @return {Highcharts.Point}
+         *         The closest point found.
          */
         function doSearch(search, tree, depth, dimensions) {
             var _a;
@@ -2487,7 +2484,9 @@ var Series = /** @class */ (function () {
         }
     };
     /**
-     * @private
+     * Return the value of pointPlacement relative to the point's x value.
+     *
+     * @internal
      * @function Highcharts.Series#pointPlacementToXValue
      */
     Series.prototype.pointPlacementToXValue = function () {
@@ -2502,8 +2501,16 @@ var Series = /** @class */ (function () {
             0;
     };
     /**
-     * @private
+     * Check whether a point is inside the plot area.
+     *
+     * @internal
      * @function Highcharts.Series#isPointInside
+     *
+     * @param {Highcharts.Dictionary<number>|Highcharts.Point} point
+     * A point-like object with `plotX` and `plotY` properties.
+     *
+     * @return {boolean}
+     * True if the point is inside the plot area.
      */
     Series.prototype.isPointInside = function (point) {
         var _a = this, chart = _a.chart, xAxis = _a.xAxis, yAxis = _a.yAxis, _b = point.plotX, plotX = _b === void 0 ? -1 : _b, _c = point.plotY, plotY = _c === void 0 ? -1 : _c, isInside = (plotY >= 0 &&
@@ -2517,7 +2524,7 @@ var Series = /** @class */ (function () {
      * track mouse events on the graph or points. For the line type charts
      * the tracker uses the same graphPath, but with a greater stroke width
      * for better control.
-     * @private
+     * @internal
      */
     Series.prototype.drawTracker = function () {
         var _a;
@@ -2566,11 +2573,10 @@ var Series = /** @class */ (function () {
             // The tracker is added to the series group, which is clipped, but
             // is covered by the marker group. So the marker group also needs to
             // capture events.
-            [
+            __spreadArray([
                 series.tracker,
-                series.markerGroup,
-                series.dataLabelsGroup
-            ].forEach(function (tracker) {
+                series.markerGroup
+            ], (series.dataLabelsGroups || []), true).forEach(function (tracker) {
                 if (tracker) {
                     tracker.addClass('highcharts-tracker')
                         .on('mouseover', onMouseOver)
@@ -2778,7 +2784,9 @@ var Series = /** @class */ (function () {
     Series.prototype.remove = function (redraw, animation, withEvent, keepEvents) {
         var series = this, chart = series.chart;
         /**
-         * @private
+         * Remove the series.
+         *
+         * @internal
          */
         function remove() {
             // Destroy elements
@@ -2833,9 +2841,11 @@ var Series = /** @class */ (function () {
         // Must use user options when changing type because series.options
         // is merged in with type specific plotOptions
         oldOptions = series.userOptions, initialType = series.initialType || series.type, plotOptions = chart.options.plotOptions, initialSeriesProto = seriesTypes[initialType].prototype, groups = [
+            'dataLabelsGroup',
+            'dataLabelsGroups',
+            'dataLabelsParentGroups',
             'group',
             'markerGroup',
-            'dataLabelsGroup',
             'transformGroup'
         ], optionsToCheck = [
             'dataGrouping',
@@ -2853,7 +2863,7 @@ var Series = /** @class */ (function () {
             oldOptions.type ||
             chart.options.chart.type);
         var keepPoints = !(
-        // Indicators, histograms etc recalculate the data. It should be
+        // Indicators etc recalculate the data. It should be
         // possible to omit this.
         this.hasDerivedData ||
             // New type requires new point classes
@@ -2887,6 +2897,10 @@ var Series = /** @class */ (function () {
         }
         else {
             this.dataTable.modified = this.dataTable;
+        }
+        // Merge in multiple data label options (#23560)
+        if (options.dataLabels && oldOptions.dataLabels) {
+            options.dataLabels = this.mergeArrays(oldOptions.dataLabels, options.dataLabels);
         }
         // Do the merge, with some forced options
         options = merge(oldOptions, {
@@ -3004,7 +3018,7 @@ var Series = /** @class */ (function () {
     };
     /**
      * Used from within series.update
-     * @private
+     * @internal
      */
     Series.prototype.setName = function (name) {
         this.name = this.options.name = this.userOptions.name = name;
@@ -3012,7 +3026,7 @@ var Series = /** @class */ (function () {
     };
     /**
      * Check if the option has changed.
-     * @private
+     * @internal
      */
     Series.prototype.hasOptionChanged = function (optionName) {
         var _a, _b;
@@ -3097,20 +3111,19 @@ var Series = /** @class */ (function () {
      *        Determines if state should be inherited by points too.
      */
     Series.prototype.setState = function (state, inherit) {
-        var series = this, options = series.options, graph = series.graph, inactiveOtherPoints = options.inactiveOtherPoints, stateOptions = options.states, 
+        var _a, _b;
+        var series = this, graph = series.graph, options = series.options, inactiveOtherPoints = options.inactiveOtherPoints, stateOptions = options.states, 
         // By default a quick animation to hover/inactive,
         // slower to un-hover
-        stateAnimation = pick((stateOptions[state || 'normal'] &&
-            stateOptions[state || 'normal'].animation), series.chart.options.chart.animation);
+        stateAnimation = pick((_a = stateOptions === null || stateOptions === void 0 ? void 0 : stateOptions[state || 'normal']) === null || _a === void 0 ? void 0 : _a.animation, series.chart.options.chart.animation);
         var lineWidth = options.lineWidth, opacity = options.opacity;
         state = state || '';
         if (series.state !== state) {
             // Toggle class names
-            [
+            __spreadArray([
                 series.group,
-                series.markerGroup,
-                series.dataLabelsGroup
-            ].forEach(function (group) {
+                series.markerGroup
+            ], (series.dataLabelsGroups || []), true).forEach(function (group) {
                 if (group) {
                     // Old state
                     if (series.state) {
@@ -3124,8 +3137,7 @@ var Series = /** @class */ (function () {
             });
             series.state = state;
             if (!series.chart.styledMode) {
-                if (stateOptions[state] &&
-                    stateOptions[state].enabled === false) {
+                if (((_b = stateOptions[state]) === null || _b === void 0 ? void 0 : _b.enabled) === false) {
                     return;
                 }
                 if (state) {
@@ -3135,10 +3147,10 @@ var Series = /** @class */ (function () {
                 }
                 if (graph && !graph.dashstyle && isNumber(lineWidth)) {
                     // Animate the graph stroke-width
-                    for (var _a = 0, _b = __spreadArray([
+                    for (var _c = 0, _d = __spreadArray([
                         graph
-                    ], this.zones.map(function (zone) { return zone.graph; }), true); _a < _b.length; _a++) {
-                        var graphElement = _b[_a];
+                    ], this.zones.map(function (zone) { return zone.graph; }), true); _c < _d.length; _c++) {
+                        var graphElement = _d[_c];
                         graphElement === null || graphElement === void 0 ? void 0 : graphElement.animate({
                             'stroke-width': lineWidth
                         }, stateAnimation);
@@ -3147,17 +3159,13 @@ var Series = /** @class */ (function () {
                 // For some types (pie, networkgraph, sankey) opacity is
                 // resolved on a point level
                 if (!inactiveOtherPoints) {
-                    [
+                    __spreadArray(__spreadArray([
                         series.group,
-                        series.markerGroup,
-                        series.dataLabelsGroup,
+                        series.markerGroup
+                    ], (series.dataLabelsGroups || []), true), [
                         series.labelBySeries
-                    ].forEach(function (group) {
-                        if (group) {
-                            group.animate({
-                                opacity: opacity
-                            }, stateAnimation);
-                        }
+                    ], false).forEach(function (group) {
+                        group === null || group === void 0 ? void 0 : group.animate({ opacity: opacity }, stateAnimation);
                     });
                 }
             }
@@ -3173,7 +3181,7 @@ var Series = /** @class */ (function () {
      *
      * @function Highcharts.Series#setAllPointsToState
      *
-     * @private
+     * @internal
      *
      * @param {string} [state]
      *        Can be either `hover` or undefined to set to normal state.
@@ -3202,20 +3210,18 @@ var Series = /** @class */ (function () {
      * @emits Highcharts.Series#event:hide
      * @emits Highcharts.Series#event:show
      */
-    Series.prototype.setVisible = function (vis, redraw) {
-        var _a;
+    Series.prototype.setVisible = function (visible, redraw) {
+        var _a, _b;
         var series = this, chart = series.chart, ignoreHiddenSeries = chart.options.chart.ignoreHiddenSeries, oldVisibility = series.visible;
         // If called without an argument, toggle visibility
         series.visible =
-            vis =
+            visible =
                 series.options.visible =
                     series.userOptions.visible =
-                        typeof vis === 'undefined' ? !oldVisibility : vis; // #5618
-        var showOrHide = vis ? 'show' : 'hide';
-        // Show or hide elements
+                        typeof visible === 'undefined' ? !oldVisibility : visible; // #5618
+        var showOrHide = visible ? 'show' : 'hide';
         [
             'group',
-            'dataLabelsGroup',
             'markerGroup',
             'tracker',
             'tt'
@@ -3223,13 +3229,16 @@ var Series = /** @class */ (function () {
             var _a;
             (_a = series[key]) === null || _a === void 0 ? void 0 : _a[showOrHide]();
         });
+        (_a = series.dataLabelsGroups) === null || _a === void 0 ? void 0 : _a.forEach(function (g) {
+            g === null || g === void 0 ? void 0 : g[showOrHide]();
+        });
         // Hide tooltip (#1361)
         if (chart.hoverSeries === series ||
-            ((_a = chart.hoverPoint) === null || _a === void 0 ? void 0 : _a.series) === series) {
+            ((_b = chart.hoverPoint) === null || _b === void 0 ? void 0 : _b.series) === series) {
             series.onMouseOut();
         }
         if (series.legendItem) {
-            chart.legend.colorizeItem(series, vis);
+            chart.legend.colorizeItem(series, visible);
         }
         // Rescale or adapt to resized chart
         series.isDirty = true;
@@ -3243,7 +3252,7 @@ var Series = /** @class */ (function () {
         }
         // Show or hide linked series
         series.linkedSeries.forEach(function (otherSeries) {
-            otherSeries.setVisible(vis, false);
+            otherSeries.setVisible(visible, false);
         });
         if (ignoreHiddenSeries) {
             chart.isDirtyBox = true;
@@ -3313,7 +3322,7 @@ var Series = /** @class */ (function () {
     /**
      * Checks if a tooltip should be shown for a given point.
      *
-     * @private
+     * @internal
      */
     Series.prototype.shouldShowTooltip = function (plotX, plotY, options) {
         if (options === void 0) { options = {}; }
@@ -3324,7 +3333,7 @@ var Series = /** @class */ (function () {
     /**
      * Draws the legend symbol based on the legendSymbol user option.
      *
-     * @private
+     * @internal
      */
     Series.prototype.drawLegendSymbol = function (legend, item) {
         var _a;
@@ -3587,6 +3596,10 @@ export default Series;
 * @name Highcharts.SeriesLegendItemClickEventObject#browserEvent
 * @type {global.PointerEvent}
 */ /**
+* Whether the default action has been prevented (`true`) or not.
+* @name Highcharts.SeriesLegendItemClickEventObject#defaultPrevented
+* @type {boolean|undefined}
+*/ /**
 * Prevent the default action of toggle the visibility of the series.
 * @name Highcharts.SeriesLegendItemClickEventObject#preventDefault
 * @type {Function}
@@ -3722,21 +3735,6 @@ export default Series;
  * @apioption series.name
  */
 /**
- * This option allows grouping series in a stacked chart. The stack option
- * can be a string or anything else, as long as the grouped series' stack
- * options match each other after conversion into a string.
- *
- * @sample {highcharts} highcharts/series/stack/
- *         Stacked and grouped columns
- * @sample {highcharts} highcharts/series/stack-centerincategory/
- *         Stacked and grouped, centered in category
- *
- * @type      {number|string}
- * @since     2.1
- * @product   highcharts highstock
- * @apioption series.stack
- */
-/**
  * The type of series, for example `line` or `column`. By default, the
  * series type is inherited from [chart.type](#chart.type), so unless the
  * chart is a combination of series types, there is no need to set it on the
@@ -3792,5 +3790,40 @@ export default Series;
  * @type      {number}
  * @product   highcharts highstock
  * @apioption series.zIndex
+ */
+/**
+ * Contains the point's index in the `Series.points` array.
+ *
+ * @name Highcharts.Point#index
+ * @type {number}
+ * @readonly
+ */
+/**
+ * The translated X value for the point in terms of pixels. Relative
+ * to the X axis position if the series has one, otherwise relative
+ * to the plot area. Depending on the series type this value might
+ * not be defined.
+ *
+ * In an inverted chart the x-axis is going from the bottom to the
+ * top so the `plotX` value is the number of pixels from the bottom
+ * of the axis.
+ *
+ * @see Highcharts.Point#pos
+ * @name Highcharts.Point#plotX
+ * @type {number|undefined}
+ */
+/**
+ * The translated Y value for the point in terms of pixels. Relative
+ * to the Y axis position if the series has one, otherwise relative
+ * to the plot area. Depending on the series type this value might
+ * not be defined.
+ *
+ * In an inverted chart the y-axis is going from right to left
+ * so the `plotY` value is the number of pixels from the right
+ * of the `yAxis`.
+ *
+ * @see Highcharts.Point#pos
+ * @name Highcharts.Point#plotY
+ * @type {number|undefined}
  */
 ''; // Include precedent doclets in transpiled

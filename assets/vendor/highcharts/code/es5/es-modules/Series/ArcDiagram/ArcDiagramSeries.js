@@ -2,11 +2,12 @@
  *
  *  Arc diagram module
  *
- *  (c) 2021 Piotr Madej, Grzegorz Blachliński
+ *  (c) 2021-2026 Highsoft AS
+ *  Author: Piotr Madej, Grzegorz Blachliński
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -25,6 +26,17 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __rest = (this && this.__rest) || function (s, e) {
     var t = {};
     for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
@@ -55,7 +67,7 @@ var crisp = U.crisp, extend = U.extend, merge = U.merge, pick = U.pick, relative
  *
  * */
 /**
- * @private
+ * @internal
  * @class
  * @name Highcharts.seriesTypes.arcdiagram
  *
@@ -74,7 +86,7 @@ var ArcDiagramSeries = /** @class */ (function (_super) {
     /**
      * Create node columns by analyzing the nodes and the relations between
      * incoming and outgoing links.
-     * @private
+     * @internal
      */
     ArcDiagramSeries.prototype.createNodeColumns = function () {
         var _this = this;
@@ -164,7 +176,7 @@ var ArcDiagramSeries = /** @class */ (function (_super) {
     };
     /**
      * Run translation operations for one link.
-     * @private
+     * @internal
      */
     ArcDiagramSeries.prototype.translateLink = function (point) {
         var _a, _b;
@@ -250,15 +262,15 @@ var ArcDiagramSeries = /** @class */ (function (_super) {
     };
     /**
      * Run translation operations for one node.
-     * @private
+     * @internal
      */
     ArcDiagramSeries.prototype.translateNode = function (node, column) {
-        var _a;
+        var _a, _b;
         var series = this, translationFactor = series.translationFactor, chart = series.chart, maxNodesLength = chart.inverted ?
             chart.plotWidth : chart.plotHeight, options = series.options, maxRadius = Math.min(chart.plotWidth, chart.plotHeight, maxNodesLength / node.series.nodes.length - this.nodePadding), sum = node.getSum() * (column.sankeyColumn.scale || 0), equalNodes = options.equalNodes, nodeHeight = equalNodes ?
             maxRadius :
             Math.max(sum * translationFactor, this.options.minLinkWidth || 0), lineWidth = ((_a = options.marker) === null || _a === void 0 ? void 0 : _a.lineWidth) || 0, nodeOffset = column.sankeyColumn.offset(node, translationFactor), fromNodeLeft = crisp(pick(nodeOffset && nodeOffset.absoluteLeft, ((column.sankeyColumn.left(translationFactor) || 0) +
-            (nodeOffset && nodeOffset.relativeLeft || 0))), lineWidth), markerOptions = merge(options.marker, node.options.marker), symbol = markerOptions.symbol, markerRadius = markerOptions.radius, top = parseInt(options.offset, 10) *
+            (nodeOffset && nodeOffset.relativeLeft || 0))), lineWidth), markerOptions = merge(options.marker, node.options.marker), symbol = markerOptions.symbol, markerRadius = markerOptions.radius, top = parseInt((_b = options.offset) !== null && _b !== void 0 ? _b : '100', 10) *
             ((chart.inverted ?
                 chart.plotWidth : chart.plotHeight) - (crisp(this.colDistance * (node.column || 0) +
                 (markerOptions.lineWidth || 0) / 2, lineWidth) +
@@ -280,10 +292,10 @@ var ArcDiagramSeries = /** @class */ (function (_super) {
             }
             if (this.mapOptionsToLevel) {
                 // Calculate data label options for the point
-                node.dlOptions = SankeySeries.getDLOptions({
+                node.dlOptions = __assign(__assign({}, SankeySeries.getDLOptions({
                     level: this.mapOptionsToLevel[node.level],
                     optionsPoint: node.options
-                });
+                })), { zIndex: void 0 });
             }
             // Pass test in drawPoints
             node.plotX = 1;
@@ -364,4 +376,5 @@ SeriesRegistry.registerSeriesType('arcdiagram', ArcDiagramSeries);
  *  Default Export
  *
  * */
+/** @internal */
 export default ArcDiagramSeries;

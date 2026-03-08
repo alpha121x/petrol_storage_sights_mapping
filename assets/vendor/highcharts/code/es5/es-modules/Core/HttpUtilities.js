@@ -1,10 +1,11 @@
 /* *
  *
- *  (c) 2010-2025 Christer Vasseng, Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Christer Vasseng, Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -29,8 +30,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 var __generator = (this && this.__generator) || function (thisArg, body) {
-    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
-    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g = Object.create((typeof Iterator === "function" ? Iterator : Object).prototype);
+    return g.next = verb(0), g["throw"] = verb(1), g["return"] = verb(2), typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
     function verb(n) { return function (v) { return step([n, v]); }; }
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
@@ -85,9 +86,7 @@ function ajax(settings) {
     }, r = new XMLHttpRequest();
     /**
      * Private error handler.
-     *
-     * @private
-     *
+     * @internal
      * @param {XMLHttpRequest} xhr
      * Internal request object.
      * @param {string | Error} err
@@ -169,13 +168,15 @@ function getJSON(url, success) {
 /**
  * The post utility.
  *
- * @private
+ * @internal
  * @function Highcharts.post
  *
  * @param {string} url
  * Post URL.
+ *
  * @param {Object} data
  * Post data.
+ *
  * @param {RequestInit} [fetchOptions]
  * Additional attributes for the post request.
  */
@@ -210,16 +211,16 @@ function post(url, data, fetchOptions) {
         });
     });
 }
-/* *
- *
- *  Default Export
- *
- * */
+/**
+ * Utility functions for Ajax.
+ * @class
+ * @name Highcharts.HttpUtilities
+ */
 var HttpUtilities = {
     ajax: ajax,
-    getJSON: getJSON,
-    post: post
+    getJSON: getJSON
 };
+HttpUtilities.post = post;
 export default HttpUtilities;
 /* *
  *

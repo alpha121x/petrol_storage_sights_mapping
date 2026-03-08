@@ -1,12 +1,11 @@
 /* *
  *
- *  (c) 2019-2025 Highsoft AS
+ *  (c) 2019-2026 Highsoft AS
  *
  *  Boost module: stripped-down renderer for higher performance
  *
  *  License: highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -18,7 +17,7 @@ var clamp = U.clamp, error = U.error, pick = U.pick;
  *
  * */
 var fragmentShader = [
-    /* eslint-disable max-len, @typescript-eslint/indent */
+    /* eslint-disable max-len, @stylistic/indent */
     'precision highp float;',
     'uniform vec4 fillColor;',
     'varying highp vec2 position;',
@@ -46,10 +45,10 @@ var fragmentShader = [
     'gl_FragColor = col;',
     '}',
     '}'
-    /* eslint-enable max-len, @typescript-eslint/indent */
+    /* eslint-enable max-len, @stylistic/indent */
 ].join('\n');
 var vertexShader = [
-    /* eslint-disable max-len, @typescript-eslint/indent */
+    /* eslint-disable max-len, @stylistic/indent */
     '#version 100',
     '#define LN10 2.302585092994046',
     'precision highp float;',
@@ -64,6 +63,7 @@ var vertexShader = [
     'uniform bool skipTranslation;',
     'uniform float xAxisTrans;',
     'uniform float xAxisMin;',
+    'uniform float xAxisMax;',
     'uniform float xAxisMinPad;',
     'uniform float xAxisPointRange;',
     'uniform float xAxisLen;',
@@ -76,6 +76,7 @@ var vertexShader = [
     'uniform bool  xAxisReversed;',
     'uniform float yAxisTrans;',
     'uniform float yAxisMin;',
+    'uniform float yAxisMax;',
     'uniform float yAxisMinPad;',
     'uniform float yAxisPointRange;',
     'uniform float yAxisLen;',
@@ -86,6 +87,7 @@ var vertexShader = [
     'uniform bool  yAxisCVSCoord;',
     'uniform bool  yAxisIsLog;',
     'uniform bool  yAxisReversed;',
+    'uniform bool  isCircle;',
     'uniform bool  isBubble;',
     'uniform bool  bubbleSizeByArea;',
     'uniform float bubbleZMin;',
@@ -174,7 +176,17 @@ var vertexShader = [
     '}',
     // 'gl_PointSize = 10.0;',
     'vColor = aColor;',
-    'if (skipTranslation && isInverted) {',
+    // It's not working correctly on useGPUTranslations off, because we
+    // operate on pixel values then, not on axis values. Maybe we should
+    // just skip outer points before pushing them to the vertex buffer?
+    'if (!skipTranslation && isCircle && (',
+    'aVertexPosition.x < xAxisMin ||',
+    'aVertexPosition.x > xAxisMax ||',
+    'aVertexPosition.y < yAxisMin ||',
+    'aVertexPosition.y > yAxisMax',
+    ')) {',
+    'gl_Position = uPMatrix * vec4(2.0, 2.0, 2.0, 1.0);',
+    '} else if (skipTranslation && isInverted) {',
     // If we get translated values from JS, just swap them (x, y)
     'gl_Position = uPMatrix * vec4(aVertexPosition.y + yAxisPos, aVertexPosition.x + xAxisPos, 0.0, 1.0);',
     '} else if (isInverted) {',
@@ -186,7 +198,7 @@ var vertexShader = [
     '}',
     // 'gl_Position = uPMatrix * vec4(aVertexPosition.x, aVertexPosition.y, 0.0, 1.0);',
     '}'
-    /* eslint-enable max-len, @typescript-eslint/indent */
+    /* eslint-enable max-len, @stylistic/indent */
 ].join('\n');
 /* *
  *
@@ -195,9 +207,9 @@ var vertexShader = [
  * */
 /* eslint-disable valid-jsdoc */
 /**
- * A static shader mimicing axis translation functions found in Core/Axis
+ * A static shader mimicking axis translation functions found in Core/Axis.
  *
- * @private
+ * @internal
  *
  * @param {WebGLContext} gl
  * the context in which the shader is active
@@ -226,7 +238,7 @@ var WGLShader = /** @class */ (function () {
      * Bind the shader.
      * This makes the shader the active one until another one is bound,
      * or until 0 is bound.
-     * @private
+     * @internal
      */
     WGLShader.prototype.bind = function () {
         if (this.gl && this.shaderProgram) {
@@ -235,8 +247,8 @@ var WGLShader = /** @class */ (function () {
     };
     /**
      * Create the shader.
-     * Loads the shader program statically defined above
-     * @private
+     * Loads the shader program statically defined above.
+     * @internal
      */
     WGLShader.prototype.createShader = function () {
         var _this = this;
@@ -271,8 +283,8 @@ var WGLShader = /** @class */ (function () {
         return true;
     };
     /**
-     * Handle errors accumulated in errors stack
-     * @private
+     * Handle errors accumulated in errors stack.
+     * @internal
      */
     WGLShader.prototype.handleErrors = function () {
         if (this.errors.length) {
@@ -281,8 +293,9 @@ var WGLShader = /** @class */ (function () {
         }
     };
     /**
-     * String to shader program
-     * @private
+     * String to shader program.
+     *
+     * @internal
      * @param {string} str
      * Program source
      * @param {string} type
@@ -302,8 +315,8 @@ var WGLShader = /** @class */ (function () {
         return shader;
     };
     /**
-     * Destroy the shader
-     * @private
+     * Destroy the shader.
+     * @internal
      */
     WGLShader.prototype.destroy = function () {
         if (this.gl && this.shaderProgram) {
@@ -315,8 +328,9 @@ var WGLShader = /** @class */ (function () {
         return this.fcUniform;
     };
     /**
-     * Get the shader program handle
-     * @private
+     * Get the shader program handle.
+     *
+     * @internal
      * @return {WebGLProgram}
      * The handle for the program
      */
@@ -330,8 +344,8 @@ var WGLShader = /** @class */ (function () {
         return this.pUniform;
     };
     /**
-     * Flush
-     * @private
+     * Flush.
+     * @internal
      */
     WGLShader.prototype.reset = function () {
         if (this.gl && this.shaderProgram) {
@@ -340,8 +354,9 @@ var WGLShader = /** @class */ (function () {
         }
     };
     /**
-     * Set bubble uniforms
-     * @private
+     * Set bubble uniforms.
+     *
+     * @internal
      * @param {Highcharts.Series} series
      * Series to use
      */
@@ -368,7 +383,8 @@ var WGLShader = /** @class */ (function () {
     };
     /**
      * Set the Color uniform.
-     * @private
+     *
+     * @internal
      * @param {Array<number>} color
      * Array with RGBA values.
      */
@@ -378,8 +394,8 @@ var WGLShader = /** @class */ (function () {
         }
     };
     /**
-     * Enable/disable circle drawing
-     * @private
+     * Enable/disable circle drawing.
+     * @internal
      */
     WGLShader.prototype.setDrawAsCircle = function (flag) {
         if (this.gl && this.shaderProgram) {
@@ -387,8 +403,9 @@ var WGLShader = /** @class */ (function () {
         }
     };
     /**
-     * Set if inversion state
-     * @private
+     * Set if inversion state.
+     *
+     * @internal
      * @param {number} flag
      * Inversion flag
      */
@@ -398,8 +415,9 @@ var WGLShader = /** @class */ (function () {
         }
     };
     /**
-     * Set the perspective matrix
-     * @private
+     * Set the perspective matrix.
+     *
+     * @internal
      * @param {Float32List} m
      * Matrix 4 x 4
      */
@@ -410,7 +428,8 @@ var WGLShader = /** @class */ (function () {
     };
     /**
      * Set the point size.
-     * @private
+     *
+     * @internal
      * @param {number} p
      * Point size
      */
@@ -420,8 +439,8 @@ var WGLShader = /** @class */ (function () {
         }
     };
     /**
-     * Set skip translation
-     * @private
+     * Set skip translation.
+     * @internal
      */
     WGLShader.prototype.setSkipTranslation = function (flag) {
         if (this.gl && this.shaderProgram) {
@@ -429,10 +448,11 @@ var WGLShader = /** @class */ (function () {
         }
     };
     /**
-     * Set the active texture
-     * @private
+     * Set the active texture.
+     *
+     * @internal
      * @param {number} texture
-     * Texture to activate
+     * Texture to activate.
      */
     WGLShader.prototype.setTexture = function (texture) {
         if (this.gl && this.shaderProgram) {
@@ -442,11 +462,12 @@ var WGLShader = /** @class */ (function () {
     /**
      * Set a uniform value.
      * This uses a hash map to cache uniform locations.
-     * @private
+     *
+     * @internal
      * @param {string} name
      * Name of the uniform to set.
      * @param {number} val
-     * Value to set
+     * Value to set.
      */
     WGLShader.prototype.setUniform = function (name, val) {
         if (this.gl && this.shaderProgram) {
@@ -462,4 +483,5 @@ var WGLShader = /** @class */ (function () {
  *  Default Export
  *
  * */
+/** @internal */
 export default WGLShader;

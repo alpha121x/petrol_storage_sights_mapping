@@ -1,13 +1,16 @@
+// SPDX-License-Identifier: LicenseRef-Highcharts
 /**
- * @license Highcharts Gantt JS v12.3.0 (2025-06-21)
- * @module highcharts/modules/pathfinder
+ * @license Highcharts Gantt JS v12.5.0 (2026-01-12)
+ * @module highcharts/modules/gantt
  * @requires highcharts
  *
- * Pathfinder
+ * Gantt series
  *
- * (c) 2016-2025 Øystein Moseng
+ * (c) 2016-2026 Highsoft AS
+ * Author: Lars A. V. Cabrera
  *
- * License: www.highcharts.com/license
+ * A commercial license may be required depending on use.
+ * See www.highcharts.com/license
  */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
@@ -170,12 +173,12 @@ var highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default 
 ;// ./code/es5/es-modules/Extensions/ArrowSymbols.js
 /* *
  *
- *  (c) 2017 Highsoft AS
+ *  (c) 2017-2026 Highsoft AS
  *  Authors: Lars A. V. Cabrera
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -196,7 +199,7 @@ var highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default 
  *                   o
  * ```
  *
- * @private
+ * @internal
  * @function
  *
  * @param {number} x
@@ -232,7 +235,7 @@ function arrow(x, y, w, h) {
  *       o
  * ```
  *
- * @private
+ * @internal
  * @function
  *
  * @param {number} x
@@ -254,7 +257,12 @@ function arrowHalf(x, y, w, h) {
     return arrow(x, y, w / 2, h);
 }
 /**
- * @private
+ * Adds the arrow symbols to the SVGRenderer.
+ *
+ * @internal
+ *
+ * @param SVGRendererClass
+ * The SVGRenderer class to extend.
  */
 function compose(SVGRendererClass) {
     var symbols = SVGRendererClass.prototype.symbols;
@@ -275,7 +283,7 @@ function compose(SVGRendererClass) {
  *             o
  * ```
  *
- * @private
+ * @internal
  * @function
  *
  * @param {number} x
@@ -311,7 +319,7 @@ function triangleLeft(x, y, w, h) {
  *       o
  * ```
  *
- * @private
+ * @internal
  * @function
  *
  * @param {number} x
@@ -345,12 +353,12 @@ var ArrowSymbols = {
 ;// ./code/es5/es-modules/Gantt/Connection.js
 /* *
  *
- *  (c) 2016 Highsoft AS
+ *  (c) 2016-2026 Highsoft AS
  *  Authors: Øystein Moseng, Lars A. V. Cabrera
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -372,7 +380,7 @@ var deg2rad = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highchar
  * The Connection class. Used internally to represent a connection between two
  * points.
  *
- * @private
+ * @internal
  * @class
  * @name Highcharts.Connection
  *
@@ -386,6 +394,7 @@ var deg2rad = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highchar
  *        Connection options.
  */
 var Connection = /** @class */ (function () {
+    /** @internal */
     function Connection(from, to, options) {
         this.init(from, to, options);
     }
@@ -694,6 +703,7 @@ var Connection = /** @class */ (function () {
  *  Default Export
  *
  * */
+/** @internal */
 /* harmony default export */ var Gantt_Connection = (Connection);
 /* *
  *
@@ -727,13 +737,13 @@ var Connection = /** @class */ (function () {
 ;// ./code/es5/es-modules/Extensions/CurrentDateIndication.js
 /* *
  *
- *  (c) 2016-2025 Highsoft AS
+ *  (c) 2016-2026 Highsoft AS
  *
  *  Author: Lars A. V. Cabrera
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -798,9 +808,7 @@ var defaultOptions = {
  *  Functions
  *
  * */
-/**
- * @private
- */
+/** @internal */
 function CurrentDateIndication_compose(AxisClass, PlotLineOrBandClass) {
     if (pushUnique(composed, 'CurrentDateIndication')) {
         addEvent(AxisClass, 'afterSetOptions', onAxisAfterSetOptions);
@@ -808,9 +816,7 @@ function CurrentDateIndication_compose(AxisClass, PlotLineOrBandClass) {
         wrap(PlotLineOrBandClass.prototype, 'getLabelText', wrapPlotLineOrBandGetLabelText);
     }
 }
-/**
- * @private
- */
+/** @internal */
 function onAxisAfterSetOptions() {
     var options = this.options,
         cdiOptions = options.currentDateIndicator;
@@ -827,9 +833,7 @@ function onAxisAfterSetOptions() {
         options.plotLines.push(plotLineOptions);
     }
 }
-/**
- * @private
- */
+/** @internal */
 function onPlotLineOrBandRender() {
     // If the label already exists, update its text
     if (this.label) {
@@ -838,9 +842,7 @@ function onPlotLineOrBandRender() {
         });
     }
 }
-/**
- * @private
- */
+/** @internal */
 function wrapPlotLineOrBandGetLabelText(defaultMethod, defaultLabelOptions) {
     var options = this.options;
     if (options &&
@@ -870,13 +872,13 @@ var highcharts_Chart_commonjs_highcharts_Chart_commonjs2_highcharts_Chart_root_H
 ;// ./code/es5/es-modules/Core/Chart/GanttChart.js
 /* *
  *
- *  (c) 2016-2025 Highsoft AS
+ *  (c) 2016-2026 Highsoft AS
  *
  *  Author: Lars A. V. Cabrera
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -1035,6 +1037,7 @@ var GanttChart = /** @class */ (function (_super) {
  *  Class Namespace
  *
  * */
+/** @internal */
 (function (GanttChart) {
     /* *
      *
@@ -1094,11 +1097,12 @@ var highcharts_Axis_commonjs_highcharts_Axis_commonjs2_highcharts_Axis_root_High
 ;// ./code/es5/es-modules/Stock/Navigator/ChartNavigatorComposition.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -1292,11 +1296,12 @@ var ChartNavigatorComposition = {
 ;// ./code/es5/es-modules/Core/Axis/NavigatorAxisComposition.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -1309,9 +1314,7 @@ var NavigatorAxisComposition_addEvent = (highcharts_commonjs_highcharts_commonjs
  *  Functions
  *
  * */
-/**
- * @private
- */
+/** @internal */
 function onAxisInit() {
     var axis = this;
     if (!axis.navigatorAxis) {
@@ -1322,7 +1325,7 @@ function onAxisInit() {
  * For Stock charts, override selection zooming with some special features
  * because X axis zooming is already allowed by the Navigator and Range
  * selector.
- * @private
+ * @internal
  */
 function onAxisSetExtremes(e) {
     var axis = this,
@@ -1369,10 +1372,7 @@ function onAxisSetExtremes(e) {
  *  Class
  *
  * */
-/**
- * @private
- * @class
- */
+/** @internal */
 var NavigatorAxisAdditions = /** @class */ (function () {
     /* *
      *
@@ -1387,9 +1387,6 @@ var NavigatorAxisAdditions = /** @class */ (function () {
      *  Static Functions
      *
      * */
-    /**
-     * @private
-     */
     NavigatorAxisAdditions.compose = function (AxisClass) {
         if (!AxisClass.keepProps.includes('navigatorAxis')) {
             AxisClass.keepProps.push('navigatorAxis');
@@ -1402,9 +1399,6 @@ var NavigatorAxisAdditions = /** @class */ (function () {
      *  Functions
      *
      * */
-    /**
-     * @private
-     */
     NavigatorAxisAdditions.prototype.destroy = function () {
         this.axis = void 0;
     };
@@ -1412,7 +1406,7 @@ var NavigatorAxisAdditions = /** @class */ (function () {
      * Add logic to normalize the zoomed range in order to preserve the pressed
      * state of range selector buttons
      *
-     * @private
+     * @internal
      * @function Highcharts.Axis#toFixedRange
      */
     NavigatorAxisAdditions.prototype.toFixedRange = function (pxMin, pxMax, fixedMin, fixedMax) {
@@ -1446,6 +1440,7 @@ var NavigatorAxisAdditions = /** @class */ (function () {
  *  Default Export
  *
  * */
+/** @internal */
 /* harmony default export */ var NavigatorAxisComposition = (NavigatorAxisAdditions);
 
 // EXTERNAL MODULE: external {"amd":["highcharts/highcharts","Color"],"commonjs":["highcharts","Color"],"commonjs2":["highcharts","Color"],"root":["Highcharts","Color"]}
@@ -1457,11 +1452,12 @@ var highcharts_SeriesRegistry_commonjs_highcharts_SeriesRegistry_commonjs2_highc
 ;// ./code/es5/es-modules/Stock/Navigator/NavigatorDefaults.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -1816,7 +1812,6 @@ var NavigatorDefaults = {
          *
          * In Highcharts Stock version < 8, defaults to 0.
          *
-         * @extends plotOptions.series.pointRange
          * @type {number|null}
          * @apioption navigator.series.pointRange
          */
@@ -1986,11 +1981,12 @@ var NavigatorDefaults = {
 ;// ./code/es5/es-modules/Core/Renderer/SVG/Symbols.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -2003,7 +1999,20 @@ var Symbols_defined = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_
  * */
 /* eslint-disable require-jsdoc, valid-jsdoc */
 /**
+ * Arc symbol path.
  *
+ * @param {number} cx
+ * Center X
+ * @param {number} cy
+ * Center Y
+ * @param {number} w
+ * Width
+ * @param {number} h
+ * Height
+ * @param {Highcharts.SymbolOptions} [options]
+ * Options
+ * @return {Highcharts.SVGPathArray}
+ * Path
  */
 function arc(cx, cy, w, h, options) {
     var arc = [];
@@ -2091,6 +2100,19 @@ function arc(cx, cy, w, h, options) {
 }
 /**
  * Callout shape used for default tooltips.
+ *
+ * @param {number} cx
+ * Center X
+ * @param {number} cy
+ * Center Y
+ * @param {number} w
+ * Width
+ * @param {number} h
+ * Height
+ * @param {Highcharts.SymbolOptions} [options]
+ * Options
+ * @return {Highcharts.SVGPathArray}
+ * Path
  */
 function callout(x, y, w, h, options) {
     var arrowLength = 6,
@@ -2165,7 +2187,18 @@ function callout(x, y, w, h, options) {
     return path;
 }
 /**
+ * Circle symbol path.
  *
+ * @param {number} x
+ * X coordinate
+ * @param {number} y
+ * Y coordinate
+ * @param {number} w
+ * Width
+ * @param {number} h
+ * Height
+ * @return {Highcharts.SVGPathArray}
+ * Path
  */
 function circle(x, y, w, h) {
     // Return a full arc
@@ -2176,7 +2209,18 @@ function circle(x, y, w, h) {
     });
 }
 /**
+ * Diamond symbol path.
  *
+ * @param {number} x
+ * X coordinate
+ * @param {number} y
+ * Y coordinate
+ * @param {number} w
+ * Width
+ * @param {number} h
+ * Height
+ * @return {Highcharts.SVGPathArray}
+ * Path
  */
 function diamond(x, y, w, h) {
     return [
@@ -2189,7 +2233,20 @@ function diamond(x, y, w, h) {
 }
 // #15291
 /**
+ * Rect symbol path.
  *
+ * @param {number} x
+ * X coordinate
+ * @param {number} y
+ * Y coordinate
+ * @param {number} w
+ * Width
+ * @param {number} h
+ * Height
+ * @param {Highcharts.SymbolOptions} [options]
+ * Options
+ * @return {Highcharts.SVGPathArray}
+ * Path
  */
 function rect(x, y, w, h, options) {
     if (options === null || options === void 0 ? void 0 : options.r) {
@@ -2204,7 +2261,20 @@ function rect(x, y, w, h, options) {
     ];
 }
 /**
+ * Rounded rectangle symbol path.
  *
+ * @param {number} x
+ * X coordinate
+ * @param {number} y
+ * Y coordinate
+ * @param {number} w
+ * Width
+ * @param {number} h
+ * Height
+ * @param {Highcharts.SymbolOptions} [options]
+ * Options
+ * @return {Highcharts.SVGPathArray}
+ * Path
  */
 function roundedRect(x, y, w, h, options) {
     var r = (options === null || options === void 0 ? void 0 : options.r) || 0;
@@ -2222,7 +2292,18 @@ function roundedRect(x, y, w, h, options) {
     ];
 }
 /**
+ * Triangle symbol path.
  *
+ * @param {number} x
+ * X coordinate
+ * @param {number} y
+ * Y coordinate
+ * @param {number} w
+ * Width
+ * @param {number} h
+ * Height
+ * @return {Highcharts.SVGPathArray}
+ * Path
  */
 function triangle(x, y, w, h) {
     return [
@@ -2233,7 +2314,18 @@ function triangle(x, y, w, h) {
     ];
 }
 /**
+ * Inverted triangle symbol path.
  *
+ * @param {number} x
+ * X coordinate
+ * @param {number} y
+ * Y coordinate
+ * @param {number} w
+ * Width
+ * @param {number} h
+ * Height
+ * @return {Highcharts.SVGPathArray}
+ * Path
  */
 function triangleDown(x, y, w, h) {
     return [
@@ -2244,14 +2336,150 @@ function triangleDown(x, y, w, h) {
     ];
 }
 var Symbols = {
+    /**
+     * Arc symbol path.
+     *
+     * @param {number} cx
+     * Center X
+     * @param {number} cy
+     * Center Y
+     * @param {number} w
+     * Width
+     * @param {number} h
+     * Height
+     * @param {Highcharts.SymbolOptions} [options]
+     * Options
+     * @return {Highcharts.SVGPathArray}
+     * Path
+     */
     arc: arc,
+    /**
+     * Callout shape used for default tooltips.
+     *
+     * @param {number} cx
+     * Center X
+     * @param {number} cy
+     * Center Y
+     * @param {number} w
+     * Width
+     * @param {number} h
+     * Height
+     * @param {Highcharts.SymbolOptions} [options]
+     * Options
+     * @return {Highcharts.SVGPathArray}
+     * Path
+     */
     callout: callout,
+    /**
+     * Circle symbol path.
+     *
+     * @param {number} x
+     * X coordinate
+     * @param {number} y
+     * Y coordinate
+     * @param {number} w
+     * Width
+     * @param {number} h
+     * Height
+     * @return {Highcharts.SVGPathArray}
+     * Path
+     */
     circle: circle,
+    /**
+     * Diamond symbol path.
+     *
+     * @param {number} x
+     * X coordinate
+     * @param {number} y
+     * Y coordinate
+     * @param {number} w
+     * Width
+     * @param {number} h
+     * Height
+     * @return {Highcharts.SVGPathArray}
+     * Path
+     */
     diamond: diamond,
+    /**
+     * Rect symbol path.
+     *
+     * @param {number} x
+     * X coordinate
+     * @param {number} y
+     * Y coordinate
+     * @param {number} w
+     * Width
+     * @param {number} h
+     * Height
+     * @param {Highcharts.SymbolOptions} [options]
+     * Options
+     * @return {Highcharts.SVGPathArray}
+     * Path
+     */
     rect: rect,
+    /**
+     * Rounded rectangle symbol path.
+     *
+     * @param {number} x
+     * X coordinate
+     * @param {number} y
+     * Y coordinate
+     * @param {number} w
+     * Width
+     * @param {number} h
+     * Height
+     * @param {Highcharts.SymbolOptions} [options]
+     * Options
+     * @return {Highcharts.SVGPathArray}
+     * Path
+     */
     roundedRect: roundedRect,
+    /**
+     * Rect symbol path.
+     *
+     * @param {number} x
+     * X coordinate
+     * @param {number} y
+     * Y coordinate
+     * @param {number} w
+     * Width
+     * @param {number} h
+     * Height
+     * @param {Highcharts.SymbolOptions} [options]
+     * Options
+     * @return {Highcharts.SVGPathArray}
+     * Path
+     */
     square: rect,
+    /**
+     * Triangle symbol path.
+     *
+     * @param {number} x
+     * X coordinate
+     * @param {number} y
+     * Y coordinate
+     * @param {number} w
+     * Width
+     * @param {number} h
+     * Height
+     * @return {Highcharts.SVGPathArray}
+     * Path
+     */
     triangle: triangle,
+    /**
+     * Inverted triangle symbol path.
+     *
+     * @param {number} x
+     * X coordinate
+     * @param {number} number
+     * Y coordinate
+     * @param {number} w
+     * Width
+     * @param {number} h
+     * Height
+     * @return {Highcharts.SVGPathArray}
+     * Path
+     */
     'triangle-down': triangleDown
 };
 /* *
@@ -2260,15 +2488,70 @@ var Symbols = {
  *
  * */
 /* harmony default export */ var SVG_Symbols = (Symbols);
+/* *
+ *
+ *  API Declarations
+ *
+ * */
+/**
+ * @interface Highcharts.SymbolOptions
+ */ /**
+* @name anchorX
+* @type {number|undefined}
+*/ /**
+* @name anchorY
+* @type {number|undefined}
+*/ /**
+* @name backgroundSize
+* @type {"contain"|"cover"|"within"}
+*/ /**
+* @name clockwise
+* @type {0|1|undefined}
+*/ /**
+* @name context
+* @type {string|undefined}
+*/ /**
+* @name end
+* @type {number|undefined}
+*/ /**
+* @name height
+* @type {number|undefined}
+*/ /**
+* @name innerR
+* @type {number|undefined}
+*/ /**
+* @name longArc
+* @type {0|1|undefined}
+*/ /**
+* @name open
+* @type {boolean|undefined}
+*/ /**
+* @name r
+* @type {number|undefined}
+*/ /**
+* @name start
+* @type {number|undefined}
+*/ /**
+* @name width
+* @type {number|undefined}
+*/ /**
+* @name x
+* @type {number|undefined}
+*/ /**
+* @name y
+* @type {number|undefined}
+*/
+''; // Keeps doclets above in file
 
 ;// ./code/es5/es-modules/Stock/Navigator/NavigatorSymbols.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -2324,11 +2607,12 @@ var highcharts_RendererRegistry_commonjs_highcharts_RendererRegistry_commonjs2_h
 ;// ./code/es5/es-modules/Stock/Utilities/StockUtilities.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -2367,11 +2651,12 @@ var StockUtilities = {
 ;// ./code/es5/es-modules/Stock/Navigator/NavigatorComposition.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -2432,23 +2717,25 @@ var NavigatorComposition = {
 ;// ./code/es5/es-modules/Core/Axis/ScrollbarAxis.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
 
 var ScrollbarAxis_composed = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).composed;
 
-var ScrollbarAxis_addEvent = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).addEvent, ScrollbarAxis_defined = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).defined, ScrollbarAxis_pick = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).pick, ScrollbarAxis_pushUnique = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).pushUnique;
+var ScrollbarAxis_addEvent = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).addEvent, ScrollbarAxis_correctFloat = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).correctFloat, ScrollbarAxis_defined = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).defined, ScrollbarAxis_pick = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).pick, ScrollbarAxis_pushUnique = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).pushUnique;
 /* *
  *
  *  Composition
  *
  * */
+/** @internal */
 var ScrollbarAxis;
 (function (ScrollbarAxis) {
     /* *
@@ -2465,7 +2752,7 @@ var ScrollbarAxis;
     /**
      * Attaches to axis events to create scrollbars if enabled.
      *
-     * @private
+     * @internal
      *
      * @param {Highcharts.Axis} AxisClass
      * Axis class to extend.
@@ -2482,10 +2769,16 @@ var ScrollbarAxis;
         }
     }
     ScrollbarAxis.compose = compose;
-    /** @private */
+    /** @internal */
     function getExtremes(axis) {
         var _a,
-            _b;
+            _b,
+            _c,
+            _d,
+            _e,
+            _f,
+            _g,
+            _h;
         var axisMin = ScrollbarAxis_pick((_a = axis.options) === null || _a === void 0 ? void 0 : _a.min,
             axis.min);
         var axisMax = ScrollbarAxis_pick((_b = axis.options) === null || _b === void 0 ? void 0 : _b.max,
@@ -2494,14 +2787,15 @@ var ScrollbarAxis;
             axisMin: axisMin,
             axisMax: axisMax,
             scrollMin: ScrollbarAxis_defined(axis.dataMin) ?
-                Math.min(axisMin, axis.min, axis.dataMin, ScrollbarAxis_pick(axis.threshold, Infinity)) : axisMin,
-            scrollMax: ScrollbarAxis_defined(axis.dataMax) ?
-                Math.max(axisMax, axis.max, axis.dataMax, ScrollbarAxis_pick(axis.threshold, -Infinity)) : axisMax
+                Math.min(axisMin, (_c = axis.min) !== null && _c !== void 0 ? _c : Infinity, axis.dataMin, (_d = axis.threshold) !== null && _d !== void 0 ? _d : Infinity) : axisMin,
+            scrollMax: (_f = (_e = axis.treeGrid) === null || _e === void 0 ? void 0 : _e.adjustedMax) !== null && _f !== void 0 ? _f : (ScrollbarAxis_defined(axis.dataMax) ?
+                Math.max(axisMax, (_g = axis.max) !== null && _g !== void 0 ? _g : -Infinity, axis.dataMax, (_h = axis.threshold) !== null && _h !== void 0 ? _h : -Infinity) :
+                axisMax)
         };
     }
     /**
      * Make space for a scrollbar.
-     * @private
+     * @internal
      */
     function onAxisAfterGetOffset() {
         var axis = this,
@@ -2517,7 +2811,7 @@ var ScrollbarAxis;
     }
     /**
      * Wrap axis initialization and create scrollbar if enabled.
-     * @private
+     * @internal
      */
     function onAxisAfterInit() {
         var _a,
@@ -2534,7 +2828,9 @@ var ScrollbarAxis;
                     axisMax = _a.axisMax,
                     unitedMin = _a.scrollMin,
                     unitedMax = _a.scrollMax,
-                    range = unitedMax - unitedMin;
+                    minPX = axis.toPixels(unitedMin),
+                    maxPX = axis.toPixels(unitedMax),
+                    rangePX = maxPX - minPX;
                 var to,
                     from;
                 // #12834, scroll when show/hide series, wrong extremes
@@ -2543,20 +2839,20 @@ var ScrollbarAxis;
                 }
                 if ((axis.horiz && !axis.reversed) ||
                     (!axis.horiz && axis.reversed)) {
-                    to = unitedMin + range * this.to;
-                    from = unitedMin + range * this.from;
+                    to = Math.min(unitedMax, axis.toValue(minPX + rangePX * this.to));
+                    from = Math.max(unitedMin, axis.toValue(minPX + rangePX * this.from));
                 }
                 else {
                     // Y-values in browser are reversed, but this also
                     // applies for reversed horizontal axis:
-                    to = unitedMin + range * (1 - this.from);
-                    from = unitedMin + range * (1 - this.to);
+                    to = Math.min(unitedMax, axis.toValue(minPX + rangePX * (1 - this.from)));
+                    from = Math.max(unitedMin, axis.toValue(minPX + rangePX * (1 - this.to)));
                 }
                 if (this.shouldUpdateExtremes(e.DOMType)) {
                     // #17977, set animation to undefined instead of true
                     var animate = e.DOMType === 'mousemove' ||
                             e.DOMType === 'touchmove' ? false : void 0;
-                    axis.setExtremes(from, to, true, animate, e);
+                    axis.setExtremes(ScrollbarAxis_correctFloat(from), ScrollbarAxis_correctFloat(to), true, animate, e);
                 }
                 else {
                     // When live redraw is disabled, don't change extremes
@@ -2568,7 +2864,7 @@ var ScrollbarAxis;
     }
     /**
      * Wrap rendering axis, and update scrollbar if one is created.
-     * @private
+     * @internal
      */
     function onAxisAfterRender() {
         var axis = this,
@@ -2576,7 +2872,7 @@ var ScrollbarAxis;
             scrollMin = _a.scrollMin,
             scrollMax = _a.scrollMax,
             scrollbar = axis.scrollbar,
-            offset = (axis.axisTitleMargin + (axis.titleOffset || 0)),
+            offset = (axis.axisTitleMargin || 0) + (axis.titleOffset || 0),
             scrollbarsOffsets = axis.chart.scrollbarsOffsets,
             axisMargin = axis.options.margin || 0;
         var offsetsIndex,
@@ -2628,8 +2924,9 @@ var ScrollbarAxis;
                 isNaN(scrollMax) ||
                 !ScrollbarAxis_defined(axis.min) ||
                 !ScrollbarAxis_defined(axis.max) ||
-                axis.dataMin === axis.dataMax // #10733
-            ) {
+                (ScrollbarAxis_defined(axis.dataMin) && // #23335
+                    axis.dataMin === axis.dataMax // #10733
+                )) {
                 // Default action: when data extremes are the same or there is
                 // not extremes on the axis, but scrollbar exists, make it
                 // full size
@@ -2646,10 +2943,10 @@ var ScrollbarAxis;
                 scrollbar.setRange(from, to);
             }
             else {
-                from = ((axis.min - scrollMin) /
-                    (scrollMax - scrollMin));
-                to = ((axis.max - scrollMin) /
-                    (scrollMax - scrollMin));
+                from = (axis.toPixels(axis.min) - axis.toPixels(scrollMin)) /
+                    (axis.toPixels(scrollMax) - axis.toPixels(scrollMin));
+                to = (axis.toPixels(axis.max) - axis.toPixels(scrollMin)) /
+                    (axis.toPixels(scrollMax) - axis.toPixels(scrollMin));
                 if ((axis.horiz && !axis.reversed) ||
                     (!axis.horiz && axis.reversed)) {
                     scrollbar.setRange(from, to);
@@ -2667,16 +2964,18 @@ var ScrollbarAxis;
  *  Default Export
  *
  * */
+/** @internal */
 /* harmony default export */ var Axis_ScrollbarAxis = (ScrollbarAxis);
 
 ;// ./code/es5/es-modules/Stock/Scrollbar/ScrollbarDefaults.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -2895,11 +3194,12 @@ var ScrollbarDefaults = {
 ;// ./code/es5/es-modules/Stock/Scrollbar/Scrollbar.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -3615,11 +3915,12 @@ var highcharts_SVGRenderer_commonjs_highcharts_SVGRenderer_commonjs2_highcharts_
 ;// ./code/es5/es-modules/Stock/Navigator/Navigator.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -5259,11 +5560,12 @@ var Navigator = /** @class */ (function () {
 ;// ./code/es5/es-modules/Stock/RangeSelector/RangeSelectorDefaults.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -5818,11 +6120,12 @@ var RangeSelectorDefaults = {
 ;// ./code/es5/es-modules/Stock/RangeSelector/RangeSelectorComposition.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -5988,6 +6291,10 @@ function RangeSelectorComposition_onChartBeforeRender() {
         }
     }
 }
+/**
+ * Redraw rangeSelector on chart redraw event
+ * @private
+ */
 function redrawRangeSelector() {
     var chart = this;
     var rangeSelector = this.rangeSelector;
@@ -6033,12 +6340,22 @@ function onChartDestroy() {
     }
 }
 /**
- *
+ * Reflow rangeSelector and adjust chart layout
+ * @private
  */
 function onChartGetMargins() {
     var _a;
     var rangeSelector = this.rangeSelector;
     if ((_a = rangeSelector === null || rangeSelector === void 0 ? void 0 : rangeSelector.options) === null || _a === void 0 ? void 0 : _a.enabled) {
+        // Rerender rangeSelector in order to return correct plotHeight, #23058
+        var _b = this.xAxis[0].getExtremes(),
+            min = _b.min,
+            max = _b.max;
+        if (RangeSelectorComposition_isNumber(min) &&
+            rangeSelector.inputGroup &&
+            rangeSelector.inputGroup.getBBox().width < 20) {
+            rangeSelector.render(min, max);
+        }
         var rangeSelectorHeight = rangeSelector.getHeight();
         var verticalAlign = rangeSelector.options.verticalAlign;
         if (!rangeSelector.options.floating) {
@@ -6103,1630 +6420,15 @@ var highcharts_SVGElement_commonjs_highcharts_SVGElement_commonjs2_highcharts_SV
 // EXTERNAL MODULE: external {"amd":["highcharts/highcharts","Templating"],"commonjs":["highcharts","Templating"],"commonjs2":["highcharts","Templating"],"root":["Highcharts","Templating"]}
 var highcharts_Templating_commonjs_highcharts_Templating_commonjs2_highcharts_Templating_root_Highcharts_Templating_ = __webpack_require__(984);
 var highcharts_Templating_commonjs_highcharts_Templating_commonjs2_highcharts_Templating_root_Highcharts_Templating_default = /*#__PURE__*/__webpack_require__.n(highcharts_Templating_commonjs_highcharts_Templating_commonjs2_highcharts_Templating_root_Highcharts_Templating_);
-;// ./code/es5/es-modules/Data/ColumnUtils.js
-/* *
- *
- *  (c) 2020-2025 Highsoft AS
- *
- *  License: www.highcharts.com/license
- *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
- *
- *  Authors:
- *  - Dawid Dragula
- *
- * */
-var ColumnUtils_spreadArray = (undefined && undefined.__spreadArray) || function (to, from, pack) {
-    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
-        if (ar || !(i in from)) {
-            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
-            ar[i] = from[i];
-        }
-    }
-    return to.concat(ar || Array.prototype.slice.call(from));
-};
-/**
- * Utility functions for columns that can be either arrays or typed arrays.
- * @private
- */
-var ColumnUtils;
-(function (ColumnUtils) {
-    /* *
-    *
-    *  Declarations
-    *
-    * */
-    /* *
-    *
-    * Functions
-    *
-    * */
-    /**
-     * Sets the length of the column array.
-     *
-     * @param {DataTable.Column} column
-     * Column to be modified.
-     *
-     * @param {number} length
-     * New length of the column.
-     *
-     * @param {boolean} asSubarray
-     * If column is a typed array, return a subarray instead of a new array. It
-     * is faster `O(1)`, but the entire buffer will be kept in memory until all
-     * views to it are destroyed. Default is `false`.
-     *
-     * @return {DataTable.Column}
-     * Modified column.
-     *
-     * @private
-     */
-    function setLength(column, length, asSubarray) {
-        if (Array.isArray(column)) {
-            column.length = length;
-            return column;
-        }
-        return column[asSubarray ? 'subarray' : 'slice'](0, length);
-    }
-    ColumnUtils.setLength = setLength;
-    /**
-     * Splices a column array.
-     *
-     * @param {DataTable.Column} column
-     * Column to be modified.
-     *
-     * @param {number} start
-     * Index at which to start changing the array.
-     *
-     * @param {number} deleteCount
-     * An integer indicating the number of old array elements to remove.
-     *
-     * @param {boolean} removedAsSubarray
-     * If column is a typed array, return a subarray instead of a new array. It
-     * is faster `O(1)`, but the entire buffer will be kept in memory until all
-     * views to it are destroyed. Default is `true`.
-     *
-     * @param {Array<number>|TypedArray} items
-     * The elements to add to the array, beginning at the start index. If you
-     * don't specify any elements, `splice()` will only remove elements from the
-     * array.
-     *
-     * @return {SpliceResult}
-     * Object containing removed elements and the modified column.
-     *
-     * @private
-     */
-    function splice(column, start, deleteCount, removedAsSubarray, items) {
-        if (items === void 0) { items = []; }
-        if (Array.isArray(column)) {
-            if (!Array.isArray(items)) {
-                items = Array.from(items);
-            }
-            return {
-                removed: column.splice.apply(column, ColumnUtils_spreadArray([start, deleteCount], items, false)),
-                array: column
-            };
-        }
-        var Constructor = Object.getPrototypeOf(column)
-                .constructor;
-        var removed = column[removedAsSubarray ? 'subarray' : 'slice'](start,
-            start + deleteCount);
-        var newLength = column.length - deleteCount + items.length;
-        var result = new Constructor(newLength);
-        result.set(column.subarray(0, start), 0);
-        result.set(items, start);
-        result.set(column.subarray(start + deleteCount), start + items.length);
-        return {
-            removed: removed,
-            array: result
-        };
-    }
-    ColumnUtils.splice = splice;
-})(ColumnUtils || (ColumnUtils = {}));
-/* *
- *
- *  Default Export
- *
- * */
-/* harmony default export */ var Data_ColumnUtils = (ColumnUtils);
-
-;// ./code/es5/es-modules/Data/DataTableCore.js
-/* *
- *
- *  (c) 2009-2025 Highsoft AS
- *
- *  License: www.highcharts.com/license
- *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
- *
- *  Authors:
- *  - Sophie Bremer
- *  - Gøran Slettemark
- *  - Torstein Hønsi
- *
- * */
-
-
-var setLength = Data_ColumnUtils.setLength, splice = Data_ColumnUtils.splice;
-
-var DataTableCore_fireEvent = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).fireEvent, DataTableCore_objectEach = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).objectEach, uniqueKey = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).uniqueKey;
-/* *
- *
- *  Class
- *
- * */
-/**
- * Class to manage columns and rows in a table structure. It provides methods
- * to add, remove, and manipulate columns and rows, as well as to retrieve data
- * from specific cells.
- *
- * @class
- * @name Highcharts.DataTable
- *
- * @param {Highcharts.DataTableOptions} [options]
- * Options to initialize the new DataTable instance.
- */
-var DataTableCore = /** @class */ (function () {
-    /**
-     * Constructs an instance of the DataTable class.
-     *
-     * @example
-     * const dataTable = new Highcharts.DataTableCore({
-     *   columns: {
-     *     year: [2020, 2021, 2022, 2023],
-     *     cost: [11, 13, 12, 14],
-     *     revenue: [12, 15, 14, 18]
-     *   }
-     * });
-
-     *
-     * @param {Highcharts.DataTableOptions} [options]
-     * Options to initialize the new DataTable instance.
-     */
-    function DataTableCore(options) {
-        if (options === void 0) { options = {}; }
-        var _this = this;
-        /**
-         * Whether the ID was automatic generated or given in the constructor.
-         *
-         * @name Highcharts.DataTable#autoId
-         * @type {boolean}
-         */
-        this.autoId = !options.id;
-        this.columns = {};
-        /**
-         * ID of the table for identification purposes.
-         *
-         * @name Highcharts.DataTable#id
-         * @type {string}
-         */
-        this.id = (options.id || uniqueKey());
-        this.modified = this;
-        this.rowCount = 0;
-        this.versionTag = uniqueKey();
-        var rowCount = 0;
-        DataTableCore_objectEach(options.columns || {}, function (column, columnName) {
-            _this.columns[columnName] = column.slice();
-            rowCount = Math.max(rowCount, column.length);
-        });
-        this.applyRowCount(rowCount);
-    }
-    /* *
-     *
-     *  Functions
-     *
-     * */
-    /**
-     * Applies a row count to the table by setting the `rowCount` property and
-     * adjusting the length of all columns.
-     *
-     * @private
-     * @param {number} rowCount The new row count.
-     */
-    DataTableCore.prototype.applyRowCount = function (rowCount) {
-        var _this = this;
-        this.rowCount = rowCount;
-        DataTableCore_objectEach(this.columns, function (column, columnName) {
-            if (column.length !== rowCount) {
-                _this.columns[columnName] = setLength(column, rowCount);
-            }
-        });
-    };
-    /**
-     * Delete rows. Simplified version of the full
-     * `DataTable.deleteRows` method.
-     *
-     * @param {number} rowIndex
-     * The start row index
-     *
-     * @param {number} [rowCount=1]
-     * The number of rows to delete
-     *
-     * @return {void}
-     *
-     * @emits #afterDeleteRows
-     */
-    DataTableCore.prototype.deleteRows = function (rowIndex, rowCount) {
-        var _this = this;
-        if (rowCount === void 0) { rowCount = 1; }
-        if (rowCount > 0 && rowIndex < this.rowCount) {
-            var length_1 = 0;
-            DataTableCore_objectEach(this.columns, function (column, columnName) {
-                _this.columns[columnName] =
-                    splice(column, rowIndex, rowCount).array;
-                length_1 = column.length;
-            });
-            this.rowCount = length_1;
-        }
-        DataTableCore_fireEvent(this, 'afterDeleteRows', { rowIndex: rowIndex, rowCount: rowCount });
-        this.versionTag = uniqueKey();
-    };
-    /**
-     * Fetches the given column by the canonical column name. Simplified version
-     * of the full `DataTable.getRow` method, always returning by reference.
-     *
-     * @param {string} columnName
-     * Name of the column to get.
-     *
-     * @return {Highcharts.DataTableColumn|undefined}
-     * A copy of the column, or `undefined` if not found.
-     */
-    DataTableCore.prototype.getColumn = function (columnName, 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    asReference) {
-        return this.columns[columnName];
-    };
-    /**
-     * Retrieves all or the given columns. Simplified version of the full
-     * `DataTable.getColumns` method, always returning by reference.
-     *
-     * @param {Array<string>} [columnNames]
-     * Column names to retrieve.
-     *
-     * @return {Highcharts.DataTableColumnCollection}
-     * Collection of columns. If a requested column was not found, it is
-     * `undefined`.
-     */
-    DataTableCore.prototype.getColumns = function (columnNames, 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    asReference) {
-        var _this = this;
-        return (columnNames || Object.keys(this.columns)).reduce(function (columns, columnName) {
-            columns[columnName] = _this.columns[columnName];
-            return columns;
-        }, {});
-    };
-    /**
-     * Retrieves the row at a given index.
-     *
-     * @param {number} rowIndex
-     * Row index to retrieve. First row has index 0.
-     *
-     * @param {Array<string>} [columnNames]
-     * Column names to retrieve.
-     *
-     * @return {Record<string, number|string|undefined>|undefined}
-     * Returns the row values, or `undefined` if not found.
-     */
-    DataTableCore.prototype.getRow = function (rowIndex, columnNames) {
-        var _this = this;
-        return (columnNames || Object.keys(this.columns)).map(function (key) { var _a; return (_a = _this.columns[key]) === null || _a === void 0 ? void 0 : _a[rowIndex]; });
-    };
-    /**
-     * Sets cell values for a column. Will insert a new column, if not found.
-     *
-     * @param {string} columnName
-     * Column name to set.
-     *
-     * @param {Highcharts.DataTableColumn} [column]
-     * Values to set in the column.
-     *
-     * @param {number} [rowIndex]
-     * Index of the first row to change. (Default: 0)
-     *
-     * @param {Record<string, (boolean|number|string|null|undefined)>} [eventDetail]
-     * Custom information for pending events.
-     *
-     * @emits #setColumns
-     * @emits #afterSetColumns
-     */
-    DataTableCore.prototype.setColumn = function (columnName, column, rowIndex, eventDetail) {
-        var _a;
-        if (column === void 0) { column = []; }
-        if (rowIndex === void 0) { rowIndex = 0; }
-        this.setColumns((_a = {}, _a[columnName] = column, _a), rowIndex, eventDetail);
-    };
-    /**
-     * Sets cell values for multiple columns. Will insert new columns, if not
-     * found. Simplified version of the full `DataTableCore.setColumns`, limited
-     * to full replacement of the columns (undefined `rowIndex`).
-     *
-     * @param {Highcharts.DataTableColumnCollection} columns
-     * Columns as a collection, where the keys are the column names.
-     *
-     * @param {number} [rowIndex]
-     * Index of the first row to change. Ignored in the `DataTableCore`, as it
-     * always replaces the full column.
-     *
-     * @param {Record<string, (boolean|number|string|null|undefined)>} [eventDetail]
-     * Custom information for pending events.
-     *
-     * @emits #setColumns
-     * @emits #afterSetColumns
-     */
-    DataTableCore.prototype.setColumns = function (columns, rowIndex, eventDetail) {
-        var _this = this;
-        var rowCount = this.rowCount;
-        DataTableCore_objectEach(columns, function (column, columnName) {
-            _this.columns[columnName] = column.slice();
-            rowCount = column.length;
-        });
-        this.applyRowCount(rowCount);
-        if (!(eventDetail === null || eventDetail === void 0 ? void 0 : eventDetail.silent)) {
-            DataTableCore_fireEvent(this, 'afterSetColumns');
-            this.versionTag = uniqueKey();
-        }
-    };
-    /**
-     * Sets cell values of a row. Will insert a new row if no index was
-     * provided, or if the index is higher than the total number of table rows.
-     * A simplified version of the full `DateTable.setRow`, limited to objects.
-     *
-     * @param {Record<string, number|string|undefined>} row
-     * Cell values to set.
-     *
-     * @param {number} [rowIndex]
-     * Index of the row to set. Leave `undefined` to add as a new row.
-     *
-     * @param {boolean} [insert]
-     * Whether to insert the row at the given index, or to overwrite the row.
-     *
-     * @param {Record<string, (boolean|number|string|null|undefined)>} [eventDetail]
-     * Custom information for pending events.
-     *
-     * @emits #afterSetRows
-     */
-    DataTableCore.prototype.setRow = function (row, rowIndex, insert, eventDetail) {
-        if (rowIndex === void 0) { rowIndex = this.rowCount; }
-        var columns = this.columns,
-            indexRowCount = insert ? this.rowCount + 1 : rowIndex + 1;
-        DataTableCore_objectEach(row, function (cellValue, columnName) {
-            var column = columns[columnName] ||
-                    (eventDetail === null || eventDetail === void 0 ? void 0 : eventDetail.addColumns) !== false && new Array(indexRowCount);
-            if (column) {
-                if (insert) {
-                    column = splice(column, rowIndex, 0, true, [cellValue]).array;
-                }
-                else {
-                    column[rowIndex] = cellValue;
-                }
-                columns[columnName] = column;
-            }
-        });
-        if (indexRowCount > this.rowCount) {
-            this.applyRowCount(indexRowCount);
-        }
-        if (!(eventDetail === null || eventDetail === void 0 ? void 0 : eventDetail.silent)) {
-            DataTableCore_fireEvent(this, 'afterSetRows');
-            this.versionTag = uniqueKey();
-        }
-    };
-    return DataTableCore;
-}());
-/* *
- *
- *  Default Export
- *
- * */
-/* harmony default export */ var Data_DataTableCore = (DataTableCore);
-/* *
- *
- *  API Declarations
- *
- * */
-/**
- * A typed array.
- * @typedef {Int8Array|Uint8Array|Uint8ClampedArray|Int16Array|Uint16Array|Int32Array|Uint32Array|Float32Array|Float64Array} Highcharts.TypedArray
- * //**
- * A column of values in a data table.
- * @typedef {Array<boolean|null|number|string|undefined>|Highcharts.TypedArray} Highcharts.DataTableColumn
- */ /**
-* A collection of data table columns defined by a object where the key is the
-* column name and the value is an array of the column values.
-* @typedef {Record<string, Highcharts.DataTableColumn>} Highcharts.DataTableColumnCollection
-*/
-/**
- * Options for the `DataTable` or `DataTableCore` classes.
- * @interface Highcharts.DataTableOptions
- */ /**
-* The column options for the data table. The columns are defined by an object
-* where the key is the column ID and the value is an array of the column
-* values.
-*
-* @name Highcharts.DataTableOptions.columns
-* @type {Highcharts.DataTableColumnCollection|undefined}
-*/ /**
-* Custom ID to identify the new DataTable instance.
-*
-* @name Highcharts.DataTableOptions.id
-* @type {string|undefined}
-*/
-(''); // Keeps doclets above in JS file
-
-;// ./code/es5/es-modules/Core/Axis/OrdinalAxis.js
-/* *
- *
- *  (c) 2010-2025 Torstein Honsi
- *
- *  License: www.highcharts.com/license
- *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
- *
- * */
-
-var OrdinalAxis_assign = (undefined && undefined.__assign) || function () {
-    OrdinalAxis_assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return OrdinalAxis_assign.apply(this, arguments);
-};
-
-
-
-
-var OrdinalAxis_addEvent = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).addEvent, OrdinalAxis_correctFloat = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).correctFloat, css = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).css, OrdinalAxis_defined = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).defined, OrdinalAxis_error = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).error, OrdinalAxis_isNumber = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).isNumber, OrdinalAxis_pick = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).pick, timeUnits = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).timeUnits, isString = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).isString;
-/* *
- *
- *  Composition
- *
- * */
-/**
- * Extends the axis with ordinal support.
- * @private
- */
-var OrdinalAxis;
-(function (OrdinalAxis) {
-    /* *
-     *
-     *  Declarations
-     *
-     * */
-    /* *
-     *
-     *  Functions
-     *
-     * */
-    /**
-     * Extends the axis with ordinal support.
-     *
-     * @private
-     *
-     * @param AxisClass
-     * Axis class to extend.
-     *
-     * @param ChartClass
-     * Chart class to use.
-     *
-     * @param SeriesClass
-     * Series class to use.
-     */
-    function compose(AxisClass, SeriesClass, ChartClass) {
-        var axisProto = AxisClass.prototype;
-        if (!axisProto.ordinal2lin) {
-            axisProto.getTimeTicks = getTimeTicks;
-            axisProto.index2val = index2val;
-            axisProto.lin2val = lin2val;
-            axisProto.val2lin = val2lin;
-            // Record this to prevent overwriting by broken-axis module (#5979)
-            axisProto.ordinal2lin = axisProto.val2lin;
-            OrdinalAxis_addEvent(AxisClass, 'afterInit', onAxisAfterInit);
-            OrdinalAxis_addEvent(AxisClass, 'foundExtremes', onAxisFoundExtremes);
-            OrdinalAxis_addEvent(AxisClass, 'afterSetScale', onAxisAfterSetScale);
-            OrdinalAxis_addEvent(AxisClass, 'initialAxisTranslation', onAxisInitialAxisTranslation);
-            OrdinalAxis_addEvent(ChartClass, 'pan', onChartPan);
-            OrdinalAxis_addEvent(ChartClass, 'touchpan', onChartPan);
-            OrdinalAxis_addEvent(SeriesClass, 'updatedData', onSeriesUpdatedData);
-        }
-        return AxisClass;
-    }
-    OrdinalAxis.compose = compose;
-    /**
-     * In an ordinal axis, there might be areas with dense concentrations of
-     * points, then large gaps between some. Creating equally distributed
-     * ticks over this entire range may lead to a huge number of ticks that
-     * will later be removed. So instead, break the positions up in
-     * segments, find the tick positions for each segment then concatenize
-     * them. This method is used from both data grouping logic and X axis
-     * tick position logic.
-     * @private
-     */
-    function getTimeTicks(normalizedInterval, min, max, startOfWeek, positions, closestDistance, findHigherRanks) {
-        if (positions === void 0) { positions = []; }
-        if (closestDistance === void 0) { closestDistance = 0; }
-        var higherRanks = {},
-            tickPixelIntervalOption = this.options.tickPixelInterval,
-            time = this.chart.time, 
-            // Record all the start positions of a segment, to use when
-            // deciding what's a gap in the data.
-            segmentStarts = [];
-        var end,
-            segmentPositions,
-            hasCrossedHigherRank,
-            info,
-            outsideMax,
-            start = 0,
-            groupPositions = [],
-            lastGroupPosition = -Number.MAX_VALUE;
-        // The positions are not always defined, for example for ordinal
-        // positions when data has regular interval (#1557, #2090)
-        if ((!this.options.ordinal && !this.options.breaks) ||
-            !positions ||
-            positions.length < 3 ||
-            typeof min === 'undefined') {
-            return time.getTimeTicks.apply(time, arguments);
-        }
-        // Analyze the positions array to split it into segments on gaps
-        // larger than 5 times the closest distance. The closest distance is
-        // already found at this point, so we reuse that instead of
-        // computing it again.
-        var posLength = positions.length;
-        for (end = 0; end < posLength; end++) {
-            outsideMax = end && positions[end - 1] > max;
-            if (positions[end] < min) { // Set the last position before min
-                start = end;
-            }
-            if (end === posLength - 1 ||
-                positions[end + 1] - positions[end] > closestDistance * 5 ||
-                outsideMax) {
-                // For each segment, calculate the tick positions from the
-                // getTimeTicks utility function. The interval will be the
-                // same regardless of how long the segment is.
-                if (positions[end] > lastGroupPosition) { // #1475
-                    segmentPositions = time.getTimeTicks(normalizedInterval, positions[start], positions[end], startOfWeek);
-                    // Prevent duplicate groups, for example for multiple
-                    // segments within one larger time frame (#1475)
-                    while (segmentPositions.length &&
-                        segmentPositions[0] <= lastGroupPosition) {
-                        segmentPositions.shift();
-                    }
-                    if (segmentPositions.length) {
-                        lastGroupPosition =
-                            segmentPositions[segmentPositions.length - 1];
-                    }
-                    segmentStarts.push(groupPositions.length);
-                    groupPositions = groupPositions.concat(segmentPositions);
-                }
-                // Set start of next segment
-                start = end + 1;
-            }
-            if (outsideMax) {
-                break;
-            }
-        }
-        // Get the grouping info from the last of the segments. The info is
-        // the same for all segments.
-        if (segmentPositions) {
-            info = segmentPositions.info;
-            // Optionally identify ticks with higher rank, for example
-            // when the ticks have crossed midnight.
-            if (findHigherRanks && info.unitRange <= timeUnits.hour) {
-                end = groupPositions.length - 1;
-                // Compare points two by two
-                for (start = 1; start < end; start++) {
-                    if (time.dateFormat('%d', groupPositions[start]) !==
-                        time.dateFormat('%d', groupPositions[start - 1])) {
-                        higherRanks[groupPositions[start]] = 'day';
-                        hasCrossedHigherRank = true;
-                    }
-                }
-                // If the complete array has crossed midnight, we want
-                // to mark the first positions also as higher rank
-                if (hasCrossedHigherRank) {
-                    higherRanks[groupPositions[0]] = 'day';
-                }
-                info.higherRanks = higherRanks;
-            }
-            // Save the info
-            info.segmentStarts = segmentStarts;
-            groupPositions.info = info;
-        }
-        else {
-            OrdinalAxis_error(12, false, this.chart);
-        }
-        // Don't show ticks within a gap in the ordinal axis, where the
-        // space between two points is greater than a portion of the tick
-        // pixel interval
-        if (findHigherRanks && OrdinalAxis_defined(tickPixelIntervalOption)) {
-            var length_1 = groupPositions.length,
-                translatedArr = [],
-                distances = [];
-            var itemToRemove = void 0,
-                translated = void 0,
-                lastTranslated = void 0,
-                medianDistance = void 0,
-                distance = void 0,
-                i = length_1;
-            // Find median pixel distance in order to keep a reasonably even
-            // distance between ticks (#748)
-            while (i--) {
-                translated = this.translate(groupPositions[i]);
-                if (lastTranslated) {
-                    distances[i] = lastTranslated - translated;
-                }
-                translatedArr[i] = lastTranslated = translated;
-            }
-            distances.sort(function (a, b) { return a - b; });
-            medianDistance = distances[Math.floor(distances.length / 2)];
-            if (medianDistance < tickPixelIntervalOption * 0.6) {
-                medianDistance = null;
-            }
-            // Now loop over again and remove ticks where needed
-            i = groupPositions[length_1 - 1] > max ? length_1 - 1 : length_1; // #817
-            lastTranslated = void 0;
-            while (i--) {
-                translated = translatedArr[i];
-                distance = Math.abs(lastTranslated - translated);
-                // #4175 - when axis is reversed, the distance, is negative but
-                // tickPixelIntervalOption positive, so we need to compare the
-                // same values
-                // Remove ticks that are closer than 0.6 times the pixel
-                // interval from the one to the right, but not if it is close to
-                // the median distance (#748).
-                if (lastTranslated &&
-                    distance < tickPixelIntervalOption * 0.8 &&
-                    (medianDistance === null || distance < medianDistance * 0.8)) {
-                    // Is this a higher ranked position with a normal
-                    // position to the right?
-                    if (higherRanks[groupPositions[i]] &&
-                        !higherRanks[groupPositions[i + 1]]) {
-                        // Yes: remove the lower ranked neighbour to the
-                        // right
-                        itemToRemove = i + 1;
-                        lastTranslated = translated; // #709
-                    }
-                    else {
-                        // No: remove this one
-                        itemToRemove = i;
-                    }
-                    groupPositions.splice(itemToRemove, 1);
-                }
-                else {
-                    lastTranslated = translated;
-                }
-            }
-        }
-        return groupPositions;
-    }
-    /**
-     * Get axis position of given index of the extended ordinal positions.
-     * Used only when panning an ordinal axis.
-     *
-     * @private
-     * @function Highcharts.Axis#index2val
-     * @param {number} index
-     * The index value of searched point
-     */
-    function index2val(index) {
-        var axis = this,
-            ordinal = axis.ordinal, 
-            // Context could be changed to extendedOrdinalPositions.
-            ordinalPositions = ordinal.positions;
-        // The visible range contains only equally spaced values.
-        if (!ordinalPositions) {
-            return index;
-        }
-        var i = ordinalPositions.length - 1,
-            distance;
-        if (index < 0) { // Out of range, in effect panning to the left
-            index = ordinalPositions[0];
-        }
-        else if (index > i) { // Out of range, panning to the right
-            index = ordinalPositions[i];
-        }
-        else { // Split it up
-            i = Math.floor(index);
-            distance = index - i; // The decimal
-        }
-        if (typeof distance !== 'undefined' &&
-            typeof ordinalPositions[i] !== 'undefined') {
-            return ordinalPositions[i] + (distance ?
-                distance *
-                    (ordinalPositions[i + 1] - ordinalPositions[i]) :
-                0);
-        }
-        return index;
-    }
-    /**
-     * Translate from linear (internal) to axis value.
-     *
-     * @private
-     * @function Highcharts.Axis#lin2val
-     * @param {number} val
-     * The linear abstracted value.
-     */
-    function lin2val(val) {
-        var axis = this,
-            ordinal = axis.ordinal,
-            localMin = axis.old ? axis.old.min : axis.min,
-            localA = axis.old ? axis.old.transA : axis.transA;
-        // Always use extendedPositions (#19816)
-        var positions = ordinal.getExtendedPositions();
-        // In some cases (especially in early stages of the chart creation) the
-        // getExtendedPositions might return undefined.
-        if (positions === null || positions === void 0 ? void 0 : positions.length) {
-            // Convert back from modivied value to pixels. // #15970
-            var pixelVal = OrdinalAxis_correctFloat((val - localMin) * localA +
-                    axis.minPixelPadding),
-                index = OrdinalAxis_correctFloat(ordinal.getIndexOfPoint(pixelVal,
-                positions)),
-                mantissa = OrdinalAxis_correctFloat(index % 1);
-            // Check if the index is inside position array. If true,
-            // read/approximate value for that exact index.
-            if (index >= 0 && index <= positions.length - 1) {
-                var leftNeighbour = positions[Math.floor(index)],
-                    rightNeighbour = positions[Math.ceil(index)],
-                    distance = rightNeighbour - leftNeighbour;
-                return positions[Math.floor(index)] + mantissa * distance;
-            }
-        }
-        // If the value is outside positions array, return initial value
-        return val; // #16784
-    }
-    /**
-     * Internal function to calculate the precise index in ordinalPositions
-     * array.
-     * @private
-     */
-    function getIndexInArray(ordinalPositions, val) {
-        var index = OrdinalAxis.Additions.findIndexOf(ordinalPositions,
-            val,
-            true);
-        if (ordinalPositions[index] === val) {
-            return index;
-        }
-        var percent = (val - ordinalPositions[index]) /
-                (ordinalPositions[index + 1] - ordinalPositions[index]);
-        return index + percent;
-    }
-    /**
-    * @private
-    */
-    function onAxisAfterInit() {
-        var axis = this;
-        if (!axis.ordinal) {
-            axis.ordinal = new OrdinalAxis.Additions(axis);
-        }
-    }
-    /**
-     * @private
-     */
-    function onAxisFoundExtremes() {
-        var axis = this,
-            eventArgs = axis.eventArgs,
-            options = axis.options;
-        if (axis.isXAxis &&
-            OrdinalAxis_defined(options.overscroll) &&
-            options.overscroll !== 0 &&
-            OrdinalAxis_isNumber(axis.max) &&
-            OrdinalAxis_isNumber(axis.min)) {
-            if (axis.options.ordinal && !axis.ordinal.originalOrdinalRange) {
-                // Calculate the original ordinal range
-                axis.ordinal.getExtendedPositions(false);
-            }
-            if (axis.max === axis.dataMax &&
-                (
-                // Panning is an exception. We don't want to apply
-                // overscroll when panning over the dataMax
-                (eventArgs === null || eventArgs === void 0 ? void 0 : eventArgs.trigger) !== 'pan' ||
-                    axis.isInternal) &&
-                // Scrollbar buttons are the other execption
-                (eventArgs === null || eventArgs === void 0 ? void 0 : eventArgs.trigger) !== 'navigator') {
-                var overscroll = axis.ordinal.convertOverscroll(options.overscroll);
-                axis.max += overscroll;
-                // Live data and buttons require translation for the min:
-                if (!axis.isInternal &&
-                    OrdinalAxis_defined(axis.userMin) &&
-                    (eventArgs === null || eventArgs === void 0 ? void 0 : eventArgs.trigger) !== 'mousewheel') {
-                    axis.min += overscroll;
-                }
-            }
-        }
-    }
-    /**
-     * For ordinal axis, that loads data async, redraw axis after data is
-     * loaded. If we don't do that, axis will have the same extremes as
-     * previously, but ordinal positions won't be calculated. See #10290
-     * @private
-     */
-    function onAxisAfterSetScale() {
-        var axis = this;
-        if (axis.horiz && !axis.isDirty) {
-            axis.isDirty = axis.isOrdinal &&
-                axis.chart.navigator &&
-                !axis.chart.navigator.adaptToUpdatedData;
-        }
-    }
-    /**
-     * @private
-     */
-    function onAxisInitialAxisTranslation() {
-        var axis = this;
-        if (axis.ordinal) {
-            axis.ordinal.beforeSetTickPositions();
-            axis.tickInterval = axis.ordinal.postProcessTickInterval(axis.tickInterval);
-        }
-    }
-    /**
-     * Extending the Chart.pan method for ordinal axes
-     * @private
-     */
-    function onChartPan(e) {
-        var _a;
-        var chart = this,
-            xAxis = chart.xAxis[0],
-            overscroll = xAxis.ordinal.convertOverscroll(xAxis.options.overscroll),
-            chartX = e.originalEvent.chartX,
-            panning = chart.options.chart.panning;
-        var runBase = false;
-        if ((panning === null || panning === void 0 ? void 0 : panning.type) !== 'y' &&
-            xAxis.options.ordinal &&
-            xAxis.series.length &&
-            // On touch devices, let default function handle the pinching
-            (!e.touches || e.touches.length <= 1)) {
-            var mouseDownX = chart.mouseDownX,
-                extremes = xAxis.getExtremes(),
-                dataMin = extremes.dataMin,
-                dataMax = extremes.dataMax,
-                min = extremes.min,
-                max = extremes.max,
-                hoverPoints = chart.hoverPoints,
-                closestPointRange = (xAxis.closestPointRange ||
-                    ((_a = xAxis.ordinal) === null || _a === void 0 ? void 0 : _a.overscrollPointsRange)),
-                pointPixelWidth = (xAxis.translationSlope *
-                    (xAxis.ordinal.slope || closestPointRange)), 
-                // How many ordinal units did we move?
-                movedUnits = Math.round((mouseDownX - chartX) / pointPixelWidth), 
-                // Get index of all the chart's points
-                extendedOrdinalPositions = xAxis.ordinal.getExtendedPositions(),
-                extendedAxis = {
-                    ordinal: {
-                        positions: extendedOrdinalPositions,
-                        extendedOrdinalPositions: extendedOrdinalPositions
-                    }
-                },
-                index2val_1 = xAxis.index2val,
-                val2lin_1 = xAxis.val2lin;
-            var trimmedRange = void 0,
-                ordinalPositions = void 0;
-            // Make sure panning to the edges does not decrease the zoomed range
-            if ((min <= dataMin && movedUnits <= 0) ||
-                (max >= dataMax + overscroll && movedUnits >= 0)) {
-                e.preventDefault();
-                return;
-            }
-            // We have an ordinal axis, but the data is equally spaced
-            if (!extendedAxis.ordinal.positions) {
-                runBase = true;
-            }
-            else if (Math.abs(movedUnits) > 1) {
-                // Remove active points for shared tooltip
-                if (hoverPoints) {
-                    hoverPoints.forEach(function (point) {
-                        point.setState();
-                    });
-                }
-                // In grouped data series, the last ordinal position represents
-                // the grouped data, which is to the left of the real data max.
-                // If we don't compensate for this, we will be allowed to pan
-                // grouped data series passed the right of the plot area.
-                ordinalPositions = extendedAxis.ordinal.positions;
-                if (overscroll) { // #21606
-                    ordinalPositions = extendedAxis.ordinal.positions =
-                        ordinalPositions.concat(xAxis.ordinal.getOverscrollPositions());
-                }
-                if (dataMax > ordinalPositions[ordinalPositions.length - 1]) {
-                    ordinalPositions.push(dataMax);
-                }
-                // Get the new min and max values by getting the ordinal index
-                // for the current extreme, then add the moved units and
-                // translate back to values. This happens on the extended
-                // ordinal positions if the new position is out of range, else
-                // it happens on the current x axis which is smaller and faster.
-                chart.setFixedRange(max - min);
-                trimmedRange = xAxis.navigatorAxis
-                    .toFixedRange(void 0, void 0, index2val_1.apply(extendedAxis, [
-                    val2lin_1.apply(extendedAxis, [min, true]) +
-                        movedUnits
-                ]), index2val_1.apply(extendedAxis, [
-                    val2lin_1.apply(extendedAxis, [max, true]) +
-                        movedUnits
-                ]));
-                // Apply it if it is within the available data range
-                if (trimmedRange.min >= Math.min(ordinalPositions[0], min) &&
-                    trimmedRange.max <= Math.max(ordinalPositions[ordinalPositions.length - 1], max) + overscroll) {
-                    xAxis.setExtremes(trimmedRange.min, trimmedRange.max, true, false, { trigger: 'pan' });
-                }
-                chart.mouseDownX = chartX; // Set new reference for next run
-                css(chart.container, { cursor: 'move' });
-            }
-        }
-        else {
-            runBase = true;
-        }
-        // Revert to the linear chart.pan version
-        if (runBase || (panning && /y/.test(panning.type))) {
-            if (overscroll && OrdinalAxis_isNumber(xAxis.dataMax)) {
-                xAxis.max = xAxis.dataMax + overscroll;
-            }
-        }
-        else {
-            e.preventDefault();
-        }
-    }
-    /**
-     * @private
-     */
-    function onSeriesUpdatedData() {
-        var xAxis = this.xAxis;
-        // Destroy the extended ordinal index on updated data
-        // and destroy extendedOrdinalPositions, #16055.
-        if (xAxis === null || xAxis === void 0 ? void 0 : xAxis.options.ordinal) {
-            delete xAxis.ordinal.index;
-            delete xAxis.ordinal.originalOrdinalRange;
-        }
-    }
-    /**
-     * Translate from a linear axis value to the corresponding ordinal axis
-     * position. If there are no gaps in the ordinal axis this will be the
-     * same. The translated value is the value that the point would have if
-     * the axis was linear, using the same min and max.
-     *
-     * @private
-     * @function Highcharts.Axis#val2lin
-     * @param {number} val
-     * The axis value.
-     * @param {boolean} [toIndex]
-     * Whether to return the index in the ordinalPositions or the new value.
-     */
-    function val2lin(val, toIndex) {
-        var _a;
-        var axis = this,
-            ordinal = axis.ordinal,
-            ordinalPositions = ordinal.positions;
-        var slope = ordinal.slope,
-            extendedOrdinalPositions;
-        if (!ordinalPositions) {
-            return val;
-        }
-        var ordinalLength = ordinalPositions.length;
-        var ordinalIndex;
-        // If the searched value is inside visible plotArea, ivastigate the
-        // value basing on ordinalPositions.
-        if (ordinalPositions[0] <= val &&
-            ordinalPositions[ordinalLength - 1] >= val) {
-            ordinalIndex = getIndexInArray(ordinalPositions, val);
-            // Final return value is based on ordinalIndex
-        }
-        else {
-            extendedOrdinalPositions = (_a = ordinal.getExtendedPositions) === null || _a === void 0 ? void 0 : _a.call(ordinal);
-            if (!(extendedOrdinalPositions === null || extendedOrdinalPositions === void 0 ? void 0 : extendedOrdinalPositions.length)) {
-                return val;
-            }
-            var length_2 = extendedOrdinalPositions.length;
-            if (!slope) {
-                slope =
-                    (extendedOrdinalPositions[length_2 - 1] -
-                        extendedOrdinalPositions[0]) /
-                        length_2;
-            }
-            // `originalPointReference` is equal to the index of first point of
-            // ordinalPositions in extendedOrdinalPositions.
-            var originalPositionsReference = getIndexInArray(extendedOrdinalPositions,
-                ordinalPositions[0]);
-            // If the searched value is outside the visiblePlotArea,
-            // check if it is inside extendedOrdinalPositions.
-            if (val >= extendedOrdinalPositions[0] &&
-                val <=
-                    extendedOrdinalPositions[length_2 - 1]) {
-                // Return Value
-                ordinalIndex = getIndexInArray(extendedOrdinalPositions, val) -
-                    originalPositionsReference;
-            }
-            else {
-                if (!toIndex) {
-                    // If the value is outside positions array,
-                    // return initial value, #16784
-                    return val;
-                }
-                // Since ordinal.slope is the average distance between 2
-                // points on visible plotArea, this can be used to calculate
-                // the approximate position of the point, which is outside
-                // the extendedOrdinalPositions.
-                if (val < extendedOrdinalPositions[0]) {
-                    var diff = extendedOrdinalPositions[0] - val,
-                        approximateIndexOffset = diff / slope;
-                    ordinalIndex =
-                        -originalPositionsReference -
-                            approximateIndexOffset;
-                }
-                else {
-                    var diff = val -
-                            extendedOrdinalPositions[length_2 - 1],
-                        approximateIndexOffset = diff / slope;
-                    ordinalIndex =
-                        approximateIndexOffset +
-                            length_2 -
-                            originalPositionsReference;
-                }
-            }
-        }
-        return toIndex ? ordinalIndex : slope * (ordinalIndex || 0) +
-            ordinal.offset;
-    }
-    /* *
-     *
-     *  Classes
-     *
-     * */
-    /**
-     * @private
-     */
-    var Additions = /** @class */ (function () {
-            /* *
-             *
-             *  Constructors
-             *
-             * */
-            /**
-             * @private
-             */
-            function Additions(axis) {
-                this.index = {};
-            this.axis = axis;
-        }
-        /* *
-        *
-        *  Functions
-        *
-        * */
-        /**
-         * Calculate the ordinal positions before tick positions are calculated.
-         * @private
-         */
-        Additions.prototype.beforeSetTickPositions = function () {
-            var _a;
-            var axis = this.axis,
-                ordinal = axis.ordinal,
-                extremes = axis.getExtremes(),
-                min = extremes.min,
-                max = extremes.max,
-                hasBreaks = (_a = axis.brokenAxis) === null || _a === void 0 ? void 0 : _a.hasBreaks,
-                isOrdinal = axis.options.ordinal,
-                overscroll = axis.options.overscroll &&
-                    axis.ordinal.convertOverscroll(axis.options.overscroll) ||
-                    0;
-            var len,
-                uniqueOrdinalPositions,
-                dist,
-                minIndex,
-                maxIndex,
-                slope,
-                i,
-                ordinalPositions = [],
-                overscrollPointsRange = Number.MAX_VALUE,
-                useOrdinal = false,
-                adjustOrdinalExtremesPoints = false,
-                isBoosted = false;
-            // Apply the ordinal logic
-            if (isOrdinal || hasBreaks) { // #4167 YAxis is never ordinal ?
-                var distanceBetweenPoint_1 = 0;
-                axis.series.forEach(function (series, i) {
-                    var xData = series.getColumn('x',
-                        true);
-                    uniqueOrdinalPositions = [];
-                    // For an axis with multiple series, check if the distance
-                    // between points is identical throughout all series.
-                    if (i > 0 &&
-                        series.options.id !== 'highcharts-navigator-series' &&
-                        xData.length > 1) {
-                        adjustOrdinalExtremesPoints = (distanceBetweenPoint_1 !== xData[1] - xData[0]);
-                    }
-                    distanceBetweenPoint_1 = xData[1] - xData[0];
-                    if (series.boosted) {
-                        isBoosted = series.boosted;
-                    }
-                    if (series.reserveSpace() &&
-                        (series
-                            .takeOrdinalPosition !== false || hasBreaks)) {
-                        // Concatenate the processed X data into the existing
-                        // positions, or the empty array
-                        ordinalPositions = ordinalPositions.concat(xData);
-                        len = ordinalPositions.length;
-                        // Remove duplicates (#1588)
-                        ordinalPositions.sort(function (a, b) {
-                            // Without a custom function it is sorted as strings
-                            return a - b;
-                        });
-                        overscrollPointsRange = Math.min(overscrollPointsRange, OrdinalAxis_pick(
-                        // Check for a single-point series:
-                        series.closestPointRange, overscrollPointsRange));
-                        if (len) {
-                            i = 0;
-                            while (i < len - 1) {
-                                if (ordinalPositions[i] !==
-                                    ordinalPositions[i + 1]) {
-                                    uniqueOrdinalPositions.push(ordinalPositions[i + 1]);
-                                }
-                                i++;
-                            }
-                            // Check first item:
-                            if (uniqueOrdinalPositions[0] !==
-                                ordinalPositions[0]) {
-                                uniqueOrdinalPositions.unshift(ordinalPositions[0]);
-                            }
-                            ordinalPositions = uniqueOrdinalPositions;
-                        }
-                    }
-                });
-                if (!axis.ordinal.originalOrdinalRange) {
-                    // Calculate current originalOrdinalRange
-                    axis.ordinal.originalOrdinalRange =
-                        (ordinalPositions.length - 1) * overscrollPointsRange;
-                }
-                // If the distance between points is not identical throughout
-                // all series, remove the first and last ordinal position to
-                // avoid enabling ordinal logic when it is not needed, #17405.
-                // Only for boosted series because changes are negligible.
-                if (adjustOrdinalExtremesPoints && isBoosted) {
-                    ordinalPositions.pop();
-                    ordinalPositions.shift();
-                }
-                // Cache the length
-                len = ordinalPositions.length;
-                // Check if we really need the overhead of mapping axis data
-                // against the ordinal positions. If the series consist of
-                // evenly spaced data any way, we don't need any ordinal logic.
-                if (len > 2) { // Two points have equal distance by default
-                    dist = ordinalPositions[1] - ordinalPositions[0];
-                    i = len - 1;
-                    while (i-- && !useOrdinal) {
-                        if (ordinalPositions[i + 1] - ordinalPositions[i] !==
-                            dist) {
-                            useOrdinal = true;
-                        }
-                    }
-                    // When zooming in on a week, prevent axis padding for
-                    // weekends even though the data within the week is evenly
-                    // spaced.
-                    if (!axis.options.keepOrdinalPadding &&
-                        (ordinalPositions[0] - min > dist ||
-                            max - overscroll - ordinalPositions[len - 1] >
-                                dist)) {
-                        useOrdinal = true;
-                    }
-                }
-                else if (axis.options.overscroll) {
-                    if (len === 2) {
-                        // Exactly two points, distance for overscroll is fixed:
-                        overscrollPointsRange =
-                            ordinalPositions[1] - ordinalPositions[0];
-                    }
-                    else if (len === 1) {
-                        // We have just one point, closest distance is unknown.
-                        // Assume then it is last point and overscrolled range:
-                        overscrollPointsRange = overscroll;
-                        ordinalPositions = [
-                            ordinalPositions[0],
-                            ordinalPositions[0] + overscrollPointsRange
-                        ];
-                    }
-                    else {
-                        // In case of zooming in on overscrolled range, stick to
-                        // the old range:
-                        overscrollPointsRange = ordinal.overscrollPointsRange;
-                    }
-                }
-                // Record the slope and offset to compute the linear values from
-                // the array index. Since the ordinal positions may exceed the
-                // current range, get the start and end positions within it
-                // (#719, #665b)
-                if (useOrdinal || axis.forceOrdinal) {
-                    if (axis.options.overscroll) {
-                        ordinal.overscrollPointsRange = overscrollPointsRange;
-                        ordinalPositions = ordinalPositions.concat(ordinal.getOverscrollPositions());
-                    }
-                    // Register
-                    ordinal.positions = ordinalPositions;
-                    // This relies on the ordinalPositions being set. Use
-                    // Math.max and Math.min to prevent padding on either sides
-                    // of the data.
-                    minIndex = axis.ordinal2lin(// #5979
-                    Math.max(min, ordinalPositions[0]), true);
-                    maxIndex = Math.max(axis.ordinal2lin(Math.min(max, ordinalPositions[ordinalPositions.length - 1]), true), 1); // #3339
-                    // Set the slope and offset of the values compared to the
-                    // indices in the ordinal positions.
-                    ordinal.slope = slope =
-                        (max - min) / (maxIndex - minIndex);
-                    ordinal.offset = min - (minIndex * slope);
-                }
-                else {
-                    ordinal.overscrollPointsRange = OrdinalAxis_pick(axis.closestPointRange, ordinal.overscrollPointsRange);
-                    ordinal.positions = axis.ordinal.slope = ordinal.offset =
-                        void 0;
-                }
-            }
-            axis.isOrdinal = isOrdinal && useOrdinal; // #3818, #4196, #4926
-            ordinal.groupIntervalFactor = null; // Reset for next run
-        };
-        /**
-         * Faster way of using the Array.indexOf method.
-         * Works for sorted arrays only with unique values.
-         *
-         * @param {Array} sortedArray
-         *        The sorted array inside which we are looking for.
-         * @param {number} key
-         *        The key to being found.
-         * @param {boolean} indirectSearch
-         *        In case of lack of the point in the array, should return
-         *        value be equal to -1 or the closest smaller index.
-         *  @private
-         */
-        Additions.findIndexOf = function (sortedArray, key, indirectSearch) {
-            var start = 0,
-                end = sortedArray.length - 1,
-                middle;
-            while (start < end) {
-                middle = Math.ceil((start + end) / 2);
-                // Key found as the middle element.
-                if (sortedArray[middle] <= key) {
-                    // Continue searching to the right.
-                    start = middle;
-                }
-                else {
-                    // Continue searching to the left.
-                    end = middle - 1;
-                }
-            }
-            if (sortedArray[start] === key) {
-                return start;
-            }
-            // Key could not be found.
-            return !indirectSearch ? -1 : start;
-        };
-        /**
-         * Get the ordinal positions for the entire data set. This is necessary
-         * in chart panning because we need to find out what points or data
-         * groups are available outside the visible range. When a panning
-         * operation starts, if an index for the given grouping does not exists,
-         * it is created and cached. This index is deleted on updated data, so
-         * it will be regenerated the next time a panning operation starts.
-         * @private
-         */
-        Additions.prototype.getExtendedPositions = function (withOverscroll) {
-            if (withOverscroll === void 0) { withOverscroll = true; }
-            var ordinal = this,
-                axis = ordinal.axis,
-                axisProto = axis.constructor.prototype,
-                chart = axis.chart,
-                key = axis.series.reduce(function (k,
-                series) {
-                    var grouping = series.currentDataGrouping;
-                return (k +
-                    (grouping ? grouping.count + grouping.unitName : 'raw'));
-            }, ''), overscroll = withOverscroll ?
-                axis.ordinal.convertOverscroll(axis.options.overscroll) : 0, extremes = axis.getExtremes();
-            var fakeAxis,
-                fakeSeries = void 0,
-                ordinalIndex = ordinal.index;
-            // If this is the first time, or the ordinal index is deleted by
-            // updatedData,
-            // create it.
-            if (!ordinalIndex) {
-                ordinalIndex = ordinal.index = {};
-            }
-            if (!ordinalIndex[key]) {
-                // Create a fake axis object where the extended ordinal
-                // positions are emulated
-                fakeAxis = {
-                    series: [],
-                    chart: chart,
-                    forceOrdinal: false,
-                    getExtremes: function () {
-                        return {
-                            min: extremes.dataMin,
-                            max: extremes.dataMax + overscroll
-                        };
-                    },
-                    applyGrouping: axisProto.applyGrouping,
-                    getGroupPixelWidth: axisProto.getGroupPixelWidth,
-                    getTimeTicks: axisProto.getTimeTicks,
-                    options: {
-                        ordinal: true
-                    },
-                    ordinal: {
-                        getGroupIntervalFactor: this.getGroupIntervalFactor
-                    },
-                    ordinal2lin: axisProto.ordinal2lin, // #6276
-                    getIndexOfPoint: axisProto.getIndexOfPoint,
-                    val2lin: axisProto.val2lin // #2590
-                };
-                fakeAxis.ordinal.axis = fakeAxis;
-                // Add the fake series to hold the full data, then apply
-                // processData to it
-                axis.series.forEach(function (series) {
-                    var _a,
-                        _b,
-                        _c;
-                    if (series.takeOrdinalPosition === false) {
-                        return; // #22657
-                    }
-                    fakeSeries = {
-                        xAxis: fakeAxis,
-                        chart: chart,
-                        groupPixelWidth: series.groupPixelWidth,
-                        destroyGroupedData: (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).noop,
-                        getColumn: series.getColumn,
-                        applyGrouping: series.applyGrouping,
-                        getProcessedData: series.getProcessedData,
-                        reserveSpace: series.reserveSpace,
-                        visible: series.visible
-                    };
-                    var xData = series.getColumn('x').concat(withOverscroll ?
-                            ordinal.getOverscrollPositions() :
-                            []);
-                    fakeSeries.dataTable = new Data_DataTableCore({
-                        columns: {
-                            x: xData
-                        }
-                    });
-                    fakeSeries.options = OrdinalAxis_assign(OrdinalAxis_assign({}, series.options), { dataGrouping: series.currentDataGrouping ? {
-                            firstAnchor: (_a = series.options.dataGrouping) === null || _a === void 0 ? void 0 : _a.firstAnchor,
-                            anchor: (_b = series.options.dataGrouping) === null || _b === void 0 ? void 0 : _b.anchor,
-                            lastAnchor: (_c = series.options.dataGrouping) === null || _c === void 0 ? void 0 : _c.firstAnchor,
-                            enabled: true,
-                            forced: true,
-                            approximation: 'open',
-                            units: [[
-                                    series.currentDataGrouping.unitName,
-                                    [series.currentDataGrouping.count]
-                                ]]
-                        } : {
-                            enabled: false
-                        } });
-                    fakeAxis.series.push(fakeSeries);
-                    series.processData.apply(fakeSeries);
-                });
-                fakeAxis.applyGrouping({ hasExtremesChanged: true });
-                // Force to use the ordinal when points are evenly spaced (e.g.
-                // weeks), #3825.
-                if (((fakeSeries === null || fakeSeries === void 0 ? void 0 : fakeSeries.closestPointRange) !==
-                    (fakeSeries === null || fakeSeries === void 0 ? void 0 : fakeSeries.basePointRange)) &&
-                    fakeSeries.currentDataGrouping) {
-                    fakeAxis.forceOrdinal = true;
-                }
-                // Run beforeSetTickPositions to compute the ordinalPositions
-                axis.ordinal.beforeSetTickPositions.apply({ axis: fakeAxis });
-                if (!axis.ordinal.originalOrdinalRange &&
-                    fakeAxis.ordinal.originalOrdinalRange) {
-                    axis.ordinal.originalOrdinalRange =
-                        fakeAxis.ordinal.originalOrdinalRange;
-                }
-                // Cache it
-                if (fakeAxis.ordinal.positions) {
-                    ordinalIndex[key] = fakeAxis.ordinal.positions;
-                }
-            }
-            return ordinalIndex[key];
-        };
-        /**
-         * Find the factor to estimate how wide the plot area would have been if
-         * ordinal gaps were included. This value is used to compute an imagined
-         * plot width in order to establish the data grouping interval.
-         *
-         * A real world case is the intraday-candlestick example. Without this
-         * logic, it would show the correct data grouping when viewing a range
-         * within each day, but once moving the range to include the gap between
-         * two days, the interval would include the cut-away night hours and the
-         * data grouping would be wrong. So the below method tries to compensate
-         * by identifying the most common point interval, in this case days.
-         *
-         * An opposite case is presented in issue #718. We have a long array of
-         * daily data, then one point is appended one hour after the last point.
-         * We expect the data grouping not to change.
-         *
-         * In the future, if we find cases where this estimation doesn't work
-         * optimally, we might need to add a second pass to the data grouping
-         * logic, where we do another run with a greater interval if the number
-         * of data groups is more than a certain fraction of the desired group
-         * count.
-         * @private
-         */
-        Additions.prototype.getGroupIntervalFactor = function (xMin, xMax, series) {
-            var ordinal = this,
-                processedXData = series.getColumn('x',
-                true),
-                len = processedXData.length,
-                distances = [];
-            var median,
-                i,
-                groupIntervalFactor = ordinal.groupIntervalFactor;
-            // Only do this computation for the first series, let the other
-            // inherit it (#2416)
-            if (!groupIntervalFactor) {
-                // Register all the distances in an array
-                for (i = 0; i < len - 1; i++) {
-                    distances[i] = (processedXData[i + 1] -
-                        processedXData[i]);
-                }
-                // Sort them and find the median
-                distances.sort(function (a, b) {
-                    return a - b;
-                });
-                median = distances[Math.floor(len / 2)];
-                // Compensate for series that don't extend through the entire
-                // axis extent. #1675.
-                xMin = Math.max(xMin, processedXData[0]);
-                xMax = Math.min(xMax, processedXData[len - 1]);
-                ordinal.groupIntervalFactor = groupIntervalFactor =
-                    (len * median) / (xMax - xMin);
-            }
-            // Return the factor needed for data grouping
-            return groupIntervalFactor;
-        };
-        /**
-         * Get index of point inside the ordinal positions array.
-         *
-         * @private
-         * @param {number} pixelVal
-         * The pixel value of a point.
-         *
-         * @param {Array<number>} [ordinalArray]
-         * An array of all points available on the axis for the given data set.
-         * Either ordinalPositions if the value is inside the plotArea or
-         * extendedOrdinalPositions if not.
-         */
-        Additions.prototype.getIndexOfPoint = function (pixelVal, ordinalArray) {
-            var ordinal = this,
-                axis = ordinal.axis,
-                min = axis.min,
-                minX = axis.minPixelPadding,
-                indexOfMin = getIndexInArray(ordinalArray,
-                min);
-            var ordinalPointPixelInterval = axis.translationSlope *
-                    (ordinal.slope ||
-                        axis.closestPointRange ||
-                        ordinal.overscrollPointsRange);
-            var shiftIndex = OrdinalAxis_correctFloat((pixelVal - minX) / ordinalPointPixelInterval);
-            return indexOfMin + shiftIndex;
-        };
-        /**
-         * Get ticks for an ordinal axis within a range where points don't
-         * exist. It is required when overscroll is enabled. We can't base on
-         * points, because we may not have any, so we use approximated
-         * pointRange and generate these ticks between Axis.dataMax,
-         * Axis.dataMax + Axis.overscroll evenly spaced. Used in panning and
-         * navigator scrolling.
-         * @private
-         */
-        Additions.prototype.getOverscrollPositions = function () {
-            var ordinal = this,
-                axis = ordinal.axis,
-                extraRange = ordinal.convertOverscroll(axis.options.overscroll),
-                distance = ordinal.overscrollPointsRange,
-                positions = [];
-            var max = axis.dataMax;
-            if (OrdinalAxis_defined(distance)) {
-                // Max + pointRange because we need to scroll to the last
-                while (max < axis.dataMax + extraRange) {
-                    max += distance;
-                    positions.push(max);
-                }
-            }
-            return positions;
-        };
-        /**
-         * Make the tick intervals closer because the ordinal gaps make the
-         * ticks spread out or cluster.
-         * @private
-         */
-        Additions.prototype.postProcessTickInterval = function (tickInterval) {
-            // Problem: https://jsfiddle.net/highcharts/FQm4E/1/. This is a case
-            // where this algorithm doesn't work optimally. In this case, the
-            // tick labels are spread out per week, but all the gaps reside
-            // within weeks. So we have a situation where the labels are courser
-            // than the ordinal gaps, and thus the tick interval should not be
-            // altered.
-            var ordinal = this,
-                axis = ordinal.axis,
-                ordinalSlope = ordinal.slope,
-                closestPointRange = axis.closestPointRange;
-            var ret;
-            if (ordinalSlope && closestPointRange) {
-                if (!axis.options.breaks) {
-                    ret = (tickInterval /
-                        (ordinalSlope / closestPointRange));
-                }
-                else {
-                    ret = closestPointRange || tickInterval; // #7275
-                }
-            }
-            else {
-                ret = tickInterval;
-            }
-            return ret;
-        };
-        /**
-         * If overscroll is pixel or percentage value, convert it to axis range.
-         *
-         * @private
-         * @param {number | string} overscroll
-         * Overscroll value in axis range, pixels or percentage value.
-         * @return {number}
-         * Overscroll value in axis range.
-         */
-        Additions.prototype.convertOverscroll = function (overscroll) {
-            if (overscroll === void 0) { overscroll = 0; }
-            var ordinal = this,
-                axis = ordinal.axis,
-                calculateOverscroll = function (overscrollPercentage) {
-                    return OrdinalAxis_pick(ordinal.originalOrdinalRange,
-                OrdinalAxis_defined(axis.dataMax) && OrdinalAxis_defined(axis.dataMin) ?
-                        axis.dataMax - axis.dataMin : 0) * overscrollPercentage;
-            };
-            if (isString(overscroll)) {
-                var overscrollValue = parseInt(overscroll, 10);
-                var isFullRange = void 0;
-                // #22334
-                if (OrdinalAxis_defined(axis.min) && OrdinalAxis_defined(axis.max) &&
-                    OrdinalAxis_defined(axis.dataMin) && OrdinalAxis_defined(axis.dataMax)) {
-                    isFullRange =
-                        axis.max - axis.min === axis.dataMax - axis.dataMin;
-                    if (!isFullRange) {
-                        this.originalOrdinalRange = axis.max - axis.min;
-                    }
-                }
-                if (/%$/.test(overscroll)) {
-                    // If overscroll is percentage
-                    return calculateOverscroll(overscrollValue / 100);
-                }
-                if (/px/.test(overscroll)) {
-                    // If overscroll is pixels, it is limited to 90% of the axis
-                    // length to prevent division by zero
-                    var limitedOverscrollValue = Math.min(overscrollValue,
-                        axis.len * 0.9),
-                        pixelToPercent = limitedOverscrollValue / axis.len;
-                    return calculateOverscroll(pixelToPercent /
-                        (isFullRange ? (1 - pixelToPercent) : 1));
-                }
-                // If overscroll is a string but not pixels or percentage,
-                // return 0 as no overscroll
-                return 0;
-            }
-            return overscroll;
-        };
-        return Additions;
-    }());
-    OrdinalAxis.Additions = Additions;
-})(OrdinalAxis || (OrdinalAxis = {}));
-/* *
- *
- *  Default Export
- *
- * */
-/* harmony default export */ var Axis_OrdinalAxis = (OrdinalAxis);
-
 ;// ./code/es5/es-modules/Stock/RangeSelector/RangeSelector.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -7739,8 +6441,7 @@ var RangeSelector_defaultOptions = (highcharts_commonjs_highcharts_commonjs2_hig
 
 var format = (highcharts_Templating_commonjs_highcharts_Templating_commonjs2_highcharts_Templating_root_Highcharts_Templating_default()).format;
 
-
-var RangeSelector_addEvent = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).addEvent, createElement = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).createElement, RangeSelector_css = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).css, RangeSelector_defined = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).defined, RangeSelector_destroyObjectProperties = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).destroyObjectProperties, diffObjects = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).diffObjects, discardElement = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).discardElement, RangeSelector_extend = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).extend, RangeSelector_fireEvent = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).fireEvent, RangeSelector_isNumber = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).isNumber, RangeSelector_isString = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).isString, RangeSelector_merge = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).merge, RangeSelector_objectEach = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).objectEach, RangeSelector_pick = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).pick, RangeSelector_splat = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).splat;
+var RangeSelector_addEvent = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).addEvent, createElement = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).createElement, css = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).css, RangeSelector_defined = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).defined, RangeSelector_destroyObjectProperties = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).destroyObjectProperties, discardElement = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).discardElement, RangeSelector_extend = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).extend, RangeSelector_fireEvent = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).fireEvent, RangeSelector_isNumber = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).isNumber, isString = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).isString, RangeSelector_merge = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).merge, RangeSelector_objectEach = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).objectEach, RangeSelector_pick = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).pick, RangeSelector_splat = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).splat;
 /* *
  *
  *  Functions
@@ -7756,18 +6457,18 @@ function preferredInputType(format) {
     var hasTimeKey = function (char) {
             return new RegExp("%[[a-zA-Z]*".concat(char)).test(format);
     };
-    var ms = RangeSelector_isString(format) ?
+    var ms = isString(format) ?
             format.indexOf('%L') !== -1 :
             // Implemented but not typed as of 2024
             format.fractionalSecondDigits;
     if (ms) {
         return 'text';
     }
-    var date = RangeSelector_isString(format) ?
+    var date = isString(format) ?
             ['a', 'A', 'd', 'e', 'w', 'b', 'B', 'm', 'o', 'y', 'Y']
                 .some(hasTimeKey) :
             format.dateStyle || format.day || format.month || format.year;
-    var time = RangeSelector_isString(format) ?
+    var time = isString(format) ?
             ['H', 'k', 'I', 'l', 'M', 'S'].some(hasTimeKey) :
             format.timeStyle || format.hour || format.minute || format.second;
     if (date && time) {
@@ -7980,7 +6681,7 @@ var RangeSelector = /** @class */ (function () {
                 axisRangeUpdateEvent_1(); // Remove event
             });
         }
-        else if (RangeSelector_isNumber(newMin) && RangeSelector_isNumber(newMax)) {
+        else if (RangeSelector_isNumber(newMin) || RangeSelector_isNumber(newMax)) {
             // Existing axis object. Set extremes after render time.
             baseAxis.setExtremes(newMin, newMax, RangeSelector_pick(redraw, true), void 0, // Auto animation
             {
@@ -8133,16 +6834,8 @@ var RangeSelector = /** @class */ (function () {
                 range &&
                 actualRange < range) {
                 // Handle ordinal ranges
-                var positions = baseAxis.ordinal.positions,
-                    prevOrdinalPosition = Axis_OrdinalAxis.Additions.findIndexOf(positions,
-                    baseAxis.min,
-                    true),
-                    nextOrdinalPosition = Math.min(Axis_OrdinalAxis.Additions.findIndexOf(positions,
-                    baseAxis.max,
-                    true) + 1,
-                    positions.length - 1);
-                if (positions[nextOrdinalPosition] -
-                    positions[prevOrdinalPosition] > range) {
+                var positions = baseAxis.ordinal.positions;
+                if (positions[positions.length - 1] - positions[0] > range) {
                     isSameRange = true;
                 }
             }
@@ -8220,7 +6913,7 @@ var RangeSelector = /** @class */ (function () {
                         dropdown.selectedIndex = i + 1;
                     }
                     var bbox = dropdownLabel.getBBox();
-                    RangeSelector_css(dropdown, {
+                    css(dropdown, {
                         width: "" + bbox.width + "px",
                         height: "" + bbox.height + "px"
                     });
@@ -8355,7 +7048,7 @@ var RangeSelector = /** @class */ (function () {
                 _f = dateBox.height,
                 height = _f === void 0 ? 0 : _f,
                 inputBoxWidth = this.options.inputBoxWidth;
-            RangeSelector_css(input, {
+            css(input, {
                 width: isTextInput ?
                     ((width + (inputBoxWidth ? -2 : 20)) + 'px') :
                     'auto',
@@ -8363,7 +7056,7 @@ var RangeSelector = /** @class */ (function () {
                 border: '2px solid silver'
             });
             if (isTextInput && inputBoxWidth) {
-                RangeSelector_css(input, {
+                css(input, {
                     left: (translateX + x) + 'px',
                     top: translateY + 'px'
                 });
@@ -8371,7 +7064,7 @@ var RangeSelector = /** @class */ (function () {
                 // on top of the dateBox
             }
             else {
-                RangeSelector_css(input, {
+                css(input, {
                     left: Math.min(Math.round(x +
                         translateX -
                         (input.offsetWidth - width) / 2), this.chart.chartWidth - input.offsetWidth) + 'px',
@@ -8388,7 +7081,7 @@ var RangeSelector = /** @class */ (function () {
     RangeSelector.prototype.hideInput = function (name) {
         var input = name === 'min' ? this.minInput : this.maxInput;
         if (input) {
-            RangeSelector_css(input, {
+            css(input, {
                 top: '-9999em',
                 border: 0,
                 width: '1px',
@@ -8510,7 +7203,7 @@ var RangeSelector = /** @class */ (function () {
             dateBox.css(RangeSelector_merge({
                 color: "#333333" /* Palette.neutralColor80 */
             }, chartStyle, options.inputStyle));
-            RangeSelector_css(input, RangeSelector_extend({
+            css(input, RangeSelector_extend({
                 position: 'absolute',
                 border: 0,
                 boxShadow: '0 0 15px rgba(0,0,0,0.3)',
@@ -9076,15 +7769,11 @@ var RangeSelector = /** @class */ (function () {
             }
             // Update current buttons
             for (var i = btnLength - 1; i >= 0; i--) {
-                var diff = diffObjects(newButtonsOptions[i],
-                    this.buttonOptions[i]);
-                if (Object.keys(diff).length !== 0) {
-                    var rangeOptions = newButtonsOptions[i];
-                    this.buttons[i].destroy();
-                    dropdown === null || dropdown === void 0 ? void 0 : dropdown.options.remove(i + 1);
-                    this.createButton(rangeOptions, i, width, states);
-                    this.computeButtonRange(rangeOptions);
-                }
+                var rangeOptions = newButtonsOptions[i];
+                this.buttons[i].destroy();
+                dropdown === null || dropdown === void 0 ? void 0 : dropdown.options.remove(i + 1);
+                this.createButton(rangeOptions, i, width, states);
+                this.computeButtonRange(rangeOptions);
             }
             // Create missing buttons
             if (newButtonsOptions.length > this.buttonOptions.length) {
@@ -9134,7 +7823,7 @@ var RangeSelector = /** @class */ (function () {
             }
         }
         if (dropdown) {
-            RangeSelector_css(dropdown, {
+            css(dropdown, {
                 left: dropdownTranslateX + 'px',
                 top: (buttonGroup === null || buttonGroup === void 0 ? void 0 : buttonGroup.translateY) + 'px'
             });
@@ -9233,7 +7922,7 @@ var RangeSelector = /** @class */ (function () {
                 xOffsetForExportButton +
                 inputGroup.getBBox().width >
                 chart.plotWidth) {
-                if (dropdown === 'responsive') {
+                if (dropdown === 'responsive' || dropdown === 'always') {
                     this.collapseButtons();
                 }
                 else {
@@ -9314,7 +8003,7 @@ var RangeSelector = /** @class */ (function () {
             dropdown = _a.dropdown;
         if (buttonGroup && dropdown) {
             dropdownLabel.show();
-            RangeSelector_css(dropdown, { visibility: 'inherit' });
+            css(dropdown, { visibility: 'inherit' });
             this.hasVisibleDropdown = true;
         }
     };
@@ -9326,10 +8015,8 @@ var RangeSelector = /** @class */ (function () {
         var dropdown = this.dropdown;
         if (dropdown) {
             this.dropdownLabel.hide();
-            RangeSelector_css(dropdown, {
-                visibility: 'hidden',
-                width: '1px',
-                height: '1px'
+            css(dropdown, {
+                visibility: 'hidden'
             });
             this.hasVisibleDropdown = false;
         }
@@ -9403,7 +8090,7 @@ var RangeSelector = /** @class */ (function () {
             this.destroy();
             return this.init(chart);
         }
-        this.isDirty = !!options.buttons;
+        this.isDirty = !!options.buttons || !!options.buttonTheme;
         if (redraw) {
             this.render();
         }
@@ -9507,69 +8194,53 @@ RangeSelector_extend(RangeSelector.prototype, {
 ;// ./code/es5/es-modules/Series/PathUtilities.js
 /* *
  *
- *  (c) 2010-2025 Pawel Lysy
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Pawel Lysy
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
 var getLinkPath = {
-    'default': getDefaultPath,
+    'default': getOrthogonalPath,
+    orthogonal: getOrthogonalPath,
     straight: getStraightPath,
     curved: getCurvedPath
 };
 /**
  *
  */
-function getDefaultPath(pathParams) {
+function getOrthogonalPath(pathParams) {
     var x1 = pathParams.x1,
         y1 = pathParams.y1,
         x2 = pathParams.x2,
         y2 = pathParams.y2,
+        bendAt = pathParams.bendAt,
         _a = pathParams.width,
         width = _a === void 0 ? 0 : _a,
         _b = pathParams.inverted,
         inverted = _b === void 0 ? false : _b,
         radius = pathParams.radius,
         parentVisible = pathParams.parentVisible;
-    var path = [
-            ['M',
-        x1,
-        y1],
-            ['L',
-        x1,
-        y1],
-            ['C',
-        x1,
-        y1,
-        x1,
-        y2,
-        x1,
-        y2],
-            ['L',
-        x1,
-        y2],
-            ['C',
-        x1,
-        y1,
-        x1,
-        y2,
-        x1,
-        y2],
-            ['L',
-        x1,
-        y2]
-        ];
-    return parentVisible ?
-        applyRadius([
+    if (parentVisible) {
+        var bend = bendAt !== null && bendAt !== void 0 ? bendAt : (width / 2);
+        return applyRadius([
             ['M', x1, y1],
-            ['L', x1 + width * (inverted ? -0.5 : 0.5), y1],
-            ['L', x1 + width * (inverted ? -0.5 : 0.5), y2],
+            ['L', x1 + bend * (inverted ? -1 : 1), y1],
+            ['L', x1 + bend * (inverted ? -1 : 1), y2],
             ['L', x2, y2]
-        ], radius) :
-        path;
+        ], radius);
+    }
+    return [
+        ['M', x1, y1],
+        ['L', x1, y1],
+        ['C', x1, y1, x1, y2, x1, y2],
+        ['L', x1, y2],
+        ['C', x1, y1, x1, y2, x1, y2],
+        ['L', x1, y2]
+    ];
 }
 /**
  *
@@ -9697,12 +8368,12 @@ var PathUtilities = {
 ;// ./code/es5/es-modules/Gantt/PathfinderAlgorithms.js
 /* *
  *
- *  (c) 2016 Highsoft AS
+ *  (c) 2016-2026 Highsoft AS
  *  Author: Øystein Moseng
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -9724,7 +8395,7 @@ var PathfinderAlgorithms_min = Math.min, PathfinderAlgorithms_max = Math.max, ab
  * Get index of last obstacle before xMin. Employs a type of binary search, and
  * thus requires that obstacles are sorted by xMin value.
  *
- * @private
+ * @internal
  * @function findLastObstacleBefore
  *
  * @param {Array<object>} obstacles
@@ -9763,7 +8434,7 @@ function findLastObstacleBefore(obstacles, xMin, startIx) {
 /**
  * Test if a point lays within an obstacle.
  *
- * @private
+ * @internal
  * @function pointWithinObstacle
  *
  * @param {Object} obstacle
@@ -9785,7 +8456,7 @@ function pointWithinObstacle(obstacle, point) {
  * Find the index of an obstacle that wraps around a point.
  * Returns -1 if not found.
  *
- * @private
+ * @internal
  * @function findObstacleFromPoint
  *
  * @param {Array<object>} obstacles
@@ -9812,7 +8483,7 @@ function findObstacleFromPoint(obstacles, point) {
 /**
  * Get SVG path array from array of line segments.
  *
- * @private
+ * @internal
  * @function pathFromSegments
  *
  * @param {Array<object>} segments
@@ -9835,7 +8506,7 @@ function pathFromSegments(segments) {
  * Limits obstacle max/mins in all directions to bounds. Modifies input
  * obstacle.
  *
- * @private
+ * @internal
  * @function limitObstacleToBounds
  *
  * @param {Object} obstacle
@@ -9856,6 +8527,7 @@ function limitObstacleToBounds(obstacle, bounds) {
  * Get an SVG path from a starting coordinate to an ending coordinate.
  * Draws a straight line.
  *
+ * @internal
  * @function Highcharts.Pathfinder.algorithms.straight
  *
  * @param {Highcharts.PositionObject} start
@@ -9883,6 +8555,7 @@ function straight(start, end) {
  * right angles only, and taking only starting/ending obstacle into
  * consideration.
  *
+ * @internal
  * @function Highcharts.Pathfinder.algorithms.simpleConnect
  *
  * @param {Highcharts.PositionObject} start
@@ -9922,7 +8595,7 @@ var simpleConnect = function (start, end, options) {
     /**
      * Return a clone of a point with a property set from a target object,
      * optionally with an offset
-     * @private
+     * @internal
      */
     function copyFromPoint(from, fromKey, to, toKey, offset) {
         var point = {
@@ -9935,7 +8608,7 @@ var simpleConnect = function (start, end, options) {
     // eslint-disable-next-line valid-jsdoc
     /**
      * Return waypoint outside obstacle.
-     * @private
+     * @internal
      */
     function getMeOut(obstacle, point, direction) {
         var useMax = abs(point[direction] - obstacle[direction + 'Min']) >
@@ -10015,6 +8688,7 @@ simpleConnect.requiresObstacles = true;
  * obstacles into consideration. Might not always find the optimal path,
  * but is fast, and usually good enough.
  *
+ * @internal
  * @function Highcharts.Pathfinder.algorithms.fastAvoid
  *
  * @param {Highcharts.PositionObject} start
@@ -10091,7 +8765,7 @@ function fastAvoid(start, end, options) {
     /**
      * How far can you go between two points before hitting an obstacle?
      * Does not work for diagonal lines (because it doesn't have to).
-     * @private
+     * @internal
      */
     function pivotPoint(fromPoint, toPoint, directionIsX) {
         var searchDirection = fromPoint.x < toPoint.x ? 1 : -1;
@@ -10163,7 +8837,7 @@ function fastAvoid(start, end, options) {
      *
      * (? Returns a string, either xMin, xMax, yMin or yMax.)
      *
-     * @private
+     * @internal
      * @function
      *
      * @param {Object} obstacle
@@ -10229,7 +8903,7 @@ function fastAvoid(start, end, options) {
     // eslint-disable-next-line valid-jsdoc
     /**
      * Find a clear path between point.
-     * @private
+     * @internal
      */
     function clearPathTo(fromPoint, toPoint, dirIsX) {
         // Don't waste time if we've hit goal
@@ -10356,7 +9030,7 @@ function fastAvoid(start, end, options) {
     /**
      * Extract point to outside of obstacle in whichever direction is
      * closest. Returns new point outside obstacle.
-     * @private
+     * @internal
      */
     function extractFromObstacle(obstacle, point, goalPoint) {
         var dirIsX = PathfinderAlgorithms_min(obstacle.xMax - point.x,
@@ -10424,25 +9098,29 @@ fastAvoid.requiresObstacles = true;
  *  Default Export
  *
  * */
-// Define the available pathfinding algorithms.
-// Algorithms take up to 3 arguments: starting point, ending point, and an
-// options object.
+/**
+ * Defines the available pathfinding algorithms. Algorithms take up to 3
+ * arguments: starting point, ending point, and an options object.
+ *
+ * @internal
+ */
 var algorithms = {
     fastAvoid: fastAvoid,
     straight: straight,
     simpleConnect: simpleConnect
 };
+/** @internal */
 /* harmony default export */ var PathfinderAlgorithms = (algorithms);
 
 ;// ./code/es5/es-modules/Gantt/ConnectorsDefaults.js
 /* *
  *
- *  (c) 2016 Highsoft AS
+ *  (c) 2016-2026 Highsoft AS
  *  Authors: Øystein Moseng, Lars A. V. Cabrera
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -10488,8 +9166,8 @@ var connectorsDefaults = {
         /**
          * Set the default dash style for this chart's connecting lines.
          *
-         * @type      {string}
-         * @default   solid
+         * @type      {Highcharts.DashStyleValue}
+         * @default   Solid
          * @since     6.2.0
          * @apioption connectors.dashStyle
          */
@@ -10723,12 +9401,12 @@ var connectorsDefaults = {
 ;// ./code/es5/es-modules/Gantt/PathfinderComposition.js
 /* *
  *
- *  (c) 2016 Highsoft AS
+ *  (c) 2016-2026 Highsoft AS
  *  Authors: Øystein Moseng, Lars A. V. Cabrera
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -10746,7 +9424,7 @@ var PathfinderComposition_defined = (highcharts_commonjs_highcharts_commonjs2_hi
  * Get point bounding box using plotX/plotY and shapeArgs. If using
  * graphic.getBBox() directly, the bbox will be affected by animation.
  *
- * @private
+ * @internal
  * @function
  *
  * @param {Highcharts.Point} point
@@ -10778,7 +9456,7 @@ function getPointBB(point) {
 /**
  * Warn if using legacy options. Copy the options over. Note that this will
  * still break if using the legacy options in chart.update, addSeries etc.
- * @private
+ * @internal
  */
 function warnLegacy(chart) {
     if (chart.options.pathfinder ||
@@ -10799,6 +9477,7 @@ function warnLegacy(chart) {
  *  Composition
  *
  * */
+/** @internal */
 var ConnectionComposition;
 (function (ConnectionComposition) {
     /* *
@@ -10806,7 +9485,6 @@ var ConnectionComposition;
      *  Functions
      *
      * */
-    /** @private */
     function compose(ChartClass, PathfinderClass, PointClass) {
         var pointProto = PointClass.prototype;
         if (!pointProto.getPathfinderAnchorPoint) {
@@ -10830,7 +9508,6 @@ var ConnectionComposition;
     /**
      * Get coordinates of anchor point for pathfinder connection.
      *
-     * @private
      * @function Highcharts.Point#getPathfinderAnchorPoint
      *
      * @param {Highcharts.ConnectorsMarkerOptions} markerOptions
@@ -10866,7 +9543,6 @@ var ConnectionComposition;
     /**
      * Utility to get the angle from one point to another.
      *
-     * @private
      * @function Highcharts.Point#getRadiansToVector
      *
      * @param {Highcharts.PositionObject} v1
@@ -10895,7 +9571,6 @@ var ConnectionComposition;
      * Utility to get the position of the marker, based on the path angle and
      * the marker's radius.
      *
-     * @private
      * @function Highcharts.Point#getMarkerVector
      *
      * @param {number} radians
@@ -10973,6 +9648,7 @@ var ConnectionComposition;
  *  Default Export
  *
  * */
+/** @internal */
 /* harmony default export */ var PathfinderComposition = (ConnectionComposition);
 
 // EXTERNAL MODULE: external {"amd":["highcharts/highcharts","Point"],"commonjs":["highcharts","Point"],"commonjs2":["highcharts","Point"],"root":["Highcharts","Point"]}
@@ -10981,12 +9657,12 @@ var highcharts_Point_commonjs_highcharts_Point_commonjs2_highcharts_Point_root_H
 ;// ./code/es5/es-modules/Gantt/Pathfinder.js
 /* *
  *
- *  (c) 2016 Highsoft AS
+ *  (c) 2016-2026 Highsoft AS
  *  Authors: Øystein Moseng, Lars A. V. Cabrera
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -11011,7 +9687,7 @@ var Pathfinder_max = Math.max, Pathfinder_min = Math.min;
  * Get point bounding box using plotX/plotY and shapeArgs. If using
  * graphic.getBBox() directly, the bbox will be affected by animation.
  *
- * @private
+ * @internal
  * @function
  *
  * @param {Highcharts.Point} point
@@ -11042,7 +9718,7 @@ function Pathfinder_getPointBB(point) {
 }
 /**
  * Compute smallest distance between two rectangles.
- * @private
+ * @internal
  */
 function calculateObstacleDistance(a, b, bbMargin) {
     // Count the distance even if we are slightly off
@@ -11066,7 +9742,7 @@ function calculateObstacleDistance(a, b, bbMargin) {
  * Calculate margin to place around obstacles for the pathfinder in pixels.
  * Returns a minimum of 1 pixel margin.
  *
- * @private
+ * @internal
  * @function
  *
  * @param {Array<object>} obstacles
@@ -11111,7 +9787,7 @@ function calculateObstacleMargin(obstacles) {
 /**
  * The Pathfinder class.
  *
- * @private
+ * @internal
  * @class
  * @name Highcharts.Pathfinder
  *
@@ -11290,15 +9966,14 @@ var Pathfinder = /** @class */ (function () {
      * @function Highcharts.Pathfinder#getChartObstacles
      *
      * @param {Object} options
-     *        Options for the calculation. Currently only
-     *        `options.algorithmMargin`.
+     * Options for the calculation. Currently only `options.algorithmMargin`.
      *
      * @param {number} options.algorithmMargin
-     *        The algorithm margin to use for the obstacles.
-
-    * @return {Array<object>}
-     *         An array of calculated obstacles. Each obstacle is defined as an
-     *         object with xMin, xMax, yMin and yMax properties.
+     * The algorithm margin to use for the obstacles.
+     *
+     * @return {Array<object>}
+     * An array of calculated obstacles. Each obstacle is defined as an object
+     * with xMin, xMax, yMin and yMax properties.
      */
     Pathfinder.prototype.getChartObstacles = function (options) {
         var series = this.chart.series,
@@ -11401,6 +10076,7 @@ var Pathfinder = /** @class */ (function () {
 /**
  * @name Highcharts.Pathfinder#algorithms
  * @type {Highcharts.Dictionary<Function>}
+ * @internal
  */
 Pathfinder.prototype.algorithms = PathfinderAlgorithms;
 /* *
@@ -11408,6 +10084,7 @@ Pathfinder.prototype.algorithms = PathfinderAlgorithms;
  *  Default Export
  *
  * */
+/** @internal */
 /* harmony default export */ var Gantt_Pathfinder = (Pathfinder);
 /* *
  *
@@ -11439,7 +10116,20 @@ Pathfinder.prototype.algorithms = PathfinderAlgorithms;
 ''; // Keeps doclets above in JS file
 
 ;// ./code/es5/es-modules/masters/modules/pathfinder.src.js
-
+// SPDX-License-Identifier: LicenseRef-Highcharts
+/**
+ * @license Highcharts Gantt JS v12.5.0 (2026-01-12)
+ * @module highcharts/modules/pathfinder
+ * @requires highcharts
+ *
+ * Pathfinder
+ *
+ * (c) 2016-2026 Highsoft AS
+ * Author: Øystein Moseng
+ *
+ * A commercial license may be required depending on use.
+ * See www.highcharts.com/license
+ */
 
 
 
@@ -11453,22 +10143,23 @@ G.Pathfinder.compose(G.Chart, G.Point);
 ;// ./code/es5/es-modules/Extensions/StaticScale.js
 /* *
  *
- *  (c) 2016-2025 Torstein Honsi, Lars Cabrera
+ *  (c) 2016-2026 Highsoft AS
+ *  Author: Torstein Honsi, Lars Cabrera
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
 
-var StaticScale_addEvent = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).addEvent, StaticScale_defined = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).defined, StaticScale_isNumber = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).isNumber, StaticScale_pick = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).pick;
+var StaticScale_addEvent = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).addEvent, StaticScale_defined = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).defined, StaticScale_isNumber = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).isNumber;
 /* *
  *
  *  Composition
  *
  * */
-/** @private */
+/** @internal */
 function StaticScale_compose(AxisClass, ChartClass) {
     var chartProto = ChartClass.prototype;
     if (!chartProto.adjustHeight) {
@@ -11477,36 +10168,38 @@ function StaticScale_compose(AxisClass, ChartClass) {
         StaticScale_addEvent(ChartClass, 'render', chartProto.adjustHeight);
     }
 }
-/** @private */
+/** @internal */
 function StaticScale_onAxisAfterSetOptions() {
-    var chartOptions = this.chart.options.chart;
+    var _a;
+    var chartOptions = this.chart.userOptions.chart;
     if (!this.horiz &&
         StaticScale_isNumber(this.options.staticScale) &&
-        (!chartOptions.height ||
-            (chartOptions.scrollablePlotArea &&
-                chartOptions.scrollablePlotArea.minHeight))) {
+        (!(chartOptions === null || chartOptions === void 0 ? void 0 : chartOptions.height) ||
+            ((_a = chartOptions.scrollablePlotArea) === null || _a === void 0 ? void 0 : _a.minHeight))) {
         this.staticScale = this.options.staticScale;
     }
 }
-/** @private */
+/** @internal */
 function chartAdjustHeight() {
+    var _a,
+        _b;
     var chart = this;
     if (chart.redrawTrigger !== 'adjustHeight') {
         var _loop_1 = function (axis) {
                 var chart_1 = axis.chart,
-            animate = !!chart_1.initiatedScale &&
-                    chart_1.options.animation,
             staticScale = axis.options.staticScale;
-            if (axis.staticScale && StaticScale_defined(axis.min)) {
-                var height = StaticScale_pick(axis.brokenAxis && axis.brokenAxis.unitLength,
-                    axis.max + axis.tickInterval - axis.min) * staticScale;
+            if (axis.staticScale &&
+                staticScale &&
+                StaticScale_defined(axis.min) &&
+                StaticScale_defined(axis.max)) {
+                var height = ((_b = (_a = axis.brokenAxis) === null || _a === void 0 ? void 0 : _a.unitLength) !== null && _b !== void 0 ? _b : (axis.max + axis.tickInterval - axis.min)) * (staticScale);
                 // Minimum height is 1 x staticScale.
                 height = Math.max(height, staticScale);
                 var diff = height - chart_1.plotHeight;
                 if (!chart_1.scrollablePixelsY && Math.abs(diff) >= 1) {
                     chart_1.plotHeight = height;
                     chart_1.redrawTrigger = 'adjustHeight';
-                    chart_1.setSize(void 0, chart_1.chartHeight + diff, animate);
+                    chart_1.setSize(void 0, chart_1.chartHeight + diff, chart_1.initiatedScale ? void 0 : false);
                 }
                 // Make sure clip rects have the right height before initial
                 // animation.
@@ -11523,13 +10216,13 @@ function chartAdjustHeight() {
                 });
             }
         };
-        for (var _i = 0, _a = (chart.axes || []); _i < _a.length; _i++) {
-            var axis = _a[_i];
+        for (var _i = 0, _c = (chart.axes || []); _i < _c.length; _i++) {
+            var axis = _c[_i];
             _loop_1(axis);
         }
         this.initiatedScale = true;
     }
-    this.redrawTrigger = null;
+    this.redrawTrigger = void 0;
 }
 /* *
  *
@@ -11564,16 +10257,19 @@ var StaticScale = {
 ''; // Keeps doclets above in JS file
 
 ;// ./code/es5/es-modules/masters/modules/static-scale.src.js
+// SPDX-License-Identifier: LicenseRef-Highcharts
 /**
- * @license Highcharts Gantt JS v12.3.0 (2025-06-21)
+ * @license Highcharts Gantt JS v12.5.0 (2026-01-12)
  * @module highcharts/modules/static-scale
  * @requires highcharts
  *
  * StaticScale
  *
- * (c) 2016-2025 Torstein Honsi, Lars A. V. Cabrera
+ * (c) 2016-2026 Highsoft AS
+ * Author: Torstein Honsi, Lars A. V. Cabrera
  *
- * License: www.highcharts.com/license
+ * A commercial license may be required depending on use.
+ * See www.highcharts.com/license
  */
 
 
@@ -11587,11 +10283,12 @@ Extensions_StaticScale.compose(static_scale_src_G.Axis, static_scale_src_G.Chart
  *
  *  X-range series module
  *
- *  (c) 2010-2025 Torstein Honsi, Lars A. V. Cabrera
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi, Lars A. V. Cabrera
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -11803,11 +10500,12 @@ var XRangeSeriesDefaults = {
  *
  *  X-range series module
  *
- *  (c) 2010-2025 Torstein Honsi, Lars A. V. Cabrera
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi, Lars A. V. Cabrera
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -11903,7 +10601,8 @@ var XRangePoint = /** @class */ (function (_super) {
             if (!series.chart.styledMode) {
                 this.color = colorByPoint.color;
             }
-            if (!this.options.colorIndex) {
+            if (typeof this.options.colorIndex === 'undefined' ||
+                this.options.colorIndex === null) {
                 this.colorIndex = colorByPoint.colorIndex;
             }
         }
@@ -11921,6 +10620,7 @@ var XRangePoint = /** @class */ (function (_super) {
         _super.prototype.applyOptions.call(this, options, x);
         this.x2 = this.series.chart.time.parse(this.x2);
         this.isNull = !((_a = this.isValid) === null || _a === void 0 ? void 0 : _a.call(this));
+        this.formatPrefix = this.isNull ? 'null' : 'point'; // #23605
         return this;
     };
     /**
@@ -11980,11 +10680,12 @@ XRangePoint_extend(XRangePoint.prototype, {
  *
  *  X-range series module
  *
- *  (c) 2010-2025 Torstein Honsi, Lars A. V. Cabrera
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi, Lars A. V. Cabrera
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -12496,16 +11197,19 @@ highcharts_SeriesRegistry_commonjs_highcharts_SeriesRegistry_commonjs2_highchart
 /* harmony default export */ var XRange_XRangeSeries = (XRangeSeries);
 
 ;// ./code/es5/es-modules/masters/modules/xrange.src.js
+// SPDX-License-Identifier: LicenseRef-Highcharts
 /**
- * @license Highcharts JS v12.3.0 (2025-06-21)
+ * @license Highcharts JS v12.5.0 (2026-01-12)
  * @module highcharts/modules/xrange
  * @requires highcharts
  *
  * X-range series
  *
- * (c) 2010-2025 Torstein Honsi, Lars A. V. Cabrera
+ * (c) 2010-2026 Highsoft AS
+ * Author: Torstein Honsi, Lars A. V. Cabrera
  *
- * License: www.highcharts.com/license
+ * A commercial license may be required depending on use.
+ * See www.highcharts.com/license
  */
 
 
@@ -12517,13 +11221,13 @@ XRange_XRangeSeries.compose(xrange_src_G.Axis);
 ;// ./code/es5/es-modules/Series/Gantt/GanttPoint.js
 /* *
  *
- *  (c) 2016-2025 Highsoft AS
+ *  (c) 2016-2026 Highsoft AS
  *
  *  Author: Lars A. V. Cabrera
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -12603,6 +11307,7 @@ var GanttPoint = /** @class */ (function (_super) {
             x);
         GanttPoint.setGanttPointAliases(ganttPoint, ganttPoint.series.chart);
         this.isNull = !((_a = this.isValid) === null || _a === void 0 ? void 0 : _a.call(this));
+        this.formatPrefix = this.isNull ? 'null' : 'point'; // #23605
         return ganttPoint;
     };
     GanttPoint.prototype.isValid = function () {
@@ -12624,13 +11329,13 @@ var GanttPoint = /** @class */ (function (_super) {
 ;// ./code/es5/es-modules/Series/Gantt/GanttSeriesDefaults.js
 /* *
  *
- *  (c) 2016-2025 Highsoft AS
+ *  (c) 2016-2026 Highsoft AS
  *
  *  Author: Lars A. V. Cabrera
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -12860,11 +11565,12 @@ var highcharts_StackItem_commonjs_highcharts_StackItem_commonjs2_highcharts_Stac
 ;// ./code/es5/es-modules/Core/Axis/BrokenAxis.js
 /* *
  *
- *  (c) 2009-2025 Torstein Honsi
+ *  (c) 2009-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -12878,7 +11584,7 @@ var BrokenAxis_addEvent = (highcharts_commonjs_highcharts_commonjs2_highcharts_r
  * */
 /**
  * Axis with support of broken data rows.
- * @private
+ * @internal
  */
 var BrokenAxis;
 (function (BrokenAxis) {
@@ -12894,7 +11600,7 @@ var BrokenAxis;
      * */
     /**
      * Adds support for broken axes.
-     * @private
+     * @internal
      */
     function compose(AxisClass, SeriesClass) {
         if (!AxisClass.keepProps.includes('brokenAxis')) {
@@ -12912,9 +11618,7 @@ var BrokenAxis;
         return AxisClass;
     }
     BrokenAxis.compose = compose;
-    /**
-     * @private
-     */
+    /** @internal */
     function onAxisAfterInit() {
         if (typeof this.brokenAxis !== 'undefined') {
             this.brokenAxis.setBreaks(this.options.breaks, false);
@@ -12922,18 +11626,17 @@ var BrokenAxis;
     }
     /**
      * Force Axis to be not-ordinal when breaks are defined.
-     * @private
+     * @internal
      */
     function onAxisAfterSetOptions() {
         var _a;
         var axis = this;
-        if ((_a = axis.brokenAxis) === null || _a === void 0 ? void 0 : _a.hasBreaks) {
+        // Too early for axis.brokenAxis?.hasBreaks.
+        if (Object.keys(((_a = axis.options.breaks) === null || _a === void 0 ? void 0 : _a[0]) || {}).length) {
             axis.options.ordinal = false;
         }
     }
-    /**
-     * @private
-     */
+    /** @internal */
     function onAxisAfterSetTickPositions() {
         var axis = this,
             brokenAxis = axis.brokenAxis;
@@ -12950,18 +11653,14 @@ var BrokenAxis;
             axis.tickPositions.info = info;
         }
     }
-    /**
-     * @private
-     */
+    /** @internal */
     function onAxisInit() {
         var axis = this;
         if (!axis.brokenAxis) {
             axis.brokenAxis = new Additions(axis);
         }
     }
-    /**
-     * @private
-     */
+    /** @internal */
     function onSeriesAfterGeneratePoints() {
         var _a,
             _b;
@@ -12991,16 +11690,12 @@ var BrokenAxis;
             }
         }
     }
-    /**
-     * @private
-     */
+    /** @internal */
     function onSeriesAfterRender() {
         this.drawBreaks(this.xAxis, ['x']);
         this.drawBreaks(this.yAxis, BrokenAxis_pick(this.pointArrayMap, ['y']));
     }
-    /**
-     * @private
-     */
+    /** @internal */
     function seriesDrawBreaks(axis, keys) {
         var _a;
         var series = this,
@@ -13011,30 +11706,13 @@ var BrokenAxis;
         if ((_a = axis === null || axis === void 0 ? void 0 : axis.brokenAxis) === null || _a === void 0 ? void 0 : _a.hasBreaks) {
             var brokenAxis_1 = axis.brokenAxis;
             keys.forEach(function (key) {
-                var _a,
-                    _b;
                 breaks = (brokenAxis_1 === null || brokenAxis_1 === void 0 ? void 0 : brokenAxis_1.breakArray) || [];
                 threshold = axis.isXAxis ?
                     axis.min :
                     BrokenAxis_pick(series.options.threshold, axis.min);
-                // Array of breaks that have been "zoomed-out" which means that
-                // they were shown previously, but now after zoom, they are not
-                // (#19885).
-                var breaksOutOfRange = (_b = (_a = axis === null || axis === void 0 ? void 0 : axis.options) === null || _a === void 0 ? void 0 : _a.breaks) === null || _b === void 0 ? void 0 : _b.filter(function (brk) {
-                        var isOut = true;
-                    // Iterate to see if "brk" is in axis range
-                    for (var i = 0; i < breaks.length; i++) {
-                        var otherBreak = breaks[i];
-                        if (otherBreak.from === brk.from &&
-                            otherBreak.to === brk.to) {
-                            isOut = false;
-                            break;
-                        }
-                    }
-                    return isOut;
-                });
                 points.forEach(function (point) {
-                    y = BrokenAxis_pick(point['stack' + key.toUpperCase()], point[key]);
+                    var _a;
+                    y = (_a = point['stack' + key.toUpperCase()]) !== null && _a !== void 0 ? _a : point[key];
                     breaks.forEach(function (brk) {
                         if (BrokenAxis_isNumber(threshold) && BrokenAxis_isNumber(y)) {
                             var eventName = '';
@@ -13054,9 +11732,6 @@ var BrokenAxis;
                             }
                         }
                     });
-                    breaksOutOfRange === null || breaksOutOfRange === void 0 ? void 0 : breaksOutOfRange.forEach(function (brk) {
-                        BrokenAxis_fireEvent(axis, 'pointOutsideOfBreak', { point: point, brk: brk });
-                    });
                 });
             });
         }
@@ -13066,13 +11741,14 @@ var BrokenAxis;
      * can draw a gap in the line or area. This was moved from ordinal
      * axis module to broken axis module as of #5045.
      *
-     * @private
+     * @internal
      * @function Highcharts.Series#gappedPath
      *
      * @return {Highcharts.SVGPathArray}
      * Gapped path
      */
     function seriesGappedPath() {
+        var _a;
         var currentDataGrouping = this.currentDataGrouping,
             groupingSize = currentDataGrouping === null || currentDataGrouping === void 0 ? void 0 : currentDataGrouping.gapSize,
             points = this.points.slice(),
@@ -13170,7 +11846,7 @@ var BrokenAxis;
                     });
                     // For stacked chart generate empty stack items, #6546
                     if (yAxis.stacking && this.options.stacking) {
-                        stack = yAxis.stacking.stacks[this.stackKey][xRange] = new (highcharts_StackItem_commonjs_highcharts_StackItem_commonjs2_highcharts_StackItem_root_Highcharts_StackItem_default())(yAxis, yAxis.options.stackLabels, false, xRange, this.stack);
+                        stack = yAxis.stacking.stacks[this.stackKey][xRange] = new (highcharts_StackItem_commonjs_highcharts_StackItem_commonjs2_highcharts_StackItem_root_Highcharts_StackItem_default())(yAxis, yAxis.options.stackLabels, false, xRange, (_a = this.stack) !== null && _a !== void 0 ? _a : '');
                         stack.total = 0;
                     }
                 }
@@ -13188,7 +11864,7 @@ var BrokenAxis;
      * */
     /**
      * Provides support for broken axes.
-     * @private
+     * @internal
      * @class
      */
     var Additions = /** @class */ (function () {
@@ -13197,18 +11873,16 @@ var BrokenAxis;
              *  Constructors
              *
              * */
+            /** @internal */
             function Additions(axis) {
-                this.hasBreaks = false;
-            this.axis = axis;
+                this.axis = axis;
         }
         /* *
          *
          *  Static Functions
          *
          * */
-        /**
-         * @private
-         */
+        /** @internal */
         Additions.isInBreak = function (brk, val) {
             var repeat = brk.repeat || Infinity,
                 from = brk.from,
@@ -13225,57 +11899,92 @@ var BrokenAxis;
             }
             return ret;
         };
-        /**
-         * @private
-         */
+        /** @internal */
         Additions.lin2Val = function (val) {
-            var axis = this;
-            var brokenAxis = axis.brokenAxis;
-            var breakArray = brokenAxis === null || brokenAxis === void 0 ? void 0 : brokenAxis.breakArray;
-            if (!breakArray || !BrokenAxis_isNumber(val)) {
+            var axis = this,
+                threshold = axis.min || 0,
+                brokenAxis = axis.brokenAxis,
+                breakArray = brokenAxis === null || brokenAxis === void 0 ? void 0 : brokenAxis.breakArray;
+            if (!(breakArray === null || breakArray === void 0 ? void 0 : breakArray.length) || !BrokenAxis_isNumber(val)) {
                 return val;
             }
-            var nval = val,
-                brk,
-                i;
-            for (i = 0; i < breakArray.length; i++) {
-                brk = breakArray[i];
-                if (brk.from >= nval) {
-                    break;
+            var nval = val;
+            // Axis min is the anchor point. Above it, break gaps impact the
+            // result differently than below.
+            if (val > threshold) {
+                for (var _i = 0, breakArray_1 = breakArray; _i < breakArray_1.length; _i++) {
+                    var brk = breakArray_1[_i];
+                    if (brk.from > nval) {
+                        // Skip all breaks after the nval.
+                        break;
+                    }
+                    else if (brk.to <= nval && brk.to > threshold) {
+                        nval += brk.len;
+                    }
+                    else if (Additions.isInBreak(brk, nval)) {
+                        nval += brk.len;
+                    }
                 }
-                else if (brk.to < nval) {
-                    nval += brk.len;
-                }
-                else if (Additions.isInBreak(brk, nval)) {
-                    nval += brk.len;
+            }
+            else if (val < threshold) {
+                for (var _a = 0, breakArray_2 = breakArray; _a < breakArray_2.length; _a++) {
+                    var brk = breakArray_2[_a];
+                    if (brk.from > threshold) {
+                        // Skip all breaks above the threshold.
+                        break;
+                    }
+                    else if (brk.from >= nval && brk.from < threshold) {
+                        nval -= brk.len;
+                    }
+                    else if (Additions.isInBreak(brk, nval)) {
+                        nval -= brk.len;
+                    }
                 }
             }
             return nval;
         };
-        /**
-         * @private
-         */
+        /** @internal */
         Additions.val2Lin = function (val) {
-            var axis = this;
-            var brokenAxis = axis.brokenAxis;
-            var breakArray = brokenAxis === null || brokenAxis === void 0 ? void 0 : brokenAxis.breakArray;
-            if (!breakArray || !BrokenAxis_isNumber(val)) {
+            var axis = this,
+                threshold = axis.min || 0,
+                brokenAxis = axis.brokenAxis,
+                breakArray = brokenAxis === null || brokenAxis === void 0 ? void 0 : brokenAxis.breakArray;
+            if (!(breakArray === null || breakArray === void 0 ? void 0 : breakArray.length) || !BrokenAxis_isNumber(val)) {
                 return val;
             }
-            var nval = val,
-                brk,
-                i;
-            for (i = 0; i < breakArray.length; i++) {
-                brk = breakArray[i];
-                if (brk.to <= val) {
-                    nval -= brk.len;
+            var nval = val;
+            // Axis min is the anchor point. Above it, break gaps impact the
+            // result differently than below.
+            if (val > threshold) {
+                for (var _i = 0, breakArray_3 = breakArray; _i < breakArray_3.length; _i++) {
+                    var brk = breakArray_3[_i];
+                    if (brk.to <= val && brk.to > threshold) {
+                        nval -= brk.len;
+                    }
+                    else if (brk.from > val) {
+                        // Skip all breaks after the val.
+                        break;
+                    }
+                    else if (Additions.isInBreak(brk, val)) {
+                        nval -= (val - brk.from);
+                        break;
+                    }
                 }
-                else if (brk.from >= val) {
-                    break;
-                }
-                else if (Additions.isInBreak(brk, val)) {
-                    nval -= (val - brk.from);
-                    break;
+            }
+            else if (val < threshold) {
+                for (var _a = 0, breakArray_4 = breakArray; _a < breakArray_4.length; _a++) {
+                    var brk = breakArray_4[_a];
+                    if (brk.from >= val && brk.from < threshold) {
+                        nval += brk.len;
+                    }
+                    else if (brk.from > threshold) {
+                        // Skip all breaks before the threshold.
+                        break;
+                    }
+                    else if (Additions.isInBreak(brk, val)) {
+                        nval += (brk.to - val);
+                        break;
+                    }
                 }
             }
             return nval;
@@ -13304,9 +12013,7 @@ var BrokenAxis;
                 return b.from < x && x < b.to;
             });
         };
-        /**
-         * @private
-         */
+        /** @internal */
         Additions.prototype.isInAnyBreak = function (val, testKeep) {
             var brokenAxis = this,
                 axis = brokenAxis.axis,
@@ -13337,7 +12044,7 @@ var BrokenAxis;
          * Dynamically set or unset breaks in an axis. This function in lighter
          * than using Axis.update, and it also preserves animation.
          *
-         * @private
+         * @internal
          * @function Highcharts.Axis#setBreaks
          *
          * @param {Array<Highcharts.XAxisBreaksOptions>} [breaks]
@@ -13347,13 +12054,13 @@ var BrokenAxis;
          * Whether to redraw the chart immediately.
          */
         Additions.prototype.setBreaks = function (breaks, redraw) {
+            var _a;
             var brokenAxis = this,
                 axis = brokenAxis.axis,
                 time = axis.chart.time,
                 hasBreaks = BrokenAxis_isArray(breaks) &&
-                    !!breaks.length &&
-                    !!Object.keys(breaks[0]).length; // Check for [{}], #16368.
-                axis.isDirty = brokenAxis.hasBreaks !== hasBreaks;
+                    !!Object.keys((breaks === null || breaks === void 0 ? void 0 : breaks[0]) || {}).length;
+            axis.isDirty = ((_a = brokenAxis.hasBreaks) !== null && _a !== void 0 ? _a : false) !== hasBreaks;
             brokenAxis.hasBreaks = hasBreaks;
             // Compile string dates
             breaks === null || breaks === void 0 ? void 0 : breaks.forEach(function (brk) {
@@ -13378,10 +12085,12 @@ var BrokenAxis;
                 axis.lin2val = Additions.lin2Val;
                 axis.val2lin = Additions.val2Lin;
                 axis.setExtremes = function (newMin, newMax, redraw, animation, eventArguments) {
+                    var _a;
                     // If trying to set extremes inside a break, extend min to
                     // after, and max to before the break ( #3857 )
-                    if (brokenAxis.hasBreaks) {
-                        var breaks_1 = (this.options.breaks || []);
+                    // but not for gantt (#13898);
+                    if (brokenAxis.hasBreaks && !((_a = axis.treeGrid) === null || _a === void 0 ? void 0 : _a.tree)) {
+                        var breaks_1 = (this.brokenAxis.breakArray || []);
                         var axisBreak = void 0;
                         while ((axisBreak = brokenAxis.findBreakAt(newMin, breaks_1))) {
                             newMin = axisBreak.to;
@@ -13397,60 +12106,74 @@ var BrokenAxis;
                     axis.constructor.prototype.setExtremes.call(this, newMin, newMax, redraw, animation, eventArguments);
                 };
                 axis.setAxisTranslation = function () {
+                    var _a,
+                        _b,
+                        _c,
+                        _d,
+                        _e,
+                        _f;
                     axis.constructor.prototype.setAxisTranslation.call(this);
                     brokenAxis.unitLength = void 0;
                     if (brokenAxis.hasBreaks) {
-                        var breaks_2 = axis.options.breaks || [], 
-                            // Temporary one:
-                            breakArrayT_1 = [],
-                            breakArray_1 = [],
-                            pointRangePadding = BrokenAxis_pick(axis.pointRangePadding, 0);
+                        var breaks_2 = axis.options.breaks || [],
+                            breakArrayTemp_1 = [],
+                            breakArray_5 = [],
+                            pointRangePadding = (_a = axis.pointRangePadding) !== null && _a !== void 0 ? _a : 0;
                         var length_1 = 0,
                             inBrk_1,
                             repeat_1,
-                            min_1 = axis.userMin || axis.min,
-                            max_1 = axis.userMax || axis.max,
+                            min_1 = (_b = axis.userMin) !== null && _b !== void 0 ? _b : axis.min,
+                            max_1 = (_c = axis.userMax) !== null && _c !== void 0 ? _c : axis.max,
+                            dataMin_1 = (_d = axis.dataMin) !== null && _d !== void 0 ? _d : min_1,
+                            dataMax_1 = (_e = axis.dataMax) !== null && _e !== void 0 ? _e : max_1,
                             start_1,
                             i_1;
-                        // Min & max check (#4247)
-                        breaks_2.forEach(function (brk) {
-                            repeat_1 = brk.repeat || Infinity;
-                            if (BrokenAxis_isNumber(min_1) && BrokenAxis_isNumber(max_1)) {
-                                if (Additions.isInBreak(brk, min_1)) {
-                                    min_1 += ((brk.to % repeat_1) -
-                                        (min_1 % repeat_1));
+                        if (BrokenAxis_isNumber(axis.threshold)) {
+                            dataMin_1 = Math.min(dataMin_1 !== null && dataMin_1 !== void 0 ? dataMin_1 : axis.threshold, axis.threshold);
+                            dataMax_1 = Math.max(dataMax_1 !== null && dataMax_1 !== void 0 ? dataMax_1 : axis.threshold, axis.threshold);
+                        }
+                        // Min & max check (#4247) but not for gantt (#13898)
+                        if (!((_f = axis.treeGrid) === null || _f === void 0 ? void 0 : _f.tree)) {
+                            breaks_2.forEach(function (brk) {
+                                repeat_1 = brk.repeat || Infinity;
+                                if (BrokenAxis_isNumber(min_1) && BrokenAxis_isNumber(max_1)) {
+                                    if (Additions.isInBreak(brk, min_1)) {
+                                        min_1 += ((brk.to % repeat_1) -
+                                            (min_1 % repeat_1));
+                                    }
+                                    if (Additions.isInBreak(brk, max_1)) {
+                                        max_1 -= ((max_1 % repeat_1) -
+                                            (brk.from % repeat_1));
+                                    }
                                 }
-                                if (Additions.isInBreak(brk, max_1)) {
-                                    max_1 -= ((max_1 % repeat_1) -
-                                        (brk.from % repeat_1));
-                                }
-                            }
-                        });
+                            });
+                        }
                         // Construct an array holding all breaks in the axis
-                        breaks_2.forEach(function (brk) {
-                            start_1 = brk.from;
-                            repeat_1 = brk.repeat || Infinity;
-                            if (BrokenAxis_isNumber(min_1) && BrokenAxis_isNumber(max_1)) {
-                                while (start_1 - repeat_1 > min_1) {
+                        // for the current data range.
+                        if (BrokenAxis_isNumber(dataMin_1) && BrokenAxis_isNumber(dataMax_1)) {
+                            breaks_2.forEach(function (brk) {
+                                start_1 = brk.from;
+                                repeat_1 = brk.repeat || Infinity;
+                                while (start_1 - repeat_1 > dataMin_1) {
                                     start_1 -= repeat_1;
                                 }
-                                while (start_1 < min_1) {
+                                while (start_1 < dataMin_1) {
                                     start_1 += repeat_1;
                                 }
-                                for (i_1 = start_1; i_1 < max_1; i_1 += repeat_1) {
-                                    breakArrayT_1.push({
+                                for (i_1 = start_1; i_1 < dataMax_1; i_1 += repeat_1) {
+                                    breakArrayTemp_1.push({
                                         value: i_1,
                                         move: 'in'
                                     });
-                                    breakArrayT_1.push({
+                                    breakArrayTemp_1.push({
                                         value: i_1 + brk.to - brk.from,
                                         move: 'out',
                                         size: brk.breakSize
                                     });
                                 }
-                            }
-                        });
-                        breakArrayT_1.sort(function (a, b) {
+                            });
+                        }
+                        breakArrayTemp_1.sort(function (a, b) {
                             return ((a.value === b.value) ?
                                 ((a.move === 'in' ? 0 : 1) -
                                     (b.move === 'in' ? 0 : 1)) :
@@ -13458,24 +12181,28 @@ var BrokenAxis;
                         });
                         // Simplify the breaks
                         inBrk_1 = 0;
-                        start_1 = min_1;
-                        breakArrayT_1.forEach(function (brk) {
+                        start_1 = dataMin_1;
+                        breakArrayTemp_1.forEach(function (brk) {
                             inBrk_1 += (brk.move === 'in' ? 1 : -1);
                             if (inBrk_1 === 1 && brk.move === 'in') {
                                 start_1 = brk.value;
                             }
                             if (inBrk_1 === 0 && BrokenAxis_isNumber(start_1)) {
-                                breakArray_1.push({
+                                breakArray_5.push({
                                     from: start_1,
                                     to: brk.value,
                                     len: brk.value - start_1 - (brk.size || 0)
                                 });
-                                length_1 += (brk.value -
-                                    start_1 -
-                                    (brk.size || 0));
+                                if (BrokenAxis_isNumber(min_1) && BrokenAxis_isNumber(max_1) &&
+                                    start_1 < max_1 && brk.value > min_1) {
+                                    // Sum break gaps in the visible range
+                                    length_1 += (brk.value -
+                                        start_1 -
+                                        (brk.size || 0));
+                                }
                             }
                         });
-                        brokenAxis.breakArray = breakArray_1;
+                        brokenAxis.breakArray = breakArray_5;
                         // Used with staticScale, and below the actual axis
                         // length, when breaks are subtracted.
                         if (BrokenAxis_isNumber(min_1) &&
@@ -13515,17 +12242,18 @@ var BrokenAxis;
  *  Default Export
  *
  * */
+/** @internal */
 /* harmony default export */ var Axis_BrokenAxis = (BrokenAxis);
 
 ;// ./code/es5/es-modules/Core/Axis/GridAxis.js
 /* *
  *
- *  (c) 2016 Highsoft AS
+ *  (c) 2016-2026 Highsoft AS
  *  Authors: Lars A. V. Cabrera
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -13533,7 +12261,7 @@ var BrokenAxis;
 
 var dateFormats = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).dateFormats;
 
-var GridAxis_addEvent = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).addEvent, GridAxis_defined = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).defined, GridAxis_erase = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).erase, GridAxis_find = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).find, GridAxis_isArray = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).isArray, GridAxis_isNumber = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).isNumber, GridAxis_merge = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).merge, GridAxis_pick = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).pick, GridAxis_timeUnits = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).timeUnits, GridAxis_wrap = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).wrap;
+var GridAxis_addEvent = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).addEvent, GridAxis_defined = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).defined, GridAxis_erase = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).erase, GridAxis_find = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).find, GridAxis_isArray = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).isArray, GridAxis_isNumber = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).isNumber, GridAxis_merge = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).merge, GridAxis_pick = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).pick, timeUnits = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).timeUnits, GridAxis_wrap = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).wrap;
 /* *
  *
  *  Enums
@@ -13541,7 +12269,7 @@ var GridAxis_addEvent = (highcharts_commonjs_highcharts_commonjs2_highcharts_roo
  * */
 /**
  * Enum for which side the axis is on. Maps to axis.side.
- * @private
+ * @internal
  */
 var GridAxisSide;
 (function (GridAxisSide) {
@@ -13555,22 +12283,16 @@ var GridAxisSide;
  *  Functions
  *
  * */
-/**
- * @private
- */
+/** @internal */
 function argsToArray(args) {
     return Array.prototype.slice.call(args, 1);
 }
-/**
- * @private
- */
+/** @internal */
 function GridAxis_isObject(x) {
     // Always use strict mode
     return highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default().isObject(x, true);
 }
-/**
- * @private
- */
+/** @internal */
 function applyGridOptions(axis) {
     var options = axis.options;
     // Center-align by default
@@ -13598,7 +12320,7 @@ function applyGridOptions(axis) {
 }
 /**
  * Extends axis class with grid support.
- * @private
+ * @internal
  */
 function GridAxis_compose(AxisClass, ChartClass, TickClass) {
     if (!AxisClass.keepProps.includes('grid')) {
@@ -13627,7 +12349,7 @@ function GridAxis_compose(AxisClass, ChartClass, TickClass) {
 /**
  * Get the largest label width and height.
  *
- * @private
+ * @internal
  * @function Highcharts.Axis#getMaxLabelDimensions
  *
  * @param {Highcharts.Dictionary<Highcharts.Tick>} ticks
@@ -13684,7 +12406,7 @@ function getMaxLabelDimensions(ticks, tickPositions) {
 }
 /**
  * Handle columns and getOffset.
- * @private
+ * @internal
  */
 function wrapGetOffset(proceed) {
     var grid = this.grid, 
@@ -13708,9 +12430,7 @@ function wrapGetOffset(proceed) {
         proceed.apply(this);
     }
 }
-/**
- * @private
- */
+/** @internal */
 function onAfterGetTitlePosition(e) {
     var axis = this;
     var options = axis.options;
@@ -13753,9 +12473,7 @@ function onAfterGetTitlePosition(e) {
             axisTop - titleMargin + yOption;
     }
 }
-/**
- * @private
- */
+/** @internal */
 function onAfterInit() {
     var axis = this;
     var chart = axis.chart,
@@ -13808,7 +12526,7 @@ function onAfterInit() {
  *             (axis.min) __________________________ (axis.max)
  *                        ___|____|____|____|____|__
  * ```
- * @private
+ * @internal
  */
 function onAfterRender() {
     var _a,
@@ -13983,9 +12701,7 @@ function onAfterRender() {
         }
     }
 }
-/**
- * @private
- */
+/** @internal */
 function onAfterSetAxisTranslation() {
     var _a;
     var axis = this;
@@ -14034,7 +12750,7 @@ function onAfterSetAxisTranslation() {
  *   wall
  * - Ensures that the rightmost tick is at the end of the axis, to
  *   create a right wall.
- * @private
+ * @internal
  */
 function onAfterSetOptions(e) {
     var options = this.options,
@@ -14155,7 +12871,7 @@ function onAfterSetOptions(e) {
                             // `unitName` is 'year'
                             count = parentInfo.count * 10;
                         }
-                        var unitRange = GridAxis_timeUnits[unitName];
+                        var unitRange = timeUnits[unitName];
                         this.tickInterval = unitRange * count;
                         return this.chart.time.getTimeTicks({ unitRange: unitRange, count: count, unitName: unitName }, min, max, this.options.startOfWeek);
                     }
@@ -14182,9 +12898,7 @@ function onAfterSetOptions(e) {
         }
     }
 }
-/**
- * @private
- */
+/** @internal */
 function onAfterSetOptions2(e) {
     var axis = this;
     var userOptions = e.userOptions;
@@ -14198,7 +12912,7 @@ function onAfterSetOptions2(e) {
 }
 /**
  * Handle columns and setScale.
- * @private
+ * @internal
  */
 function onAfterSetScale() {
     var axis = this;
@@ -14207,7 +12921,7 @@ function onAfterSetScale() {
 /**
  * Draw vertical axis ticks extra long to create cell floors and roofs.
  * Overrides the tickLength for vertical axes.
- * @private
+ * @internal
  */
 function onAfterTickSize(e) {
     var _a = this,
@@ -14229,9 +12943,7 @@ function onAfterTickSize(e) {
         }
     }
 }
-/**
- * @private
- */
+/** @internal */
 function GridAxis_onChartAfterSetChartSize() {
     this.axes.forEach(function (axis) {
         var _a;
@@ -14241,9 +12953,7 @@ function GridAxis_onChartAfterSetChartSize() {
         });
     });
 }
-/**
- * @private
- */
+/** @internal */
 function onDestroy(e) {
     var grid = this.grid;
     (grid.columns || []).forEach(function (column) { return column.destroy(e.keepEvents); });
@@ -14251,7 +12961,7 @@ function onDestroy(e) {
 }
 /**
  * Wraps axis init to draw cell walls on vertical axes.
- * @private
+ * @internal
  */
 function onInit(e) {
     var axis = this;
@@ -14268,7 +12978,7 @@ function onInit(e) {
 }
 /**
  * Center tick labels in cells.
- * @private
+ * @internal
  */
 function onTickAfterGetLabelPosition(e) {
     var tick = this,
@@ -14365,9 +13075,7 @@ function onTickAfterGetLabelPosition(e) {
         e.pos.x += (axis.horiz && labelOpts.x) || 0;
     }
 }
-/**
- * @private
- */
+/** @internal */
 function onTickLabelFormat(ctx) {
     var _a;
     var axis = ctx.axis,
@@ -14411,7 +13119,7 @@ function onTickLabelFormat(ctx) {
  *                        |___|_______|_______|_______|
  *                          ^
  * ```
- * @private
+ * @internal
  * @todo Does this function do what the drawing says? Seems to affect
  *       ticks and not the labels directly?
  */
@@ -14458,7 +13166,7 @@ function onTrimTicks() {
 }
 /**
  * Avoid altering tickInterval when reserving space.
- * @private
+ * @internal
  */
 function wrapUnsquish(proceed) {
     var axis = this;
@@ -14476,7 +13184,7 @@ function wrapUnsquish(proceed) {
  * */
 /**
  * Additions for grid axes.
- * @private
+ * @internal
  * @class
  */
 var GridAxisAdditions = /** @class */ (function () {
@@ -14502,7 +13210,7 @@ var GridAxisAdditions = /** @class */ (function () {
      * this function returns true if the axis supplied is the last
      * of the x-axes.
      *
-     * @private
+     * @internal
      *
      * @return {boolean}
      * True if the axis is the outermost axis in its dimension; false if
@@ -14541,8 +13249,8 @@ var GridAxisAdditions = /** @class */ (function () {
     };
     /**
      * Add extra border based on the provided path.
-     * @private
-     * @param {SVGPath} path
+     * @internal
+     * @param {Highcharts.SVGPathArray} path
      * The path of the border.
      * @return {Highcharts.SVGElement}
      * Border
@@ -14599,9 +13307,11 @@ dateFormats.W = function (timestamp) {
  *  Default Export
  *
  * */
+/** @internal */
 var GridAxis = {
     compose: GridAxis_compose
 };
+/** @internal */
 /* harmony default export */ var Axis_GridAxis = (GridAxis);
 /* *
  *
@@ -14687,13 +13397,13 @@ var GridAxis = {
 ;// ./code/es5/es-modules/Gantt/Tree.js
 /* *
  *
- *  (c) 2016-2025 Highsoft AS
+ *  (c) 2016-2026 Highsoft AS
  *
  *  Authors: Jon Arild Nygard
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -14723,7 +13433,7 @@ var Tree_extend = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_High
 /**
  * Creates an object map from parent id to children's index.
  *
- * @private
+ * @internal
  * @function Highcharts.Tree#getListOfParents
  *
  * @param {Array<*>} data
@@ -14763,7 +13473,7 @@ function getListOfParents(data) {
     });
     return listOfParents;
 }
-/** @private */
+/** @internal */
 function getNode(id, parent, level, data, mapOfIdToChildren, options) {
     var after = options && options.after,
         before = options && options.before,
@@ -14824,7 +13534,7 @@ function getNode(id, parent, level, data, mapOfIdToChildren, options) {
     }
     return node;
 }
-/** @private */
+/** @internal */
 function getTree(data, options) {
     return getNode('', null, 1, null, getListOfParents(data), options);
 }
@@ -14833,43 +13543,41 @@ function getTree(data, options) {
  *  Default Export
  *
  * */
+/** @internal */
 var Tree = {
     getNode: getNode,
     getTree: getTree
 };
+/** @internal */
 /* harmony default export */ var Gantt_Tree = (Tree);
 
 ;// ./code/es5/es-modules/Core/Axis/TreeGrid/TreeGridTick.js
 /* *
  *
- *  (c) 2016 Highsoft AS
+ *  (c) 2016-2026 Highsoft AS
  *  Authors: Jon Arild Nygard
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
 
-var TreeGridTick_addEvent = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).addEvent, TreeGridTick_removeEvent = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).removeEvent, TreeGridTick_isObject = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).isObject, TreeGridTick_isNumber = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).isNumber, TreeGridTick_pick = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).pick, TreeGridTick_wrap = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).wrap;
+var TreeGridTick_addEvent = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).addEvent, TreeGridTick_correctFloat = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).correctFloat, TreeGridTick_removeEvent = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).removeEvent, TreeGridTick_isObject = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).isObject, TreeGridTick_isNumber = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).isNumber, TreeGridTick_pick = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).pick, TreeGridTick_wrap = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).wrap;
 /* *
  *
  *  Functions
  *
  * */
-/**
- * @private
- */
+/** @internal */
 function onTickInit() {
     var tick = this;
     if (!tick.treeGrid) {
         tick.treeGrid = new TreeGridTickAdditions(tick);
     }
 }
-/**
- * @private
- */
+/** @internal */
 function onTickHover(label) {
     label.addClass('highcharts-treegrid-node-active');
     if (!label.renderer.styledMode) {
@@ -14878,9 +13586,7 @@ function onTickHover(label) {
         });
     }
 }
-/**
- * @private
- */
+/** @internal */
 function onTickHoverExit(label, options) {
     var css = TreeGridTick_isObject(options.style) ? options.style : {};
     label.removeClass('highcharts-treegrid-node-active');
@@ -14888,9 +13594,7 @@ function onTickHoverExit(label, options) {
         label.css({ textDecoration: (css.textDecoration || 'none') });
     }
 }
-/**
- * @private
- */
+/** @internal */
 function renderLabelIcon(tick, params) {
     var _a;
     var treeGrid = tick.treeGrid,
@@ -14934,9 +13638,7 @@ function renderLabelIcon(tick, params) {
         rotation: rotation
     });
 }
-/**
- * @private
- */
+/** @internal */
 function wrapGetLabelPosition(proceed, x, y, label, horiz, labelOptions, tickmarkOffset, index, step) {
     var _a;
     var tick = this,
@@ -14980,9 +13682,7 @@ function wrapGetLabelPosition(proceed, x, y, label, horiz, labelOptions, tickmar
     }
     return result;
 }
-/**
- * @private
- */
+/** @internal */
 function wrapRenderLabel(proceed) {
     var tick = this, pos = tick.pos, axis = tick.axis, label = tick.label, tickGrid = tick.treeGrid, tickOptions = tick.options, icon = tickGrid === null || tickGrid === void 0 ? void 0 : tickGrid.labelIcon, labelElement = label === null || label === void 0 ? void 0 : label.element, axisGrid = axis.treeGrid, axisOptions = axis.options, chart = axis.chart, tickPositions = axis.tickPositions, mapOfPosToGridNode = axisGrid.mapOfPosToGridNode, labelOptions = TreeGridTick_pick(tickOptions === null || tickOptions === void 0 ? void 0 : tickOptions.labels, axisOptions === null || axisOptions === void 0 ? void 0 : axisOptions.labels), symbolOptions = (labelOptions && TreeGridTick_isObject(labelOptions.symbol, true) ?
             labelOptions.symbol :
@@ -15045,6 +13745,7 @@ function wrapRenderLabel(proceed) {
         TreeGridTick_removeEvent(labelElement);
         label === null || label === void 0 ? void 0 : label.css({ cursor: 'default' });
         icon.destroy();
+        tickGrid.labelIcon = void 0;
     }
 }
 /* *
@@ -15053,7 +13754,7 @@ function wrapRenderLabel(proceed) {
  *
  * */
 /**
- * @private
+ * @internal
  * @class
  */
 var TreeGridTickAdditions = /** @class */ (function () {
@@ -15062,9 +13763,7 @@ var TreeGridTickAdditions = /** @class */ (function () {
      *  Constructors
      *
      * */
-    /**
-     * @private
-     */
+    /** @internal */
     function TreeGridTickAdditions(tick) {
         this.tick = tick;
     }
@@ -15073,9 +13772,7 @@ var TreeGridTickAdditions = /** @class */ (function () {
      *  Static Functions
      *
      * */
-    /**
-     * @private
-     */
+    /** @internal */
     TreeGridTickAdditions.compose = function (TickClass) {
         var tickProto = TickClass.prototype;
         if (!tickProto.toggleCollapse) {
@@ -15104,7 +13801,7 @@ var TreeGridTickAdditions = /** @class */ (function () {
      *
      * @see gantt/treegrid-axis/collapsed-dynamically/demo.js
      *
-     * @private
+     * @internal
      * @function Highcharts.Tick#collapse
      *
      * @param {boolean} [redraw=true]
@@ -15112,34 +13809,32 @@ var TreeGridTickAdditions = /** @class */ (function () {
      * {@link Highcharts.Chart#redraw}
      */
     TreeGridTickAdditions.prototype.collapse = function (redraw) {
-        var tick = this.tick,
-            axis = tick.axis,
-            brokenAxis = axis.brokenAxis;
-        if (brokenAxis &&
-            axis.treeGrid.mapOfPosToGridNode) {
-            var pos = tick.pos,
-                node = axis.treeGrid.mapOfPosToGridNode[pos],
-                breaks = axis.treeGrid.collapse(node);
-            brokenAxis.setBreaks(breaks, TreeGridTick_pick(redraw, true));
+        var _a = this.tick,
+            pos = _a.pos,
+            axis = _a.axis,
+            treeGrid = axis.treeGrid,
+            brokenAxis = axis.brokenAxis,
+            posMappedNodes = treeGrid.mapOfPosToGridNode;
+        if (brokenAxis && posMappedNodes) {
+            brokenAxis.setBreaks(treeGrid.collapse(posMappedNodes[pos]), redraw !== null && redraw !== void 0 ? redraw : true);
         }
     };
     /**
      * Destroy remaining labelIcon if exist.
      *
-     * @private
+     * @internal
      * @function Highcharts.Tick#destroy
      */
     TreeGridTickAdditions.prototype.destroy = function () {
-        if (this.labelIcon) {
-            this.labelIcon.destroy();
-        }
+        var _a;
+        (_a = this.labelIcon) === null || _a === void 0 ? void 0 : _a.destroy();
     };
     /**
      * Expand the grid cell. Used when axis is of type treegrid.
      *
      * @see gantt/treegrid-axis/collapsed-dynamically/demo.js
      *
-     * @private
+     * @internal
      * @function Highcharts.Tick#expand
      *
      * @param {boolean} [redraw=true]
@@ -15154,9 +13849,7 @@ var TreeGridTickAdditions = /** @class */ (function () {
             brokenAxis = axis.brokenAxis,
             posMappedNodes = treeGrid.mapOfPosToGridNode;
         if (brokenAxis && posMappedNodes) {
-            var node = posMappedNodes[pos],
-                breaks = treeGrid.expand(node);
-            brokenAxis.setBreaks(breaks, TreeGridTick_pick(redraw, true));
+            brokenAxis.setBreaks(treeGrid.expand(posMappedNodes[pos]), redraw !== null && redraw !== void 0 ? redraw : true);
         }
     };
     /**
@@ -15165,7 +13858,7 @@ var TreeGridTickAdditions = /** @class */ (function () {
      *
      * @see gantt/treegrid-axis/collapsed-dynamically/demo.js
      *
-     * @private
+     * @internal
      * @function Highcharts.Tick#toggleCollapse
      *
      * @param {boolean} [redraw=true]
@@ -15173,15 +13866,46 @@ var TreeGridTickAdditions = /** @class */ (function () {
      * {@link Highcharts.Chart#redraw}
      */
     TreeGridTickAdditions.prototype.toggleCollapse = function (redraw) {
-        var tick = this.tick,
-            axis = tick.axis,
-            brokenAxis = axis.brokenAxis;
-        if (brokenAxis &&
-            axis.treeGrid.mapOfPosToGridNode) {
-            var pos = tick.pos,
-                node = axis.treeGrid.mapOfPosToGridNode[pos],
-                breaks = axis.treeGrid.toggleCollapse(node);
-            brokenAxis.setBreaks(breaks, TreeGridTick_pick(redraw, true));
+        var _a,
+            _b;
+        if (redraw === void 0) { redraw = true; }
+        var _c = this.tick,
+            axis = _c.axis,
+            pos = _c.pos,
+            brokenAxis = axis.brokenAxis,
+            treeGrid = axis.treeGrid;
+        if (brokenAxis && treeGrid.mapOfPosToGridNode) {
+            var scrollMode = !!(axis.scrollbar && axis.staticScale),
+                maxPx = axis.pos + axis.len +
+                    (treeGrid.pendingSizeAdjustment || 0);
+            treeGrid.pendingSizeAdjustment = 0;
+            brokenAxis.setBreaks(treeGrid.toggleCollapse(treeGrid.mapOfPosToGridNode[pos]), scrollMode && redraw);
+            if (scrollMode) {
+                var adjustedMax = axis.toValue(axis.toPixels(axis.dataMax));
+                var newMaxVal = axis.toValue(maxPx) - axis.tickmarkOffset,
+                    newMinVal = (_a = axis.userMin) !== null && _a !== void 0 ? _a : axis.min;
+                // If dataMax is in a break.
+                treeGrid.adjustedMax = adjustedMax !== axis.dataMax ?
+                    adjustedMax - axis.tickmarkOffset :
+                    void 0;
+                if (newMaxVal > axis.dataMax) {
+                    var missingPx = maxPx -
+                            axis.toPixels(axis.dataMax + axis.tickmarkOffset);
+                    newMaxVal = (_b = treeGrid.adjustedMax) !== null && _b !== void 0 ? _b : axis.dataMax;
+                    // Check if enough space available on the min end.
+                    newMinVal = axis.toValue(axis.toPixels(newMinVal - axis.tickmarkOffset) - missingPx) + axis.tickmarkOffset;
+                    if (newMinVal < axis.dataMin) {
+                        missingPx = axis.toPixels(axis.dataMin) -
+                            axis.toPixels(newMinVal);
+                        newMinVal = axis.dataMin;
+                        treeGrid.pendingSizeAdjustment = missingPx;
+                    }
+                }
+                axis.setExtremes(TreeGridTick_correctFloat(newMinVal), TreeGridTick_correctFloat(newMaxVal), false, false, { trigger: 'toggleCollapse' });
+            }
+            if (redraw) {
+                axis.chart.redraw();
+            }
         }
     };
     return TreeGridTickAdditions;
@@ -15191,18 +13915,19 @@ var TreeGridTickAdditions = /** @class */ (function () {
  *  Default Export
  *
  * */
+/** @internal */
 /* harmony default export */ var TreeGridTick = (TreeGridTickAdditions);
 
 ;// ./code/es5/es-modules/Series/TreeUtilities.js
 /* *
  *
- *  (c) 2014-2025 Highsoft AS
+ *  (c) 2014-2026 Highsoft AS
  *
  *  Authors: Jon Arild Nygard / Oystein Moseng
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -15452,12 +14177,12 @@ var TreeUtilities = {
 ;// ./code/es5/es-modules/Core/Axis/TreeGrid/TreeGridAxis.js
 /* *
  *
- *  (c) 2016 Highsoft AS
+ *  (c) 2016-2026 Highsoft AS
  *  Authors: Jon Arild Nygard
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -15468,12 +14193,13 @@ var TreeUtilities = {
 
 var TreeGridAxis_getLevelOptions = Series_TreeUtilities.getLevelOptions;
 
-var TreeGridAxis_addEvent = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).addEvent, TreeGridAxis_isArray = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).isArray, TreeGridAxis_splat = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).splat, TreeGridAxis_find = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).find, TreeGridAxis_fireEvent = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).fireEvent, TreeGridAxis_isObject = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).isObject, TreeGridAxis_isString = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).isString, TreeGridAxis_merge = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).merge, TreeGridAxis_pick = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).pick, TreeGridAxis_removeEvent = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).removeEvent, TreeGridAxis_wrap = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).wrap;
+var TreeGridAxis_addEvent = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).addEvent, TreeGridAxis_isArray = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).isArray, TreeGridAxis_splat = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).splat, TreeGridAxis_find = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).find, TreeGridAxis_fireEvent = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).fireEvent, TreeGridAxis_isObject = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).isObject, TreeGridAxis_isString = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).isString, TreeGridAxis_merge = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).merge, TreeGridAxis_removeEvent = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).removeEvent, TreeGridAxis_wrap = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).wrap;
 /* *
  *
  *  Variables
  *
  * */
+/** @internal */
 var TickConstructor;
 /* *
  *
@@ -15481,22 +14207,15 @@ var TickConstructor;
  *
  * */
 /**
- * @private
+ * Creates a break object from a node.
+ * @internal
+ * @param {Object} node
+ * The node to create a break object from.
  */
-function getBreakFromNode(node, max) {
-    var to = node.collapseEnd || 0;
-    var from = node.collapseStart || 0;
-    // In broken-axis, the axis.max is minimized until it is not within a
-    // break. Therefore, if break.to is larger than axis.max, the axis.to
-    // should not add the 0.5 axis.tickMarkOffset, to avoid adding a break
-    // larger than axis.max.
-    // TODO consider simplifying broken-axis and this might solve itself
-    if (to >= max) {
-        from -= 0.5;
-    }
+function getBreakFromNode(node) {
     return {
-        from: from,
-        to: to,
+        from: node.collapseStart || 0,
+        to: node.collapseEnd || 0,
         showPoints: false
     };
 }
@@ -15504,7 +14223,7 @@ function getBreakFromNode(node, max) {
  * Creates a tree structure of the data, and the treegrid. Calculates
  * categories, and y-values of points based on the tree.
  *
- * @private
+ * @internal
  * @function getTreeGridFromData
  *
  * @param {Array<Highcharts.GanttPointOptions>} data
@@ -15604,8 +14323,7 @@ function getTreeGridFromData(data, uniqueNames, numberOfSeries) {
             }
             // If one of the points are collapsed, then start the grid node
             // in collapsed state.
-            if (gridNode &&
-                data.collapsed === true) {
+            if (gridNode && data.collapsed === true) {
                 gridNode.collapsed = true;
             }
             // Assign pos to data node
@@ -15662,7 +14380,7 @@ function getTreeGridFromData(data, uniqueNames, numberOfSeries) {
 }
 /**
  * Builds the tree of categories and calculates its positions.
- * @private
+ * @internal
  * @param {Object} e Event object
  * @param {Object} e.target The chart instance which the event was fired on.
  * @param {object[]} e.target.axes The axes of the chart.
@@ -15672,7 +14390,7 @@ function onBeforeRender(e) {
         axes = chart.axes;
     axes.filter(function (axis) { return axis.type === 'treegrid'; }).forEach(function (axis) {
         var _a;
-        var options = axis.options || {},
+        var options = axis.options,
             labelOptions = options.labels,
             uniqueNames = axis.uniqueNames,
             max = chart.time.parse(options.max), 
@@ -15697,8 +14415,8 @@ function onBeforeRender(e) {
                     firstPoint = seriesData[0], 
                     // Check if the first point is a simple array of values.
                     // If so we assume that this is the case for all points.
-                    foundPrimitivePoint = (Array.isArray(firstPoint) &&
-                        !firstPoint.find(function (value) { return (typeof value === 'object'); }));
+                    foundPrimitivePoint = Array.isArray(firstPoint) &&
+                        !firstPoint.find(function (value) { return (typeof value === 'object'); });
                 seriesHasPrimitivePoints_1.push(foundPrimitivePoint);
                 if (s.visible) {
                     // Push all data to array
@@ -15715,7 +14433,7 @@ function onBeforeRender(e) {
                         if (TreeGridAxis_isObject(pointOptions, true)) {
                             // Set series index on data. Removed again
                             // after use.
-                            pointOptions.seriesIndex = (numberOfSeries);
+                            pointOptions.seriesIndex = numberOfSeries;
                             arr.push(pointOptions);
                         }
                     });
@@ -15748,14 +14466,13 @@ function onBeforeRender(e) {
             // Update yData now that we have calculated the y values
             axis.series.forEach(function (series, index) {
                 var axisData = (series.options.data || []).map(function (d) {
-                        if (seriesHasPrimitivePoints_1[index] ||
-                            (TreeGridAxis_isArray(d) &&
-                                series.options.keys &&
-                                series.options.keys.length)) {
-                            // Get the axisData from the data array used to
-                            // build the treeGrid where has been modified
-                            data.forEach(function (point) {
-                                var toArray = TreeGridAxis_splat(d);
+                        var _a;
+                    if (seriesHasPrimitivePoints_1[index] ||
+                        (TreeGridAxis_isArray(d) && ((_a = series.options.keys) === null || _a === void 0 ? void 0 : _a.length))) {
+                        // Get the axisData from the data array used to
+                        // build the treeGrid where has been modified
+                        data.forEach(function (point) {
+                            var toArray = TreeGridAxis_splat(d);
                             if (toArray.indexOf(point.x || 0) >= 0 &&
                                 toArray.indexOf(point.x2 || 0) >= 0) {
                                 d = point;
@@ -15787,7 +14504,7 @@ function onBeforeRender(e) {
 /**
  * Generates a tick for initial positioning.
  *
- * @private
+ * @internal
  * @function Highcharts.GridAxis#generateTick
  *
  * @param {Function} proceed
@@ -15834,9 +14551,7 @@ function wrapGenerateTick(proceed, pos) {
         proceed.apply(axis, Array.prototype.slice.call(arguments, 1));
     }
 }
-/**
- * @private
- */
+/** @internal */
 function wrapInit(proceed, chart, userOptions, coll) {
     var axis = this,
         isTreeGrid = userOptions.type === 'treegrid';
@@ -15860,22 +14575,21 @@ function wrapInit(proceed, chart, userOptions, coll) {
         // Collapse all nodes in axis.treegrid.collapsednodes
         // where collapsed equals true.
         TreeGridAxis_addEvent(axis, 'foundExtremes', function () {
-            if (axis.treeGrid.collapsedNodes) {
-                axis.treeGrid.collapsedNodes.forEach(function (node) {
-                    var breaks = axis.treeGrid.collapse(node);
-                    if (axis.brokenAxis) {
-                        axis.brokenAxis.setBreaks(breaks, false);
-                        // Remove the node from the axis collapsedNodes
-                        if (axis.treeGrid.collapsedNodes) {
-                            axis.treeGrid.collapsedNodes = axis.treeGrid
-                                .collapsedNodes
-                                .filter(function (n) { return ((node.collapseStart !==
-                                n.collapseStart) ||
-                                node.collapseEnd !== n.collapseEnd); });
-                        }
+            var _a;
+            (_a = axis.treeGrid.collapsedNodes) === null || _a === void 0 ? void 0 : _a.forEach(function (node) {
+                var breaks = axis.treeGrid.collapse(node);
+                if (axis.brokenAxis) {
+                    axis.brokenAxis.setBreaks(breaks, false);
+                    // Remove the node from the axis collapsedNodes
+                    if (axis.treeGrid.collapsedNodes) {
+                        axis.treeGrid.collapsedNodes = axis.treeGrid
+                            .collapsedNodes
+                            .filter(function (n) { return ((node.collapseStart !==
+                            n.collapseStart) ||
+                            node.collapseEnd !== n.collapseEnd); });
                     }
-                });
-            }
+                }
+            });
         });
         // If staticScale is not defined on the yAxis
         // and chart height is set, set axis.isDirty
@@ -15896,18 +14610,16 @@ function wrapInit(proceed, chart, userOptions, coll) {
             labels: {
                 align: 'left',
                 /**
-                * Set options on specific levels in a tree grid axis. Takes
-                * precedence over labels options.
-                *
-                * @sample {gantt} gantt/treegrid-axis/labels-levels
-                *         Levels on TreeGrid Labels
-                *
-                * @type      {Array<*>}
-                * @product   gantt
-                * @apioption yAxis.labels.levels
-                *
-                * @private
-                */
+                 * Set options on specific levels in a tree grid axis. Takes
+                 * precedence over labels options.
+                 *
+                 * @sample {gantt} gantt/treegrid-axis/labels-levels
+                 *         Levels on TreeGrid Labels
+                 *
+                 * @type      {Array<*>}
+                 * @product   gantt
+                 * @apioption yAxis.labels.levels
+                 */
                 levels: [{
                         /**
                         * Specify the level which the options within this object
@@ -15917,7 +14629,7 @@ function wrapInit(proceed, chart, userOptions, coll) {
                         * @product   gantt
                         * @apioption yAxis.labels.levels.level
                         *
-                        * @private
+                        * @internal
                         */
                         level: void 0
                     }, {
@@ -15927,7 +14639,7 @@ function wrapInit(proceed, chart, userOptions, coll) {
                          * @product   gantt
                          * @apioption yAxis.labels.levels.style
                          *
-                         * @private
+                         * @internal
                          */
                         style: {
                             /** @ignore-option */
@@ -15941,7 +14653,7 @@ function wrapInit(proceed, chart, userOptions, coll) {
                  * @product      gantt
                  * @optionparent yAxis.labels.symbol
                  *
-                 * @private
+                 * @internal
                  */
                 symbol: {
                     /**
@@ -15950,7 +14662,7 @@ function wrapInit(proceed, chart, userOptions, coll) {
                      *
                      * @type {Highcharts.SymbolKeyValue}
                      *
-                     * @private
+                     * @internal
                      */
                     type: 'triangle',
                     x: -5,
@@ -15976,7 +14688,7 @@ function wrapInit(proceed, chart, userOptions, coll) {
 /**
  * Set the tick positions, tickInterval, axis min and max.
  *
- * @private
+ * @internal
  * @function Highcharts.GridAxis#setTickInterval
  *
  * @param {Function} proceed
@@ -15987,7 +14699,9 @@ function wrapSetTickInterval(proceed) {
         _b,
         _c,
         _d,
-        _e;
+        _e,
+        _f,
+        _g;
     var axis = this,
         options = axis.options,
         time = axis.chart.time,
@@ -16009,8 +14723,8 @@ function wrapSetTickInterval(proceed) {
             [];
         if (linkedParent) {
             var linkedParentExtremes = linkedParent.getExtremes();
-            axis.min = TreeGridAxis_pick(linkedParentExtremes.min, linkedParentExtremes.dataMin);
-            axis.max = TreeGridAxis_pick(linkedParentExtremes.max, linkedParentExtremes.dataMax);
+            axis.min = (_f = linkedParentExtremes.min) !== null && _f !== void 0 ? _f : linkedParentExtremes.dataMin;
+            axis.max = (_g = linkedParentExtremes.max) !== null && _g !== void 0 ? _g : linkedParentExtremes.dataMax;
             axis.tickPositions = linkedParent.tickPositions;
         }
         axis.linkedParent = linkedParent;
@@ -16022,7 +14736,7 @@ function wrapSetTickInterval(proceed) {
 /**
  * Wrap axis redraw to remove TreeGrid events from ticks
  *
- * @private
+ * @internal
  * @function Highcharts.GridAxis#redraw
  *
  * @param {Function} proceed
@@ -16049,7 +14763,7 @@ function wrapRedraw(proceed) {
  *
  * */
 /**
- * @private
+ * @internal
  * @class
  */
 var TreeGridAxisAdditions = /** @class */ (function () {
@@ -16058,10 +14772,10 @@ var TreeGridAxisAdditions = /** @class */ (function () {
      *  Constructors
      *
      * */
-    /**
-     * @private
-     */
+    /** @internal */
     function TreeGridAxisAdditions(axis) {
+        /** @internal */
+        this.pendingSizeAdjustment = 0;
         this.axis = axis;
     }
     /* *
@@ -16069,9 +14783,7 @@ var TreeGridAxisAdditions = /** @class */ (function () {
      *  Static Functions
      *
      * */
-    /**
-     * @private
-     */
+    /** @internal */
     TreeGridAxisAdditions.compose = function (AxisClass, ChartClass, SeriesClass, TickClass) {
         if (!AxisClass.keepProps.includes('treeGrid')) {
             var axisProps = AxisClass.prototype;
@@ -16101,7 +14813,7 @@ var TreeGridAxisAdditions = /** @class */ (function () {
     /**
      * Set the collapse status.
      *
-     * @private
+     * @internal
      *
      * @param {Highcharts.Axis} axis
      * The axis to check against.
@@ -16127,7 +14839,7 @@ var TreeGridAxisAdditions = /** @class */ (function () {
     /**
      * Calculates the new axis breaks to collapse a node.
      *
-     * @private
+     * @internal
      *
      * @param {Highcharts.Axis} axis
      * The axis to check against.
@@ -16143,9 +14855,8 @@ var TreeGridAxisAdditions = /** @class */ (function () {
      */
     TreeGridAxisAdditions.prototype.collapse = function (node) {
         var axis = this.axis,
-            breaks = (axis.options.breaks || []),
-            obj = getBreakFromNode(node,
-            axis.max);
+            breaks = axis.options.breaks || [],
+            obj = getBreakFromNode(node);
         breaks.push(obj);
         // Change the collapsed flag #13838
         node.collapsed = true;
@@ -16155,7 +14866,7 @@ var TreeGridAxisAdditions = /** @class */ (function () {
     /**
      * Calculates the new axis breaks to expand a node.
      *
-     * @private
+     * @internal
      *
      * @param {Highcharts.Axis} axis
      * The axis to check against.
@@ -16170,26 +14881,25 @@ var TreeGridAxisAdditions = /** @class */ (function () {
      * Returns an array of the new breaks for the axis.
      */
     TreeGridAxisAdditions.prototype.expand = function (node) {
+        var _a;
         var axis = this.axis,
-            breaks = (axis.options.breaks || []),
-            obj = getBreakFromNode(node,
-            axis.max);
+            obj = getBreakFromNode(node);
         // Change the collapsed flag #13838
         node.collapsed = false;
         axis.treeGrid.setCollapsedStatus(node);
         // Remove the break from the axis breaks array.
-        return breaks.reduce(function (arr, b) {
+        return ((_a = axis.options.breaks) === null || _a === void 0 ? void 0 : _a.reduce(function (arr, b) {
             if (b.to !== obj.to || b.from !== obj.from) {
                 arr.push(b);
             }
             return arr;
-        }, []);
+        }, [])) || [];
     };
     /**
      * Creates a list of positions for the ticks on the axis. Filters out
      * positions that are outside min and max, or is inside an axis break.
      *
-     * @private
+     * @internal
      *
      * @return {Array<number>}
      * List of positions.
@@ -16210,16 +14920,10 @@ var TreeGridAxisAdditions = /** @class */ (function () {
     /**
      * Check if a node is collapsed.
      *
-     * @private
-     *
-     * @param {Highcharts.Axis} axis
-     * The axis to check against.
+     * @internal
      *
      * @param {Object} node
      * The node to check if is collapsed.
-     *
-     * @param {number} pos
-     * The tick position to collapse.
      *
      * @return {boolean}
      * Returns true if collapsed, false if expanded.
@@ -16227,8 +14931,7 @@ var TreeGridAxisAdditions = /** @class */ (function () {
     TreeGridAxisAdditions.prototype.isCollapsed = function (node) {
         var axis = this.axis,
             breaks = (axis.options.breaks || []),
-            obj = getBreakFromNode(node,
-            axis.max);
+            obj = getBreakFromNode(node);
         return breaks.some(function (b) {
             return b.from === obj.from && b.to === obj.to;
         });
@@ -16238,7 +14941,7 @@ var TreeGridAxisAdditions = /** @class */ (function () {
      * state of a node. If it is collapsed it will be expanded, and if it is
      * expanded it will be collapsed.
      *
-     * @private
+     * @internal
      *
      * @param {Highcharts.Axis} axis
      * The axis to check against.
@@ -16261,18 +14964,19 @@ var TreeGridAxisAdditions = /** @class */ (function () {
  *  Default Export
  *
  * */
+/** @internal */
 /* harmony default export */ var TreeGridAxis = (TreeGridAxisAdditions);
 
 ;// ./code/es5/es-modules/Series/Gantt/GanttSeries.js
 /* *
  *
- *  (c) 2016-2025 Highsoft AS
+ *  (c) 2016-2026 Highsoft AS
  *
  *  Author: Lars A. V. Cabrera
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -16444,17 +15148,7 @@ highcharts_SeriesRegistry_commonjs_highcharts_SeriesRegistry_commonjs2_highchart
 /* harmony default export */ var Gantt_GanttSeries = (GanttSeries);
 
 ;// ./code/es5/es-modules/masters/modules/gantt.src.js
-/**
- * @license Highcharts Gantt JS v12.3.0 (2025-06-21)
- * @module highcharts/modules/gantt
- * @requires highcharts
- *
- * Gantt series
- *
- * (c) 2016-2025 Lars A. V. Cabrera
- *
- * License: www.highcharts.com/license
- */
+
 
 
 

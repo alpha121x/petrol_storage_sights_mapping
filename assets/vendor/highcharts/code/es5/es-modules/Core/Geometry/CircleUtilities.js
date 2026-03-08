@@ -1,20 +1,23 @@
 /* *
  *
- *  (c) 2010-2025 Highsoft AS
+ *  (c) 2010-2026 Highsoft AS
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
 import Geometry from './GeometryUtilities.js';
+import Utilities from '../Utilities';
 var getAngleBetweenPoints = Geometry.getAngleBetweenPoints, getCenterOfPoints = Geometry.getCenterOfPoints, getDistanceBetweenPoints = Geometry.getDistanceBetweenPoints;
+var correctFloat = Utilities.correctFloat;
 /* *
  *
  *  Namespace
  *
  * */
+/** @internal */
 var CircleUtilities;
 (function (CircleUtilities) {
     /* *
@@ -23,7 +26,7 @@ var CircleUtilities;
      *
      * */
     /**
-     * @private
+     * @internal
      *
      * @param {number} x
      * Number to round
@@ -42,7 +45,7 @@ var CircleUtilities;
     /**
      * Calculates the area of a circle based on its radius.
      *
-     * @private
+     * @internal
      *
      * @param {number} r
      * The radius of the circle.
@@ -54,7 +57,7 @@ var CircleUtilities;
         if (r <= 0) {
             throw new Error('radius of circle must be a positive number.');
         }
-        return Math.PI * r * r;
+        return correctFloat(Math.PI * r * r);
     }
     CircleUtilities.getAreaOfCircle = getAreaOfCircle;
     /**
@@ -63,7 +66,7 @@ var CircleUtilities;
      *
      * @see http://mathworld.wolfram.com/CircularSegment.html
      *
-     * @private
+     * @internal
      *
      * @param {number} r
      * The radius of the circle.
@@ -85,7 +88,7 @@ var CircleUtilities;
      *
      * @see http://mathworld.wolfram.com/Circle-CircleIntersection.html
      *
-     * @private
+     * @internal
      *
      * @param {number} r1
      * Radius of the first circle.
@@ -128,7 +131,7 @@ var CircleUtilities;
      *
      * NOTE: does not handle floating errors well.
      *
-     * @private
+     * @internal
      *
      * @param {Highcharts.CircleObject} c1
      * The first circle.
@@ -161,7 +164,7 @@ var CircleUtilities;
     /**
      * Calculates all the intersection points for between a list of circles.
      *
-     * @private
+     * @internal
      *
      * @param {Array<Highcharts.CircleObject>} circles
      * The circles to calculate the points from.
@@ -188,7 +191,7 @@ var CircleUtilities;
      * Tests whether the first circle is completely overlapping the second
      * circle.
      *
-     * @private
+     * @internal
      *
      * @param {Highcharts.CircleObject} circle1
      * The first circle.
@@ -205,7 +208,7 @@ var CircleUtilities;
     CircleUtilities.isCircle1CompletelyOverlappingCircle2 = isCircle1CompletelyOverlappingCircle2;
     /**
      * Tests whether a point lies within a given circle.
-     * @private
+     * @internal
      * @param {Highcharts.PositionObject} point
      * The point to test for.
      *
@@ -222,7 +225,7 @@ var CircleUtilities;
     /**
      * Tests whether a point lies within a set of circles.
      *
-     * @private
+     * @internal
      *
      * @param {Highcharts.PositionObject} point
      * The point to test.
@@ -244,7 +247,7 @@ var CircleUtilities;
      *
      * TODO: add unit tests.
      *
-     * @private
+     * @internal
      *
      * @param {Highcharts.PositionObject} point
      * The point to test.
@@ -265,7 +268,7 @@ var CircleUtilities;
      * Calculates the points for the polygon of the intersection area between
      * a set of circles.
      *
-     * @private
+     * @internal
      *
      * @param {Array<Highcharts.CircleObject>} circles
      * List of circles to calculate polygon of.
@@ -285,7 +288,7 @@ var CircleUtilities;
      *
      * @todo handle cases with only 1 or 0 arcs.
      *
-     * @private
+     * @internal
      *
      * @param {Array<Highcharts.CircleObject>} circles
      * List of circles to calculate area of.
@@ -383,4 +386,5 @@ var CircleUtilities;
  *  Default Export
  *
  * */
+/** @internal */
 export default CircleUtilities;

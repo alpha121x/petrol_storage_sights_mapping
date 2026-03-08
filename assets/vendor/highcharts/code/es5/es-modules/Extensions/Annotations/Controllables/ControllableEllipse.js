@@ -2,7 +2,6 @@
  *
  * Author: Pawel Lysy
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -33,9 +32,9 @@ var merge = U.merge, defined = U.defined;
 /**
  * A controllable ellipse class.
  *
+ * @internal
  * @requires modules/annotations
  *
- * @private
  * @class
  * @name Highcharts.AnnotationControllableEllipse
  *
@@ -65,9 +64,6 @@ var ControllableEllipse = /** @class */ (function (_super) {
      *  Functions
      *
      * */
-    /**
-     * @private
-     */
     ControllableEllipse.prototype.init = function (annotation, options, index) {
         if (defined(options.yAxis)) {
             options.points.forEach(function (point) {
@@ -82,8 +78,8 @@ var ControllableEllipse = /** @class */ (function (_super) {
         _super.prototype.init.call(this, annotation, options, index);
     };
     /**
-     * Render the element
-     * @private
+     * Render the element.
+     *
      * @param parent
      *        Parent SVG element.
      */
@@ -95,14 +91,13 @@ var ControllableEllipse = /** @class */ (function (_super) {
     };
     /**
      * Translate the points. Mostly used to handle dragging of the ellipse.
-     * @private
      */
     ControllableEllipse.prototype.translate = function (dx, dy) {
         _super.prototype.translateShape.call(this, dx, dy, true);
     };
     /**
      * Get the distance from the line to the point.
-     * @private
+     *
      * @param point1
      *        First point which is on the line
      * @param point2
@@ -120,7 +115,7 @@ var ControllableEllipse = /** @class */ (function (_super) {
     /**
      * The function calculates the svg attributes of the ellipse, and returns
      * all parameters necessary to draw the ellipse.
-     * @private
+     *
      * @param position
      *        Absolute position of the first point in points array
      * @param position2
@@ -137,7 +132,6 @@ var ControllableEllipse = /** @class */ (function (_super) {
     };
     /**
      * Get the value of minor radius of the ellipse.
-     * @private
      */
     ControllableEllipse.prototype.getRY = function () {
         var yAxis = this.getYAxis();
@@ -147,15 +141,14 @@ var ControllableEllipse = /** @class */ (function (_super) {
     };
     /**
      * Get the yAxis object to which the ellipse is pinned.
-     * @private
      */
     ControllableEllipse.prototype.getYAxis = function () {
         var yAxisIndex = this.options.yAxis;
         return this.chart.yAxis[yAxisIndex];
     };
     /**
-     * Get the absolute coordinates of the MockPoint
-     * @private
+     * Get the absolute coordinates of the MockPoint.
+     *
      * @param point
      *        MockPoint that is added through options
      */
@@ -163,8 +156,8 @@ var ControllableEllipse = /** @class */ (function (_super) {
         return this.anchor(point).absolutePosition;
     };
     /**
-     * Redraw the element
-     * @private
+     * Redraw the element.
+     *
      * @param animation
      *        Display an animation
      */
@@ -194,7 +187,7 @@ var ControllableEllipse = /** @class */ (function (_super) {
     };
     /**
      * Set the radius Y.
-     * @private
+     *
      * @param {number} ry
      *        A radius in y direction to be set
      */
@@ -228,4 +221,5 @@ var ControllableEllipse = /** @class */ (function (_super) {
  *  Default Export
  *
  * */
+/** @internal */
 export default ControllableEllipse;

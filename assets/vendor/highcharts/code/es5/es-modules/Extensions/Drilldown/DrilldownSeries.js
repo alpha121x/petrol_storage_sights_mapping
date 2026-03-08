@@ -4,9 +4,9 @@
  *
  *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -19,19 +19,20 @@ var addEvent = U.addEvent, extend = U.extend, fireEvent = U.fireEvent, merge = U
  *  Functions
  *
  * */
-/** @private */
+/** @internal */
 function applyCursorCSS(element, cursor, addClass, styledMode) {
     element[addClass ? 'addClass' : 'removeClass']('highcharts-drilldown-point');
     if (!styledMode) {
         element.css({ cursor: cursor });
     }
 }
-/** @private */
+/** @internal */
 function columnAnimateDrilldown(init) {
-    var series = this, chart = series.chart, drilldownLevels = chart.drilldownLevels, animationOptions = animObject((chart.options.drilldown || {}).animation), xAxis = this.xAxis, styledMode = chart.styledMode;
+    var _a, _b;
+    var series = this, chart = series.chart, drilldownLevels = chart.drilldownLevels, styledMode = chart.styledMode, animationOptions = animObject((_a = chart.options.drilldown) === null || _a === void 0 ? void 0 : _a.animation), xAxis = this.xAxis;
     if (!init) {
         var animateFrom_1;
-        (drilldownLevels || []).forEach(function (level) {
+        drilldownLevels === null || drilldownLevels === void 0 ? void 0 : drilldownLevels.forEach(function (level) {
             if (series.options._ddSeriesId ===
                 level.lowerSeriesOptions._ddSeriesId) {
                 animateFrom_1 = level.shapeArgs;
@@ -54,9 +55,7 @@ function columnAnimateDrilldown(init) {
                     .animate(extend(point.shapeArgs, { fill: point.color || series.color }), animationOptions);
             }
         });
-        if (chart.drilldown) {
-            chart.drilldown.fadeInGroup(this.dataLabelsGroup);
-        }
+        (_b = this.dataLabelsGroups) === null || _b === void 0 ? void 0 : _b.forEach(function (g) { var _a; return (_a = chart.drilldown) === null || _a === void 0 ? void 0 : _a.fadeInGroup(g); });
         // Reset to prototype
         delete this.animate;
     }
@@ -65,19 +64,25 @@ function columnAnimateDrilldown(init) {
  * When drilling up, pull out the individual point graphics from the lower
  * series and animate them into the origin point in the upper series.
  *
- * @private
+ * @internal
  * @function Highcharts.ColumnSeries#animateDrillupFrom
  * @param {Highcharts.DrilldownLevelObject} level
  *        Level container
  * @return {void}
  */
 function columnAnimateDrillupFrom(level) {
+    var _a;
     var series = this, animationOptions = animObject((series.chart.options.drilldown || {}).animation);
     // Cancel mouse events on the series group (#2787)
-    (series.trackerGroups || []).forEach(function (key) {
-        // We don't always have dataLabelsGroup
-        if (series[key]) {
-            series[key].on('mouseover');
+    (_a = series.trackerGroups) === null || _a === void 0 ? void 0 : _a.forEach(function (key) {
+        var _a, _b;
+        if (key === 'dataLabelsGroup') {
+            (_a = series.dataLabelsGroups) === null || _a === void 0 ? void 0 : _a.forEach(function (g) {
+                g === null || g === void 0 ? void 0 : g.on('mouseover', function () { });
+            });
+        }
+        else {
+            (_b = series[key]) === null || _b === void 0 ? void 0 : _b.on('mouseover');
         }
     });
     var group = series.group;
@@ -114,7 +119,7 @@ function columnAnimateDrillupFrom(level) {
  * When drilling up, keep the upper series invisible until the lower series has
  * moved into place.
  *
- * @private
+ * @internal
  * @function Highcharts.ColumnSeries#animateDrillupTo
  * @param {boolean} [init=false]
  * Whether to initialize animation
@@ -170,7 +175,7 @@ function columnAnimateDrillupTo(init) {
         delete this.animate;
     }
 }
-/** @private */
+/** @internal */
 function compose(SeriesClass, seriesTypes) {
     var PointClass = SeriesClass.prototype.pointClass, pointProto = PointClass.prototype;
     if (!pointProto.doDrilldown) {
@@ -204,20 +209,18 @@ function compose(SeriesClass, seriesTypes) {
 }
 /**
  * Animate in the new series.
- * @private
+ * @internal
  */
 function mapAnimateDrilldown(init) {
+    var _a, _b;
     var series = this, chart = series.chart, group = series.group;
     if (chart &&
         group &&
         series.options &&
-        chart.options.drilldown &&
-        chart.options.drilldown.animation) {
+        ((_a = chart.options.drilldown) === null || _a === void 0 ? void 0 : _a.animation)) {
         // Initialize the animation
         if (init && chart.mapView) {
-            group.attr({
-                opacity: 0.01
-            });
+            group.attr({ opacity: 0.01 });
             chart.mapView.allowTransformAnimation = false;
             // Stop duplicating and overriding animations
             series.options.inactiveOtherPoints = true;
@@ -225,19 +228,14 @@ function mapAnimateDrilldown(init) {
             // Run the animation
         }
         else {
-            group.animate({
-                opacity: 1
-            }, chart.options.drilldown.animation, function () {
+            group.animate({ opacity: 1 }, chart.options.drilldown.animation, function () {
+                var _a;
                 if (series.options) {
                     series.options.inactiveOtherPoints = false;
-                    series.options.enableMouseTracking =
-                        pick((series.userOptions &&
-                            series.userOptions.enableMouseTracking), true);
+                    series.options.enableMouseTracking = pick((_a = series.userOptions) === null || _a === void 0 ? void 0 : _a.enableMouseTracking, true);
                 }
             });
-            if (chart.drilldown) {
-                chart.drilldown.fadeInGroup(this.dataLabelsGroup);
-            }
+            (_b = series.dataLabelsGroups) === null || _b === void 0 ? void 0 : _b.forEach(function (g) { var _a; return (_a = chart.drilldown) === null || _a === void 0 ? void 0 : _a.fadeInGroup(g); });
         }
     }
 }
@@ -245,11 +243,11 @@ function mapAnimateDrilldown(init) {
  * When drilling up, pull out the individual point graphics from the
  * lower series and animate them into the origin point in the upper
  * series.
- * @private
+ * @internal
  */
 function mapAnimateDrillupFrom() {
     var series = this, chart = series.chart;
-    if (chart && chart.mapView) {
+    if (chart === null || chart === void 0 ? void 0 : chart.mapView) {
         chart.mapView.allowTransformAnimation = false;
     }
     // Stop duplicating and overriding animations
@@ -260,9 +258,10 @@ function mapAnimateDrillupFrom() {
 /**
  * When drilling up, keep the upper series invisible until the lower
  * series has moved into place.
- * @private
+ * @internal
  */
 function mapAnimateDrillupTo(init) {
+    var _a;
     var series = this, chart = series.chart, group = series.group;
     if (chart && group) {
         // Initialize the animation
@@ -278,16 +277,14 @@ function mapAnimateDrillupTo(init) {
         }
         else {
             group.animate({ opacity: 1 }, (chart.options.drilldown || {}).animation);
-            if (chart.drilldown) {
-                chart.drilldown.fadeInGroup(series.dataLabelsGroup);
-            }
+            (_a = series.dataLabelsGroups) === null || _a === void 0 ? void 0 : _a.forEach(function (g) { var _a; return (_a = chart.drilldown) === null || _a === void 0 ? void 0 : _a.fadeInGroup(g); });
         }
     }
 }
 /**
  * On initialization of each point, identify its label and make it clickable.
  * Also, provide a list of points associated to that label.
- * @private
+ * @internal
  */
 function onPointAfterInit() {
     var point = this;
@@ -297,7 +294,7 @@ function onPointAfterInit() {
     }
     return point;
 }
-/** @private */
+/** @internal */
 function onPointAfterSetState() {
     var point = this, series = point.series, styledMode = series.chart.styledMode;
     if (point.drilldown && series.halo && point.state === 'hover') {
@@ -307,7 +304,7 @@ function onPointAfterSetState() {
         applyCursorCSS(series.halo, 'auto', false, styledMode);
     }
 }
-/** @private */
+/** @internal */
 function onPointClick(e) {
     var point = this, series = point.series;
     if (series.xAxis &&
@@ -320,7 +317,7 @@ function onPointClick(e) {
         point.runDrilldown(void 0, void 0, e);
     }
 }
-/** @private */
+/** @internal */
 function onPointUpdate(e) {
     var point = this, options = e.options || {};
     if (options.drilldown && !point.unbindDrilldownClick) {
@@ -333,7 +330,7 @@ function onPointUpdate(e) {
         point.unbindDrilldownClick = point.unbindDrilldownClick();
     }
 }
-/** @private */
+/** @internal */
 function onSeriesAfterDrawDataLabels() {
     var series = this, chart = series.chart, css = chart.options.drilldown.activeDataLabelStyle, renderer = chart.renderer, styledMode = chart.styledMode;
     for (var _i = 0, _a = series.points; _i < _a.length; _i++) {
@@ -358,7 +355,7 @@ function onSeriesAfterDrawDataLabels() {
 }
 /**
  * Mark the trackers with a pointer.
- * @private
+ * @internal
  */
 function onSeriesAfterDrawTracker() {
     var series = this, styledMode = series.chart.styledMode;
@@ -369,8 +366,9 @@ function onSeriesAfterDrawTracker() {
         }
     }
 }
-/** @private */
+/** @internal */
 function pieAnimateDrilldown(init) {
+    var _a;
     var series = this, chart = series.chart, points = series.points, level = chart.drilldownLevels[chart.drilldownLevels.length - 1], animationOptions = chart.options.drilldown.animation;
     if (series.is('item')) {
         animationOptions.duration = 0;
@@ -394,9 +392,7 @@ function pieAnimateDrilldown(init) {
                     }))[animationOptions ? 'animate' : 'attr'](animateTo, animationOptions);
                 }
             }
-            if (chart.drilldown) {
-                chart.drilldown.fadeInGroup(series.dataLabelsGroup);
-            }
+            (_a = series.dataLabelsGroups) === null || _a === void 0 ? void 0 : _a.forEach(function (g) { var _a; return (_a = chart.drilldown) === null || _a === void 0 ? void 0 : _a.fadeInGroup(g); });
             // Reset to prototype
             delete series.animate;
         }
@@ -413,13 +409,13 @@ function pieAnimateDrilldown(init) {
  *
  * @function Highcharts.Point#doDrilldown
  *
- * @sample {highcharts} highcharts/drilldown/programmatic
+ * @sample highcharts/drilldown/programmatic
  *         Programmatic drilldown
  */
 function pointDoDrilldown() {
     this.runDrilldown();
 }
-/** @private */
+/** @internal */
 function pointRunDrilldown(holdRedraw, category, originalEvent) {
     var point = this, series = point.series, chart = series.chart, drilldown = chart.options.drilldown || {};
     var i = (drilldown.series || []).length, seriesOptions;
@@ -447,7 +443,8 @@ function pointRunDrilldown(holdRedraw, category, originalEvent) {
         points: (typeof category !== 'undefined' &&
             series.xAxis.getDDPoints(category).slice(0))
     }, function (e) {
-        var chart = e.point.series && e.point.series.chart, seriesOptions = e.seriesOptions;
+        var _a;
+        var chart = (_a = e.point.series) === null || _a === void 0 ? void 0 : _a.chart, seriesOptions = e.seriesOptions;
         if (chart && seriesOptions) {
             if (holdRedraw) {
                 chart.addSingleSeriesAsDrilldown(e.point, seriesOptions);
@@ -463,7 +460,9 @@ function pointRunDrilldown(holdRedraw, category, originalEvent) {
  *  Default Export
  *
  * */
+/** @internal */
 var DrilldownSeries = {
     compose: compose
 };
+/** @internal */
 export default DrilldownSeries;

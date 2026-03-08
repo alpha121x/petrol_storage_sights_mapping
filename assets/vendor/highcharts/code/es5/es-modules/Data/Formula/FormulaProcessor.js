@@ -1,10 +1,10 @@
 /* *
  *
- *  (c) 2009-2025 Highsoft AS
+ *  (c) 2009-2026 Highsoft AS
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  *  Authors:
  *  - Sophie Bremer
@@ -13,6 +13,8 @@
 'use strict';
 import FormulaTypes from './FormulaTypes.js';
 var isFormula = FormulaTypes.isFormula, isFunction = FormulaTypes.isFunction, isOperator = FormulaTypes.isOperator, isRange = FormulaTypes.isRange, isReference = FormulaTypes.isReference, isValue = FormulaTypes.isValue;
+import U from '../../Core/Utilities.js';
+var defined = U.defined;
 /* *
  *
  *  Constants
@@ -235,18 +237,18 @@ function getArgumentsValues(args, table) {
  * Extracted values.
  */
 function getRangeValues(range, table) {
-    var columnNames = table
-        .getColumnNames()
+    var columnIds = table
+        .getColumnIds()
         .slice(range.beginColumn, range.endColumn + 1), values = [];
-    for (var i = 0, iEnd = columnNames.length, cell = void 0; i < iEnd; ++i) {
-        var cells = table.getColumn(columnNames[i], true) || [];
+    for (var i = 0, iEnd = columnIds.length, cell = void 0; i < iEnd; ++i) {
+        var cells = table.getColumn(columnIds[i], true) || [];
         for (var j = range.beginRow, jEnd = range.endRow + 1; j < jEnd; ++j) {
             cell = cells[j];
             if (typeof cell === 'string' &&
                 cell[0] === '=' &&
-                table !== table.modified) {
+                table !== table.getModified()) {
                 // Look in the modified table for formula result
-                cell = table.modified.getCell(columnNames[i], j);
+                cell = table.getModified().getCell(columnIds[i], j);
             }
             values.push(isValue(cell) ? cell : NaN);
         }
@@ -268,23 +270,66 @@ function getRangeValues(range, table) {
  * Extracted value. 'undefined' might also indicate that the cell was not found.
  */
 function getReferenceValue(reference, table) {
-    var columnName = table.getColumnNames()[reference.column];
-    if (columnName) {
-        var cell = table.getCell(columnName, reference.row);
+    var columnId = table.getColumnIds()[reference.column];
+    if (columnId) {
+        var cell = table.getCell(columnId, reference.row);
         if (typeof cell === 'string' &&
             cell[0] === '=' &&
-            table !== table.modified) {
+            table !== table.getModified()) {
             // Look in the modified table for formula result
-            var result = table.modified.getCell(columnName, reference.row);
+            var result = table.getModified().getCell(columnId, reference.row);
             return isValue(result) ? result : NaN;
         }
-        return isValue(cell) ? cell : NaN;
+        if (isValue(cell)) {
+            return reference.isNegative ? -cell : cell;
+        }
+        return NaN;
     }
     return NaN;
 }
 /**
+ * Calculates a value based on the two top values and the related operator.
+ *
+ * Used to properly process the formula's values based on its operators.
+ *
+ * @private
+ * @function Highcharts.applyOperator
+ *
+ * @param {Array<Highcharts.Value>} values
+ * Processed formula values.
+ *
+ * @param {Array<Highcharts.Operator>} operators
+ * Processed formula operators.
+ */
+function applyOperator(values, operators) {
+    if (values.length < 2 || operators.length < 1) {
+        values.push(NaN);
+    }
+    var secondValue = values.pop();
+    var firstValue = values.pop();
+    var operator = operators.pop();
+    if (!defined(secondValue) || !defined(firstValue) || !defined(operator)) {
+        values.push(NaN);
+    }
+    else {
+        values.push(basicOperation(operator, firstValue, secondValue));
+    }
+}
+/**
  * Processes a formula array on the given table. If the formula does not contain
  * references or ranges, then no table has to be provided.
+ *
+ * Performs formulas considering the operators precedence.
+ *
+ * // Example of the `2 * 3 + 4` formula:
+ * 2 -> values: [2], operators: []
+ * * -> values: [2], operators: [*]
+ * 3 -> values: [2, 3], operators: [*]
+ * // Since the higher precedence operator exists (* > +), perform it first.
+ * + -> values: [6], operators: [+]
+ * 4 -> values: [6, 4], operators: [+]
+ * // When non-higher precedence operators remain, perform rest calculations.
+ * -> values: [10], operators: []
  *
  * @private
  * @function Highcharts.processFormula
@@ -299,61 +344,68 @@ function getReferenceValue(reference, table) {
  * Result value of the process. `NaN` indicates an error.
  */
 function processFormula(formula, table) {
-    var x;
-    for (var i = 0, iEnd = formula.length, item = void 0, operator = void 0, result = void 0, y = void 0; i < iEnd; ++i) {
-        item = formula[i];
-        // Remember operator for operation on next item
+    // Keeps all the values to calculate them in a proper priority, based on the
+    // given operators.
+    var values = [];
+    // Keeps all the operators to calculate the values above, following the
+    // proper priority.
+    var operators = [];
+    // Indicates if the next item is a value (not an operator).
+    var expectingValue = true;
+    for (var i = 0, iEnd = formula.length; i < iEnd; ++i) {
+        var item = formula[i];
         if (isOperator(item)) {
-            operator = item;
-            continue;
-        }
-        // Next item is a value
-        if (isValue(item)) {
-            y = item;
-            // Next item is a formula and needs to get processed first
-        }
-        else if (isFormula(item)) {
-            y = processFormula(formula, table);
-            // Next item is a function call and needs to get processed first
-        }
-        else if (isFunction(item)) {
-            result = processFunction(item, table);
-            y = (isValue(result) ? result : NaN); // Arrays are not allowed here
-            // Next item is a reference and needs to get resolved
-        }
-        else if (isReference(item)) {
-            y = (table && getReferenceValue(item, table));
-        }
-        // If we have a next value, lets do the operation
-        if (typeof y !== 'undefined') {
-            // Next value is our first value
-            if (typeof x === 'undefined') {
-                if (operator) {
-                    x = basicOperation(operator, 0, y);
-                }
-                else {
-                    x = y;
-                }
-                // Fail fast if no operator available
-            }
-            else if (!operator) {
-                return NaN;
-                // Regular next value
+            if (expectingValue && item === '-') {
+                // Split the negative values to be handled as a binary
+                // operation if the next item is a value.
+                values.push(0);
+                operators.push('-');
+                expectingValue = true;
             }
             else {
-                var operator2 = formula[i + 1];
-                if (isOperator(operator2) &&
-                    operatorPriority[operator2] > operatorPriority[operator]) {
-                    y = basicOperation(operator2, y, processFormula(formula.slice(i + 2)));
-                    i = iEnd;
+                // Perform if the higher precedence operator exist.
+                while (operators.length &&
+                    operatorPriority[operators[operators.length - 1]] >=
+                        operatorPriority[item]) {
+                    applyOperator(values, operators);
                 }
-                x = basicOperation(operator, x, y);
+                operators.push(item);
+                expectingValue = true;
             }
-            operator = void 0;
-            y = void 0;
+            continue;
+        }
+        var value = void 0;
+        // Assign the proper value, starting from the most common types.
+        if (isValue(item)) {
+            value = item;
+        }
+        else if (isReference(item)) {
+            value = table ? getReferenceValue(item, table) : NaN;
+        }
+        else if (isFunction(item)) {
+            var result = processFunction(item, table);
+            value = isValue(result) ? result : NaN;
+        }
+        else if (isFormula(item)) {
+            value = processFormula(item, table);
+        }
+        if (typeof value !== 'undefined') {
+            values.push(value);
+            expectingValue = false;
+        }
+        else {
+            return NaN;
         }
     }
-    return isValue(x) ? x : NaN;
+    // Handle the remaining operators that weren't taken into consideration, due
+    // to non-higher precedence.
+    while (operators.length) {
+        applyOperator(values, operators);
+    }
+    if (values.length !== 1) {
+        return NaN;
+    }
+    return values[0];
 }
 /**
  * Process a function on the given table. If the arguments do not contain
@@ -429,7 +481,7 @@ function translateReferences(formula, columnDelta, rowDelta) {
     if (rowDelta === void 0) { rowDelta = 0; }
     for (var i = 0, iEnd = formula.length, item = void 0; i < iEnd; ++i) {
         item = formula[i];
-        if (item instanceof Array) {
+        if (Array.isArray(item)) {
             translateReferences(item, columnDelta, rowDelta);
         }
         else if (isFunction(item)) {

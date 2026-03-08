@@ -1,13 +1,14 @@
 /* *
  *
- *  (c) 2009-2025 Highsoft AS
+ *  (c) 2009-2026 Highsoft AS
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  *  Authors:
  *  - Pawel Lysy
+ *  - Kamil Kubik
  *
  * */
 'use strict';
@@ -38,7 +39,7 @@ var __assign = (this && this.__assign) || function () {
     return __assign.apply(this, arguments);
 };
 import DataConverter from './DataConverter.js';
-import DataTable from '../DataTable.js';
+import DataConverterUtils from './DataConverterUtils.js';
 import U from '../../Core/Utilities.js';
 var error = U.error, isArray = U.isArray, merge = U.merge, objectEach = U.objectEach;
 /* *
@@ -61,7 +62,7 @@ var JSONConverter = /** @class */ (function (_super) {
     /**
      * Constructs an instance of the JSON parser.
      *
-     * @param {JSONConverter.UserOptions} [options]
+     * @param {Partial<JSONConverterOptions>} [options]
      * Options for the JSON parser.
      */
     function JSONConverter(options) {
@@ -73,10 +74,9 @@ var JSONConverter = /** @class */ (function (_super) {
          *  Properties
          *
          * */
-        _this.columns = [];
+        _this.headerColumnIds = [];
         _this.headers = [];
         _this.options = mergedOptions;
-        _this.table = new DataTable();
         return _this;
     }
     /* *
@@ -87,7 +87,7 @@ var JSONConverter = /** @class */ (function (_super) {
     /**
      * Initiates parsing of JSON structure.
      *
-     * @param {JSONConverter.UserOptions}[options]
+     * @param {Partial<JSONConverterOptions>}[options]
      * Options for the parser
      *
      * @param {DataEvent.Detail} [eventDetail]
@@ -99,15 +99,16 @@ var JSONConverter = /** @class */ (function (_super) {
     JSONConverter.prototype.parse = function (options, eventDetail) {
         var converter = this;
         options = merge(converter.options, options);
-        var beforeParse = options.beforeParse, orientation = options.orientation, firstRowAsNames = options.firstRowAsNames, columnNames = options.columnNames;
+        var beforeParse = options.beforeParse, orientation = options.orientation, firstRowAsNames = options.firstRowAsNames, columnIds = options.columnIds;
         var data = options.data;
         if (!data) {
-            return;
+            return {};
         }
-        converter.columns = [];
+        converter.headers = [];
+        var columnsArray = [];
         converter.emit({
             type: 'parse',
-            columns: converter.columns,
+            columns: columnsArray,
             detail: eventDetail,
             headers: converter.headers
         });
@@ -116,83 +117,136 @@ var JSONConverter = /** @class */ (function (_super) {
         }
         data = data.slice();
         if (orientation === 'columns') {
-            for (var i = 0, iEnd = data.length; i < iEnd; i++) {
-                var item = data[i];
-                if (!(item instanceof Array)) {
-                    return;
-                }
-                if (converter.headers instanceof Array) {
-                    if (firstRowAsNames) {
-                        converter.headers.push("".concat(item.shift()));
-                    }
-                    else if (columnNames && columnNames instanceof Array) {
-                        converter.headers.push(columnNames[i]);
-                    }
-                    converter.table.setColumn(converter.headers[i] || i.toString(), item);
-                }
-                else {
-                    error('JSONConverter: Invalid `columnNames` option.', false);
-                }
-            }
+            this.parseColumnsOrientation(columnsArray, data, firstRowAsNames, columnIds);
         }
         else if (orientation === 'rows') {
-            if (firstRowAsNames) {
-                converter.headers = data.shift();
-            }
-            else if (columnNames) {
-                converter.headers = columnNames;
-            }
-            var _loop_1 = function (rowIndex, iEnd) {
-                var row = data[rowIndex];
-                if (isArray(row)) {
-                    for (var columnIndex = 0, jEnd = row.length; columnIndex < jEnd; columnIndex++) {
-                        if (converter.columns.length < columnIndex + 1) {
-                            converter.columns.push([]);
-                        }
-                        converter.columns[columnIndex].push(row[columnIndex]);
-                        if (converter.headers instanceof Array) {
-                            this_1.table.setColumn(converter.headers[columnIndex] ||
-                                columnIndex.toString(), converter.columns[columnIndex]);
-                        }
-                        else {
-                            error('JSONConverter: Invalid `columnNames` option.', false);
-                        }
-                    }
-                }
-                else {
-                    var columnNames_1 = converter.headers;
-                    if (columnNames_1 && !(columnNames_1 instanceof Array)) {
-                        var newRow_1 = {};
-                        objectEach(columnNames_1, function (arrayWithPath, name) {
-                            newRow_1[name] = arrayWithPath.reduce(function (acc, key) {
-                                return acc[key];
-                            }, row);
-                        });
-                        row = newRow_1;
-                    }
-                    this_1.table.setRows([row], rowIndex);
-                }
-            };
-            var this_1 = this;
-            for (var rowIndex = 0, iEnd = data.length; rowIndex < iEnd; rowIndex++) {
-                _loop_1(rowIndex, iEnd);
-            }
+            this.parseRowsOrientation(columnsArray, data, firstRowAsNames, columnIds);
         }
         converter.emit({
             type: 'afterParse',
-            columns: converter.columns,
+            columns: columnsArray,
             detail: eventDetail,
             headers: converter.headers
         });
+        return DataConverterUtils.getColumnsCollection(columnsArray, converter.headers);
     };
     /**
-     * Handles converting the parsed data to a table.
+     * Helper for parsing data in 'columns' orientation.
      *
-     * @return {DataTable}
-     * Table from the parsed CSV.
+     * @param {DataTable.BasicColumn[]} [columnsArray]
+     * Array of columns.
+     *
+     * @param {unknown[]} [data]
+     * Array of data elements.
+     *
+     * @param {Boolean} [firstRowAsNames]
+     * Defines row as names.
+     *
+     * @param {Array<string>} [columnIds]
+     * Column ids to retrieve.
+     *
+     * @return {void}
      */
-    JSONConverter.prototype.getTable = function () {
-        return this.table;
+    JSONConverter.prototype.parseColumnsOrientation = function (columnsArray, data, firstRowAsNames, columnIds) {
+        var converter = this;
+        for (var i = 0, iEnd = data.length; i < iEnd; i++) {
+            var item = data[i];
+            if (!(Array.isArray(item))) {
+                return;
+            }
+            if (Array.isArray(converter.headers)) {
+                if (firstRowAsNames) {
+                    converter.headers.push("".concat(item.shift()));
+                }
+                else if (columnIds && Array.isArray(columnIds)) {
+                    converter.headers.push(columnIds[i]);
+                }
+                columnsArray.push(item);
+            }
+            else {
+                error('JSONConverter: Invalid `columnIds` option.', false);
+            }
+        }
+    };
+    /**
+     * Helper for parsing data in 'rows' orientation.
+     *
+     * @param {DataTable.BasicColumn[]} [columnsArray]
+     * Array of columns.
+     *
+     * Helper for parsing data in 'rows' orientation.
+     *
+     * @param {unknown[]} [data]
+     * Array of data elements.
+     *
+     * @param {Boolean} [firstRowAsNames]
+     * Defines row as names.
+     *
+     * @param {Array<string>} [columnIds]
+     * Column ids to retrieve.
+     *
+     * @return {DataTable.BasicColumn[]}
+     * Parsed columns.
+     */
+    JSONConverter.prototype.parseRowsOrientation = function (columnsArray, data, firstRowAsNames, columnIds) {
+        var converter = this;
+        if (firstRowAsNames) {
+            converter.headers = data.shift();
+        }
+        else if (columnIds) {
+            converter.headerColumnIds = columnIds;
+        }
+        for (var rowIndex = 0, iEnd = data.length; rowIndex < iEnd; rowIndex++) {
+            var row = data[rowIndex];
+            if (!isArray(row)) {
+                row = this.convertItemToRow(row, columnIds);
+            }
+            for (var columnIndex = 0, jEnd = row.length; columnIndex < jEnd; columnIndex++) {
+                if (columnsArray.length < columnIndex + 1) {
+                    columnsArray.push([]);
+                }
+                columnsArray[columnIndex].push(row[columnIndex]);
+                // Create headers only once.
+                if (!firstRowAsNames && rowIndex === 0) {
+                    if (Array.isArray(converter.headerColumnIds)) {
+                        converter.headers.push(converter.headerColumnIds[columnIndex] ||
+                            columnIndex.toString());
+                    }
+                    else {
+                        error('JSONConverter: Invalid `columnIds` option.', false);
+                    }
+                }
+            }
+        }
+    };
+    /**
+     * Extracts a row from an object, using columnIds if provided.
+     *
+     * @param {Record<string, string|number>} [rowObj]
+     * Set of props.
+     *
+     * @param {Array<string>} [columnIds]
+     * Column ids to retrieve.
+     *
+     * @return {Array<string | number>}
+     * Row converted to array.
+     */
+    JSONConverter.prototype.convertItemToRow = function (rowObj, columnIds) {
+        var converter = this;
+        if (columnIds && !(Array.isArray(columnIds))) {
+            var newRow_1 = [];
+            objectEach(columnIds, function (arrayWithPath, name) {
+                newRow_1.push(arrayWithPath.reduce(function (acc, key) {
+                    return acc[key];
+                }, rowObj));
+                if (converter.headers.indexOf(name) < 0) {
+                    converter.headers.push(name);
+                }
+            });
+            return newRow_1;
+        }
+        converter.headerColumnIds = Object.keys(rowObj);
+        return Object.values(rowObj);
     };
     /* *
      *
@@ -202,7 +256,7 @@ var JSONConverter = /** @class */ (function (_super) {
     /**
      * Default options
      */
-    JSONConverter.defaultOptions = __assign(__assign({}, DataConverter.defaultOptions), { data: [], orientation: 'rows' });
+    JSONConverter.defaultOptions = __assign(__assign({}, DataConverter.defaultOptions), { orientation: 'rows' });
     return JSONConverter;
 }(DataConverter));
 DataConverter.registerType('JSON', JSONConverter);

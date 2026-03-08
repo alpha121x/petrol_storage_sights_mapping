@@ -1,10 +1,11 @@
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 var __extends = (this && this.__extends) || (function () {
@@ -32,7 +33,7 @@ var defined = U.defined, extend = U.extend, getAlignFactor = U.getAlignFactor, i
  * */
 /**
  * SVG label to render text.
- * @private
+ *
  * @class
  * @name Highcharts.SVGLabel
  * @augments Highcharts.SVGElement
@@ -44,10 +45,14 @@ var SVGLabel = /** @class */ (function (_super) {
      *  Constructor
      *
      * */
-    function SVGLabel(renderer, str, x, y, shape, anchorX, anchorY, useHTML, baseline, className) {
+    function SVGLabel(renderer, str, x, y, shape, // @todo (SymbolKey|string),
+    anchorX, anchorY, useHTML, baseline, className) {
         var _this = _super.call(this, renderer, 'g') || this;
+        /** @internal */
         _this.paddingLeftSetter = _this.paddingSetter;
+        /** @internal */
         _this.paddingRightSetter = _this.paddingSetter;
+        /** @internal */
         _this.doUpdate = false;
         _this.textStr = str;
         _this.x = x;
@@ -86,6 +91,7 @@ var SVGLabel = /** @class */ (function (_super) {
      *  Functions
      *
      * */
+    /** @internal */
     SVGLabel.prototype.alignSetter = function (value) {
         var alignFactor = getAlignFactor(value);
         this.textAlign = value;
@@ -95,18 +101,22 @@ var SVGLabel = /** @class */ (function (_super) {
             if (this.bBox && isNumber(this.xSetting)) {
                 this.attr({ x: this.xSetting }); // #5134
             }
+            this.updateTextPadding(); // #23595
         }
     };
+    /** @internal */
     SVGLabel.prototype.anchorXSetter = function (value, key) {
         this.anchorX = value;
         this.boxAttr(key, Math.round(value) - this.getCrispAdjust() - this.xSetting);
     };
+    /** @internal */
     SVGLabel.prototype.anchorYSetter = function (value, key) {
         this.anchorY = value;
         this.boxAttr(key, value - this.ySetting);
     };
-    /*
-     * Set a box attribute, or defer it if the box is not yet created
+    /**
+     * Set a box attribute, or defer it, if the box is not yet created.
+     * @internal
      */
     SVGLabel.prototype.boxAttr = function (key, value) {
         if (this.box) {
@@ -116,9 +126,10 @@ var SVGLabel = /** @class */ (function (_super) {
             this.deferredAttr[key] = value;
         }
     };
-    /*
+    /**
      * Pick up some properties and apply them to the text instead of the
      * wrapper.
+     * @internal
      */
     SVGLabel.prototype.css = function (styles) {
         if (styles) {
@@ -133,18 +144,21 @@ var SVGLabel = /** @class */ (function (_super) {
                 }
             });
             this.text.css(textStyles_1);
-            // Update existing text, box (#9400, #12163, #18212)
-            if ('fontSize' in textStyles_1 || 'fontWeight' in textStyles_1) {
+            // Update existing text, box (#9400, #12163, #18212, #23595)
+            if ('fontSize' in textStyles_1 ||
+                'fontWeight' in textStyles_1 ||
+                'width' in textStyles_1) {
                 this.updateTextPadding();
             }
-            else if ('width' in textStyles_1 || 'textOverflow' in textStyles_1) {
+            else if ('textOverflow' in textStyles_1) {
                 this.updateBoxSize();
             }
         }
         return SVGElement.prototype.css.call(this, styles);
     };
-    /*
+    /**
      * Destroy and release memory.
+     * @internal
      */
     SVGLabel.prototype.destroy = function () {
         // Added by button implementation
@@ -160,6 +174,7 @@ var SVGLabel = /** @class */ (function (_super) {
         SVGElement.prototype.destroy.call(this);
         return void 0;
     };
+    /** @internal */
     SVGLabel.prototype.fillSetter = function (value, key) {
         if (value) {
             this.needsBox = true;
@@ -168,14 +183,15 @@ var SVGLabel = /** @class */ (function (_super) {
         this.fill = value;
         this.boxAttr(key, value);
     };
-    /*
+    /**
      * Return the bounding box of the box, not the group.
+     * @internal
      */
     SVGLabel.prototype.getBBox = function (reload, rot) {
         // If we have a text string and the DOM bBox was 0, it typically means
         // that the label was first rendered hidden, so we need to update the
         // bBox (#15246)
-        if (this.textStr && this.bBox.width === 0 && this.bBox.height === 0) {
+        if ((this.textStr && this.bBox.width === 0 && this.bBox.height === 0) || this.rotation) {
             this.updateBoxSize();
         }
         var _a = this, padding = _a.padding, _b = _a.height, height = _b === void 0 ? 0 : _b, _c = _a.translateX, translateX = _c === void 0 ? 0 : _c, _d = _a.translateY, translateY = _d === void 0 ? 0 : _d, _e = _a.width, width = _e === void 0 ? 0 : _e, paddingLeft = pick(this.paddingLeft, padding), rotation = rot !== null && rot !== void 0 ? rot : (this.rotation || 0);
@@ -190,6 +206,7 @@ var SVGLabel = /** @class */ (function (_super) {
         }
         return bBox;
     };
+    /** @internal */
     SVGLabel.prototype.getCrispAdjust = function () {
         return (this.renderer.styledMode && this.box ?
             this.box.strokeWidth() :
@@ -197,6 +214,7 @@ var SVGLabel = /** @class */ (function (_super) {
                 parseInt(this['stroke-width'], 10) :
                 0)) % 2 / 2;
     };
+    /** @internal */
     SVGLabel.prototype.heightSetter = function (value) {
         this.heightSetting = value;
         this.doUpdate = true;
@@ -208,7 +226,7 @@ var SVGLabel = /** @class */ (function (_super) {
      * scale are merged in one "transform" attribute in the SVG node.
      * Also updating height or width should trigger update of the box size.
      *
-     * @private
+     * @internal
      * @function Highcharts.SVGLabel#afterSetters
      */
     SVGLabel.prototype.afterSetters = function () {
@@ -218,9 +236,10 @@ var SVGLabel = /** @class */ (function (_super) {
             this.doUpdate = false;
         }
     };
-    /*
+    /**
      * After the text element is added, get the desired size of the border
      * box and add it before the text in the DOM.
+     * @internal
      */
     SVGLabel.prototype.onAdd = function () {
         this.text.add(this);
@@ -238,6 +257,7 @@ var SVGLabel = /** @class */ (function (_super) {
             });
         }
     };
+    /** @internal */
     SVGLabel.prototype.paddingSetter = function (value, key) {
         if (!isNumber(value)) {
             this[key] = void 0;
@@ -247,14 +267,17 @@ var SVGLabel = /** @class */ (function (_super) {
             this.updateTextPadding();
         }
     };
+    /** @internal */
     SVGLabel.prototype.rSetter = function (value, key) {
         this.boxAttr(key, value);
     };
+    /** @internal */
     SVGLabel.prototype.strokeSetter = function (value, key) {
         // For animation getter (#6776)
         this.stroke = value;
         this.boxAttr(key, value);
     };
+    /** @internal */
     SVGLabel.prototype['stroke-widthSetter'] = function (value, key) {
         if (value) {
             this.needsBox = true;
@@ -262,12 +285,14 @@ var SVGLabel = /** @class */ (function (_super) {
         this['stroke-width'] = value;
         this.boxAttr(key, value);
     };
+    /** @internal */
     SVGLabel.prototype['text-alignSetter'] = function (value) {
         // The text-align variety is for the pre-animation getter. The code
         // should be unified to either textAlign or text-align.
         this.textAlign = this['text-align'] = value;
         this.updateTextPadding();
     };
+    /** @internal */
     SVGLabel.prototype.textSetter = function (text) {
         if (typeof text !== 'undefined') {
             // Must use .attr to ensure transforms are done (#10009)
@@ -276,10 +301,11 @@ var SVGLabel = /** @class */ (function (_super) {
         this.updateTextPadding();
         this.reAlign();
     };
-    /*
+    /**
      * This function runs after the label is added to the DOM (when the bounding
      * box is available), and after the text of the label is updated to detect
      * the new bounding box and reflect it in the border box.
+     * @internal
      */
     SVGLabel.prototype.updateBoxSize = function () {
         var text = this.text, attribs = {}, padding = this.padding, 
@@ -331,9 +357,10 @@ var SVGLabel = /** @class */ (function (_super) {
             this.deferredAttr = {};
         }
     };
-    /*
+    /**
      * This function runs after setting text or padding, but only if padding
      * is changed.
+     * @internal
      */
     SVGLabel.prototype.updateTextPadding = function () {
         var _a, _b;
@@ -359,11 +386,13 @@ var SVGLabel = /** @class */ (function (_super) {
             text.y = textY;
         }
     };
+    /** @internal */
     SVGLabel.prototype.widthSetter = function (value) {
         // `width:auto` => null
         this.widthSetting = isNumber(value) ? value : void 0;
         this.doUpdate = true;
     };
+    /** @internal */
     SVGLabel.prototype.getPaddedWidth = function () {
         var padding = this.padding;
         var paddingLeft = pick(this.paddingLeft, padding);
@@ -372,6 +401,7 @@ var SVGLabel = /** @class */ (function (_super) {
             paddingLeft +
             paddingRight);
     };
+    /** @internal */
     SVGLabel.prototype.xSetter = function (value) {
         this.x = value; // For animation getter
         if (this.alignFactor) {
@@ -379,10 +409,19 @@ var SVGLabel = /** @class */ (function (_super) {
             // Force animation even when setting to the same value (#7898)
             this['forceAnimate:x'] = true;
         }
+        if (this.anchorX) {
+            // #22907, force anchorX to animate after x set
+            this['forceAnimate:anchorX'] = true;
+        }
         this.xSetting = Math.round(value);
         this.attr('translateX', this.xSetting);
     };
+    /** @internal */
     SVGLabel.prototype.ySetter = function (value) {
+        if (this.anchorY) {
+            // #22907, force anchorY to animate after y set
+            this['forceAnimate:anchorY'] = true;
+        }
         this.ySetting = this.y = Math.round(value);
         this.attr('translateY', this.ySetting);
     };
@@ -391,6 +430,7 @@ var SVGLabel = /** @class */ (function (_super) {
      *  Static Properties
      *
      * */
+    /** @internal */
     SVGLabel.emptyBBox = {
         width: 0,
         height: 0,
@@ -400,7 +440,7 @@ var SVGLabel = /** @class */ (function (_super) {
     /**
      * For labels, these CSS properties are applied to the `text` node directly.
      *
-     * @private
+     * @internal
      * @name Highcharts.SVGLabel#textProps
      * @type {Array<string>}
      */

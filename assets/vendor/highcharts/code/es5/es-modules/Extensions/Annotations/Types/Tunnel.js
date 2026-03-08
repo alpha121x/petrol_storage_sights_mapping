@@ -1,6 +1,5 @@
 /* *
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -19,6 +18,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+var _a;
 import Annotation from '../Annotation.js';
 import ControlPoint from '../ControlPoint.js';
 import CrookedLine from './CrookedLine.js';
@@ -27,7 +27,7 @@ var defaultOptions = D.defaultOptions;
 import MockPoint from '../MockPoint.js';
 import U from '../../../Core/Utilities.js';
 var merge = U.merge;
-if (defaultOptions.annotations) {
+if ((_a = defaultOptions.annotations) === null || _a === void 0 ? void 0 : _a.types) {
     defaultOptions.annotations.types.tunnel = merge(defaultOptions.annotations.types.crookedLine, 
     /**
      * Options for the tunnel annotation type.
@@ -110,9 +110,7 @@ if (defaultOptions.annotations) {
  *  Functions
  *
  * */
-/**
- * @private
- */
+/** @internal */
 function getSecondCoordinate(p1, p2, x) {
     return (p2.y - p1.y) / (p2.x - p1.x) * (x - p1.x) + p1.y;
 }
@@ -121,6 +119,7 @@ function getSecondCoordinate(p1, p2, x) {
  *  Class
  *
  * */
+/** @internal */
 var Tunnel = /** @class */ (function (_super) {
     __extends(Tunnel, _super);
     function Tunnel() {
@@ -132,7 +131,8 @@ var Tunnel = /** @class */ (function (_super) {
      *
      * */
     Tunnel.prototype.getPointsOptions = function () {
-        var pointsOptions = CrookedLine.prototype.getPointsOptions.call(this), yAxisIndex = this.options.typeOptions.yAxis || 0, yAxis = this.chart.yAxis[yAxisIndex];
+        var _a;
+        var pointsOptions = CrookedLine.prototype.getPointsOptions.call(this), yAxisIndex = ((_a = this.options.typeOptions) === null || _a === void 0 ? void 0 : _a.yAxis) || 0, yAxis = this.chart.yAxis[yAxisIndex];
         pointsOptions[2] = this.heightPointOptions(pointsOptions[1]);
         pointsOptions[3] = this.heightPointOptions(pointsOptions[0]);
         // In case of log axis, translate the bottom left point again, #16769
@@ -166,8 +166,10 @@ var Tunnel = /** @class */ (function (_super) {
         this.addBackground();
     };
     Tunnel.prototype.addLine = function () {
-        var line = this.initShape(merge(this.options.typeOptions.line, {
+        var _a;
+        var line = this.initShape(merge(((_a = this.options).typeOptions || (_a.typeOptions = {})).line, {
             type: 'path',
+            className: 'highcharts-tunnel-lines',
             points: [
                 this.points[0],
                 this.points[1],
@@ -177,8 +179,7 @@ var Tunnel = /** @class */ (function (_super) {
                     return pointOptions;
                 },
                 this.points[3]
-            ],
-            className: 'highcharts-tunnel-lines'
+            ]
         }), 0);
         this.options.typeOptions.line = line.options;
     };
@@ -192,7 +193,7 @@ var Tunnel = /** @class */ (function (_super) {
     };
     /**
      * Translate start or end ("left" or "right") side of the tunnel.
-     * @private
+     *
      * @param {number} dx
      * the amount of x translation
      * @param {number} dy
@@ -207,15 +208,15 @@ var Tunnel = /** @class */ (function (_super) {
     };
     /**
      * Translate height of the tunnel.
-     * @private
+     *
      * @param {number} dh
      * the amount of height translation
      */
     Tunnel.prototype.translateHeight = function (dh) {
         this.translatePoint(0, dh, 2);
         this.translatePoint(0, dh, 3);
-        this.options.typeOptions.height = this.points[3].y -
-            this.points[0].y;
+        this.options.typeOptions.height =
+            this.points[3].y - this.points[0].y;
         this.userOptions.typeOptions.height = this.options.typeOptions.height;
     };
     return Tunnel;

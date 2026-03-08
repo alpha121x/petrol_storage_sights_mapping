@@ -1,11 +1,11 @@
 /* *
  *
- *  (c) 2010-2025 Highsoft AS
+ *  (c) 2010-2026 Highsoft AS
  *  Author: Sebastian Domas
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -29,23 +29,22 @@ import HistogramSeriesDefaults from './HistogramSeriesDefaults.js';
 import SeriesRegistry from '../../Core/Series/SeriesRegistry.js';
 var ColumnSeries = SeriesRegistry.seriesTypes.column;
 import U from '../../Core/Utilities.js';
-var arrayMax = U.arrayMax, arrayMin = U.arrayMin, correctFloat = U.correctFloat, extend = U.extend, isNumber = U.isNumber, merge = U.merge;
+var arrayMax = U.arrayMax, arrayMin = U.arrayMin, correctFloat = U.correctFloat, isNumber = U.isNumber, merge = U.merge;
 /* ************************************************************************** *
  *  HISTOGRAM
  * ************************************************************************** */
 /**
- * A dictionary with formulas for calculating number of bins based on the
- * base series
+ * A dictionary with formulas for calculating number of bins based on data
  **/
 var binsNumberFormulas = {
-    'square-root': function (baseSeries) {
-        return Math.ceil(Math.sqrt(baseSeries.options.data.length));
+    'square-root': function (data) {
+        return Math.ceil(Math.sqrt(data.length));
     },
-    'sturges': function (baseSeries) {
-        return Math.ceil(Math.log(baseSeries.options.data.length) * Math.LOG2E);
+    'sturges': function (data) {
+        return Math.ceil(Math.log(data.length) * Math.LOG2E);
     },
-    'rice': function (baseSeries) {
-        return Math.ceil(2 * Math.pow(baseSeries.options.data.length, 1 / 3));
+    'rice': function (data) {
+        return Math.ceil(2 * Math.pow(data.length, 1 / 3));
     }
 };
 /**
@@ -85,15 +84,23 @@ var HistogramSeries = /** @class */ (function (_super) {
      *  Functions
      *
      * */
-    HistogramSeries.prototype.binsNumber = function () {
+    HistogramSeries.prototype.binsNumber = function (data) {
         var binsNumberOption = this.options.binsNumber;
         var binsNumber = binsNumberFormulas[binsNumberOption] ||
             // #7457
             (typeof binsNumberOption === 'function' && binsNumberOption);
-        return Math.ceil((binsNumber && binsNumber(this.baseSeries)) ||
+        return Math.ceil((binsNumber && binsNumber(data)) ||
             (isNumber(binsNumberOption) ?
                 binsNumberOption :
-                binsNumberFormulas['square-root'](this.baseSeries)));
+                binsNumberFormulas['square-root'](data)));
+    };
+    HistogramSeries.prototype.setData = function (data, redraw, animation, updatePoints) {
+        if (redraw === void 0) { redraw = true; }
+        var alteredData;
+        if (typeof data !== 'undefined' && data.length > 0) {
+            alteredData = this.derivedData(data.filter(isNumber), this.binsNumber(data), this.options.binWidth);
+        }
+        _super.prototype.setData.call(this, alteredData, redraw, animation, updatePoints);
     };
     HistogramSeries.prototype.derivedData = function (baseData, binsNumber, binWidth) {
         var series = this, max = correctFloat(arrayMax(baseData)), 
@@ -153,8 +160,7 @@ var HistogramSeries = /** @class */ (function (_super) {
             this.setData([]);
             return;
         }
-        var data = this.derivedData(yData, this.binsNumber(), this.options.binWidth);
-        this.setData(data, false);
+        this.setData(yData, false, void 0, false);
     };
     /* *
      *
@@ -164,9 +170,6 @@ var HistogramSeries = /** @class */ (function (_super) {
     HistogramSeries.defaultOptions = merge(ColumnSeries.defaultOptions, HistogramSeriesDefaults);
     return HistogramSeries;
 }(ColumnSeries));
-extend(HistogramSeries.prototype, {
-    hasDerivedData: DerivedComposition.hasDerivedData
-});
 DerivedComposition.compose(HistogramSeries);
 SeriesRegistry.registerSeriesType('histogram', HistogramSeries);
 /* *

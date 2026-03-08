@@ -1,0 +1,639 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Highcharts Example</title>
+
+		<style type="text/css">
+:root,
+.highcharts-light {
+    --font-color-1: rgba(0, 0, 0, 1);
+    --font-color-2: rgba(111, 111, 111, 1);
+    --font-color-3: rgba(20, 20, 20, 1);
+    --font-color-4: rgba(79, 79, 79, 1);
+    --font-color-5: rgba(1, 76, 229, 0.8);
+    --font-color-6: rgba(71, 69, 84, 1);
+    --font-color-7: rgba(117, 115, 140, 1);
+    --font-color-8: rgba(1, 76, 229, 1);
+    --background-color-1: rgba(246, 246, 246, 1);
+    --border-color-1: rgba(209, 209, 209, 1);
+    --border-color-2: rgba(244, 244, 244, 1);
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --font-color-1: rgba(255, 255, 255, 0.95);
+        --font-color-2: rgba(180, 180, 180, 1);
+        --font-color-3: rgba(230, 230, 230, 1);
+        --font-color-4: rgba(160, 160, 160, 1);
+        --font-color-5: rgba(100, 150, 255, 0.8);
+        --font-color-6: rgba(200, 200, 200, 1);
+        --font-color-7: rgba(150, 150, 170, 1);
+        --font-color-8: rgba(100, 150, 255, 1);
+        --background-color-1: rgba(18, 18, 18, 1);
+        --border-color-1: rgba(60, 60, 60, 1);
+        --border-color-2: rgba(40, 40, 40, 1);
+    }
+}
+
+.highcharts-dark {
+    --font-color-1: rgba(255, 255, 255, 0.95);
+    --font-color-2: rgba(180, 180, 180, 1);
+    --font-color-3: rgba(230, 230, 230, 1);
+    --font-color-4: rgba(160, 160, 160, 1);
+    --font-color-5: rgba(100, 150, 255, 0.8);
+    --font-color-6: rgba(200, 200, 200, 1);
+    --font-color-7: rgba(150, 150, 170, 1);
+    --font-color-8: rgba(100, 150, 255, 1);
+    --background-color-1: rgba(18, 18, 18, 1);
+    --border-color-1: rgba(60, 60, 60, 1);
+    --border-color-2: rgba(40, 40, 40, 1);
+}
+
+body {
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        Helvetica,
+        Arial,
+        "Apple Color Emoji",
+        "Segoe UI Emoji",
+        "Segoe UI Symbol",
+        sans-serif;
+    background: var(--highcharts-background-color);
+    color: var(--highcharts-neutral-color-100);
+}
+
+#custom-title {
+    color: var(--font-color-1);
+    font-weight: 700;
+    font-style: bold;
+    font-size: 22px;
+    margin: 5px 10px;
+}
+
+#custom-subtitle {
+    color: var(--font-color-2);
+    font-weight: 400;
+    font-size: 14px;
+    margin: 5px 10px;
+
+    a {
+        color: inherit;
+        text-decoration: none;
+    }
+}
+
+.highcharts-figure,
+.highcharts-data-table table {
+    min-width: 360px;
+    max-width: 800px;
+    margin: 1em auto;
+}
+
+.highcharts-wrapper {
+    display: flex;
+}
+
+#container {
+    width: 100%;
+}
+
+#custom-tooltip {
+    background-color: var(--background-color-1);
+    border: 1px solid var(--border-color-1);
+    border-radius: 6px;
+    width: 334px;
+    margin: 0 10px 29px;
+    padding: 1em;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+#custom-tooltip .tooltip-value {
+    white-space: nowrap;
+}
+
+#tooltip-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#tooltip-header-label {
+    color: var(--font-color-3);
+    font-weight: 700;
+    font-style: bold;
+}
+
+#tooltip-header-value {
+    color: white;
+    padding: 6px 12px;
+    border-radius: 6px;
+    display: flex;
+    flex-direction: row;
+    gap: 4px;
+    align-items: center;
+    min-height: 1.5rem;
+}
+
+#tooltip-values {
+    display: flex;
+    flex-direction: column;
+}
+
+#tooltip-series-name {
+    color: var(--font-color-4);
+    font-weight: 400;
+    font-size: 14px;
+}
+
+#tooltip-value {
+    color: var(--font-color-3);
+    font-weight: 500;
+    font-style: medium;
+    font-size: 30px;
+}
+
+.tooltip-stat-row {
+    display: flex;
+    flex-direction: row;
+    gap: 1em;
+
+    span {
+        color: var(--font-color-4);
+        font-weight: 400;
+        font-size: 14px;
+    }
+}
+
+#tooltip-btn {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--font-color-8);
+    cursor: pointer;
+    text-align: left;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
+
+    i {
+        font-size: 20px;
+    }
+
+    &:hover {
+        color: var(--font-color-5);
+    }
+}
+
+#table-wrapper {
+    overflow-x: auto;
+    margin: 2em 10px;
+    border: 1px solid var(--border-color-2);
+    border-radius: 6px;
+}
+
+#custom-legend {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#custom-legend tr {
+    transition: background-color 250ms;
+}
+
+#custom-legend tr.active {
+    background-color: var(--border-color-2);
+}
+
+#custom-legend th:first-child,
+#custom-legend td:first-child {
+    text-align: left;
+}
+
+#custom-legend td,
+#custom-legend th {
+    text-align: right;
+    padding: 8px;
+}
+
+#custom-legend tr.header-row th {
+    font-weight: 400;
+    font-size: 14px;
+    font-style: normal;
+    color: var(--font-color-6);
+}
+
+#custom-legend tr:first-child {
+    border-top: none;
+}
+
+#custom-legend tr {
+    border-top: 1px solid var(--border-color-2);
+}
+
+#custom-legend td {
+    font-weight: 500;
+    white-space: nowrap;
+
+    span {
+        color: var(--font-color-7);
+        font-weight: 400;
+        font-size: 14px;
+    }
+}
+
+#custom-legend td.series-name {
+    display: flex;
+    place-items: center;
+    gap: 8px;
+}
+
+.highcharts-description {
+    margin: 0.3rem 10px;
+}
+
+#csv {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .highcharts-wrapper {
+        flex-direction: column;
+        place-items: center;
+    }
+
+    #custom-tooltip {
+        margin: 2em 10px 1em;
+        box-sizing: border-box;
+        width: calc(100% - 20px);
+        height: 14em;
+    }
+}
+
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: #141414;
+        color: #ddd;
+    }
+    a {
+        color: #2caffe;
+    }
+}
+		</style>
+	</head>
+	<body>
+<script src="../../code/highcharts.js"></script>
+<script src="../../code/modules/data.js"></script>
+<script src="../../code/modules/exporting.js"></script>
+<script src="../../code/modules/export-data.js"></script>
+<script src="../../code/modules/accessibility.js"></script>
+<script src="../../code/themes/adaptive.js"></script>
+
+<link href="https://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+
+<figure class="highcharts-figure">
+    <h1 id="custom-title">Electricity Generation by Fuel Type in New York State</h1>
+    <h3 id="custom-subtitle">Data source: <a style="color: #ddd" href="https://data.gov/">U.S. Government's Open Data</a></h3>
+    <div class="highcharts-wrapper">
+        <div id="container"></div>
+        <div id="custom-tooltip">
+            <div id="tooltip-header">
+                <span id="tooltip-header-label">FUEL TYPE</span>
+                <div id="tooltip-header-value"></div>
+            </div>
+            <div id="tooltip-values">
+                <div id="tooltip-series-name">- Electricity Generation</div>
+                <div id="tooltip-value">- GWh</div>
+            </div>
+            <div id="tooltip-stats">
+                <div class="tooltip-stat-row">
+                    <span>Last</span>
+                    <div id="tooltip-last-value">- <span>GWh</span></div>
+                </div>
+                <div class="tooltip-stat-row">
+                    <span>Min</span>
+                    <div id="tooltip-min-value">- <span>GWh</span></div>
+                </div>
+                <div class="tooltip-stat-row">
+                    <span>Max</span>
+                    <div id="tooltip-max-value">- <span>GWh</span></div>
+                </div>
+            </div>
+            <button id="tooltip-btn"><i class="icon-download"></i> Download data</button>
+        </div>
+    </div>
+
+    <div id="table-wrapper">
+        <table id="custom-legend">
+            <tr class="header-row">
+                <th>Name</th>
+                <th>Last</th>
+                <th>Min</th>
+                <th>Max</th>
+            </tr>
+        </table>
+    </div>
+
+    <p class="highcharts-description">
+        This line chart demonstrates how to create a fully custom HTML legend
+        and tooltip, displaying summary statistics for each series outside the
+        chart. Please note that the legend is not included in exports.
+    </p>
+    <p class="highcharts-description">
+        For a versatile tool for displaying and managing tabular data use
+        <a href="https://www.highcharts.com/products/grid/" target="_blank">Highcharts Grid</a>.
+    </p>
+</figure>
+
+
+<pre id="csv">Year,Coal,Gas,Petroleum,Hydro,Nuclear,Net Imports,Other,Renewables
+1980,19643,10766,37834,26241,19276,5575.37,0,0
+1981,19632,11566,36760,25658,17444,7136.55,0,0
+1982,20807,13974,32932,25329,14438,10196.18,0,0
+1983,20753,12428,34380,26162,16376,11888.3,0,0
+1984,21902,15395,28891,26586,21187,10812.07,0,0
+1985,24255,15995,25927,26956,24092,10154.53,0,0
+1986,20815,12471,31911,29480,22084,13203.53,0,0
+1987,25304,16385,31389,27546,22926,11372.67,0,0
+1988,28698,13936,39931,23901,24175,9993.72,0,0
+1989,31228,17141,40963,24697,22847,5538.57,0,0
+1990,25913,22724,33885,28188,23623,4519.21,0,0
+1991,26660,23074,28221,27172,28448,9411.23,0,0
+1992,27280,26850,18319,28057,24155,16450.43,0,0
+1993,24502,27075,15073,29443,26889,19509.27,2043,0
+1994,23291,32230,12030,27791,29231,18452.58,2149,0
+1995,22289,49057,8268,25993,26336,11776.71,2077,0
+1996,22672,37449,9717,28951,35226,9471.76,2177,0
+1997,24059,46281,8588,30618,29570,4913.2,2058,0
+1998,25265,42472,14901,29316,31314,3145.07,2211,0
+1999,23366,45999,13304,24752,37019,6904.06,2058,0
+2000,25010,39729,14945,24910,31508,15723.49,1843,10.35
+2001,23432,40915,17458,21486,40395,7464.31,4524,20.54
+2002,23239,42177,12652,24612,39617,12245.46,4363,81.63
+2003,23581,30402,20830,24207,40679,14378.87,4604,41.2
+2004,22853,30059,23353,26745,40640,12732.97,4606,116.45
+2005,20598,34005,25619,26204,42443,14375.79,4662,102.99
+2006,20968,46253,7441,27110,42224,16743.04,4797,655.37
+2007,21406,48893,8780,24184,42453,18904.43,4610,833.48
+2008,19154,46845,4001,25711,43209,23343.74,5257,1250.7
+2009,12759,44625,2829,26420,43485,23361.13,5778,2266.34
+2010,13583,51077,2094,24214,41870,24912.38,4809,2596.15
+2011,9426,52713,1234,27634,42695,24882.85,13923,2834.2
+2012,4551,62073,606,24572,40775,25516.2,14150,3044.67
+2013,4697,57039,1057,25631,44756,25901.59,14581,3591.5
+2014,4325,57507,2259,25974,43039,20789.06,14605,4036.83
+2015,2046,59919,1992,25879,44603,19809.05,13943,4035.13
+2016,1493,59698,676,26314,41571,22357.96,1871,3997
+2017,567,50270,636,29554,42167,24319.07,5992,4266.5
+2018,692,53593,1678,29045,42919,26765.95,5446,4033.9
+2019,426,49451,1994,30141,44865,23134,5138,4505.7
+2020,146,54094,2189,29521,38430,19990,2233,4211
+2021,0,59460,159,28675,31177,27394,2258,4159.5</pre>
+
+
+
+		<script type="text/javascript">
+/* eslint-disable */
+// Plugin to render custom HTML legend and custom HTML tooltip outside chart
+// container
+(({
+  addEvent,
+  color,
+  format,
+  Chart,
+  Series,
+  Point
+}) => {
+  const table = document.getElementById('custom-legend'),
+    tooltipHeader = document.getElementById('tooltip-header'),
+    tooltipSeriesName = document.getElementById('tooltip-series-name'),
+    tooltipValue = document.getElementById('tooltip-value'),
+    tooltipLastValue = document.getElementById('tooltip-last-value'),
+    tooltipMinValue = document.getElementById('tooltip-min-value'),
+    tooltipMaxValue = document.getElementById('tooltip-max-value');
+
+  // Do now remove tr while updating the series
+  Series.keepProps.push('tr');
+  addEvent(Chart, 'render', function () {
+    const series = this.series;
+
+    // Function to update the tooltip and legend row styles based on hover
+    // state
+    const highlightRow = () => {
+      const valueSuffix = this.options.plotOptions.series.custom.valueSuffix,
+        name = this.options.plotOptions.series.custom.name;
+      tooltipHeader.innerHTML = format(this.options.tooltip.headerFormat, this.hoverPoint);
+      if (this.hoverPoint) {
+        const tooltipHeaderValue = document.getElementById('tooltip-header-value');
+        tooltipHeaderValue.style.backgroundColor = color(this.hoverPoint.color).get();
+        tooltipSeriesName.innerHTML = `${this.hoverPoint.x} ${name}`;
+        tooltipValue.innerHTML = format(this.options.tooltip.pointFormat, this.hoverPoint);
+        tooltipLastValue.innerHTML = this.hoverPoint.series.last;
+        tooltipMinValue.innerHTML = this.hoverPoint.series.min;
+        tooltipMaxValue.innerHTML = this.hoverPoint.series.max;
+      } else {
+        tooltipSeriesName.innerHTML = `- ${name}`;
+        tooltipValue.innerHTML = `- ${valueSuffix}`;
+        tooltipLastValue.innerHTML = `- <span>${valueSuffix}</span>`;
+        tooltipMinValue.innerHTML = `- <span>${valueSuffix}</span>`;
+        tooltipMaxValue.innerHTML = `- <span>${valueSuffix}</span>`;
+      }
+      series.forEach(s => {
+        if (s === this.hoverSeries) {
+          s.tr.classList.add('active');
+        } else {
+          s.tr.classList.remove('active');
+        }
+      });
+    };
+
+    // Create a custom legend row for each series if not already created
+    series.forEach(s => {
+      if (!s.tr || s.trRefresh) {
+        if (s.trRefresh) {
+          while (s.tr.firstChild) {
+            s.tr.removeChild(s.tr.lastChild);
+          }
+        } else {
+          s.tr = document.createElement('tr');
+        }
+        const name = document.createElement('td'),
+          dot = document.createElement('span');
+        dot.style.display = 'inline-block';
+        dot.style.width = '12px';
+        dot.style.height = '4px';
+        dot.style.backgroundColor = color(s.color).get();
+        dot.style.borderRadius = '999px';
+        name.appendChild(dot);
+        name.appendChild(document.createTextNode(` ${s.name}`));
+        name.className = 'series-name';
+        s.tr.appendChild(name);
+        const last = document.createElement('td'),
+          lastValue = last.innerHTML = s.points[s.points.length - 1].y.toFixed(1) + '<span>' + s.options.custom.valueSuffix + '</span>';
+        s.last = lastValue;
+        s.tr.appendChild(last);
+        const min = document.createElement('td'),
+          minValue = min.innerHTML = s.dataMin.toFixed(1) + '<span>' + s.options.custom.valueSuffix + '</span>';
+        s.min = minValue;
+        s.tr.appendChild(min);
+        const max = document.createElement('td'),
+          maxValue = max.innerHTML = s.dataMax.toFixed(1) + '<span>' + s.options.custom.valueSuffix + '</span>';
+        s.max = maxValue;
+        s.tr.appendChild(max);
+        if (!s.trRefresh) {
+          table.appendChild(s.tr);
+
+          // Hovering the legend highlights the graph
+          addEvent(s.tr, 'mouseover', () => {
+            s.setState('hover');
+            series.forEach(otherSeries => {
+              if (otherSeries !== s) {
+                otherSeries.setState('inactive');
+              }
+            });
+            this.hoverSeries = s;
+            highlightRow();
+          });
+
+          // Reset highlight when mouse leaves the row
+          addEvent(s.tr, 'mouseout', () => {
+            series.forEach(otherSeries => {
+              otherSeries.setState('normal');
+            });
+            this.hoverSeries = undefined;
+            highlightRow();
+          });
+        }
+        delete s.trRefresh;
+      }
+    });
+
+    // Also update highlight when hovering over the point and series
+    addEvent(Point, 'mouseOver', highlightRow);
+    addEvent(Series, 'mouseOut', highlightRow);
+
+    // Design hack to allow rounded corners on the plot area
+    this.plotBorder.attr({
+      r: 6
+    });
+  });
+  addEvent(Series, 'remove', function () {
+    if (this.tr) {
+      this.tr.remove();
+      delete this.tr;
+    }
+  });
+  addEvent(Series, 'afterUpdate', function () {
+    if (this.tr) {
+      this.trRefresh = true;
+    }
+  });
+  document.getElementById('tooltip-btn').addEventListener('click', () => {
+    Highcharts.charts[0].exporting.downloadCSV();
+  });
+})(Highcharts);
+Highcharts.chart({
+  chart: {
+    renderTo: 'container',
+    plotBorderWidth: 1,
+    spacingTop: 0,
+    spacingBottom: 0,
+    height: 337
+  },
+  credits: {
+    enabled: false
+  },
+  data: {
+    csv: document.getElementById('csv').innerHTML,
+    complete: function (options) {
+      // Add custom properties to series
+      options.series.forEach(s => {
+        s.custom = {
+          icon: {
+            Coal: '<i class="icon-tasks"></i>',
+            Gas: '<i class="icon-fire"></i>',
+            Petroleum: '<i class="icon-truck"></i>',
+            Hydro: '<i class="icon-tint"></i>',
+            Nuclear: '<i class="icon-certificate"></i>',
+            'Net Imports': '<i class="icon-random"></i>',
+            Other: '<i class="icon-briefcase"></i>',
+            Renewables: '<i class="icon-leaf"></i>'
+          }[s.name] || ''
+        };
+      });
+    }
+  },
+  title: {
+    text: void 0
+  },
+  subtitle: {
+    text: void 0
+  },
+  exporting: {
+    enabled: false
+  },
+  legend: {
+    enabled: false
+  },
+  tooltip: {
+    enabled: false,
+    // Because we use a custom tooltip
+    headerFormat: `<span id="tooltip-header-label">FUEL TYPE</span>
+            <div id="tooltip-header-value">
+                {series.options.custom.icon} {series.name}
+            </div>`,
+    pointFormat: '{point.y:,.1f} {series.options.custom.valueSuffix}'
+  },
+  xAxis: {
+    crosshair: {
+      dashStyle: 'Dash'
+    },
+    lineWidth: 0,
+    tickColor: 'var(--border-color-1)'
+  },
+  yAxis: {
+    crosshair: true,
+    title: {
+      text: 'TWh',
+      align: 'high',
+      reserveSpace: false,
+      x: 13,
+      y: 10
+    },
+    gridLineColor: 'var(--border-color-2)',
+    labels: {
+      align: 'left',
+      x: 3,
+      y: -3,
+      format: '{divide value 1000}'
+    },
+    showLastLabel: false
+  },
+  plotOptions: {
+    series: {
+      custom: {
+        name: 'Electricity Generation',
+        valueSuffix: ' GWh'
+      },
+      marker: {
+        enabled: false,
+        symbol: 'circle'
+      },
+      stickyTracking: true,
+      events: {
+        mouseOut() {}
+      }
+    }
+  }
+});
+		</script>
+	</body>
+</html>

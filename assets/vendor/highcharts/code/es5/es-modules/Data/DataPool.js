@@ -1,10 +1,10 @@
 /* *
  *
- *  (c) 2009-2025 Highsoft AS
+ *  (c) 2009-2026 Highsoft AS
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  *  Authors:
  *  - Sophie Bremer
@@ -12,8 +12,8 @@
  * */
 'use strict';
 import DataConnector from './Connectors/DataConnector.js';
-import DataPoolDefaults from './DataPoolDefaults.js';
 import U from '../Core/Utilities.js';
+var addEvent = U.addEvent, fireEvent = U.fireEvent, merge = U.merge;
 /* *
  *
  *  Class
@@ -25,7 +25,7 @@ import U from '../Core/Utilities.js';
  * @class
  * @name Data.DataPool
  *
- * @param {Data.DataPoolOptions} options
+ * @param {DataPoolOptions} options
  * Pool options with all connectors.
  */
 var DataPool = /** @class */ (function () {
@@ -35,27 +35,24 @@ var DataPool = /** @class */ (function () {
      *
      * */
     function DataPool(options) {
-        if (options === void 0) { options = DataPoolDefaults; }
-        options.connectors = (options.connectors || []);
+        this.options = merge(DataPool.defaultOptions, options);
         this.connectors = {};
-        this.options = options;
         this.waiting = {};
     }
     /* *
      *
-     *  Functions
+     *  Methods
      *
      * */
     /**
      * Emits an event on this data pool to all registered callbacks of the given
      * event.
-     * @private
      *
      * @param {DataTable.Event} e
      * Event object with event information.
      */
     DataPool.prototype.emit = function (e) {
-        U.fireEvent(this, e.type, e);
+        fireEvent(this, e.type, e);
     };
     /**
      * Loads the connector.
@@ -126,7 +123,7 @@ var DataPool = /** @class */ (function () {
      * @param {string} connectorId
      * ID of the connector.
      *
-     * @return {DataPoolConnectorOptions|undefined}
+     * @return {DataConnectorTypeOptions | undefined}
      * Returns the options of the connector, or `undefined` if not found.
      */
     DataPool.prototype.getConnectorOptions = function (connectorId) {
@@ -136,22 +133,6 @@ var DataPool = /** @class */ (function () {
                 return connectors[i];
             }
         }
-    };
-    /**
-     * Loads the connector table.
-     *
-     * @function Data.DataPool#getConnectorTable
-     *
-     * @param {string} connectorId
-     * ID of the connector.
-     *
-     * @return {Promise<Data.DataTable>}
-     * Returns the connector table.
-     */
-    DataPool.prototype.getConnectorTable = function (connectorId) {
-        return this
-            .getConnector(connectorId)
-            .then(function (connector) { return connector.table; });
     };
     /**
      * Tests whether the connector has never been requested.
@@ -167,7 +148,8 @@ var DataPool = /** @class */ (function () {
         return !this.connectors[connectorId];
     };
     /**
-     * Creates and loads the connector.
+     * Instantiates the connector class for the given options and loads its
+     * data.
      *
      * @private
      *
@@ -188,13 +170,13 @@ var DataPool = /** @class */ (function () {
             if (!ConnectorClass) {
                 throw new Error("Connector type not found. (".concat(options.type, ")"));
             }
-            var connector = _this.connectors[options.id] = new ConnectorClass(options.options, options.dataTables);
+            var connector = _this.connectors[options.id] =
+                new ConnectorClass(options);
             // eslint-disable-next-line @typescript-eslint/no-floating-promises
             connector
                 .load()
                 .then(function (_a) {
-                var converter = _a.converter, dataTables = _a.dataTables;
-                connector.dataTables = dataTables;
+                var converter = _a.converter;
                 connector.converter = converter;
                 connector.loaded = true;
                 _this.emit({
@@ -230,31 +212,33 @@ var DataPool = /** @class */ (function () {
      * Function to unregister callback from the event.
      */
     DataPool.prototype.on = function (type, callback) {
-        return U.addEvent(this, type, callback);
+        return addEvent(this, type, callback);
     };
     /**
      * Sets connector options under the specified `options.id`.
      *
-     * @param {Data.DataPoolConnectorOptions} options
+     * @param options
      * Connector options to set.
      */
     DataPool.prototype.setConnectorOptions = function (options) {
-        var connectors = this.options.connectors, instances = this.connectors;
+        var connectorsOptions = this.options.connectors;
+        var connectorsInstances = this.connectors;
         this.emit({
             type: 'setConnectorOptions',
             options: options
         });
-        for (var i = 0, iEnd = connectors.length; i < iEnd; ++i) {
-            if (connectors[i].id === options.id) {
-                connectors.splice(i, 1);
+        for (var i = 0, iEnd = connectorsOptions.length; i < iEnd; ++i) {
+            if (connectorsOptions[i].id === options.id) {
+                connectorsOptions.splice(i, 1);
                 break;
             }
         }
-        if (instances[options.id]) {
-            instances[options.id].stopPolling();
-            delete instances[options.id];
+        // TODO: Check if can be refactored
+        if (connectorsInstances[options.id]) {
+            connectorsInstances[options.id].stopPolling();
+            delete connectorsInstances[options.id];
         }
-        connectors.push(options);
+        connectorsOptions.push(options);
         this.emit({
             type: 'afterSetConnectorOptions',
             options: options
@@ -265,11 +249,9 @@ var DataPool = /** @class */ (function () {
      *  Static Properties
      *
      * */
-    /**
-     * Semantic version string of the DataPool class.
-     * @internal
-     */
-    DataPool.version = '1.0.0';
+    DataPool.defaultOptions = {
+        connectors: []
+    };
     return DataPool;
 }());
 /* *

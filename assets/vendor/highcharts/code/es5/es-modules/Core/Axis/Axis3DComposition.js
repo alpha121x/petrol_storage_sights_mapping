@@ -1,12 +1,13 @@
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
  *  Extension for 3d axes
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -25,9 +26,7 @@ var addEvent = U.addEvent, merge = U.merge, pick = U.pick, wrap = U.wrap;
  *  Functions
  *
  * */
-/**
- * @private
- */
+/** @internal */
 function onAxisAfterSetOptions() {
     var _a;
     var axis = this, chart = axis.chart, options = axis.options;
@@ -36,9 +35,7 @@ function onAxisAfterSetOptions() {
         options.gridLineWidth = pick(options.gridLineWidth, 1);
     }
 }
-/**
- * @private
- */
+/** @internal */
 function onAxisDrawCrosshair(e) {
     var axis = this;
     if (axis.chart.is3d() &&
@@ -50,9 +47,7 @@ function onAxisDrawCrosshair(e) {
         }
     }
 }
-/**
- * @private
- */
+/** @internal */
 function onAxisInit() {
     var axis = this;
     if (!axis.axis3D) {
@@ -61,7 +56,7 @@ function onAxisInit() {
 }
 /**
  * Do not draw axislines in 3D.
- * @private
+ * @internal
  */
 function wrapAxisGetLinePath(proceed) {
     var axis = this;
@@ -71,9 +66,7 @@ function wrapAxisGetLinePath(proceed) {
     }
     return [];
 }
-/**
- * @private
- */
+/** @internal */
 function wrapAxisGetPlotBandPath(proceed) {
     // Do not do this if the chart is not 3D
     if (!this.chart.is3d() || this.coll === 'colorAxis') {
@@ -95,9 +88,7 @@ function wrapAxisGetPlotBandPath(proceed) {
     }
     return path;
 }
-/**
- * @private
- */
+/** @internal */
 function wrapAxisGetPlotLinePath(proceed) {
     var axis = this, axis3D = axis.axis3D, chart = axis.chart, path = proceed.apply(axis, [].slice.call(arguments, 1));
     // Do not do this if the chart is not 3D
@@ -167,7 +158,7 @@ function wrapAxisGetPlotLinePath(proceed) {
 /**
  * Wrap getSlotWidth function to calculate individual width value for each
  * slot (#8042).
- * @private
+ * @internal
  */
 function wrapAxisGetSlotWidth(proceed, tick) {
     var _a, _b;
@@ -222,9 +213,7 @@ function wrapAxisGetSlotWidth(proceed, tick) {
     }
     return proceed.apply(axis, [].slice.call(arguments, 1));
 }
-/**
- * @private
- */
+/** @internal */
 function wrapAxisGetTitlePosition(proceed) {
     var pos = proceed.apply(this, [].slice.call(arguments, 1));
     return this.axis3D ?
@@ -238,7 +227,7 @@ function wrapAxisGetTitlePosition(proceed) {
  * */
 /**
  * Adds 3D support to axes.
- * @private
+ * @internal
  * @class
  */
 var Axis3DAdditions = /** @class */ (function () {
@@ -247,9 +236,7 @@ var Axis3DAdditions = /** @class */ (function () {
      *  Constructors
      *
      * */
-    /**
-     * @private
-     */
+    /** @internal */
     function Axis3DAdditions(axis) {
         this.axis = axis;
     }
@@ -260,7 +247,7 @@ var Axis3DAdditions = /** @class */ (function () {
      * */
     /**
      * Extends axis class with 3D support.
-     * @private
+     * @internal
      */
     Axis3DAdditions.compose = function (AxisClass, TickClass) {
         Tick3D.compose(TickClass);
@@ -284,7 +271,7 @@ var Axis3DAdditions = /** @class */ (function () {
      *
      * */
     /**
-     * @private
+     * @internal
      * @param {Highcharts.Axis} axis
      * Related axis.
      * @param {Highcharts.Position3DObject} pos
@@ -388,9 +375,6 @@ var Axis3DAdditions = /** @class */ (function () {
             else { // X and Z Axis
                 var sin = Math.sin(alpha);
                 var cos = Math.cos(alpha);
-                if (axis.opposite) {
-                    sin = -sin;
-                }
                 if (reverseFlap) {
                     sin = -sin;
                 }
@@ -470,9 +454,7 @@ var Axis3DAdditions = /** @class */ (function () {
         }
         return projected;
     };
-    /**
-     * @private
-     */
+    /** @internal */
     Axis3DAdditions.prototype.swapZ = function (p, insidePlotArea) {
         var axis = this.axis;
         if (axis.isZAxis) {
@@ -492,4 +474,5 @@ var Axis3DAdditions = /** @class */ (function () {
  *  Default Export
  *
  * */
+/** @internal */
 export default Axis3DAdditions;

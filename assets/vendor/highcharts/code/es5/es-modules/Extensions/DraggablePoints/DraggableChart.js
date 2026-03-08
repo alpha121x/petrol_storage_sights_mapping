@@ -1,12 +1,12 @@
 /* *
  *
- *  (c) 2009-2025 Highsoft AS
+ *  (c) 2009-2026 Highsoft AS
  *
  *  Authors: Øystein Moseng, Torstein Hønsi, Jon A. Nygård
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -18,7 +18,7 @@ import DragDropDefaults from './DragDropDefaults.js';
 import H from '../../Core/Globals.js';
 var doc = H.doc;
 import U from '../../Core/Utilities.js';
-var addEvent = U.addEvent, isArray = U.isArray, merge = U.merge, pick = U.pick;
+var addEvent = U.addEvent, isArray = U.isArray, merge = U.merge;
 /* *
  *
  *  Functions
@@ -27,7 +27,7 @@ var addEvent = U.addEvent, isArray = U.isArray, merge = U.merge, pick = U.pick;
 /**
  * Add events to document and chart if the chart is draggable.
  *
- * @private
+ * @internal
  * @function addDragDropEvents
  * @param {Highcharts.Chart} chart
  *        The chart to add events to.
@@ -65,7 +65,7 @@ function addDragDropEvents(chart) {
 /**
  * Remove the chart's drag handles if they exist.
  *
- * @private
+ * @internal
  * @function Highcharts.Chart#hideDragHandles
  */
 function chartHideDragHandles() {
@@ -83,7 +83,7 @@ function chartHideDragHandles() {
 /**
  * Set the state of the guide box.
  *
- * @private
+ * @internal
  * @function Highcharts.Chart#setGuideBoxState
  * @param {string} state
  *        The state to set the guide box to.
@@ -110,7 +110,7 @@ function chartSetGuideBoxState(state, options) {
 /**
  * Check whether the zoomKey or panKey is pressed.
  *
- * @private
+ * @internal
  * @function zoomOrPanKeyPressed
  * @param {global.Event} e
  *        A mouse event.
@@ -126,7 +126,7 @@ function chartZoomOrPanKeyPressed(e) {
  * Composes the chart class with essential functions to support draggable
  * points.
  *
- * @private
+ * @internal
  * @function compose
  *
  * @param {Highcharts.Chart} ChartClass
@@ -145,7 +145,7 @@ function compose(ChartClass) {
  * Default mouse move handler while dragging. Handles updating points or guide
  * box.
  *
- * @private
+ * @internal
  * @function dragMove
  * @param {Highcharts.PointerEventObject} e
  *        The mouse move event.
@@ -153,6 +153,7 @@ function compose(ChartClass) {
  *        The point that is dragged.
  */
 function dragMove(e, point) {
+    var _a;
     var series = point.series, chart = series.chart, data = chart.dragDropData, options = merge(series.options.dragDrop, point.options.dragDrop), draggableX = options.draggableX, draggableY = options.draggableY, origin = data.origin, updateProp = data.updateProp;
     var dX = e.chartX - origin.chartX, dY = e.chartY - origin.chartY;
     var oldDx = dX;
@@ -163,7 +164,7 @@ function dragMove(e, point) {
     }
     // If we have liveRedraw enabled, update the points immediately. Otherwise
     // update the guideBox.
-    if (pick(options.liveRedraw, true)) {
+    if ((_a = options.liveRedraw) !== null && _a !== void 0 ? _a : true) {
         updatePoints(chart, false);
         // Update drag handles
         point.showDragHandles();
@@ -187,7 +188,7 @@ function dragMove(e, point) {
  * Flip a side property, used with resizeRect. If input side is "left", return
  * "right" etc.
  *
- * @private
+ * @internal
  * @function flipResizeSide
  *
  * @param {string} side
@@ -208,7 +209,7 @@ function flipResizeSide(side) {
  * Get a list of points that are grouped with this point. If only one point is
  * in the group, that point is returned by itself in an array.
  *
- * @private
+ * @internal
  * @function getGroupedPoints
  * @param {Highcharts.Point} point
  *        Point to find group from.
@@ -238,7 +239,7 @@ function getGroupedPoints(point) {
 /**
  * Calculate new point options from points being dragged.
  *
- * @private
+ * @internal
  * @function getNewPoints
  *
  * @param {Object} dragDropData
@@ -301,7 +302,7 @@ function getNewPoints(dragDropData, newPos) {
 /**
  * Get a snapshot of points, mouse position, and guide box dimensions
  *
- * @private
+ * @internal
  * @function getPositionSnapshot
  *
  * @param {Highcharts.PointerEventObject} e
@@ -365,7 +366,7 @@ function getPositionSnapshot(e, points, guideBox) {
  * In mousemove events, check that we have dragged mouse further than the
  * dragSensitivity before we call mouseMove handler.
  *
- * @private
+ * @internal
  * @function hasDraggedPastSensitivity
  *
  * @param {Highcharts.PointerEventObject} e
@@ -389,7 +390,7 @@ function hasDraggedPastSensitivity(e, chart, sensitivity) {
 /**
  * Prepare chart.dragDropData with origin info, and show the guide box.
  *
- * @private
+ * @internal
  * @function initDragDrop
  * @param {Highcharts.PointerEventObject} e
  *        Mouse event with original mouse position.
@@ -398,13 +399,14 @@ function hasDraggedPastSensitivity(e, chart, sensitivity) {
  * @return {void}
  */
 function initDragDrop(e, point) {
+    var _a, _b, _c;
     var groupedPoints = getGroupedPoints(point), series = point.series, chart = series.chart;
     var guideBox;
     // If liveRedraw is disabled, show the guide box with the default state
-    if (!pick(series.options.dragDrop && series.options.dragDrop.liveRedraw, true)) {
+    if (!((_b = (_a = series.options.dragDrop) === null || _a === void 0 ? void 0 : _a.liveRedraw) !== null && _b !== void 0 ? _b : true)) {
         chart.dragGuideBox = guideBox = series.getGuideBox(groupedPoints);
         chart
-            .setGuideBoxState('default', series.options.dragDrop.guideBox)
+            .setGuideBoxState('default', (_c = series.options.dragDrop) === null || _c === void 0 ? void 0 : _c.guideBox)
             .add(series.group);
     }
     // Store some data on the chart to pick up later
@@ -419,7 +421,7 @@ function initDragDrop(e, point) {
  * Utility function to test if a chart should have drag/drop enabled, looking at
  * its options.
  *
- * @private
+ * @internal
  * @function isChartDraggable
  * @param {Highcharts.Chart} chart
  *        The chart to test.
@@ -443,7 +445,7 @@ function isChartDraggable(chart) {
  * Utility function to test if a point is movable (any of its props can be
  * dragged by a move, not just individually).
  *
- * @private
+ * @internal
  * @function isPointMovable
  * @param {Highcharts.Point} point
  *        The point to test.
@@ -477,7 +479,7 @@ function isPointMovable(point) {
  * Utility function to test if a series is using drag/drop, looking at its
  * options.
  *
- * @private
+ * @internal
  * @function isSeriesDraggable
  * @param {Highcharts.Series} series
  *        The series to test.
@@ -507,7 +509,7 @@ function isSeriesDraggable(series) {
 /**
  * On container mouse down. Init dragdrop if conditions are right.
  *
- * @private
+ * @internal
  * @function mouseDown
  * @param {Highcharts.PointerEventObject} e
  *        The mouse down event.
@@ -543,7 +545,7 @@ function mouseDown(e, chart) {
 /**
  * On container mouse move. Handle drag sensitivity and fire drag event.
  *
- * @private
+ * @internal
  * @function mouseMove
  * @param {Highcharts.PointerEventObject} e
  *        The mouse move event.
@@ -551,6 +553,7 @@ function mouseDown(e, chart) {
  *        The chart we are moving across.
  */
 function mouseMove(e, chart) {
+    var _a, _b, _c, _d;
     // Ignore if zoom/pan key is pressed
     if (chart.zoomOrPanKeyPressed(e)) {
         return;
@@ -564,9 +567,7 @@ function mouseMove(e, chart) {
         e.preventDefault();
         // Update sensitivity test if not passed yet
         if (!dragDropData.draggedPastSensitivity) {
-            dragDropData.draggedPastSensitivity = hasDraggedPastSensitivity(e, chart, pick(point.options.dragDrop &&
-                point.options.dragDrop.dragSensitivity, seriesDragDropOpts &&
-                seriesDragDropOpts.dragSensitivity, DragDropDefaults.dragSensitivity));
+            dragDropData.draggedPastSensitivity = hasDraggedPastSensitivity(e, chart, (_d = (_c = (_b = (_a = point.options.dragDrop) === null || _a === void 0 ? void 0 : _a.dragSensitivity) !== null && _b !== void 0 ? _b : seriesDragDropOpts === null || seriesDragDropOpts === void 0 ? void 0 : seriesDragDropOpts.dragSensitivity) !== null && _c !== void 0 ? _c : DragDropDefaults.dragSensitivity) !== null && _d !== void 0 ? _d : 2);
         }
         // If we have dragged past dragSensitivity, run the mousemove handler
         // for dragging
@@ -597,7 +598,7 @@ function mouseMove(e, chart) {
 /**
  * On container mouse up. Fire drop event and reset state.
  *
- * @private
+ * @internal
  * @function mouseUp
  * @param {Highcharts.PointerEventObject} e
  *        The mouse up event.
@@ -645,7 +646,7 @@ function mouseUp(e, chart) {
 /**
  * Add event listener to Chart.render that checks whether or not we should add
  * dragdrop.
- * @private
+ * @internal
  */
 function onChartRender() {
     // If we don't have dragDrop events, see if we should add them
@@ -657,7 +658,7 @@ function onChartRender() {
  * Resize the guide box according to point options and a difference in mouse
  * positions. Handles reversed axes.
  *
- * @private
+ * @internal
  * @function resizeGuideBox
  * @param {Highcharts.Point} point
  *        The point that is being resized.
@@ -688,7 +689,7 @@ function resizeGuideBox(point, dX, dY) {
 /**
  * Resize a rect element on one side. The element is modified.
  *
- * @private
+ * @internal
  * @function resizeRect
  * @param {Highcharts.SVGElement} rect
  *        Rect element to resize.
@@ -732,7 +733,7 @@ function resizeRect(rect, updateSide, update) {
 /**
  * Update the points in a chart from dragDropData.newPoints.
  *
- * @private
+ * @internal
  * @function updatePoints
  * @param {Highcharts.Chart} chart
  *        A chart with dragDropData.newPoints.
@@ -765,9 +766,11 @@ function updatePoints(chart, animation) {
  *  Default Export
  *
  * */
+/** @internal */
 var DraggableChart = {
     compose: compose,
     flipResizeSide: flipResizeSide,
     initDragDrop: initDragDrop
 };
+/** @internal */
 export default DraggableChart;

@@ -1,10 +1,11 @@
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -14,6 +15,7 @@ import G from './Globals.js';
 var pageLang = G.pageLang;
 import U from './Utilities.js';
 var extend = U.extend, getNestedProperty = U.getNestedProperty, isArray = U.isArray, isNumber = U.isNumber, isObject = U.isObject, isString = U.isString, pick = U.pick, ucfirst = U.ucfirst;
+/** @internal */
 var helpers = {
     // Built-in helpers
     add: function (a, b) { return a + b; },
@@ -48,7 +50,10 @@ var numberFormatCache = {};
  *  Functions
  *
  * */
-// Internal convenience function
+/**
+ * Internal convenience function.
+ * @internal
+ */
 var isQuotedString = function (str) { return /^["'].+["']$/.test(str); };
 /**
  * Formats a JavaScript date timestamp (milliseconds since Jan 1st 1970) into a
@@ -121,7 +126,7 @@ function dateFormat(format, timestamp, upperCaseFirst) {
  *        replaced by its value.
  *
  * @param {Highcharts.Chart} [owner]
- *        A `Chart` or `DataGrid` instance used to get numberFormatter and time.
+ *        A `Chart` or `Grid` instance used to get numberFormatter and time.
  *
  * @return {string}
  *         The formatted string.
@@ -129,12 +134,13 @@ function dateFormat(format, timestamp, upperCaseFirst) {
 function format(str, ctx, owner) {
     var _a;
     if (str === void 0) { str = ''; }
-    // Notice: using u flag will require a refactor for ES5 (#22450).
-    var regex = /\{([a-zA-Z\u00C0-\u017F\d:\.,;\-\/<>\[\]%_@+"'’= #\(\)]+)\}/g, // eslint-disable-line max-len
+    // eslint-disable-next-line prefer-regex-literals
+    var regex = new RegExp('\\{([\\p{L}\\d:\\.,;\\-\\/<>\\[\\]%_@+"\'’= #\\(\\)]+)\\}', 'gu'), 
     // The sub expression regex is the same as the top expression regex,
     // but except parens and block helpers (#), and surrounded by parens
     // instead of curly brackets.
-    subRegex = /\(([a-zA-Z\u00C0-\u017F\d:\.,;\-\/<>\[\]%_@+"'= ]+)\)/g, matches = [], floatRegex = /f$/, decRegex = /\.(\d)/, lang = ((_a = owner === null || owner === void 0 ? void 0 : owner.options) === null || _a === void 0 ? void 0 : _a.lang) || defaultOptions.lang, time = (owner === null || owner === void 0 ? void 0 : owner.time) || defaultTime, numberFormatter = (owner === null || owner === void 0 ? void 0 : owner.numberFormatter) || numberFormat.bind(owner);
+    // eslint-disable-next-line prefer-regex-literals
+    subRegex = new RegExp('\\(([\\p{L}\\d:\\.,;\\-\\/<>\\[\\]%_@+"\'= ]+)\\)', 'gu'), matches = [], floatRegex = /f$/, decRegex = /\.(\d)/, lang = ((_a = owner === null || owner === void 0 ? void 0 : owner.options) === null || _a === void 0 ? void 0 : _a.lang) || defaultOptions.lang, time = (owner === null || owner === void 0 ? void 0 : owner.time) || defaultTime, numberFormatter = (owner === null || owner === void 0 ? void 0 : owner.numberFormatter) || numberFormat.bind(owner);
     /*
      * Get a literal or variable value inside a template expression. May be
      * extended with other types like string or null if needed, but keep it
@@ -270,11 +276,9 @@ function format(str, ctx, owner) {
                 [expression] : expression.split(':');
             replacement = resolveProperty(valueAndFormat.shift() || '');
             // Format the replacement
-            var isFloat = replacement % 1 !== 0;
-            if (typeof replacement === 'number' &&
-                (valueAndFormat.length || isFloat)) {
+            if (valueAndFormat.length && typeof replacement === 'number') {
                 var segment = valueAndFormat.join(':');
-                if (floatRegex.test(segment) || isFloat) { // Float
+                if (floatRegex.test(segment)) { // Float
                     var decimals = parseInt((segment.match(decRegex) || ['', '-1'])[1], 10);
                     if (replacement !== null) {
                         replacement = numberFormatter(replacement, decimals, lang.decimalPoint, segment.indexOf(',') > -1 ? lang.thousandsSep : '');

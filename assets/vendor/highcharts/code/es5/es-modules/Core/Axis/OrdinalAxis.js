@@ -1,10 +1,11 @@
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -19,7 +20,6 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-import Axis from './Axis.js';
 import DataTableCore from '../../Data/DataTableCore.js';
 import H from '../Globals.js';
 import U from '../Utilities.js';
@@ -31,7 +31,7 @@ var addEvent = U.addEvent, correctFloat = U.correctFloat, css = U.css, defined =
  * */
 /**
  * Extends the axis with ordinal support.
- * @private
+ * @internal
  */
 var OrdinalAxis;
 (function (OrdinalAxis) {
@@ -48,7 +48,7 @@ var OrdinalAxis;
     /**
      * Extends the axis with ordinal support.
      *
-     * @private
+     * @internal
      *
      * @param AxisClass
      * Axis class to extend.
@@ -87,7 +87,7 @@ var OrdinalAxis;
      * segments, find the tick positions for each segment then concatenize
      * them. This method is used from both data grouping logic and X axis
      * tick position logic.
-     * @private
+     * @internal
      */
     function getTimeTicks(normalizedInterval, min, max, startOfWeek, positions, closestDistance, findHigherRanks) {
         if (positions === void 0) { positions = []; }
@@ -234,7 +234,7 @@ var OrdinalAxis;
      * Get axis position of given index of the extended ordinal positions.
      * Used only when panning an ordinal axis.
      *
-     * @private
+     * @internal
      * @function Highcharts.Axis#index2val
      * @param {number} index
      * The index value of searched point
@@ -270,7 +270,7 @@ var OrdinalAxis;
     /**
      * Translate from linear (internal) to axis value.
      *
-     * @private
+     * @internal
      * @function Highcharts.Axis#lin2val
      * @param {number} val
      * The linear abstracted value.
@@ -298,7 +298,7 @@ var OrdinalAxis;
     /**
      * Internal function to calculate the precise index in ordinalPositions
      * array.
-     * @private
+     * @internal
      */
     function getIndexInArray(ordinalPositions, val) {
         var index = OrdinalAxis.Additions.findIndexOf(ordinalPositions, val, true);
@@ -309,18 +309,14 @@ var OrdinalAxis;
             (ordinalPositions[index + 1] - ordinalPositions[index]);
         return index + percent;
     }
-    /**
-    * @private
-    */
+    /** @internal */
     function onAxisAfterInit() {
         var axis = this;
         if (!axis.ordinal) {
             axis.ordinal = new OrdinalAxis.Additions(axis);
         }
     }
-    /**
-     * @private
-     */
+    /** @internal */
     function onAxisFoundExtremes() {
         var axis = this, eventArgs = axis.eventArgs, options = axis.options;
         if (axis.isXAxis &&
@@ -332,6 +328,10 @@ var OrdinalAxis;
                 // Calculate the original ordinal range
                 axis.ordinal.getExtendedPositions(false);
             }
+            // #22334
+            axis.isFullRange = (defined(axis.dataMin) &&
+                defined(axis.dataMax) &&
+                axis.max - axis.min === axis.dataMax - axis.dataMin);
             if (axis.max === axis.dataMax &&
                 (
                 // Panning is an exception. We don't want to apply
@@ -355,7 +355,7 @@ var OrdinalAxis;
      * For ordinal axis, that loads data async, redraw axis after data is
      * loaded. If we don't do that, axis will have the same extremes as
      * previously, but ordinal positions won't be calculated. See #10290
-     * @private
+     * @internal
      */
     function onAxisAfterSetScale() {
         var axis = this;
@@ -365,9 +365,7 @@ var OrdinalAxis;
                 !axis.chart.navigator.adaptToUpdatedData;
         }
     }
-    /**
-     * @private
-     */
+    /** @internal */
     function onAxisInitialAxisTranslation() {
         var axis = this;
         if (axis.ordinal) {
@@ -377,7 +375,7 @@ var OrdinalAxis;
     }
     /**
      * Extending the Chart.pan method for ordinal axes
-     * @private
+     * @internal
      */
     function onChartPan(e) {
         var _a;
@@ -466,9 +464,7 @@ var OrdinalAxis;
             e.preventDefault();
         }
     }
-    /**
-     * @private
-     */
+    /** @internal */
     function onSeriesUpdatedData() {
         var xAxis = this.xAxis;
         // Destroy the extended ordinal index on updated data
@@ -484,7 +480,7 @@ var OrdinalAxis;
      * same. The translated value is the value that the point would have if
      * the axis was linear, using the same min and max.
      *
-     * @private
+     * @internal
      * @function Highcharts.Axis#val2lin
      * @param {number} val
      * The axis value.
@@ -565,19 +561,16 @@ var OrdinalAxis;
      *  Classes
      *
      * */
-    /**
-     * @private
-     */
+    /** @internal */
     var Additions = /** @class */ (function () {
         /* *
          *
          *  Constructors
          *
          * */
-        /**
-         * @private
-         */
+        /** @internal */
         function Additions(axis) {
+            /** @internal */
             this.index = {};
             this.axis = axis;
         }
@@ -588,7 +581,7 @@ var OrdinalAxis;
         * */
         /**
          * Calculate the ordinal positions before tick positions are calculated.
-         * @private
+         * @internal
          */
         Additions.prototype.beforeSetTickPositions = function () {
             var _a;
@@ -747,7 +740,7 @@ var OrdinalAxis;
          * @param {boolean} indirectSearch
          *        In case of lack of the point in the array, should return
          *        value be equal to -1 or the closest smaller index.
-         *  @private
+         *  @internal
          */
         Additions.findIndexOf = function (sortedArray, key, indirectSearch) {
             var start = 0, end = sortedArray.length - 1, middle;
@@ -776,7 +769,7 @@ var OrdinalAxis;
          * operation starts, if an index for the given grouping does not exists,
          * it is created and cached. This index is deleted on updated data, so
          * it will be regenerated the next time a panning operation starts.
-         * @private
+         * @internal
          */
         Additions.prototype.getExtendedPositions = function (withOverscroll) {
             if (withOverscroll === void 0) { withOverscroll = true; }
@@ -906,7 +899,7 @@ var OrdinalAxis;
          * logic, where we do another run with a greater interval if the number
          * of data groups is more than a certain fraction of the desired group
          * count.
-         * @private
+         * @internal
          */
         Additions.prototype.getGroupIntervalFactor = function (xMin, xMax, series) {
             var ordinal = this, processedXData = series.getColumn('x', true), len = processedXData.length, distances = [];
@@ -937,7 +930,7 @@ var OrdinalAxis;
         /**
          * Get index of point inside the ordinal positions array.
          *
-         * @private
+         * @internal
          * @param {number} pixelVal
          * The pixel value of a point.
          *
@@ -962,7 +955,7 @@ var OrdinalAxis;
          * pointRange and generate these ticks between Axis.dataMax,
          * Axis.dataMax + Axis.overscroll evenly spaced. Used in panning and
          * navigator scrolling.
-         * @private
+         * @internal
          */
         Additions.prototype.getOverscrollPositions = function () {
             var ordinal = this, axis = ordinal.axis, extraRange = ordinal.convertOverscroll(axis.options.overscroll), distance = ordinal.overscrollPointsRange, positions = [];
@@ -979,7 +972,7 @@ var OrdinalAxis;
         /**
          * Make the tick intervals closer because the ordinal gaps make the
          * ticks spread out or cluster.
-         * @private
+         * @internal
          */
         Additions.prototype.postProcessTickInterval = function (tickInterval) {
             // Problem: https://jsfiddle.net/highcharts/FQm4E/1/. This is a case
@@ -1007,7 +1000,7 @@ var OrdinalAxis;
         /**
          * If overscroll is pixel or percentage value, convert it to axis range.
          *
-         * @private
+         * @internal
          * @param {number | string} overscroll
          * Overscroll value in axis range, pixels or percentage value.
          * @return {number}
@@ -1021,15 +1014,11 @@ var OrdinalAxis;
             };
             if (isString(overscroll)) {
                 var overscrollValue = parseInt(overscroll, 10);
-                var isFullRange = void 0;
                 // #22334
-                if (defined(axis.min) && defined(axis.max) &&
-                    defined(axis.dataMin) && defined(axis.dataMax)) {
-                    isFullRange =
-                        axis.max - axis.min === axis.dataMax - axis.dataMin;
-                    if (!isFullRange) {
-                        this.originalOrdinalRange = axis.max - axis.min;
-                    }
+                if (axis.isFullRange === false &&
+                    isNumber(axis.min) &&
+                    isNumber(axis.max)) {
+                    this.originalOrdinalRange = axis.max - axis.min;
                 }
                 if (/%$/.test(overscroll)) {
                     // If overscroll is percentage
@@ -1040,7 +1029,7 @@ var OrdinalAxis;
                     // length to prevent division by zero
                     var limitedOverscrollValue = Math.min(overscrollValue, axis.len * 0.9), pixelToPercent = limitedOverscrollValue / axis.len;
                     return calculateOverscroll(pixelToPercent /
-                        (isFullRange ? (1 - pixelToPercent) : 1));
+                        (axis.isFullRange ? (1 - pixelToPercent) : 1));
                 }
                 // If overscroll is a string but not pixels or percentage,
                 // return 0 as no overscroll
@@ -1057,4 +1046,5 @@ var OrdinalAxis;
  *  Default Export
  *
  * */
+/** @internal */
 export default OrdinalAxis;

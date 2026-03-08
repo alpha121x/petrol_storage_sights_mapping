@@ -1,22 +1,27 @@
+// SPDX-License-Identifier: LicenseRef-Highcharts
 /**
- * @license Highcharts JS v12.3.0 (2025-06-21)
- * @module highcharts/modules/broken-axis
+ * @license Highstock JS v12.5.0 (2026-01-12)
+ * @module highcharts/modules/stock
  * @requires highcharts
  *
- * (c) 2009-2025 Torstein Honsi
+ * Highcharts Stock as a plugin for Highcharts
  *
- * License: www.highcharts.com/license
+ * (c) 2010-2026 Highsoft AS
+ * Author: Torstein Honsi
+ *
+ * A commercial license may be required depending on use.
+ * See www.highcharts.com/license
  */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
-		module.exports = factory(root["_Highcharts"], root["_Highcharts"]["Axis"], root["_Highcharts"]["Point"], root["_Highcharts"]["Series"], root["_Highcharts"]["Color"], root["_Highcharts"]["SeriesRegistry"], root["_Highcharts"]["RendererRegistry"], root["_Highcharts"]["SVGRenderer"], root["_Highcharts"]["SVGElement"], root["_Highcharts"]["Templating"], root["_Highcharts"]["Chart"], root["_Highcharts"]["Series"]["types"]["column"], root["_Highcharts"]["StackItem"]);
+		module.exports = factory(root["_Highcharts"], root["_Highcharts"]["Point"], root["_Highcharts"]["Series"], root["_Highcharts"]["Axis"], root["_Highcharts"]["Color"], root["_Highcharts"]["SeriesRegistry"], root["_Highcharts"]["RendererRegistry"], root["_Highcharts"]["SVGRenderer"], root["_Highcharts"]["SVGElement"], root["_Highcharts"]["Templating"], root["_Highcharts"]["Chart"], root["_Highcharts"]["Series"]["types"]["column"], root["_Highcharts"]["StackItem"]);
 	else if(typeof define === 'function' && define.amd)
-		define("highcharts/modules/stock", ["highcharts/highcharts"], function (amd1) {return factory(amd1,amd1["Axis"],amd1["Point"],amd1["Series"],amd1["Color"],amd1["SeriesRegistry"],amd1["RendererRegistry"],amd1["SVGRenderer"],amd1["SVGElement"],amd1["Templating"],amd1["Chart"],amd1["Series"],["types"],["column"],amd1["StackItem"]);});
+		define("highcharts/modules/stock", ["highcharts/highcharts"], function (amd1) {return factory(amd1,amd1["Point"],amd1["Series"],amd1["Axis"],amd1["Color"],amd1["SeriesRegistry"],amd1["RendererRegistry"],amd1["SVGRenderer"],amd1["SVGElement"],amd1["Templating"],amd1["Chart"],amd1["Series"],["types"],["column"],amd1["StackItem"]);});
 	else if(typeof exports === 'object')
-		exports["highcharts/modules/stock"] = factory(root["_Highcharts"], root["_Highcharts"]["Axis"], root["_Highcharts"]["Point"], root["_Highcharts"]["Series"], root["_Highcharts"]["Color"], root["_Highcharts"]["SeriesRegistry"], root["_Highcharts"]["RendererRegistry"], root["_Highcharts"]["SVGRenderer"], root["_Highcharts"]["SVGElement"], root["_Highcharts"]["Templating"], root["_Highcharts"]["Chart"], root["_Highcharts"]["Series"]["types"]["column"], root["_Highcharts"]["StackItem"]);
+		exports["highcharts/modules/stock"] = factory(root["_Highcharts"], root["_Highcharts"]["Point"], root["_Highcharts"]["Series"], root["_Highcharts"]["Axis"], root["_Highcharts"]["Color"], root["_Highcharts"]["SeriesRegistry"], root["_Highcharts"]["RendererRegistry"], root["_Highcharts"]["SVGRenderer"], root["_Highcharts"]["SVGElement"], root["_Highcharts"]["Templating"], root["_Highcharts"]["Chart"], root["_Highcharts"]["Series"]["types"]["column"], root["_Highcharts"]["StackItem"]);
 	else
-		root["Highcharts"] = factory(root["Highcharts"], root["Highcharts"]["Axis"], root["Highcharts"]["Point"], root["Highcharts"]["Series"], root["Highcharts"]["Color"], root["Highcharts"]["SeriesRegistry"], root["Highcharts"]["RendererRegistry"], root["Highcharts"]["SVGRenderer"], root["Highcharts"]["SVGElement"], root["Highcharts"]["Templating"], root["Highcharts"]["Chart"], root["Highcharts"]["Series"]["types"]["column"], root["Highcharts"]["StackItem"]);
-})(typeof window === 'undefined' ? this : window, (__WEBPACK_EXTERNAL_MODULE__944__, __WEBPACK_EXTERNAL_MODULE__532__, __WEBPACK_EXTERNAL_MODULE__260__, __WEBPACK_EXTERNAL_MODULE__820__, __WEBPACK_EXTERNAL_MODULE__620__, __WEBPACK_EXTERNAL_MODULE__512__, __WEBPACK_EXTERNAL_MODULE__608__, __WEBPACK_EXTERNAL_MODULE__540__, __WEBPACK_EXTERNAL_MODULE__28__, __WEBPACK_EXTERNAL_MODULE__984__, __WEBPACK_EXTERNAL_MODULE__960__, __WEBPACK_EXTERNAL_MODULE__448__, __WEBPACK_EXTERNAL_MODULE__184__) => {
+		root["Highcharts"] = factory(root["Highcharts"], root["Highcharts"]["Point"], root["Highcharts"]["Series"], root["Highcharts"]["Axis"], root["Highcharts"]["Color"], root["Highcharts"]["SeriesRegistry"], root["Highcharts"]["RendererRegistry"], root["Highcharts"]["SVGRenderer"], root["Highcharts"]["SVGElement"], root["Highcharts"]["Templating"], root["Highcharts"]["Chart"], root["Highcharts"]["Series"]["types"]["column"], root["Highcharts"]["StackItem"]);
+})(typeof window === 'undefined' ? this : window, (__WEBPACK_EXTERNAL_MODULE__944__, __WEBPACK_EXTERNAL_MODULE__260__, __WEBPACK_EXTERNAL_MODULE__820__, __WEBPACK_EXTERNAL_MODULE__532__, __WEBPACK_EXTERNAL_MODULE__620__, __WEBPACK_EXTERNAL_MODULE__512__, __WEBPACK_EXTERNAL_MODULE__608__, __WEBPACK_EXTERNAL_MODULE__540__, __WEBPACK_EXTERNAL_MODULE__28__, __WEBPACK_EXTERNAL_MODULE__984__, __WEBPACK_EXTERNAL_MODULE__960__, __WEBPACK_EXTERNAL_MODULE__448__, __WEBPACK_EXTERNAL_MODULE__184__) => {
 return /******/ (() => { // webpackBootstrap
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
@@ -179,9 +184,6 @@ __webpack_require__.d(__webpack_exports__, {
 // EXTERNAL MODULE: external {"amd":["highcharts/highcharts"],"commonjs":["highcharts"],"commonjs2":["highcharts"],"root":["Highcharts"]}
 var highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_ = __webpack_require__(944);
 var highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default = /*#__PURE__*/__webpack_require__.n(highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_);
-// EXTERNAL MODULE: external {"amd":["highcharts/highcharts","Axis"],"commonjs":["highcharts","Axis"],"commonjs2":["highcharts","Axis"],"root":["Highcharts","Axis"]}
-var highcharts_Axis_commonjs_highcharts_Axis_commonjs2_highcharts_Axis_root_Highcharts_Axis_ = __webpack_require__(532);
-var highcharts_Axis_commonjs_highcharts_Axis_commonjs2_highcharts_Axis_root_Highcharts_Axis_default = /*#__PURE__*/__webpack_require__.n(highcharts_Axis_commonjs_highcharts_Axis_commonjs2_highcharts_Axis_root_Highcharts_Axis_);
 // EXTERNAL MODULE: external {"amd":["highcharts/highcharts","Point"],"commonjs":["highcharts","Point"],"commonjs2":["highcharts","Point"],"root":["Highcharts","Point"]}
 var highcharts_Point_commonjs_highcharts_Point_commonjs2_highcharts_Point_root_Highcharts_Point_ = __webpack_require__(260);
 var highcharts_Point_commonjs_highcharts_Point_commonjs2_highcharts_Point_root_Highcharts_Point_default = /*#__PURE__*/__webpack_require__.n(highcharts_Point_commonjs_highcharts_Point_commonjs2_highcharts_Point_root_Highcharts_Point_);
@@ -191,14 +193,14 @@ var highcharts_Series_commonjs_highcharts_Series_commonjs2_highcharts_Series_roo
 ;// ./code/es-modules/Series/DataModifyComposition.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
-
 
 
 const { tooltipFormatter: pointTooltipFormatter } = (highcharts_Point_commonjs_highcharts_Point_commonjs2_highcharts_Point_root_Highcharts_Point_default()).prototype;
@@ -312,6 +314,17 @@ var DataModifyComposition;
      * @function Highcharts.Series#init
      */
     function afterInit() {
+        // If linked series does not have compare option set, use the parent
+        // series' compare option, #21119.
+        const linkedTo = this.options.linkedTo, chart = this.chart;
+        if (linkedTo) {
+            const linkedSeries = linkedTo === ':previous' ?
+                chart.series[this.index - 1] :
+                chart.get(linkedTo);
+            if (linkedSeries instanceof (highcharts_Series_commonjs_highcharts_Series_commonjs2_highcharts_Series_root_Highcharts_Series_default())) {
+                this.options.compare = pick(this.userOptions.compare, linkedSeries.options.compare);
+            }
+        }
         const compare = this.options.compare;
         let dataModify;
         if (compare === 'percent' ||
@@ -650,7 +663,8 @@ var DataModifyComposition;
  * or absolute change depending on whether `compare` is set to `"percent"`
  * or `"value"`. When this is applied to multiple series, it allows
  * comparing the development of the series against each other. Adds
- * a `change` field to every point object.
+ * a `change` field to every point object. If a `compare` value is not set on a
+ * linked series, it will be inherited from the parent series.
  *
  * @see [compareBase](#plotOptions.series.compareBase)
  * @see [Axis.setCompare()](/class-reference/Highcharts.Axis#setCompare)
@@ -738,14 +752,18 @@ var DataModifyComposition;
  */
 ''; // Keeps doclets above in transpiled file
 
+// EXTERNAL MODULE: external {"amd":["highcharts/highcharts","Axis"],"commonjs":["highcharts","Axis"],"commonjs2":["highcharts","Axis"],"root":["Highcharts","Axis"]}
+var highcharts_Axis_commonjs_highcharts_Axis_commonjs2_highcharts_Axis_root_Highcharts_Axis_ = __webpack_require__(532);
+var highcharts_Axis_commonjs_highcharts_Axis_commonjs2_highcharts_Axis_root_Highcharts_Axis_default = /*#__PURE__*/__webpack_require__.n(highcharts_Axis_commonjs_highcharts_Axis_commonjs2_highcharts_Axis_root_Highcharts_Axis_);
 ;// ./code/es-modules/Stock/Navigator/ChartNavigatorComposition.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -931,11 +949,12 @@ const ChartNavigatorComposition = {
 ;// ./code/es-modules/Core/Axis/NavigatorAxisComposition.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -948,9 +967,7 @@ const { addEvent: NavigatorAxisComposition_addEvent, correctFloat: NavigatorAxis
  *  Functions
  *
  * */
-/**
- * @private
- */
+/** @internal */
 function onAxisInit() {
     const axis = this;
     if (!axis.navigatorAxis) {
@@ -961,7 +978,7 @@ function onAxisInit() {
  * For Stock charts, override selection zooming with some special features
  * because X axis zooming is already allowed by the Navigator and Range
  * selector.
- * @private
+ * @internal
  */
 function onAxisSetExtremes(e) {
     const axis = this, chart = axis.chart, chartOptions = chart.options, navigator = chartOptions.navigator, navigatorAxis = axis.navigatorAxis, pinchType = chart.zooming.pinchType, rangeSelector = chartOptions.rangeSelector, zoomType = chart.zooming.type;
@@ -1001,19 +1018,13 @@ function onAxisSetExtremes(e) {
  *  Class
  *
  * */
-/**
- * @private
- * @class
- */
+/** @internal */
 class NavigatorAxisAdditions {
     /* *
      *
      *  Static Functions
      *
      * */
-    /**
-     * @private
-     */
     static compose(AxisClass) {
         if (!AxisClass.keepProps.includes('navigatorAxis')) {
             AxisClass.keepProps.push('navigatorAxis');
@@ -1034,9 +1045,6 @@ class NavigatorAxisAdditions {
      *  Functions
      *
      * */
-    /**
-     * @private
-     */
     destroy() {
         this.axis = void 0;
     }
@@ -1044,7 +1052,7 @@ class NavigatorAxisAdditions {
      * Add logic to normalize the zoomed range in order to preserve the pressed
      * state of range selector buttons
      *
-     * @private
+     * @internal
      * @function Highcharts.Axis#toFixedRange
      */
     toFixedRange(pxMin, pxMax, fixedMin, fixedMax) {
@@ -1071,6 +1079,7 @@ class NavigatorAxisAdditions {
  *  Default Export
  *
  * */
+/** @internal */
 /* harmony default export */ const NavigatorAxisComposition = (NavigatorAxisAdditions);
 
 // EXTERNAL MODULE: external {"amd":["highcharts/highcharts","Color"],"commonjs":["highcharts","Color"],"commonjs2":["highcharts","Color"],"root":["Highcharts","Color"]}
@@ -1082,11 +1091,12 @@ var highcharts_SeriesRegistry_commonjs_highcharts_SeriesRegistry_commonjs2_highc
 ;// ./code/es-modules/Stock/Navigator/NavigatorDefaults.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -1441,7 +1451,6 @@ const NavigatorDefaults = {
          *
          * In Highcharts Stock version < 8, defaults to 0.
          *
-         * @extends plotOptions.series.pointRange
          * @type {number|null}
          * @apioption navigator.series.pointRange
          */
@@ -1611,11 +1620,12 @@ const NavigatorDefaults = {
 ;// ./code/es-modules/Core/Renderer/SVG/Symbols.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -1628,7 +1638,20 @@ const { defined: Symbols_defined, isNumber: Symbols_isNumber, pick: Symbols_pick
  * */
 /* eslint-disable require-jsdoc, valid-jsdoc */
 /**
+ * Arc symbol path.
  *
+ * @param {number} cx
+ * Center X
+ * @param {number} cy
+ * Center Y
+ * @param {number} w
+ * Width
+ * @param {number} h
+ * Height
+ * @param {Highcharts.SymbolOptions} [options]
+ * Options
+ * @return {Highcharts.SVGPathArray}
+ * Path
  */
 function arc(cx, cy, w, h, options) {
     const arc = [];
@@ -1704,6 +1727,19 @@ function arc(cx, cy, w, h, options) {
 }
 /**
  * Callout shape used for default tooltips.
+ *
+ * @param {number} cx
+ * Center X
+ * @param {number} cy
+ * Center Y
+ * @param {number} w
+ * Width
+ * @param {number} h
+ * Height
+ * @param {Highcharts.SymbolOptions} [options]
+ * Options
+ * @return {Highcharts.SVGPathArray}
+ * Path
  */
 function callout(x, y, w, h, options) {
     const arrowLength = 6, halfDistance = 6, r = Math.min((options?.r) || 0, w, h), safeDistance = r + halfDistance, anchorX = options?.anchorX, anchorY = options?.anchorY || 0;
@@ -1764,7 +1800,18 @@ function callout(x, y, w, h, options) {
     return path;
 }
 /**
+ * Circle symbol path.
  *
+ * @param {number} x
+ * X coordinate
+ * @param {number} y
+ * Y coordinate
+ * @param {number} w
+ * Width
+ * @param {number} h
+ * Height
+ * @return {Highcharts.SVGPathArray}
+ * Path
  */
 function circle(x, y, w, h) {
     // Return a full arc
@@ -1775,7 +1822,18 @@ function circle(x, y, w, h) {
     });
 }
 /**
+ * Diamond symbol path.
  *
+ * @param {number} x
+ * X coordinate
+ * @param {number} y
+ * Y coordinate
+ * @param {number} w
+ * Width
+ * @param {number} h
+ * Height
+ * @return {Highcharts.SVGPathArray}
+ * Path
  */
 function diamond(x, y, w, h) {
     return [
@@ -1788,7 +1846,20 @@ function diamond(x, y, w, h) {
 }
 // #15291
 /**
+ * Rect symbol path.
  *
+ * @param {number} x
+ * X coordinate
+ * @param {number} y
+ * Y coordinate
+ * @param {number} w
+ * Width
+ * @param {number} h
+ * Height
+ * @param {Highcharts.SymbolOptions} [options]
+ * Options
+ * @return {Highcharts.SVGPathArray}
+ * Path
  */
 function rect(x, y, w, h, options) {
     if (options?.r) {
@@ -1803,7 +1874,20 @@ function rect(x, y, w, h, options) {
     ];
 }
 /**
+ * Rounded rectangle symbol path.
  *
+ * @param {number} x
+ * X coordinate
+ * @param {number} y
+ * Y coordinate
+ * @param {number} w
+ * Width
+ * @param {number} h
+ * Height
+ * @param {Highcharts.SymbolOptions} [options]
+ * Options
+ * @return {Highcharts.SVGPathArray}
+ * Path
  */
 function roundedRect(x, y, w, h, options) {
     const r = options?.r || 0;
@@ -1821,7 +1905,18 @@ function roundedRect(x, y, w, h, options) {
     ];
 }
 /**
+ * Triangle symbol path.
  *
+ * @param {number} x
+ * X coordinate
+ * @param {number} y
+ * Y coordinate
+ * @param {number} w
+ * Width
+ * @param {number} h
+ * Height
+ * @return {Highcharts.SVGPathArray}
+ * Path
  */
 function triangle(x, y, w, h) {
     return [
@@ -1832,7 +1927,18 @@ function triangle(x, y, w, h) {
     ];
 }
 /**
+ * Inverted triangle symbol path.
  *
+ * @param {number} x
+ * X coordinate
+ * @param {number} y
+ * Y coordinate
+ * @param {number} w
+ * Width
+ * @param {number} h
+ * Height
+ * @return {Highcharts.SVGPathArray}
+ * Path
  */
 function triangleDown(x, y, w, h) {
     return [
@@ -1843,14 +1949,150 @@ function triangleDown(x, y, w, h) {
     ];
 }
 const Symbols = {
+    /**
+     * Arc symbol path.
+     *
+     * @param {number} cx
+     * Center X
+     * @param {number} cy
+     * Center Y
+     * @param {number} w
+     * Width
+     * @param {number} h
+     * Height
+     * @param {Highcharts.SymbolOptions} [options]
+     * Options
+     * @return {Highcharts.SVGPathArray}
+     * Path
+     */
     arc,
+    /**
+     * Callout shape used for default tooltips.
+     *
+     * @param {number} cx
+     * Center X
+     * @param {number} cy
+     * Center Y
+     * @param {number} w
+     * Width
+     * @param {number} h
+     * Height
+     * @param {Highcharts.SymbolOptions} [options]
+     * Options
+     * @return {Highcharts.SVGPathArray}
+     * Path
+     */
     callout,
+    /**
+     * Circle symbol path.
+     *
+     * @param {number} x
+     * X coordinate
+     * @param {number} y
+     * Y coordinate
+     * @param {number} w
+     * Width
+     * @param {number} h
+     * Height
+     * @return {Highcharts.SVGPathArray}
+     * Path
+     */
     circle,
+    /**
+     * Diamond symbol path.
+     *
+     * @param {number} x
+     * X coordinate
+     * @param {number} y
+     * Y coordinate
+     * @param {number} w
+     * Width
+     * @param {number} h
+     * Height
+     * @return {Highcharts.SVGPathArray}
+     * Path
+     */
     diamond,
+    /**
+     * Rect symbol path.
+     *
+     * @param {number} x
+     * X coordinate
+     * @param {number} y
+     * Y coordinate
+     * @param {number} w
+     * Width
+     * @param {number} h
+     * Height
+     * @param {Highcharts.SymbolOptions} [options]
+     * Options
+     * @return {Highcharts.SVGPathArray}
+     * Path
+     */
     rect,
+    /**
+     * Rounded rectangle symbol path.
+     *
+     * @param {number} x
+     * X coordinate
+     * @param {number} y
+     * Y coordinate
+     * @param {number} w
+     * Width
+     * @param {number} h
+     * Height
+     * @param {Highcharts.SymbolOptions} [options]
+     * Options
+     * @return {Highcharts.SVGPathArray}
+     * Path
+     */
     roundedRect,
+    /**
+     * Rect symbol path.
+     *
+     * @param {number} x
+     * X coordinate
+     * @param {number} y
+     * Y coordinate
+     * @param {number} w
+     * Width
+     * @param {number} h
+     * Height
+     * @param {Highcharts.SymbolOptions} [options]
+     * Options
+     * @return {Highcharts.SVGPathArray}
+     * Path
+     */
     square: rect,
+    /**
+     * Triangle symbol path.
+     *
+     * @param {number} x
+     * X coordinate
+     * @param {number} y
+     * Y coordinate
+     * @param {number} w
+     * Width
+     * @param {number} h
+     * Height
+     * @return {Highcharts.SVGPathArray}
+     * Path
+     */
     triangle,
+    /**
+     * Inverted triangle symbol path.
+     *
+     * @param {number} x
+     * X coordinate
+     * @param {number} number
+     * Y coordinate
+     * @param {number} w
+     * Width
+     * @param {number} h
+     * Height
+     * @return {Highcharts.SVGPathArray}
+     * Path
+     */
     'triangle-down': triangleDown
 };
 /* *
@@ -1859,15 +2101,70 @@ const Symbols = {
  *
  * */
 /* harmony default export */ const SVG_Symbols = (Symbols);
+/* *
+ *
+ *  API Declarations
+ *
+ * */
+/**
+ * @interface Highcharts.SymbolOptions
+ */ /**
+* @name anchorX
+* @type {number|undefined}
+*/ /**
+* @name anchorY
+* @type {number|undefined}
+*/ /**
+* @name backgroundSize
+* @type {"contain"|"cover"|"within"}
+*/ /**
+* @name clockwise
+* @type {0|1|undefined}
+*/ /**
+* @name context
+* @type {string|undefined}
+*/ /**
+* @name end
+* @type {number|undefined}
+*/ /**
+* @name height
+* @type {number|undefined}
+*/ /**
+* @name innerR
+* @type {number|undefined}
+*/ /**
+* @name longArc
+* @type {0|1|undefined}
+*/ /**
+* @name open
+* @type {boolean|undefined}
+*/ /**
+* @name r
+* @type {number|undefined}
+*/ /**
+* @name start
+* @type {number|undefined}
+*/ /**
+* @name width
+* @type {number|undefined}
+*/ /**
+* @name x
+* @type {number|undefined}
+*/ /**
+* @name y
+* @type {number|undefined}
+*/
+''; // Keeps doclets above in file
 
 ;// ./code/es-modules/Stock/Navigator/NavigatorSymbols.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -1910,11 +2207,12 @@ var highcharts_RendererRegistry_commonjs_highcharts_RendererRegistry_commonjs2_h
 ;// ./code/es-modules/Stock/Utilities/StockUtilities.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -1953,11 +2251,12 @@ const StockUtilities = {
 ;// ./code/es-modules/Stock/Navigator/NavigatorComposition.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -2018,23 +2317,25 @@ const NavigatorComposition = {
 ;// ./code/es-modules/Core/Axis/ScrollbarAxis.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
 
 const { composed: ScrollbarAxis_composed } = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default());
 
-const { addEvent: ScrollbarAxis_addEvent, defined: ScrollbarAxis_defined, pick: ScrollbarAxis_pick, pushUnique: ScrollbarAxis_pushUnique } = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default());
+const { addEvent: ScrollbarAxis_addEvent, correctFloat: ScrollbarAxis_correctFloat, defined: ScrollbarAxis_defined, pick: ScrollbarAxis_pick, pushUnique: ScrollbarAxis_pushUnique } = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default());
 /* *
  *
  *  Composition
  *
  * */
+/** @internal */
 var ScrollbarAxis;
 (function (ScrollbarAxis) {
     /* *
@@ -2051,7 +2352,7 @@ var ScrollbarAxis;
     /**
      * Attaches to axis events to create scrollbars if enabled.
      *
-     * @private
+     * @internal
      *
      * @param {Highcharts.Axis} AxisClass
      * Axis class to extend.
@@ -2068,7 +2369,7 @@ var ScrollbarAxis;
         }
     }
     ScrollbarAxis.compose = compose;
-    /** @private */
+    /** @internal */
     function getExtremes(axis) {
         const axisMin = ScrollbarAxis_pick(axis.options?.min, axis.min);
         const axisMax = ScrollbarAxis_pick(axis.options?.max, axis.max);
@@ -2076,14 +2377,15 @@ var ScrollbarAxis;
             axisMin,
             axisMax,
             scrollMin: ScrollbarAxis_defined(axis.dataMin) ?
-                Math.min(axisMin, axis.min, axis.dataMin, ScrollbarAxis_pick(axis.threshold, Infinity)) : axisMin,
-            scrollMax: ScrollbarAxis_defined(axis.dataMax) ?
-                Math.max(axisMax, axis.max, axis.dataMax, ScrollbarAxis_pick(axis.threshold, -Infinity)) : axisMax
+                Math.min(axisMin, axis.min ?? Infinity, axis.dataMin, axis.threshold ?? Infinity) : axisMin,
+            scrollMax: axis.treeGrid?.adjustedMax ?? (ScrollbarAxis_defined(axis.dataMax) ?
+                Math.max(axisMax, axis.max ?? -Infinity, axis.dataMax, axis.threshold ?? -Infinity) :
+                axisMax)
         };
     }
     /**
      * Make space for a scrollbar.
-     * @private
+     * @internal
      */
     function onAxisAfterGetOffset() {
         const axis = this, scrollbar = axis.scrollbar, opposite = scrollbar && !scrollbar.options.opposite, index = axis.horiz ? 2 : opposite ? 3 : 1;
@@ -2096,7 +2398,7 @@ var ScrollbarAxis;
     }
     /**
      * Wrap axis initialization and create scrollbar if enabled.
-     * @private
+     * @internal
      */
     function onAxisAfterInit() {
         const axis = this;
@@ -2106,7 +2408,7 @@ var ScrollbarAxis;
             axis.options.startOnTick = axis.options.endOnTick = false;
             axis.scrollbar = new Scrollbar(axis.chart.renderer, axis.options.scrollbar, axis.chart);
             ScrollbarAxis_addEvent(axis.scrollbar, 'changed', function (e) {
-                const { axisMin, axisMax, scrollMin: unitedMin, scrollMax: unitedMax } = getExtremes(axis), range = unitedMax - unitedMin;
+                const { axisMin, axisMax, scrollMin: unitedMin, scrollMax: unitedMax } = getExtremes(axis), minPX = axis.toPixels(unitedMin), maxPX = axis.toPixels(unitedMax), rangePX = maxPX - minPX;
                 let to, from;
                 // #12834, scroll when show/hide series, wrong extremes
                 if (!ScrollbarAxis_defined(axisMin) || !ScrollbarAxis_defined(axisMax)) {
@@ -2114,20 +2416,20 @@ var ScrollbarAxis;
                 }
                 if ((axis.horiz && !axis.reversed) ||
                     (!axis.horiz && axis.reversed)) {
-                    to = unitedMin + range * this.to;
-                    from = unitedMin + range * this.from;
+                    to = Math.min(unitedMax, axis.toValue(minPX + rangePX * this.to));
+                    from = Math.max(unitedMin, axis.toValue(minPX + rangePX * this.from));
                 }
                 else {
                     // Y-values in browser are reversed, but this also
                     // applies for reversed horizontal axis:
-                    to = unitedMin + range * (1 - this.from);
-                    from = unitedMin + range * (1 - this.to);
+                    to = Math.min(unitedMax, axis.toValue(minPX + rangePX * (1 - this.from)));
+                    from = Math.max(unitedMin, axis.toValue(minPX + rangePX * (1 - this.to)));
                 }
                 if (this.shouldUpdateExtremes(e.DOMType)) {
                     // #17977, set animation to undefined instead of true
                     const animate = e.DOMType === 'mousemove' ||
                         e.DOMType === 'touchmove' ? false : void 0;
-                    axis.setExtremes(from, to, true, animate, e);
+                    axis.setExtremes(ScrollbarAxis_correctFloat(from), ScrollbarAxis_correctFloat(to), true, animate, e);
                 }
                 else {
                     // When live redraw is disabled, don't change extremes
@@ -2139,10 +2441,10 @@ var ScrollbarAxis;
     }
     /**
      * Wrap rendering axis, and update scrollbar if one is created.
-     * @private
+     * @internal
      */
     function onAxisAfterRender() {
-        const axis = this, { scrollMin, scrollMax } = getExtremes(axis), scrollbar = axis.scrollbar, offset = (axis.axisTitleMargin + (axis.titleOffset || 0)), scrollbarsOffsets = axis.chart.scrollbarsOffsets, axisMargin = axis.options.margin || 0;
+        const axis = this, { scrollMin, scrollMax } = getExtremes(axis), scrollbar = axis.scrollbar, offset = (axis.axisTitleMargin || 0) + (axis.titleOffset || 0), scrollbarsOffsets = axis.chart.scrollbarsOffsets, axisMargin = axis.options.margin || 0;
         let offsetsIndex, from, to;
         if (scrollbar && scrollbarsOffsets) {
             if (axis.horiz) {
@@ -2190,8 +2492,9 @@ var ScrollbarAxis;
                 isNaN(scrollMax) ||
                 !ScrollbarAxis_defined(axis.min) ||
                 !ScrollbarAxis_defined(axis.max) ||
-                axis.dataMin === axis.dataMax // #10733
-            ) {
+                (ScrollbarAxis_defined(axis.dataMin) && // #23335
+                    axis.dataMin === axis.dataMax // #10733
+                )) {
                 // Default action: when data extremes are the same or there is
                 // not extremes on the axis, but scrollbar exists, make it
                 // full size
@@ -2208,10 +2511,10 @@ var ScrollbarAxis;
                 scrollbar.setRange(from, to);
             }
             else {
-                from = ((axis.min - scrollMin) /
-                    (scrollMax - scrollMin));
-                to = ((axis.max - scrollMin) /
-                    (scrollMax - scrollMin));
+                from = (axis.toPixels(axis.min) - axis.toPixels(scrollMin)) /
+                    (axis.toPixels(scrollMax) - axis.toPixels(scrollMin));
+                to = (axis.toPixels(axis.max) - axis.toPixels(scrollMin)) /
+                    (axis.toPixels(scrollMax) - axis.toPixels(scrollMin));
                 if ((axis.horiz && !axis.reversed) ||
                     (!axis.horiz && axis.reversed)) {
                     scrollbar.setRange(from, to);
@@ -2229,16 +2532,18 @@ var ScrollbarAxis;
  *  Default Export
  *
  * */
+/** @internal */
 /* harmony default export */ const Axis_ScrollbarAxis = (ScrollbarAxis);
 
 ;// ./code/es-modules/Stock/Scrollbar/ScrollbarDefaults.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -2457,11 +2762,12 @@ const ScrollbarDefaults = {
 ;// ./code/es-modules/Stock/Scrollbar/Scrollbar.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -3120,11 +3426,12 @@ var highcharts_SVGRenderer_commonjs_highcharts_SVGRenderer_commonjs2_highcharts_
 ;// ./code/es-modules/Stock/Navigator/Navigator.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -4609,11 +4916,11 @@ class Navigator {
 ;// ./code/es-modules/Data/ColumnUtils.js
 /* *
  *
- *  (c) 2020-2025 Highsoft AS
+ *  (c) 2020-2026 Highsoft AS
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  *  Authors:
  *  - Dawid Dragula
@@ -4647,7 +4954,7 @@ var ColumnUtils;
      * @param {boolean} asSubarray
      * If column is a typed array, return a subarray instead of a new array. It
      * is faster `O(1)`, but the entire buffer will be kept in memory until all
-     * views to it are destroyed. Default is `false`.
+     * views of it are destroyed. Default is `false`.
      *
      * @return {DataTable.Column}
      * Modified column.
@@ -4713,6 +5020,33 @@ var ColumnUtils;
         };
     }
     ColumnUtils.splice = splice;
+    /**
+     * Converts a cell value to a number.
+     *
+     * @param {DataTable.CellType} value
+     * Cell value to convert to a number.
+     *
+     * @param {boolean} useNaN
+     * If `true`, returns `NaN` for non-numeric values; if `false`,
+     * returns `null` instead.
+     *
+     * @return {number | null}
+     * Number or `null` if the value is not a number.
+     *
+     * @private
+     */
+    function convertToNumber(value, useNaN) {
+        switch (typeof value) {
+            case 'boolean':
+                return (value ? 1 : 0);
+            case 'number':
+                return (isNaN(value) && !useNaN ? null : value);
+            default:
+                value = parseFloat(`${value ?? ''}`);
+                return (isNaN(value) && !useNaN ? null : value);
+        }
+    }
+    ColumnUtils.convertToNumber = convertToNumber;
 })(ColumnUtils || (ColumnUtils = {}));
 /* *
  *
@@ -4724,11 +5058,11 @@ var ColumnUtils;
 ;// ./code/es-modules/Data/DataTableCore.js
 /* *
  *
- *  (c) 2009-2025 Highsoft AS
+ *  (c) 2009-2026 Highsoft AS
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  *  Authors:
  *  - Sophie Bremer
@@ -4790,12 +5124,11 @@ class DataTableCore {
          * @type {string}
          */
         this.id = (options.id || uniqueKey());
-        this.modified = this;
         this.rowCount = 0;
         this.versionTag = uniqueKey();
         let rowCount = 0;
-        objectEach(options.columns || {}, (column, columnName) => {
-            this.columns[columnName] = column.slice();
+        objectEach(options.columns || {}, (column, columnId) => {
+            this.columns[columnId] = column.slice();
             rowCount = Math.max(rowCount, column.length);
         });
         this.applyRowCount(rowCount);
@@ -4814,9 +5147,9 @@ class DataTableCore {
      */
     applyRowCount(rowCount) {
         this.rowCount = rowCount;
-        objectEach(this.columns, (column, columnName) => {
+        objectEach(this.columns, (column, columnId) => {
             if (column.length !== rowCount) {
-                this.columns[columnName] = setLength(column, rowCount);
+                this.columns[columnId] = setLength(column, rowCount);
             }
         });
     }
@@ -4837,8 +5170,8 @@ class DataTableCore {
     deleteRows(rowIndex, rowCount = 1) {
         if (rowCount > 0 && rowIndex < this.rowCount) {
             let length = 0;
-            objectEach(this.columns, (column, columnName) => {
-                this.columns[columnName] =
+            objectEach(this.columns, (column, columnId) => {
+                this.columns[columnId] =
                     splice(column, rowIndex, rowCount).array;
                 length = column.length;
             });
@@ -4851,33 +5184,33 @@ class DataTableCore {
      * Fetches the given column by the canonical column name. Simplified version
      * of the full `DataTable.getRow` method, always returning by reference.
      *
-     * @param {string} columnName
+     * @param {string} columnId
      * Name of the column to get.
      *
      * @return {Highcharts.DataTableColumn|undefined}
      * A copy of the column, or `undefined` if not found.
      */
-    getColumn(columnName, 
+    getColumn(columnId, 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     asReference) {
-        return this.columns[columnName];
+        return this.columns[columnId];
     }
     /**
      * Retrieves all or the given columns. Simplified version of the full
      * `DataTable.getColumns` method, always returning by reference.
      *
-     * @param {Array<string>} [columnNames]
-     * Column names to retrieve.
+     * @param {Array<string>} [columnIds]
+     * Column ids to retrieve.
      *
      * @return {Highcharts.DataTableColumnCollection}
      * Collection of columns. If a requested column was not found, it is
      * `undefined`.
      */
-    getColumns(columnNames, 
+    getColumns(columnIds, 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     asReference) {
-        return (columnNames || Object.keys(this.columns)).reduce((columns, columnName) => {
-            columns[columnName] = this.columns[columnName];
+        return (columnIds || Object.keys(this.columns)).reduce((columns, columnId) => {
+            columns[columnId] = this.columns[columnId];
             return columns;
         }, {});
     }
@@ -4887,19 +5220,19 @@ class DataTableCore {
      * @param {number} rowIndex
      * Row index to retrieve. First row has index 0.
      *
-     * @param {Array<string>} [columnNames]
+     * @param {Array<string>} [columnIds]
      * Column names to retrieve.
      *
      * @return {Record<string, number|string|undefined>|undefined}
      * Returns the row values, or `undefined` if not found.
      */
-    getRow(rowIndex, columnNames) {
-        return (columnNames || Object.keys(this.columns)).map((key) => this.columns[key]?.[rowIndex]);
+    getRow(rowIndex, columnIds) {
+        return (columnIds || Object.keys(this.columns)).map((key) => this.columns[key]?.[rowIndex]);
     }
     /**
      * Sets cell values for a column. Will insert a new column, if not found.
      *
-     * @param {string} columnName
+     * @param {string} columnId
      * Column name to set.
      *
      * @param {Highcharts.DataTableColumn} [column]
@@ -4914,8 +5247,8 @@ class DataTableCore {
      * @emits #setColumns
      * @emits #afterSetColumns
      */
-    setColumn(columnName, column = [], rowIndex = 0, eventDetail) {
-        this.setColumns({ [columnName]: column }, rowIndex, eventDetail);
+    setColumn(columnId, column = [], rowIndex = 0, eventDetail) {
+        this.setColumns({ [columnId]: column }, rowIndex, eventDetail);
     }
     /**
      * Sets cell values for multiple columns. Will insert new columns, if not
@@ -4937,8 +5270,8 @@ class DataTableCore {
      */
     setColumns(columns, rowIndex, eventDetail) {
         let rowCount = this.rowCount;
-        objectEach(columns, (column, columnName) => {
-            this.columns[columnName] = column.slice();
+        objectEach(columns, (column, columnId) => {
+            this.columns[columnId] = column.slice();
             rowCount = column.length;
         });
         this.applyRowCount(rowCount);
@@ -4967,18 +5300,27 @@ class DataTableCore {
      * @emits #afterSetRows
      */
     setRow(row, rowIndex = this.rowCount, insert, eventDetail) {
-        const { columns } = this, indexRowCount = insert ? this.rowCount + 1 : rowIndex + 1;
-        objectEach(row, (cellValue, columnName) => {
-            let column = columns[columnName] ||
-                eventDetail?.addColumns !== false && new Array(indexRowCount);
+        const { columns } = this, indexRowCount = insert ? this.rowCount + 1 : rowIndex + 1, rowKeys = Object.keys(row);
+        if (eventDetail?.addColumns !== false) {
+            for (let i = 0, iEnd = rowKeys.length; i < iEnd; i++) {
+                const key = rowKeys[i];
+                if (!columns[key]) {
+                    columns[key] = [];
+                }
+            }
+        }
+        objectEach(columns, (column, columnId) => {
+            if (!column && eventDetail?.addColumns !== false) {
+                column = new Array(indexRowCount);
+            }
             if (column) {
                 if (insert) {
-                    column = splice(column, rowIndex, 0, true, [cellValue]).array;
+                    column = splice(column, rowIndex, 0, true, [row[columnId] ?? null]).array;
                 }
                 else {
-                    column[rowIndex] = cellValue;
+                    column[rowIndex] = row[columnId] ?? null;
                 }
-                columns[columnName] = column;
+                columns[columnId] = column;
             }
         });
         if (indexRowCount > this.rowCount) {
@@ -4988,6 +5330,16 @@ class DataTableCore {
             DataTableCore_fireEvent(this, 'afterSetRows');
             this.versionTag = uniqueKey();
         }
+    }
+    /**
+     * Returns the modified (clone) or the original data table if the modified
+     * one does not exist.
+     *
+     * @return {Highcharts.DataTableCore}
+     * The modified (clone) or the original data table.
+     */
+    getModified() {
+        return this.modified || this;
     }
 }
 /* *
@@ -5033,14 +5385,14 @@ class DataTableCore {
 ;// ./code/es-modules/Core/Axis/OrdinalAxis.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
-
 
 
 
@@ -5053,7 +5405,7 @@ const { addEvent: OrdinalAxis_addEvent, correctFloat: OrdinalAxis_correctFloat, 
  * */
 /**
  * Extends the axis with ordinal support.
- * @private
+ * @internal
  */
 var OrdinalAxis;
 (function (OrdinalAxis) {
@@ -5070,7 +5422,7 @@ var OrdinalAxis;
     /**
      * Extends the axis with ordinal support.
      *
-     * @private
+     * @internal
      *
      * @param AxisClass
      * Axis class to extend.
@@ -5109,7 +5461,7 @@ var OrdinalAxis;
      * segments, find the tick positions for each segment then concatenize
      * them. This method is used from both data grouping logic and X axis
      * tick position logic.
-     * @private
+     * @internal
      */
     function getTimeTicks(normalizedInterval, min, max, startOfWeek, positions = [], closestDistance = 0, findHigherRanks) {
         const higherRanks = {}, tickPixelIntervalOption = this.options.tickPixelInterval, time = this.chart.time, 
@@ -5254,7 +5606,7 @@ var OrdinalAxis;
      * Get axis position of given index of the extended ordinal positions.
      * Used only when panning an ordinal axis.
      *
-     * @private
+     * @internal
      * @function Highcharts.Axis#index2val
      * @param {number} index
      * The index value of searched point
@@ -5290,7 +5642,7 @@ var OrdinalAxis;
     /**
      * Translate from linear (internal) to axis value.
      *
-     * @private
+     * @internal
      * @function Highcharts.Axis#lin2val
      * @param {number} val
      * The linear abstracted value.
@@ -5318,7 +5670,7 @@ var OrdinalAxis;
     /**
      * Internal function to calculate the precise index in ordinalPositions
      * array.
-     * @private
+     * @internal
      */
     function getIndexInArray(ordinalPositions, val) {
         const index = OrdinalAxis.Additions.findIndexOf(ordinalPositions, val, true);
@@ -5329,18 +5681,14 @@ var OrdinalAxis;
             (ordinalPositions[index + 1] - ordinalPositions[index]);
         return index + percent;
     }
-    /**
-    * @private
-    */
+    /** @internal */
     function onAxisAfterInit() {
         const axis = this;
         if (!axis.ordinal) {
             axis.ordinal = new OrdinalAxis.Additions(axis);
         }
     }
-    /**
-     * @private
-     */
+    /** @internal */
     function onAxisFoundExtremes() {
         const axis = this, { eventArgs, options } = axis;
         if (axis.isXAxis &&
@@ -5352,6 +5700,10 @@ var OrdinalAxis;
                 // Calculate the original ordinal range
                 axis.ordinal.getExtendedPositions(false);
             }
+            // #22334
+            axis.isFullRange = (OrdinalAxis_defined(axis.dataMin) &&
+                OrdinalAxis_defined(axis.dataMax) &&
+                axis.max - axis.min === axis.dataMax - axis.dataMin);
             if (axis.max === axis.dataMax &&
                 (
                 // Panning is an exception. We don't want to apply
@@ -5375,7 +5727,7 @@ var OrdinalAxis;
      * For ordinal axis, that loads data async, redraw axis after data is
      * loaded. If we don't do that, axis will have the same extremes as
      * previously, but ordinal positions won't be calculated. See #10290
-     * @private
+     * @internal
      */
     function onAxisAfterSetScale() {
         const axis = this;
@@ -5385,9 +5737,7 @@ var OrdinalAxis;
                 !axis.chart.navigator.adaptToUpdatedData;
         }
     }
-    /**
-     * @private
-     */
+    /** @internal */
     function onAxisInitialAxisTranslation() {
         const axis = this;
         if (axis.ordinal) {
@@ -5397,7 +5747,7 @@ var OrdinalAxis;
     }
     /**
      * Extending the Chart.pan method for ordinal axes
-     * @private
+     * @internal
      */
     function onChartPan(e) {
         const chart = this, xAxis = chart.xAxis[0], overscroll = xAxis.ordinal.convertOverscroll(xAxis.options.overscroll), chartX = e.originalEvent.chartX, panning = chart.options.chart.panning;
@@ -5485,9 +5835,7 @@ var OrdinalAxis;
             e.preventDefault();
         }
     }
-    /**
-     * @private
-     */
+    /** @internal */
     function onSeriesUpdatedData() {
         const xAxis = this.xAxis;
         // Destroy the extended ordinal index on updated data
@@ -5503,7 +5851,7 @@ var OrdinalAxis;
      * same. The translated value is the value that the point would have if
      * the axis was linear, using the same min and max.
      *
-     * @private
+     * @internal
      * @function Highcharts.Axis#val2lin
      * @param {number} val
      * The axis value.
@@ -5583,19 +5931,16 @@ var OrdinalAxis;
      *  Classes
      *
      * */
-    /**
-     * @private
-     */
+    /** @internal */
     class Additions {
         /* *
          *
          *  Constructors
          *
          * */
-        /**
-         * @private
-         */
+        /** @internal */
         constructor(axis) {
+            /** @internal */
             this.index = {};
             this.axis = axis;
         }
@@ -5606,7 +5951,7 @@ var OrdinalAxis;
         * */
         /**
          * Calculate the ordinal positions before tick positions are calculated.
-         * @private
+         * @internal
          */
         beforeSetTickPositions() {
             const axis = this.axis, ordinal = axis.ordinal, extremes = axis.getExtremes(), min = extremes.min, max = extremes.max, hasBreaks = axis.brokenAxis?.hasBreaks, isOrdinal = axis.options.ordinal, overscroll = axis.options.overscroll &&
@@ -5764,7 +6109,7 @@ var OrdinalAxis;
          * @param {boolean} indirectSearch
          *        In case of lack of the point in the array, should return
          *        value be equal to -1 or the closest smaller index.
-         *  @private
+         *  @internal
          */
         static findIndexOf(sortedArray, key, indirectSearch) {
             let start = 0, end = sortedArray.length - 1, middle;
@@ -5793,7 +6138,7 @@ var OrdinalAxis;
          * operation starts, if an index for the given grouping does not exists,
          * it is created and cached. This index is deleted on updated data, so
          * it will be regenerated the next time a panning operation starts.
-         * @private
+         * @internal
          */
         getExtendedPositions(withOverscroll = true) {
             const ordinal = this, axis = ordinal.axis, axisProto = axis.constructor.prototype, chart = axis.chart, key = axis.series.reduce((k, series) => {
@@ -5924,7 +6269,7 @@ var OrdinalAxis;
          * logic, where we do another run with a greater interval if the number
          * of data groups is more than a certain fraction of the desired group
          * count.
-         * @private
+         * @internal
          */
         getGroupIntervalFactor(xMin, xMax, series) {
             const ordinal = this, processedXData = series.getColumn('x', true), len = processedXData.length, distances = [];
@@ -5955,7 +6300,7 @@ var OrdinalAxis;
         /**
          * Get index of point inside the ordinal positions array.
          *
-         * @private
+         * @internal
          * @param {number} pixelVal
          * The pixel value of a point.
          *
@@ -5980,7 +6325,7 @@ var OrdinalAxis;
          * pointRange and generate these ticks between Axis.dataMax,
          * Axis.dataMax + Axis.overscroll evenly spaced. Used in panning and
          * navigator scrolling.
-         * @private
+         * @internal
          */
         getOverscrollPositions() {
             const ordinal = this, axis = ordinal.axis, extraRange = ordinal.convertOverscroll(axis.options.overscroll), distance = ordinal.overscrollPointsRange, positions = [];
@@ -5997,7 +6342,7 @@ var OrdinalAxis;
         /**
          * Make the tick intervals closer because the ordinal gaps make the
          * ticks spread out or cluster.
-         * @private
+         * @internal
          */
         postProcessTickInterval(tickInterval) {
             // Problem: https://jsfiddle.net/highcharts/FQm4E/1/. This is a case
@@ -6025,7 +6370,7 @@ var OrdinalAxis;
         /**
          * If overscroll is pixel or percentage value, convert it to axis range.
          *
-         * @private
+         * @internal
          * @param {number | string} overscroll
          * Overscroll value in axis range, pixels or percentage value.
          * @return {number}
@@ -6038,15 +6383,11 @@ var OrdinalAxis;
             };
             if (OrdinalAxis_isString(overscroll)) {
                 const overscrollValue = parseInt(overscroll, 10);
-                let isFullRange;
                 // #22334
-                if (OrdinalAxis_defined(axis.min) && OrdinalAxis_defined(axis.max) &&
-                    OrdinalAxis_defined(axis.dataMin) && OrdinalAxis_defined(axis.dataMax)) {
-                    isFullRange =
-                        axis.max - axis.min === axis.dataMax - axis.dataMin;
-                    if (!isFullRange) {
-                        this.originalOrdinalRange = axis.max - axis.min;
-                    }
+                if (axis.isFullRange === false &&
+                    OrdinalAxis_isNumber(axis.min) &&
+                    OrdinalAxis_isNumber(axis.max)) {
+                    this.originalOrdinalRange = axis.max - axis.min;
                 }
                 if (/%$/.test(overscroll)) {
                     // If overscroll is percentage
@@ -6057,7 +6398,7 @@ var OrdinalAxis;
                     // length to prevent division by zero
                     const limitedOverscrollValue = Math.min(overscrollValue, axis.len * 0.9), pixelToPercent = limitedOverscrollValue / axis.len;
                     return calculateOverscroll(pixelToPercent /
-                        (isFullRange ? (1 - pixelToPercent) : 1));
+                        (axis.isFullRange ? (1 - pixelToPercent) : 1));
                 }
                 // If overscroll is a string but not pixels or percentage,
                 // return 0 as no overscroll
@@ -6073,16 +6414,18 @@ var OrdinalAxis;
  *  Default Export
  *
  * */
+/** @internal */
 /* harmony default export */ const Axis_OrdinalAxis = (OrdinalAxis);
 
 ;// ./code/es-modules/Stock/RangeSelector/RangeSelectorDefaults.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -6637,11 +6980,12 @@ const RangeSelectorDefaults = {
 ;// ./code/es-modules/Stock/RangeSelector/RangeSelectorComposition.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -6797,6 +7141,10 @@ function RangeSelectorComposition_onChartBeforeRender() {
         }
     }
 }
+/**
+ * Redraw rangeSelector on chart redraw event
+ * @private
+ */
 function redrawRangeSelector() {
     const chart = this;
     const rangeSelector = this.rangeSelector;
@@ -6842,11 +7190,19 @@ function onChartDestroy() {
     }
 }
 /**
- *
+ * Reflow rangeSelector and adjust chart layout
+ * @private
  */
 function onChartGetMargins() {
     const rangeSelector = this.rangeSelector;
     if (rangeSelector?.options?.enabled) {
+        // Rerender rangeSelector in order to return correct plotHeight, #23058
+        const { min, max } = this.xAxis[0].getExtremes();
+        if (RangeSelectorComposition_isNumber(min) &&
+            rangeSelector.inputGroup &&
+            rangeSelector.inputGroup.getBBox().width < 20) {
+            rangeSelector.render(min, max);
+        }
         const rangeSelectorHeight = rangeSelector.getHeight();
         const verticalAlign = rangeSelector.options.verticalAlign;
         if (!rangeSelector.options.floating) {
@@ -6910,11 +7266,12 @@ var highcharts_Templating_commonjs_highcharts_Templating_commonjs2_highcharts_Te
 ;// ./code/es-modules/Stock/RangeSelector/RangeSelector.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -6927,8 +7284,7 @@ const { defaultOptions: RangeSelector_defaultOptions } = (highcharts_commonjs_hi
 
 const { format } = (highcharts_Templating_commonjs_highcharts_Templating_commonjs2_highcharts_Templating_root_Highcharts_Templating_default());
 
-
-const { addEvent: RangeSelector_addEvent, createElement, css: RangeSelector_css, defined: RangeSelector_defined, destroyObjectProperties: RangeSelector_destroyObjectProperties, diffObjects, discardElement, extend: RangeSelector_extend, fireEvent: RangeSelector_fireEvent, isNumber: RangeSelector_isNumber, isString: RangeSelector_isString, merge: RangeSelector_merge, objectEach: RangeSelector_objectEach, pick: RangeSelector_pick, splat: RangeSelector_splat } = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default());
+const { addEvent: RangeSelector_addEvent, createElement, css: RangeSelector_css, defined: RangeSelector_defined, destroyObjectProperties: RangeSelector_destroyObjectProperties, discardElement, extend: RangeSelector_extend, fireEvent: RangeSelector_fireEvent, isNumber: RangeSelector_isNumber, isString: RangeSelector_isString, merge: RangeSelector_merge, objectEach: RangeSelector_objectEach, pick: RangeSelector_pick, splat: RangeSelector_splat } = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default());
 /* *
  *
  *  Functions
@@ -7149,7 +7505,7 @@ class RangeSelector {
                 axisRangeUpdateEvent(); // Remove event
             });
         }
-        else if (RangeSelector_isNumber(newMin) && RangeSelector_isNumber(newMax)) {
+        else if (RangeSelector_isNumber(newMin) || RangeSelector_isNumber(newMax)) {
             // Existing axis object. Set extremes after render time.
             baseAxis.setExtremes(newMin, newMax, RangeSelector_pick(redraw, true), void 0, // Auto animation
             {
@@ -7270,9 +7626,8 @@ class RangeSelector {
                 range &&
                 actualRange < range) {
                 // Handle ordinal ranges
-                const positions = baseAxis.ordinal.positions, prevOrdinalPosition = Axis_OrdinalAxis.Additions.findIndexOf(positions, baseAxis.min, true), nextOrdinalPosition = Math.min(Axis_OrdinalAxis.Additions.findIndexOf(positions, baseAxis.max, true) + 1, positions.length - 1);
-                if (positions[nextOrdinalPosition] -
-                    positions[prevOrdinalPosition] > range) {
+                const positions = baseAxis.ordinal.positions;
+                if (positions[positions.length - 1] - positions[0] > range) {
                     isSameRange = true;
                 }
             }
@@ -8113,14 +8468,11 @@ class RangeSelector {
             }
             // Update current buttons
             for (let i = btnLength - 1; i >= 0; i--) {
-                const diff = diffObjects(newButtonsOptions[i], this.buttonOptions[i]);
-                if (Object.keys(diff).length !== 0) {
-                    const rangeOptions = newButtonsOptions[i];
-                    this.buttons[i].destroy();
-                    dropdown?.options.remove(i + 1);
-                    this.createButton(rangeOptions, i, width, states);
-                    this.computeButtonRange(rangeOptions);
-                }
+                const rangeOptions = newButtonsOptions[i];
+                this.buttons[i].destroy();
+                dropdown?.options.remove(i + 1);
+                this.createButton(rangeOptions, i, width, states);
+                this.computeButtonRange(rangeOptions);
             }
             // Create missing buttons
             if (newButtonsOptions.length > this.buttonOptions.length) {
@@ -8253,7 +8605,7 @@ class RangeSelector {
                 xOffsetForExportButton +
                 inputGroup.getBBox().width >
                 chart.plotWidth) {
-                if (dropdown === 'responsive') {
+                if (dropdown === 'responsive' || dropdown === 'always') {
                     this.collapseButtons();
                 }
                 else {
@@ -8340,9 +8692,7 @@ class RangeSelector {
         if (dropdown) {
             this.dropdownLabel.hide();
             RangeSelector_css(dropdown, {
-                visibility: 'hidden',
-                width: '1px',
-                height: '1px'
+                visibility: 'hidden'
             });
             this.hasVisibleDropdown = false;
         }
@@ -8407,7 +8757,7 @@ class RangeSelector {
             this.destroy();
             return this.init(chart);
         }
-        this.isDirty = !!options.buttons;
+        this.isDirty = !!options.buttons || !!options.buttonTheme;
         if (redraw) {
             this.render();
         }
@@ -8511,11 +8861,12 @@ var highcharts_Chart_commonjs_highcharts_Chart_commonjs2_highcharts_Chart_root_H
 ;// ./code/es-modules/Core/Chart/StockChart.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -8539,7 +8890,7 @@ const { addEvent: StockChart_addEvent, clamp: StockChart_clamp, crisp: StockChar
 /**
  * Get stock-specific default axis options.
  *
- * @private
+ * @internal
  * @function getDefaultAxisOptions
  */
 function getDefaultAxisOptions(coll, options, defaultOptions) {
@@ -8571,7 +8922,7 @@ function getDefaultAxisOptions(coll, options, defaultOptions) {
 /**
  * Get stock-specific forced axis options.
  *
- * @private
+ * @internal
  * @function getForcedAxisOptions
  */
 function getForcedAxisOptions(type, chartOptions) {
@@ -8691,7 +9042,7 @@ class StockChart extends (highcharts_Chart_commonjs_highcharts_Chart_commonjs2_h
      * Factory for creating different axis types.
      * Extended to add stock defaults.
      *
-     * @private
+     * @internal
      * @function Highcharts.StockChart#createAxis
      * @param {string} coll
      * An axis type.
@@ -8719,13 +9070,30 @@ StockChart_addEvent((highcharts_Chart_commonjs_highcharts_Chart_commonjs2_highch
  *  Composition
  *
  * */
+/** @internal */
 (function (StockChart) {
     /* *
      *
      *  Functions
      *
      * */
-    /** @private */
+    /**
+     * Composes the chart with the stock-specific functionality.
+     *
+     * @internal
+     *
+     * @param {Highcharts.Class<Highcharts.Chart>} ChartClass
+     * The chart class to compose.
+     *
+     * @param {Highcharts.Class<Highcharts.Axis>} AxisClass
+     * The axis class to compose.
+     *
+     * @param {Highcharts.Class<Highcharts.Series>} SeriesClass
+     * The series class to compose.
+     *
+     * @param {Highcharts.Class<Highcharts.SVGRenderer>} SVGRendererClass
+     * The SVG renderer class to compose.
+     */
     function compose(ChartClass, AxisClass, SeriesClass, SVGRendererClass) {
         const seriesProto = SeriesClass.prototype;
         if (!seriesProto.forceCropping) {
@@ -8743,7 +9111,7 @@ StockChart_addEvent((highcharts_Chart_commonjs_highcharts_Chart_commonjs2_highch
     StockChart.compose = compose;
     /**
      * Extend crosshairs to also draw the label.
-     * @private
+     * @internal
      */
     function onAxisAfterDrawCrosshair(event) {
         const axis = this;
@@ -8895,7 +9263,7 @@ StockChart_addEvent((highcharts_Chart_commonjs_highcharts_Chart_commonjs2_highch
     }
     /**
      * Wrapper to hide the label.
-     * @private
+     * @internal
      */
     function onAxisAfterHideCrosshair() {
         const axis = this;
@@ -8906,7 +9274,7 @@ StockChart_addEvent((highcharts_Chart_commonjs_highcharts_Chart_commonjs2_highch
     /**
      * Override the automatic label alignment so that the first Y axis' labels
      * are drawn on top of the grid line, and subsequent axes are drawn outside.
-     * @private
+     * @internal
      */
     function onAxisAutoLabelAlign(e) {
         const axis = this, chart = axis.chart, options = axis.options, panes = chart._labelPanes = chart._labelPanes || {}, labelOptions = options.labels;
@@ -8929,7 +9297,7 @@ StockChart_addEvent((highcharts_Chart_commonjs_highcharts_Chart_commonjs2_highch
     }
     /**
      * Clear axis from label panes. (#6071)
-     * @private
+     * @internal
      */
     function onAxisDestroy() {
         const axis = this, chart = axis.chart, key = (axis.options &&
@@ -8940,19 +9308,22 @@ StockChart_addEvent((highcharts_Chart_commonjs_highcharts_Chart_commonjs2_highch
     }
     /**
      * Override getPlotLinePath to allow for multipane charts.
-     * @private
+     * @internal
      */
     function onAxisGetPlotLinePath(e) {
         const axis = this, series = (axis.isLinked && !axis.series && axis.linkedParent ?
             axis.linkedParent.series :
-            axis.series), chart = axis.chart, renderer = chart.renderer, axisLeft = axis.left, axisTop = axis.top, result = [], translatedValue = e.translatedValue, value = e.value, force = e.force, 
+            axis.series), { chart, horiz } = axis, renderer = chart.renderer, result = [], { acrossPanes = true, force, translatedValue, value } = e, allPerpendicularAxes = (axis.isXAxis ? chart.yAxis : chart.xAxis) || [], 
         /**
          * Return the other axis based on either the axis option or on
          * related series.
-         * @private
+         * @internal
          */
         getAxis = (coll) => {
             const otherColl = coll === 'xAxis' ? 'yAxis' : 'xAxis', opt = axis.options[otherColl];
+            if (acrossPanes && !axis.options.isInternal) {
+                return allPerpendicularAxes.filter((a) => !a.options.isInternal);
+            }
             // Other axis indexed by number
             if (StockChart_isNumber(opt)) {
                 return [chart[otherColl][opt]];
@@ -8964,23 +9335,25 @@ StockChart_addEvent((highcharts_Chart_commonjs_highcharts_Chart_commonjs2_highch
             // Auto detect based on existing series
             return series.map((s) => s[otherColl]);
         };
-        let x1, y1, x2, y2, axes = [], // #3416 need a default array
-        axes2, uniqueAxes, transVal;
-        if ( // For stock chart, by default render paths across the panes
-        // except the case when `acrossPanes` is disabled by user (#6644)
-        (chart.options.isStock && e.acrossPanes !== false) &&
+        /**
+         * Push a segment to the result SVGPath array
+         */
+        function pushSegment(pos, crossingPos1, crossingPos2) {
+            result.push(['M', horiz ? pos : crossingPos1, horiz ? crossingPos1 : pos], ['L', horiz ? pos : crossingPos2, horiz ? crossingPos2 : pos]);
+        }
+        let axes = [], // #3416 need a default array
+        uniqueAxes, transVal;
+        if (chart.options.isStock &&
             // Ignore in case of colorAxis or zAxis. #3360, #3524, #6720
-            axis.coll === 'xAxis' || axis.coll === 'yAxis') {
+            (axis.coll === 'xAxis' || axis.coll === 'yAxis')) {
             e.preventDefault();
             // Get the related axes based on series
             axes = getAxis(axis.coll);
             // Get the related axes based options.*Axis setting #2810
-            axes2 = (axis.isXAxis ? chart.yAxis : chart.xAxis);
-            for (const A of axes2) {
+            for (const A of allPerpendicularAxes) {
                 if (!A.options.isInternal) {
-                    const a = (A.isXAxis ? 'yAxis' : 'xAxis'), relatedAxis = (StockChart_defined(A.options[a]) ?
-                        chart[a][A.options[a]] :
-                        chart[a][0]);
+                    const a = (A.isXAxis ? 'yAxis' : 'xAxis'), relatedAxis = (StockChart_defined(A.options[a]) &&
+                        chart[a][A.options[a]]);
                     if (axis === relatedAxis) {
                         axes.push(A);
                     }
@@ -9002,45 +9375,33 @@ StockChart_addEvent((highcharts_Chart_commonjs_highcharts_Chart_commonjs2_highch
             }
             transVal = StockChart_pick(translatedValue, axis.translate(value || 0, void 0, void 0, e.old));
             if (StockChart_isNumber(transVal)) {
-                if (axis.horiz) {
-                    for (const axis2 of uniqueAxes) {
-                        let skip;
-                        y1 = axis2.pos;
-                        y2 = y1 + axis2.len;
-                        x1 = x2 = Math.round(transVal + axis.transB);
-                        // Outside plot area
-                        if (force !== 'pass' &&
-                            (x1 < axisLeft || x1 > axisLeft + axis.width)) {
-                            if (force) {
-                                x1 = x2 = StockChart_clamp(x1, axisLeft, axisLeft + axis.width);
-                            }
-                            else {
-                                skip = true;
-                            }
-                        }
-                        if (!skip) {
-                            result.push(['M', x1, y1], ['L', x2, y2]);
-                        }
+                let skip, pos = horiz ?
+                    transVal + axis.pos :
+                    axis.pos + axis.len - transVal;
+                // Outside plot area
+                if (force !== 'pass' &&
+                    (pos < axis.pos || pos > axis.pos + axis.len)) {
+                    if (force) {
+                        pos = StockChart_clamp(pos, axis.pos, axis.pos + axis.len);
+                    }
+                    else {
+                        skip = true;
                     }
                 }
-                else {
-                    for (const axis2 of uniqueAxes) {
-                        let skip;
-                        x1 = axis2.pos;
-                        x2 = x1 + axis2.len;
-                        y1 = y2 = axisTop + axis.height - transVal;
-                        // Outside plot area
-                        if (force !== 'pass' &&
-                            (y1 < axisTop || y1 > axisTop + axis.height)) {
-                            if (force) {
-                                y1 = y2 = StockChart_clamp(y1, axisTop, axisTop + axis.height);
-                            }
-                            else {
-                                skip = true;
-                            }
-                        }
-                        if (!skip) {
-                            result.push(['M', x1, y1], ['L', x2, y2]);
+                if (!skip) {
+                    const crossingPosName = horiz ? 'top' : 'left', crossingLenName = horiz ? 'height' : 'width';
+                    if (!acrossPanes &&
+                        // If the perpendicular position is set explicitly on
+                        // the axis, use it. For example, if `top` and `height`
+                        // options are set on a horizontal x-axis, the grid
+                        // lines should conform to that position.
+                        (axis.options[crossingPosName] ||
+                            axis.options[crossingLenName])) {
+                        pushSegment(pos, axis[crossingPosName], axis[crossingPosName] + axis[crossingLenName]);
+                    }
+                    else {
+                        for (const perpendicularAxis of uniqueAxes) {
+                            pushSegment(pos, perpendicularAxis.pos, perpendicularAxis.pos + perpendicularAxis.len);
                         }
                     }
                 }
@@ -9054,7 +9415,7 @@ StockChart_addEvent((highcharts_Chart_commonjs_highcharts_Chart_commonjs2_highch
     /**
      * Handle som Stock-specific series defaults, override the plotOptions
      * before series options are handled.
-     * @private
+     * @internal
      */
     function onSeriesSetOptions(e) {
         const series = this;
@@ -9133,7 +9494,7 @@ StockChart_addEvent((highcharts_Chart_commonjs_highcharts_Chart_commonjs2_highch
     /**
      * Function to crisp a line with multiple segments
      *
-     * @private
+     * @internal
      * @function Highcharts.SVGRenderer#crispPolyLine
      */
     function svgRendererCrispPolyLine(points, width) {
@@ -9161,11 +9522,12 @@ StockChart_addEvent((highcharts_Chart_commonjs_highcharts_Chart_commonjs2_highch
 ;// ./code/es-modules/Series/HLC/HLCPoint.js
 /* *
  *
- *  (c) 2010-2025 Pawel Lysy
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Pawel Lysy
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -9188,11 +9550,12 @@ class HLCPoint extends ColumnPoint {
 ;// ./code/es-modules/Series/HLC/HLCSeriesDefaults.js
 /* *
  *
- *  (c) 2010-2025 Pawel Lysy
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Pawel Lysy
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -9375,11 +9738,12 @@ const HLCSeriesDefaults = {
 ;// ./code/es-modules/Series/HLC/HLCSeries.js
 /* *
  *
- *  (c) 2010-2025 Pawel Lysy
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Pawel Lysy
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -9570,11 +9934,12 @@ highcharts_SeriesRegistry_commonjs_highcharts_SeriesRegistry_commonjs2_highchart
 ;// ./code/es-modules/Series/OHLC/OHLCPoint.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -9660,11 +10025,12 @@ class OHLCPoint extends OHLCPoint_HLCSeries.prototype.pointClass {
 ;// ./code/es-modules/Series/OHLC/OHLCSeriesDefaults.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -9814,11 +10180,12 @@ const OHLCSeriesDefaults = {
 ;// ./code/es-modules/Series/OHLC/OHLCSeries.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -9943,11 +10310,12 @@ highcharts_SeriesRegistry_commonjs_highcharts_SeriesRegistry_commonjs2_highchart
 ;// ./code/es-modules/Series/Candlestick/CandlestickSeriesDefaults.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -10120,11 +10488,12 @@ const CandlestickSeriesDefaults = {
 ;// ./code/es-modules/Series/Candlestick/CandlestickSeries.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -10265,11 +10634,12 @@ highcharts_SeriesRegistry_commonjs_highcharts_SeriesRegistry_commonjs2_highchart
 ;// ./code/es-modules/Series/Flags/FlagsPoint.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -10323,11 +10693,12 @@ class FlagsPoint extends FlagsPoint_ColumnPoint {
 ;// ./code/es-modules/Series/Flags/FlagsSeriesDefaults.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -10743,11 +11114,12 @@ var highcharts_Series_types_column_commonjs_highcharts_Series_types_column_commo
 ;// ./code/es-modules/Series/OnSeriesComposition.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -10957,11 +11329,12 @@ var OnSeriesComposition;
 ;// ./code/es-modules/Series/Flags/FlagsSeries.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -11047,7 +11420,7 @@ class FlagsSeries extends FlagsSeries_ColumnSeries {
                 // Create the flag
                 if (!graphic) {
                     graphic = point.graphic = renderer.label('', 0, void 0, shape, void 0, void 0, options.useHTML)
-                        .addClass('highcharts-point')
+                        .addClass(point.getClassName())
                         .add(series.markerGroup);
                     // Add reference to the point for tracker (#6303)
                     if (point.graphic.div) {
@@ -11269,11 +11642,12 @@ var highcharts_StackItem_commonjs_highcharts_StackItem_commonjs2_highcharts_Stac
 ;// ./code/es-modules/Core/Axis/BrokenAxis.js
 /* *
  *
- *  (c) 2009-2025 Torstein Honsi
+ *  (c) 2009-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -11287,7 +11661,7 @@ const { addEvent: BrokenAxis_addEvent, find: BrokenAxis_find, fireEvent: BrokenA
  * */
 /**
  * Axis with support of broken data rows.
- * @private
+ * @internal
  */
 var BrokenAxis;
 (function (BrokenAxis) {
@@ -11303,7 +11677,7 @@ var BrokenAxis;
      * */
     /**
      * Adds support for broken axes.
-     * @private
+     * @internal
      */
     function compose(AxisClass, SeriesClass) {
         if (!AxisClass.keepProps.includes('brokenAxis')) {
@@ -11321,9 +11695,7 @@ var BrokenAxis;
         return AxisClass;
     }
     BrokenAxis.compose = compose;
-    /**
-     * @private
-     */
+    /** @internal */
     function onAxisAfterInit() {
         if (typeof this.brokenAxis !== 'undefined') {
             this.brokenAxis.setBreaks(this.options.breaks, false);
@@ -11331,17 +11703,16 @@ var BrokenAxis;
     }
     /**
      * Force Axis to be not-ordinal when breaks are defined.
-     * @private
+     * @internal
      */
     function onAxisAfterSetOptions() {
         const axis = this;
-        if (axis.brokenAxis?.hasBreaks) {
+        // Too early for axis.brokenAxis?.hasBreaks.
+        if (Object.keys(axis.options.breaks?.[0] || {}).length) {
             axis.options.ordinal = false;
         }
     }
-    /**
-     * @private
-     */
+    /** @internal */
     function onAxisAfterSetTickPositions() {
         const axis = this, brokenAxis = axis.brokenAxis;
         if (brokenAxis?.hasBreaks) {
@@ -11355,18 +11726,14 @@ var BrokenAxis;
             axis.tickPositions.info = info;
         }
     }
-    /**
-     * @private
-     */
+    /** @internal */
     function onAxisInit() {
         const axis = this;
         if (!axis.brokenAxis) {
             axis.brokenAxis = new Additions(axis);
         }
     }
-    /**
-     * @private
-     */
+    /** @internal */
     function onSeriesAfterGeneratePoints() {
         const { isDirty, options: { connectNulls }, points, xAxis, yAxis } = this;
         // Set, or reset visibility of the points. Axis.setBreaks marks
@@ -11387,16 +11754,12 @@ var BrokenAxis;
             }
         }
     }
-    /**
-     * @private
-     */
+    /** @internal */
     function onSeriesAfterRender() {
         this.drawBreaks(this.xAxis, ['x']);
         this.drawBreaks(this.yAxis, BrokenAxis_pick(this.pointArrayMap, ['y']));
     }
-    /**
-     * @private
-     */
+    /** @internal */
     function seriesDrawBreaks(axis, keys) {
         const series = this, points = series.points;
         let breaks, threshold, y;
@@ -11407,24 +11770,9 @@ var BrokenAxis;
                 threshold = axis.isXAxis ?
                     axis.min :
                     BrokenAxis_pick(series.options.threshold, axis.min);
-                // Array of breaks that have been "zoomed-out" which means that
-                // they were shown previously, but now after zoom, they are not
-                // (#19885).
-                const breaksOutOfRange = axis?.options?.breaks?.filter(function (brk) {
-                    let isOut = true;
-                    // Iterate to see if "brk" is in axis range
-                    for (let i = 0; i < breaks.length; i++) {
-                        const otherBreak = breaks[i];
-                        if (otherBreak.from === brk.from &&
-                            otherBreak.to === brk.to) {
-                            isOut = false;
-                            break;
-                        }
-                    }
-                    return isOut;
-                });
                 points.forEach(function (point) {
-                    y = BrokenAxis_pick(point['stack' + key.toUpperCase()], point[key]);
+                    y = point['stack' + key.toUpperCase()] ??
+                        point[key];
                     breaks.forEach(function (brk) {
                         if (BrokenAxis_isNumber(threshold) && BrokenAxis_isNumber(y)) {
                             let eventName = '';
@@ -11444,9 +11792,6 @@ var BrokenAxis;
                             }
                         }
                     });
-                    breaksOutOfRange?.forEach(function (brk) {
-                        BrokenAxis_fireEvent(axis, 'pointOutsideOfBreak', { point, brk });
-                    });
                 });
             });
         }
@@ -11456,7 +11801,7 @@ var BrokenAxis;
      * can draw a gap in the line or area. This was moved from ordinal
      * axis module to broken axis module as of #5045.
      *
-     * @private
+     * @internal
      * @function Highcharts.Series#gappedPath
      *
      * @return {Highcharts.SVGPathArray}
@@ -11554,7 +11899,7 @@ var BrokenAxis;
                     });
                     // For stacked chart generate empty stack items, #6546
                     if (yAxis.stacking && this.options.stacking) {
-                        stack = yAxis.stacking.stacks[this.stackKey][xRange] = new (highcharts_StackItem_commonjs_highcharts_StackItem_commonjs2_highcharts_StackItem_root_Highcharts_StackItem_default())(yAxis, yAxis.options.stackLabels, false, xRange, this.stack);
+                        stack = yAxis.stacking.stacks[this.stackKey][xRange] = new (highcharts_StackItem_commonjs_highcharts_StackItem_commonjs2_highcharts_StackItem_root_Highcharts_StackItem_default())(yAxis, yAxis.options.stackLabels, false, xRange, this.stack ?? '');
                         stack.total = 0;
                     }
                 }
@@ -11572,7 +11917,7 @@ var BrokenAxis;
      * */
     /**
      * Provides support for broken axes.
-     * @private
+     * @internal
      * @class
      */
     class Additions {
@@ -11581,9 +11926,7 @@ var BrokenAxis;
          *  Static Functions
          *
          * */
-        /**
-         * @private
-         */
+        /** @internal */
         static isInBreak(brk, val) {
             const repeat = brk.repeat || Infinity, from = brk.from, length = brk.to - brk.from, test = (val >= from ?
                 (val - from) % repeat :
@@ -11597,53 +11940,82 @@ var BrokenAxis;
             }
             return ret;
         }
-        /**
-         * @private
-         */
+        /** @internal */
         static lin2Val(val) {
-            const axis = this;
-            const brokenAxis = axis.brokenAxis;
-            const breakArray = brokenAxis?.breakArray;
-            if (!breakArray || !BrokenAxis_isNumber(val)) {
+            const axis = this, threshold = axis.min || 0, brokenAxis = axis.brokenAxis, breakArray = brokenAxis?.breakArray;
+            if (!breakArray?.length || !BrokenAxis_isNumber(val)) {
                 return val;
             }
-            let nval = val, brk, i;
-            for (i = 0; i < breakArray.length; i++) {
-                brk = breakArray[i];
-                if (brk.from >= nval) {
-                    break;
+            let nval = val;
+            // Axis min is the anchor point. Above it, break gaps impact the
+            // result differently than below.
+            if (val > threshold) {
+                for (const brk of breakArray) {
+                    if (brk.from > nval) {
+                        // Skip all breaks after the nval.
+                        break;
+                    }
+                    else if (brk.to <= nval && brk.to > threshold) {
+                        nval += brk.len;
+                    }
+                    else if (Additions.isInBreak(brk, nval)) {
+                        nval += brk.len;
+                    }
                 }
-                else if (brk.to < nval) {
-                    nval += brk.len;
-                }
-                else if (Additions.isInBreak(brk, nval)) {
-                    nval += brk.len;
+            }
+            else if (val < threshold) {
+                for (const brk of breakArray) {
+                    if (brk.from > threshold) {
+                        // Skip all breaks above the threshold.
+                        break;
+                    }
+                    else if (brk.from >= nval && brk.from < threshold) {
+                        nval -= brk.len;
+                    }
+                    else if (Additions.isInBreak(brk, nval)) {
+                        nval -= brk.len;
+                    }
                 }
             }
             return nval;
         }
-        /**
-         * @private
-         */
+        /** @internal */
         static val2Lin(val) {
-            const axis = this;
-            const brokenAxis = axis.brokenAxis;
-            const breakArray = brokenAxis?.breakArray;
-            if (!breakArray || !BrokenAxis_isNumber(val)) {
+            const axis = this, threshold = axis.min || 0, brokenAxis = axis.brokenAxis, breakArray = brokenAxis?.breakArray;
+            if (!breakArray?.length || !BrokenAxis_isNumber(val)) {
                 return val;
             }
-            let nval = val, brk, i;
-            for (i = 0; i < breakArray.length; i++) {
-                brk = breakArray[i];
-                if (brk.to <= val) {
-                    nval -= brk.len;
+            let nval = val;
+            // Axis min is the anchor point. Above it, break gaps impact the
+            // result differently than below.
+            if (val > threshold) {
+                for (const brk of breakArray) {
+                    if (brk.to <= val && brk.to > threshold) {
+                        nval -= brk.len;
+                    }
+                    else if (brk.from > val) {
+                        // Skip all breaks after the val.
+                        break;
+                    }
+                    else if (Additions.isInBreak(brk, val)) {
+                        nval -= (val - brk.from);
+                        break;
+                    }
                 }
-                else if (brk.from >= val) {
-                    break;
-                }
-                else if (Additions.isInBreak(brk, val)) {
-                    nval -= (val - brk.from);
-                    break;
+            }
+            else if (val < threshold) {
+                for (const brk of breakArray) {
+                    if (brk.from >= val && brk.from < threshold) {
+                        nval += brk.len;
+                    }
+                    else if (brk.from > threshold) {
+                        // Skip all breaks before the threshold.
+                        break;
+                    }
+                    else if (Additions.isInBreak(brk, val)) {
+                        nval += (brk.to - val);
+                        break;
+                    }
                 }
             }
             return nval;
@@ -11653,8 +12025,8 @@ var BrokenAxis;
          *  Constructors
          *
          * */
+        /** @internal */
         constructor(axis) {
-            this.hasBreaks = false;
             this.axis = axis;
         }
         /* *
@@ -11681,9 +12053,7 @@ var BrokenAxis;
                 return b.from < x && x < b.to;
             });
         }
-        /**
-         * @private
-         */
+        /** @internal */
         isInAnyBreak(val, testKeep) {
             const brokenAxis = this, axis = brokenAxis.axis, breaks = axis.options.breaks || [];
             let i = breaks.length, inbrk, keep, ret;
@@ -11709,7 +12079,7 @@ var BrokenAxis;
          * Dynamically set or unset breaks in an axis. This function in lighter
          * than using Axis.update, and it also preserves animation.
          *
-         * @private
+         * @internal
          * @function Highcharts.Axis#setBreaks
          *
          * @param {Array<Highcharts.XAxisBreaksOptions>} [breaks]
@@ -11720,9 +12090,8 @@ var BrokenAxis;
          */
         setBreaks(breaks, redraw) {
             const brokenAxis = this, axis = brokenAxis.axis, time = axis.chart.time, hasBreaks = BrokenAxis_isArray(breaks) &&
-                !!breaks.length &&
-                !!Object.keys(breaks[0]).length; // Check for [{}], #16368.
-            axis.isDirty = brokenAxis.hasBreaks !== hasBreaks;
+                !!Object.keys(breaks?.[0] || {}).length;
+            axis.isDirty = (brokenAxis.hasBreaks ?? false) !== hasBreaks;
             brokenAxis.hasBreaks = hasBreaks;
             // Compile string dates
             breaks?.forEach((brk) => {
@@ -11749,8 +12118,9 @@ var BrokenAxis;
                 axis.setExtremes = function (newMin, newMax, redraw, animation, eventArguments) {
                     // If trying to set extremes inside a break, extend min to
                     // after, and max to before the break ( #3857 )
-                    if (brokenAxis.hasBreaks) {
-                        const breaks = (this.options.breaks || []);
+                    // but not for gantt (#13898);
+                    if (brokenAxis.hasBreaks && !axis.treeGrid?.tree) {
+                        const breaks = (this.brokenAxis.breakArray || []);
                         let axisBreak;
                         while ((axisBreak = brokenAxis.findBreakAt(newMin, breaks))) {
                             newMin = axisBreak.to;
@@ -11769,49 +12139,54 @@ var BrokenAxis;
                     axis.constructor.prototype.setAxisTranslation.call(this);
                     brokenAxis.unitLength = void 0;
                     if (brokenAxis.hasBreaks) {
-                        const breaks = axis.options.breaks || [], 
-                        // Temporary one:
-                        breakArrayT = [], breakArray = [], pointRangePadding = BrokenAxis_pick(axis.pointRangePadding, 0);
-                        let length = 0, inBrk, repeat, min = axis.userMin || axis.min, max = axis.userMax || axis.max, start, i;
-                        // Min & max check (#4247)
-                        breaks.forEach(function (brk) {
-                            repeat = brk.repeat || Infinity;
-                            if (BrokenAxis_isNumber(min) && BrokenAxis_isNumber(max)) {
-                                if (Additions.isInBreak(brk, min)) {
-                                    min += ((brk.to % repeat) -
-                                        (min % repeat));
+                        const breaks = axis.options.breaks || [], breakArrayTemp = [], breakArray = [], pointRangePadding = axis.pointRangePadding ?? 0;
+                        let length = 0, inBrk, repeat, min = axis.userMin ?? axis.min, max = axis.userMax ?? axis.max, dataMin = axis.dataMin ?? min, dataMax = axis.dataMax ?? max, start, i;
+                        if (BrokenAxis_isNumber(axis.threshold)) {
+                            dataMin = Math.min(dataMin ?? axis.threshold, axis.threshold);
+                            dataMax = Math.max(dataMax ?? axis.threshold, axis.threshold);
+                        }
+                        // Min & max check (#4247) but not for gantt (#13898)
+                        if (!axis.treeGrid?.tree) {
+                            breaks.forEach(function (brk) {
+                                repeat = brk.repeat || Infinity;
+                                if (BrokenAxis_isNumber(min) && BrokenAxis_isNumber(max)) {
+                                    if (Additions.isInBreak(brk, min)) {
+                                        min += ((brk.to % repeat) -
+                                            (min % repeat));
+                                    }
+                                    if (Additions.isInBreak(brk, max)) {
+                                        max -= ((max % repeat) -
+                                            (brk.from % repeat));
+                                    }
                                 }
-                                if (Additions.isInBreak(brk, max)) {
-                                    max -= ((max % repeat) -
-                                        (brk.from % repeat));
-                                }
-                            }
-                        });
+                            });
+                        }
                         // Construct an array holding all breaks in the axis
-                        breaks.forEach(function (brk) {
-                            start = brk.from;
-                            repeat = brk.repeat || Infinity;
-                            if (BrokenAxis_isNumber(min) && BrokenAxis_isNumber(max)) {
-                                while (start - repeat > min) {
+                        // for the current data range.
+                        if (BrokenAxis_isNumber(dataMin) && BrokenAxis_isNumber(dataMax)) {
+                            breaks.forEach(function (brk) {
+                                start = brk.from;
+                                repeat = brk.repeat || Infinity;
+                                while (start - repeat > dataMin) {
                                     start -= repeat;
                                 }
-                                while (start < min) {
+                                while (start < dataMin) {
                                     start += repeat;
                                 }
-                                for (i = start; i < max; i += repeat) {
-                                    breakArrayT.push({
+                                for (i = start; i < dataMax; i += repeat) {
+                                    breakArrayTemp.push({
                                         value: i,
                                         move: 'in'
                                     });
-                                    breakArrayT.push({
+                                    breakArrayTemp.push({
                                         value: i + brk.to - brk.from,
                                         move: 'out',
                                         size: brk.breakSize
                                     });
                                 }
-                            }
-                        });
-                        breakArrayT.sort(function (a, b) {
+                            });
+                        }
+                        breakArrayTemp.sort(function (a, b) {
                             return ((a.value === b.value) ?
                                 ((a.move === 'in' ? 0 : 1) -
                                     (b.move === 'in' ? 0 : 1)) :
@@ -11819,8 +12194,8 @@ var BrokenAxis;
                         });
                         // Simplify the breaks
                         inBrk = 0;
-                        start = min;
-                        breakArrayT.forEach(function (brk) {
+                        start = dataMin;
+                        breakArrayTemp.forEach((brk) => {
                             inBrk += (brk.move === 'in' ? 1 : -1);
                             if (inBrk === 1 && brk.move === 'in') {
                                 start = brk.value;
@@ -11831,9 +12206,13 @@ var BrokenAxis;
                                     to: brk.value,
                                     len: brk.value - start - (brk.size || 0)
                                 });
-                                length += (brk.value -
-                                    start -
-                                    (brk.size || 0));
+                                if (BrokenAxis_isNumber(min) && BrokenAxis_isNumber(max) &&
+                                    start < max && brk.value > min) {
+                                    // Sum break gaps in the visible range
+                                    length += (brk.value -
+                                        start -
+                                        (brk.size || 0));
+                                }
                             }
                         });
                         brokenAxis.breakArray = breakArray;
@@ -11875,10 +12254,22 @@ var BrokenAxis;
  *  Default Export
  *
  * */
+/** @internal */
 /* harmony default export */ const Axis_BrokenAxis = (BrokenAxis);
 
 ;// ./code/es-modules/masters/modules/broken-axis.src.js
-
+// SPDX-License-Identifier: LicenseRef-Highcharts
+/**
+ * @license Highcharts JS v12.5.0 (2026-01-12)
+ * @module highcharts/modules/broken-axis
+ * @requires highcharts
+ *
+ * (c) 2009-2026 Highsoft AS
+ * Author: Torstein Honsi
+ *
+ * A commercial license may be required depending on use.
+ * See www.highcharts.com/license
+ */
 
 
 
@@ -11890,11 +12281,12 @@ G.BrokenAxis.compose(G.Axis, G.Series);
 ;// ./code/es-modules/Extensions/DataGrouping/ApproximationRegistry.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -11912,7 +12304,7 @@ G.BrokenAxis.compose(G.Axis, G.Series);
  *
  * @product highstock
  *
- * @private
+ * @internal
  */
 const ApproximationRegistry = {
 // Approximations added programmatically
@@ -11922,16 +12314,18 @@ const ApproximationRegistry = {
  *  Default Export
  *
  * */
+/** @internal */
 /* harmony default export */ const DataGrouping_ApproximationRegistry = (ApproximationRegistry);
 
 ;// ./code/es-modules/Extensions/DataGrouping/ApproximationDefaults.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -11943,9 +12337,6 @@ const { arrayMax: ApproximationDefaults_arrayMax, arrayMin: ApproximationDefault
  *  Functions
  *
  * */
-/**
- * @private
- */
 function average(arr) {
     const len = arr.length;
     let ret = sum(arr);
@@ -11958,7 +12349,6 @@ function average(arr) {
 }
 /**
  * The same as average, but for series with multiple values, like area ranges.
- * @private
  */
 function averages() {
     const ret = [];
@@ -11969,17 +12359,11 @@ function averages() {
     // sum method handle null (#7377)
     return typeof ret[0] === 'undefined' ? void 0 : ret;
 }
-/**
- * @private
- */
 function ApproximationDefaults_close(arr) {
     return arr.length ?
         arr[arr.length - 1] :
         (arr.hasNulls ? null : void 0);
 }
-/**
- * @private
- */
 function high(arr) {
     return arr.length ?
         ApproximationDefaults_arrayMax(arr) :
@@ -11988,7 +12372,6 @@ function high(arr) {
 /**
  * HLC, OHLC and range are special cases where a multidimensional array is input
  * and an array is output.
- * @private
  */
 function hlc(high, low, close) {
     high = DataGrouping_ApproximationRegistry.high(high);
@@ -12000,17 +12383,11 @@ function hlc(high, low, close) {
         return [high, low, close];
     }
 }
-/**
- * @private
- */
 function low(arr) {
     return arr.length ?
         ApproximationDefaults_arrayMin(arr) :
         (arr.hasNulls ? null : void 0);
 }
-/**
- * @private
- */
 function ohlc(open, high, low, close) {
     open = DataGrouping_ApproximationRegistry.open(open);
     high = DataGrouping_ApproximationRegistry.high(high);
@@ -12023,15 +12400,9 @@ function ohlc(open, high, low, close) {
         return [open, high, low, close];
     }
 }
-/**
- * @private
- */
 function ApproximationDefaults_open(arr) {
     return arr.length ? arr[0] : (arr.hasNulls ? null : void 0);
 }
-/**
- * @private
- */
 function range(low, high) {
     low = DataGrouping_ApproximationRegistry.low(low);
     high = DataGrouping_ApproximationRegistry.high(high);
@@ -12043,9 +12414,6 @@ function range(low, high) {
     }
     // Else, return is undefined
 }
-/**
- * @private
- */
 function sum(arr) {
     let len = arr.length, ret;
     // 1. it consists of nulls exclusive
@@ -12068,6 +12436,7 @@ function sum(arr) {
  *  Default Export
  *
  * */
+/** @internal */
 const ApproximationDefaults = {
     average,
     averages,
@@ -12081,16 +12450,18 @@ const ApproximationDefaults = {
     sum
 };
 ApproximationDefaults_extend(DataGrouping_ApproximationRegistry, ApproximationDefaults);
+/** @internal */
 /* harmony default export */ const DataGrouping_ApproximationDefaults = (ApproximationDefaults);
 
 ;// ./code/es-modules/Extensions/DataGrouping/DataGroupingDefaults.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -12101,7 +12472,7 @@ ApproximationDefaults_extend(DataGrouping_ApproximationRegistry, ApproximationDe
  * */
 /**
  * Common options
- * @private
+ * @internal
  */
 const common = {
     /// enabled: null, // (true for stock charts, false for basic),
@@ -12156,7 +12527,7 @@ const common = {
 };
 /**
  * Extends common options
- * @private
+ * @internal
  */
 const seriesSpecific = {
     line: {},
@@ -12187,7 +12558,7 @@ const seriesSpecific = {
 /**
  * Units are defined in a separate array to allow complete overriding in
  * case of a user option.
- * @private
+ * @internal
  */
 const units = [
     [
@@ -12221,21 +12592,24 @@ const units = [
  *  Default Export
  *
  * */
+/** @internal */
 const DataGroupingDefaults = {
     common,
     seriesSpecific,
     units
 };
+/** @internal */
 /* harmony default export */ const DataGrouping_DataGroupingDefaults = (DataGroupingDefaults);
 
 ;// ./code/es-modules/Extensions/DataGrouping/DataGroupingAxisComposition.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -12278,9 +12652,6 @@ function applyGrouping(e) {
         series.applyGrouping(!!e.hasExtremesChanged);
     });
 }
-/**
- * @private
- */
 function DataGroupingAxisComposition_compose(AxisClass) {
     AxisConstructor = AxisClass;
     const axisProto = AxisClass.prototype;
@@ -12299,7 +12670,7 @@ function DataGroupingAxisComposition_compose(AxisClass) {
 /**
  * Get the data grouping pixel width based on the greatest defined individual
  * width of the axis' series, and if whether one of the axes need grouping.
- * @private
+ * @internal
  */
 function getGroupPixelWidth() {
     const series = this.series;
@@ -12313,7 +12684,7 @@ function getGroupPixelWidth() {
             groupPixelWidth = Math.max(groupPixelWidth, 
             // Fallback to commonOptions (#9693)
             DataGroupingAxisComposition_pick(dgOptions.groupPixelWidth, DataGrouping_DataGroupingDefaults.common.groupPixelWidth));
-            dataLength = (series[i].dataTable.modified ||
+            dataLength = (series[i].dataTable.getModified() ||
                 series[i].dataTable).rowCount;
             // Execute grouping if the amount of points is greater than the
             // limit defined in groupPixelWidth
@@ -12331,7 +12702,7 @@ function getGroupPixelWidth() {
  * When resetting the scale reset the hasProcessed flag to avoid taking
  * previous data grouping of neighbour series into account when determining
  * group pixel width (#2692).
- * @private
+ * @internal
  */
 function onAfterSetScale() {
     this.series.forEach(function (series) {
@@ -12394,19 +12765,22 @@ function setDataGrouping(dataGrouping, redraw) {
  *  Default Export
  *
  * */
+/** @internal */
 const DataGroupingAxisComposition = {
     compose: DataGroupingAxisComposition_compose
 };
+/** @internal */
 /* harmony default export */ const DataGrouping_DataGroupingAxisComposition = (DataGroupingAxisComposition);
 
 ;// ./code/es-modules/Core/Axis/DateTimeAxis.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -12432,7 +12806,7 @@ var DateTimeAxis;
      * */
     /**
      * Extends axis class with date and time support.
-     * @private
+     * @internal
      */
     function compose(AxisClass) {
         if (!AxisClass.keepProps.includes('dateTime')) {
@@ -12450,7 +12824,7 @@ var DateTimeAxis;
      * the time positions. Used in datetime axes as well as for grouping
      * data on a datetime axis.
      *
-     * @private
+     * @internal
      * @function Highcharts.Axis#getTimeTicks
      * @param {Highcharts.TimeNormalizeObject} normalizedInterval
      * The interval in axis values (ms) and the count.
@@ -12462,9 +12836,7 @@ var DateTimeAxis;
     function getTimeTicks() {
         return this.chart.time.getTimeTicks.apply(this.chart.time, arguments);
     }
-    /**
-     * @private
-     */
+    /** @internal */
     function onAfterSetType() {
         if (this.type !== 'datetime') {
             this.dateTime = void 0;
@@ -12479,6 +12851,7 @@ var DateTimeAxis;
      *  Classes
      *
      * */
+    /** @internal */
     class Additions {
         /* *
          *
@@ -12501,7 +12874,7 @@ var DateTimeAxis;
          * charts, the normalizing logic was extracted in order to prevent it
          * for running over again for each segment having the same interval.
          * #662, #697.
-         * @private
+         * @internal
          */
         normalizeTimeTickInterval(tickInterval, unitsOption) {
             const units = (unitsOption || [[
@@ -12569,7 +12942,7 @@ var DateTimeAxis;
          * Get the best date format for a specific X value based on the closest
          * point range on the axis.
          *
-         * @private
+         * @internal
          */
         getXDateFormat(x, dateTimeLabelFormats) {
             const { axis } = this, time = axis.chart.time;
@@ -12592,11 +12965,12 @@ var DateTimeAxis;
 ;// ./code/es-modules/Extensions/DataGrouping/DataGroupingSeriesComposition.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -12620,9 +12994,7 @@ const baseGeneratePoints = DataGroupingSeriesComposition_seriesProto.generatePoi
  *  Functions
  *
  * */
-/**
- * @private
- */
+/** @internal */
 function adjustExtremes(xAxis, groupedXData) {
     // Make sure the X axis extends to show the first group (#2533)
     // But only for visible series (#5493, #6393)
@@ -12651,9 +13023,7 @@ function adjustExtremes(xAxis, groupedXData) {
         xAxis.dataMax = Math.max(groupedXData[groupedXData.length - 1], xAxis.dataMax);
     }
 }
-/**
- * @private
- */
+/** @internal */
 function anchorPoints(series, groupedXData, xMax) {
     const options = series.options, dataGroupingOptions = options.dataGrouping, totalRange = (series.currentDataGrouping && series.currentDataGrouping.gapSize), xData = series.getColumn('x');
     if (!(dataGroupingOptions &&
@@ -12712,7 +13082,7 @@ function anchorPoints(series, groupedXData, xMax) {
 /**
  * For the processed data, calculate the grouped data if needed.
  *
- * @private
+ * @internal
  * @function Highcharts.Series#applyGrouping
  */
 function DataGroupingSeriesComposition_applyGrouping(hasExtremesChanged) {
@@ -12736,7 +13106,7 @@ function DataGroupingSeriesComposition_applyGrouping(hasExtremesChanged) {
     series.destroyGroupedData();
     const table = dataGroupingOptions.groupAll ?
         series.dataTable :
-        series.dataTable.modified || series.dataTable, processedXData = series.getColumn('x', !dataGroupingOptions.groupAll), xData = processedXData, plotSizeX = chart.plotSizeX, xAxis = series.xAxis, extremes = xAxis.getExtremes(), ordinal = xAxis.options.ordinal, groupPixelWidth = series.groupPixelWidth;
+        series.dataTable.getModified() || series.dataTable, processedXData = series.getColumn('x', !dataGroupingOptions.groupAll), xData = processedXData, plotSizeX = chart.plotSizeX, xAxis = series.xAxis, extremes = xAxis.getExtremes(), ordinal = xAxis.options.ordinal, groupPixelWidth = series.groupPixelWidth;
     let i, hasGroupedData;
     // Execute grouping if the amount of points is greater than the limit
     // defined in groupPixelWidth
@@ -12815,9 +13185,7 @@ function DataGroupingSeriesComposition_applyGrouping(hasExtremesChanged) {
         (lastDataGrouping && lastDataGrouping.totalRange) !==
             (currentDataGrouping && currentDataGrouping.totalRange);
 }
-/**
- * @private
- */
+/** @internal */
 function DataGroupingSeriesComposition_compose(SeriesClass) {
     const seriesProto = SeriesClass.prototype;
     if (!seriesProto.applyGrouping) {
@@ -12843,7 +13211,7 @@ function DataGroupingSeriesComposition_compose(SeriesClass) {
 }
 /**
  * Destroy the grouped data points. #622, #740
- * @private
+ * @internal
  */
 function destroyGroupedData() {
     // Clear previous groups
@@ -12864,7 +13232,7 @@ function destroyGroupedData() {
 }
 /**
  * Override the generatePoints method by adding a reference to grouped data
- * @private
+ * @internal
  */
 function generatePoints() {
     baseGeneratePoints.apply(this);
@@ -12876,7 +13244,7 @@ function generatePoints() {
 /**
  * Set default approximations to the prototypes if present. Properties are
  * inherited down. Can be overridden for individual series types.
- * @private
+ * @internal
  */
 function getDGApproximation() {
     if (this.is('arearange')) {
@@ -13043,7 +13411,7 @@ function groupData(table, groupPositions, approximation) {
 /**
  * Handle default options for data grouping. This must be set at runtime because
  * some series types are defined after this.
- * @private
+ * @internal
  */
 function onAfterSetOptions(e) {
     const options = e.options, type = this.type, plotOptions = this.chart.options.plotOptions, 
@@ -13065,9 +13433,7 @@ function onAfterSetOptions(e) {
             rangeSelector.buttonOptions[rangeSelector.selected].dataGrouping);
     }
 }
-/**
- * @private
- */
+/** @internal */
 function skipDataGrouping(series, force) {
     return !(series.isCartesian &&
         !series.isDirty &&
@@ -13080,20 +13446,23 @@ function skipDataGrouping(series, force) {
  *  Default Export
  *
  * */
+/** @internal */
 const DataGroupingSeriesComposition = {
     compose: DataGroupingSeriesComposition_compose,
     groupData
 };
+/** @internal */
 /* harmony default export */ const DataGrouping_DataGroupingSeriesComposition = (DataGroupingSeriesComposition);
 
 ;// ./code/es-modules/Extensions/DataGrouping/DataGrouping.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -13111,9 +13480,6 @@ const { addEvent: DataGrouping_addEvent, extend: DataGrouping_extend, isNumber: 
  *  Functions
  *
  * */
-/**
- * @private
- */
 function DataGrouping_compose(AxisClass, SeriesClass, TooltipClass) {
     DataGrouping_DataGroupingAxisComposition.compose(AxisClass);
     DataGrouping_DataGroupingSeriesComposition.compose(SeriesClass);
@@ -13125,7 +13491,7 @@ function DataGrouping_compose(AxisClass, SeriesClass, TooltipClass) {
 /**
  * Extend the original method, make the tooltip's header reflect the grouped
  * range.
- * @private
+ * @internal
  */
 function onTooltipHeaderFormatter(e) {
     const chart = this.chart, time = chart.time, point = e.point, series = point.series, options = series.options, tooltipOptions = series.tooltipOptions, dataGroupingOptions = options.dataGrouping, xAxis = series.xAxis;
@@ -13180,10 +13546,12 @@ function onTooltipHeaderFormatter(e) {
  *  Default Export
  *
  * */
+/** @internal */
 const DataGroupingComposition = {
     compose: DataGrouping_compose,
     groupData: DataGrouping_DataGroupingSeriesComposition.groupData
 };
+/** @internal */
 /* harmony default export */ const DataGrouping = (DataGroupingComposition);
 /* *
  *
@@ -13191,7 +13559,7 @@ const DataGroupingComposition = {
  *
  * */
 /**
- * @typedef {"average"|"averages"|"open"|"high"|"low"|"close"|"sum"} Highcharts.DataGroupingApproximationValue
+ * @typedef {"average"|"averages"|"close"|"high"|"hlc"|"low"|"ohlc"|"open"|"range"|"sum"} Highcharts.DataGroupingApproximationValue
  */
 /**
  * The position of the point inside the group.
@@ -13224,11 +13592,8 @@ const DataGroupingComposition = {
  * @product highstock
  * @interface Highcharts.DataGroupingResultObject
  */ /**
-* @name Highcharts.DataGroupingResultObject#groupedXData
-* @type {Array<number>}
-*/ /**
-* @name Highcharts.DataGroupingResultObject#groupedYData
-* @type {Array<(number|null|undefined)>|Array<Array<(number|null|undefined)>>}
+* @name Highcharts.DataGroupingResultObject#modified
+* @type {Highcharts.DataTableCore}
 */ /**
 * @name Highcharts.DataGroupingResultObject#groupMap
 * @type {Array<DataGroupingInfoObject>}
@@ -13419,22 +13784,6 @@ const DataGroupingComposition = {
  * @apioption plotOptions.series.dataGrouping.forced
  */
 /**
- * The approximate pixel width of each group. If for example a series
- * with 30 points is displayed over a 600 pixel wide plot area, no grouping
- * is performed. If however the series contains so many points that
- * the spacing is less than the groupPixelWidth, Highcharts will try
- * to group it into appropriate groups so that each is more or less
- * two pixels wide. If multiple series with different group pixel widths
- * are drawn on the same x axis, all series will take the greatest width.
- * For example, line series have 2px default group width, while column
- * series have 10px. If combined, both the line and the column will
- * have 10px by default.
- *
- * @type      {number}
- * @default   2
- * @apioption plotOptions.series.dataGrouping.groupPixelWidth
- */
-/**
  * By default only points within the visible range are grouped. Enabling this
  * option will force data grouping to calculate all grouped points for a given
  * dataset. That option prevents for example a column series from calculating
@@ -13449,6 +13798,22 @@ const DataGroupingComposition = {
  * @default   false
  * @since     6.1.0
  * @apioption plotOptions.series.dataGrouping.groupAll
+ */
+/**
+ * The approximate pixel width of each group. If for example a series
+ * with 30 points is displayed over a 600 pixel wide plot area, no grouping
+ * is performed. If however the series contains so many points that
+ * the spacing is less than the groupPixelWidth, Highcharts will try
+ * to group it into appropriate groups so that each is more or less
+ * two pixels wide. If multiple series with different group pixel widths
+ * are drawn on the same x axis, all series will take the greatest width.
+ * For example, line series have 2px default group width, while column
+ * series have 10px. If combined, both the line and the column will
+ * have 10px by default.
+ *
+ * @type      {number}
+ * @default   2
+ * @apioption plotOptions.series.dataGrouping.groupPixelWidth
  */
 /**
  * Specifies how the last grouped point is positioned on the xAxis.
@@ -13552,16 +13917,19 @@ const DataGroupingComposition = {
 ''; // Required by JSDoc parsing
 
 ;// ./code/es-modules/masters/modules/datagrouping.src.js
+// SPDX-License-Identifier: LicenseRef-Highcharts
 /**
- * @license Highstock JS v12.3.0 (2025-06-21)
+ * @license Highstock JS v12.5.0 (2026-01-12)
  * @module highcharts/modules/datagrouping
  * @requires highcharts
  *
  * Data grouping module
  *
- * (c) 2010-2025 Torstein Hønsi
+ * (c) 2010-2026 Highsoft AS
+ * Author: Torstein Hønsi
  *
- * License: www.highcharts.com/license
+ * A commercial license may be required depending on use.
+ * See www.highcharts.com/license
  */
 
 
@@ -13580,11 +13948,12 @@ DataGrouping.compose(datagrouping_src_G.Axis, datagrouping_src_G.Series, datagro
 ;// ./code/es-modules/Extensions/Annotations/NavigationBindingsUtilities.js
 /* *
  *
- *  (c) 2009-2025 Highsoft, Black Label
+ *  (c) 2009-2026 Highsoft AS
+ *  Author: Highsoft, Black Label
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -13598,7 +13967,7 @@ const { defined: NavigationBindingsUtilities_defined, isNumber: NavigationBindin
 /**
  * Define types for editable fields per annotation. There is no need to define
  * numbers, because they won't change their type to string.
- * @private
+ * @internal
  */
 const annotationsFieldsTypes = {
     backgroundColor: 'string',
@@ -13620,7 +13989,7 @@ const annotationsFieldsTypes = {
 /**
  * Returns the first xAxis or yAxis that was clicked with its value.
  *
- * @private
+ * @internal
  *
  * @param {Array<Highcharts.PointerAxisCoordinateObject>} coords
  *        All the chart's x or y axes with a current pointer's axis value.
@@ -13645,7 +14014,7 @@ function getAssignedAxis(coords) {
 /**
  * Get field type according to value
  *
- * @private
+ * @internal
  *
  * @param {'boolean'|'number'|'string'} value
  * Atomic type (one of: string, number, boolean)
@@ -13670,21 +14039,24 @@ function getFieldType(key, value) {
  *  Default Export
  *
  * */
+/** @internal */
 const NavigationBindingUtilities = {
     annotationsFieldsTypes,
     getAssignedAxis,
     getFieldType
 };
+/** @internal */
 /* harmony default export */ const NavigationBindingsUtilities = (NavigationBindingUtilities);
 
 ;// ./code/es-modules/Extensions/MouseWheelZoom/MouseWheelZoom.js
 /* *
  *
- *  (c) 2023 Torstein Honsi, Askel Eirik Johansson
+ *  (c) 2023-2026 Highsoft AS
+ *  Author: Torstein Honsi, Askel Eirik Johansson
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -13699,7 +14071,8 @@ const { getAssignedAxis: MouseWheelZoom_getAssignedAxis } = NavigationBindingsUt
  * */
 const composedClasses = [], MouseWheelZoom_defaultOptions = {
     enabled: true,
-    sensitivity: 1.1
+    sensitivity: 1.1,
+    showResetButton: false
 };
 let wheelTimer;
 /* *
@@ -13707,9 +14080,7 @@ let wheelTimer;
  *  Functions
  *
  * */
-/**
- * @private
- */
+/** @internal */
 const optionsToObject = (options) => {
     if (!isObject(options)) {
         options = {
@@ -13718,9 +14089,7 @@ const optionsToObject = (options) => {
     }
     return MouseWheelZoom_merge(MouseWheelZoom_defaultOptions, options);
 };
-/**
- * @private
- */
+/** @internal */
 const zoomBy = function (chart, howMuch, xAxis, yAxis, mouseX, mouseY, options) {
     const type = MouseWheelZoom_pick(options.type, chart.zooming.type, '');
     let axes = [];
@@ -13751,7 +14120,8 @@ const zoomBy = function (chart, howMuch, xAxis, yAxis, mouseX, mouseY, options) 
             width: 10 * howMuch,
             height: 10 * howMuch
         },
-        trigger: 'mousewheel'
+        trigger: 'mousewheel',
+        allowResetButton: options.showResetButton
     });
     if (hasZoomed) {
         if (MouseWheelZoom_defined(wheelTimer)) {
@@ -13766,9 +14136,7 @@ const zoomBy = function (chart, howMuch, xAxis, yAxis, mouseX, mouseY, options) 
     }
     return hasZoomed;
 };
-/**
- * @private
- */
+/** @internal */
 function onAfterGetContainer() {
     const wheelZoomOptions = optionsToObject(this.zooming.mouseWheel);
     if (wheelZoomOptions.enabled) {
@@ -13787,9 +14155,7 @@ function onAfterGetContainer() {
         });
     }
 }
-/**
- * @private
- */
+/** @internal */
 function MouseWheelZoom_compose(ChartClass) {
     if (composedClasses.indexOf(ChartClass) === -1) {
         composedClasses.push(ChartClass);
@@ -13871,19 +14237,35 @@ const MouseWheelZoomComposition = {
  * @requires  modules/mouse-wheel-zoom
  * @apioption chart.zooming.mouseWheel.type
  */
+/**
+ * Whether to enable the reset zoom button when zooming with the mouse wheel.
+ *
+ * @type      {boolean}
+ * @default   false
+ * @since {next}
+ * @requires  modules/mouse-wheel-zoom
+ * @sample    {highcharts} highcharts/mouse-wheel-zoom/reset-zoom-button
+ *            Enable reset zoom button for mouse wheel zooming
+ * @sample    {highstock} stock/mouse-wheel-zoom/reset-zoom-button
+ *            Enable reset zoom button for mouse wheel zooming
+ * @apioption chart.zooming.mouseWheel.showResetButton
+ */
 (''); // Keeps doclets above in JS file
 
 ;// ./code/es-modules/masters/modules/mouse-wheel-zoom.src.js
+// SPDX-License-Identifier: LicenseRef-Highcharts
 /**
- * @license Highcharts JS v12.3.0 (2025-06-21)
+ * @license Highcharts JS v12.5.0 (2026-01-12)
  * @module highcharts/modules/mouse-wheel-zoom
  * @requires highcharts
  *
  * Mousewheel zoom module
  *
- * (c) 2023 Askel Eirik Johansson
+ * (c) 2023-2026 Highsoft AS
+ * Author: Askel Eirik Johansson
  *
- * License: www.highcharts.com/license
+ * A commercial license may be required depending on use.
+ * See www.highcharts.com/license
  */
 
 
@@ -13894,17 +14276,7 @@ mouse_wheel_zoom_src_G.MouseWheelZoom.compose(mouse_wheel_zoom_src_G.Chart);
 /* harmony default export */ const mouse_wheel_zoom_src = ((/* unused pure expression or super */ null && (Highcharts)));
 
 ;// ./code/es-modules/masters/modules/stock.src.js
-/**
- * @license Highstock JS v12.3.0 (2025-06-21)
- * @module highcharts/modules/stock
- * @requires highcharts
- *
- * Highcharts Stock as a plugin for Highcharts
- *
- * (c) 2010-2025 Torstein Honsi
- *
- * License: www.highcharts.com/license
- */
+
 
 
 

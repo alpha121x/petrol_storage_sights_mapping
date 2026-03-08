@@ -1,13 +1,13 @@
 /* *
  *
- *  (c) 2009-2025 Highsoft AS
+ *  (c) 2009-2026 Highsoft AS
  *
  *  Accessibility component for the navigator.
  *
  *  Author: Øystein Moseng
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -207,8 +207,8 @@ var NavigatorComponent = /** @class */ (function (_super) {
     NavigatorComponent.prototype.updateNavigator = function (beforeAnnounce) {
         var _this = this;
         var performUpdate = function (beforeAnnounce) {
-            var _a;
-            var chart = _this.chart, navigator = chart.navigator, pointer = chart.pointer;
+            var _a, _b;
+            var chart = _this.chart, navigator = chart.navigator, pointer = chart.pointer, keyboardNavigation = (_a = _this.chart.accessibility) === null || _a === void 0 ? void 0 : _a.keyboardNavigation;
             if (navigator &&
                 pointer &&
                 _this.minHandleProxy &&
@@ -235,12 +235,16 @@ var NavigatorComponent = /** @class */ (function (_super) {
                         }, handle));
                     }
                 });
+                // If navigating by keyboard, do not reset #22122
+                if (keyboardNavigation) {
+                    keyboardNavigation.keyboardReset = false;
+                }
                 if (beforeAnnounce) {
                     beforeAnnounce();
                 }
                 // Announce the update
-                var announceFormatStr = (_a = chart.options.lang
-                    .accessibility) === null || _a === void 0 ? void 0 : _a.navigator.changeAnnouncement, axisRangeDescription = getAxisRangeDescription(chart.xAxis[0]);
+                var announceFormatStr = (_b = chart.options.lang
+                    .accessibility) === null || _b === void 0 ? void 0 : _b.navigator.changeAnnouncement, axisRangeDescription = getAxisRangeDescription(chart.xAxis[0]);
                 _this.announcer.announce(format(announceFormatStr, { axisRangeDescription: axisRangeDescription, chart: chart }, chart));
             }
         };

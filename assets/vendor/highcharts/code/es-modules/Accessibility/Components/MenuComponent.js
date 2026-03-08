@@ -1,12 +1,13 @@
 /* *
  *
- *  (c) 2009-2025 Øystein Moseng
+ *  (c) 2009-2026 Highsoft AS
+ *  Author: Øystein Moseng
  *
  *  Accessibility component for exporting menu.
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -343,7 +344,9 @@ class MenuComponent extends AccessibilityComponent {
         if (exportButton) {
             const el = exportButton.element;
             if (el.onclick) {
-                el.onclick(getFakeMouseEvent('click'));
+                el.onclick = function () {
+                    getFakeMouseEvent('click');
+                };
             }
         }
     }

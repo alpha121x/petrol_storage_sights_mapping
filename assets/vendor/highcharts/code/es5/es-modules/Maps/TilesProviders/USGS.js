@@ -7,6 +7,7 @@
  *  Class
  *
  * */
+/** @internal */
 var USGS = /** @class */ (function () {
     function USGS() {
         /* *
@@ -42,4 +43,5 @@ var USGS = /** @class */ (function () {
  *  Default Export
  *
  * */
+/** @internal */
 export default USGS;

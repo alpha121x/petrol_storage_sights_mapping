@@ -1,13 +1,16 @@
+// SPDX-License-Identifier: LicenseRef-Highcharts
 /**
- * @license Highcharts JS v12.3.0 (2025-06-21)
+ * @license Highcharts JS v12.5.0 (2026-01-12)
  * Organization chart series type
  * @module highcharts/modules/organization
  * @requires highcharts
  * @requires highcharts/modules/sankey
  *
- * (c) 2019-2025 Torstein Honsi
+ * (c) 2019-2026 Highsoft AS
+ * Author: Torstein Honsi
  *
- * License: www.highcharts.com/license
+ * A commercial license may be required depending on use.
+ * See www.highcharts.com/license
  */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
@@ -119,11 +122,12 @@ var highcharts_SeriesRegistry_commonjs_highcharts_SeriesRegistry_commonjs2_highc
  *
  *  Organization chart module
  *
- *  (c) 2018-2025 Torstein Honsi
+ *  (c) 2018-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -260,11 +264,12 @@ var OrganizationPoint = /** @class */ (function (_super) {
  *
  *  Organization chart module
  *
- *  (c) 2018-2025 Torstein Honsi
+ *  (c) 2018-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -350,7 +355,7 @@ var OrganizationSeriesDefaults = {
         lineWidth: 1,
         /**
          * Radius for the rounded corners of the links between nodes.
-         * Works for `default` link type.
+         * Works for the `orthogonal` link type.
          *
          * @sample   highcharts/series-organization/link-options
          *           Square links
@@ -363,11 +368,11 @@ var OrganizationSeriesDefaults = {
          *           Different link types
          *
          * @declare Highcharts.OrganizationLinkTypeValue
-         * @type {'default' | 'curved' | 'straight'}
-         * @default 'default'
+         * @type {'orthogonal' | 'curved' | 'straight'}
+         * @default 'orthogonal'
          * @product highcharts
          */
-        type: 'default'
+        type: 'orthogonal'
     },
     borderWidth: 1,
     /**
@@ -739,69 +744,53 @@ var OrganizationSeriesDefaults = {
 ;// ./code/es5/es-modules/Series/PathUtilities.js
 /* *
  *
- *  (c) 2010-2025 Pawel Lysy
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Pawel Lysy
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
 var getLinkPath = {
-    'default': getDefaultPath,
+    'default': getOrthogonalPath,
+    orthogonal: getOrthogonalPath,
     straight: getStraightPath,
     curved: getCurvedPath
 };
 /**
  *
  */
-function getDefaultPath(pathParams) {
+function getOrthogonalPath(pathParams) {
     var x1 = pathParams.x1,
         y1 = pathParams.y1,
         x2 = pathParams.x2,
         y2 = pathParams.y2,
+        bendAt = pathParams.bendAt,
         _a = pathParams.width,
         width = _a === void 0 ? 0 : _a,
         _b = pathParams.inverted,
         inverted = _b === void 0 ? false : _b,
         radius = pathParams.radius,
         parentVisible = pathParams.parentVisible;
-    var path = [
-            ['M',
-        x1,
-        y1],
-            ['L',
-        x1,
-        y1],
-            ['C',
-        x1,
-        y1,
-        x1,
-        y2,
-        x1,
-        y2],
-            ['L',
-        x1,
-        y2],
-            ['C',
-        x1,
-        y1,
-        x1,
-        y2,
-        x1,
-        y2],
-            ['L',
-        x1,
-        y2]
-        ];
-    return parentVisible ?
-        applyRadius([
+    if (parentVisible) {
+        var bend = bendAt !== null && bendAt !== void 0 ? bendAt : (width / 2);
+        return applyRadius([
             ['M', x1, y1],
-            ['L', x1 + width * (inverted ? -0.5 : 0.5), y1],
-            ['L', x1 + width * (inverted ? -0.5 : 0.5), y2],
+            ['L', x1 + bend * (inverted ? -1 : 1), y1],
+            ['L', x1 + bend * (inverted ? -1 : 1), y2],
             ['L', x2, y2]
-        ], radius) :
-        path;
+        ], radius);
+    }
+    return [
+        ['M', x1, y1],
+        ['L', x1, y1],
+        ['C', x1, y1, x1, y2, x1, y2],
+        ['L', x1, y2],
+        ['C', x1, y1, x1, y2, x1, y2],
+        ['L', x1, y2]
+    ];
 }
 /**
  *
@@ -934,11 +923,12 @@ var highcharts_SVGElement_commonjs_highcharts_SVGElement_commonjs2_highcharts_SV
  *
  *  Highcharts module with textPath functionality.
  *
- *  (c) 2009-2025 Torstein Honsi
+ *  (c) 2009-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -1115,7 +1105,7 @@ function setPolygon(event) {
                         }
                     }
                 }
-                catch (e) {
+                catch (_d) {
                     // Safari fails on getStartPositionOfChar even if the
                     // character is within the `textContent.length`
                     break;
@@ -1125,14 +1115,14 @@ function setPolygon(event) {
             try {
                 var srcCharIndex = i + lineIndex,
                     charPos = tp.getEndPositionOfChar(srcCharIndex),
-                    _d = appendTopAndBottom(srcCharIndex,
+                    _e = appendTopAndBottom(srcCharIndex,
                     charPos),
-                    lower = _d[0],
-                    upper = _d[1];
+                    lower = _e[0],
+                    upper = _e[1];
                 polygon.unshift(upper);
                 polygon.unshift(lower);
             }
-            catch (e) {
+            catch (_f) {
                 // Safari fails on getStartPositionOfChar even if the character
                 // is within the `textContent.length`
                 break;
@@ -1189,11 +1179,12 @@ var TextPath = {
  *
  *  Organization chart module
  *
- *  (c) 2018-2025 Torstein Honsi
+ *  (c) 2018-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 

@@ -1,14 +1,17 @@
+// SPDX-License-Identifier: LicenseRef-Highcharts
 /**
- * @license Highcharts JS v12.3.0 (2025-06-21)
+ * @license Highcharts JS v12.5.0 (2026-01-12)
  * @module highcharts/modules/solid-gauge
  * @requires highcharts
  * @requires highcharts/highcharts-more
  *
  * Solid angular gauge module
  *
- * (c) 2010-2025 Torstein Honsi
+ * (c) 2010-2026 Highsoft AS
+ * Author: Torstein Honsi
  *
- * License: www.highcharts.com/license
+ * A commercial license may be required depending on use.
+ * See www.highcharts.com/license
  */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
@@ -119,9 +122,9 @@ var highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default 
  *
  *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -162,9 +165,7 @@ var oldRoundedRect = noop;
  *  Functions
  *
  * */
-/**
- * @private
- */
+/** @internal */
 function applyBorderRadius(path, i, r) {
     var a = path[i];
     var b = path[i + 1];
@@ -249,7 +250,7 @@ function applyBorderRadius(path, i, r) {
 }
 /**
  * Extend arc with borderRadius.
- * @private
+ * @internal
  */
 function arc(x, y, w, h, options) {
     if (options === void 0) { options = {}; }
@@ -258,14 +259,18 @@ function arc(x, y, w, h, options) {
         w,
         h,
         options),
-        _a = options.innerR,
-        innerR = _a === void 0 ? 0 : _a,
-        _b = options.r,
-        r = _b === void 0 ? w : _b,
-        _c = options.start,
-        start = _c === void 0 ? 0 : _c,
-        _d = options.end,
-        end = _d === void 0 ? 0 : _d;
+        _a = options.brStart,
+        brStart = _a === void 0 ? true : _a,
+        _b = options.brEnd,
+        brEnd = _b === void 0 ? true : _b,
+        _c = options.innerR,
+        innerR = _c === void 0 ? 0 : _c,
+        _d = options.r,
+        r = _d === void 0 ? w : _d,
+        _e = options.start,
+        start = _e === void 0 ? 0 : _e,
+        _f = options.end,
+        end = _f === void 0 ? 0 : _f;
     if (options.open || !options.borderRadius) {
         return path;
     }
@@ -285,11 +290,15 @@ function arc(x, y, w, h, options) {
     // splicing in arc segments.
     var i = path.length - 1;
     while (i--) {
+        if ((!brStart && (i === 0 || i === 3)) ||
+            (!brEnd && (i === 1 || i === 2))) {
+            continue;
+        }
         applyBorderRadius(path, i, i > 1 ? innerBorderRadius : borderRadius);
     }
     return path;
 }
-/** @private */
+/** @internal */
 function seriesOnAfterColumnTranslate() {
     var _a,
         _b;
@@ -379,7 +388,7 @@ function seriesOnAfterColumnTranslate() {
         }
     }
 }
-/** @private */
+/** @internal */
 function compose(SeriesClass, SVGElementClass, SVGRendererClass) {
     var PieSeriesClass = SeriesClass.types.pie;
     if (!SVGElementClass.symbolCustomAttribs.includes('borderRadius')) {
@@ -389,21 +398,21 @@ function compose(SeriesClass, SVGElementClass, SVGRendererClass) {
             order: 9
         });
         addEvent(PieSeriesClass, 'afterTranslate', pieSeriesOnAfterTranslate);
-        SVGElementClass.symbolCustomAttribs.push('borderRadius', 'brBoxHeight', 'brBoxY');
+        SVGElementClass.symbolCustomAttribs.push('borderRadius', 'brBoxHeight', 'brBoxY', 'brEnd', 'brStart');
         oldArc = symbols.arc;
         oldRoundedRect = symbols.roundedRect;
         symbols.arc = arc;
         symbols.roundedRect = roundedRect;
     }
 }
-/** @private */
+/** @internal */
 function optionsToObject(options, seriesBROptions) {
     if (!isObject(options)) {
         options = { radius: options || 0 };
     }
     return merge(defaultBorderRadiusOptions, seriesBROptions, options);
 }
-/** @private */
+/** @internal */
 function pieSeriesOnAfterTranslate() {
     var borderRadius = optionsToObject(this.options.borderRadius);
     for (var _i = 0, _a = this.points; _i < _a.length; _i++) {
@@ -416,7 +425,7 @@ function pieSeriesOnAfterTranslate() {
 }
 /**
  * Extend roundedRect with individual cutting through rOffset.
- * @private
+ * @internal
  */
 function roundedRect(x, y, width, height, options) {
     if (options === void 0) { options = {}; }
@@ -578,28 +587,30 @@ var highcharts_SeriesRegistry_commonjs_highcharts_SeriesRegistry_commonjs2_highc
 // EXTERNAL MODULE: external {"amd":["highcharts/highcharts","Color"],"commonjs":["highcharts","Color"],"commonjs2":["highcharts","Color"],"root":["Highcharts","Color"]}
 var highcharts_Color_commonjs_highcharts_Color_commonjs2_highcharts_Color_root_Highcharts_Color_ = __webpack_require__(620);
 var highcharts_Color_commonjs_highcharts_Color_commonjs2_highcharts_Color_root_Highcharts_Color_default = /*#__PURE__*/__webpack_require__.n(highcharts_Color_commonjs_highcharts_Color_commonjs2_highcharts_Color_root_Highcharts_Color_);
-;// ./code/es5/es-modules/Core/Axis/Color/ColorAxisLike.js
+;// ./code/es5/es-modules/Core/Axis/Color/ColorAxisBase.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
 
 var color = (highcharts_Color_commonjs_highcharts_Color_commonjs2_highcharts_Color_root_Highcharts_Color_default()).parse;
 
-var ColorAxisLike_merge = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).merge;
+var ColorAxisBase_merge = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).merge;
 /* *
  *
  *  Namespace
  *
  * */
-var ColorAxisLike;
-(function (ColorAxisLike) {
+/** @internal */
+var ColorAxisBase;
+(function (ColorAxisBase) {
     /* *
      *
      *  Declarations
@@ -612,7 +623,7 @@ var ColorAxisLike;
      * */
     /**
      * Initialize defined data classes.
-     * @private
+     * @internal
      */
     function initDataClasses(userOptions) {
         var axis = this,
@@ -629,7 +640,7 @@ var ColorAxisLike;
         legendItem.labels = [];
         for (var i = 0, iEnd = userDataClasses.length; i < iEnd; ++i) {
             dataClass = userDataClasses[i];
-            dataClass = ColorAxisLike_merge(dataClass);
+            dataClass = ColorAxisBase_merge(dataClass);
             dataClasses.push(dataClass);
             if (!chart.styledMode && dataClass.color) {
                 continue;
@@ -653,10 +664,10 @@ var ColorAxisLike;
             }
         }
     }
-    ColorAxisLike.initDataClasses = initDataClasses;
+    ColorAxisBase.initDataClasses = initDataClasses;
     /**
      * Create initial color stops.
-     * @private
+     * @internal
      */
     function initStops() {
         var axis = this,
@@ -671,10 +682,10 @@ var ColorAxisLike;
             stops[i].color = color(stops[i][1]);
         }
     }
-    ColorAxisLike.initStops = initStops;
+    ColorAxisBase.initStops = initStops;
     /**
      * Normalize logarithmic values.
-     * @private
+     * @internal
      */
     function normalizedValue(value) {
         var axis = this,
@@ -686,10 +697,10 @@ var ColorAxisLike;
         return 1 - ((max - value) /
             ((max - min) || 1));
     }
-    ColorAxisLike.normalizedValue = normalizedValue;
+    ColorAxisBase.normalizedValue = normalizedValue;
     /**
      * Translate from a value to a color.
-     * @private
+     * @internal
      */
     function toColor(value, point) {
         var axis = this;
@@ -734,23 +745,24 @@ var ColorAxisLike;
         }
         return color;
     }
-    ColorAxisLike.toColor = toColor;
-})(ColorAxisLike || (ColorAxisLike = {}));
+    ColorAxisBase.toColor = toColor;
+})(ColorAxisBase || (ColorAxisBase = {}));
 /* *
  *
  *  Default Export
  *
  * */
-/* harmony default export */ var Color_ColorAxisLike = (ColorAxisLike);
+/* harmony default export */ var Color_ColorAxisBase = (ColorAxisBase);
 
 ;// ./code/es5/es-modules/Core/Axis/SolidGaugeAxis.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -762,20 +774,20 @@ var SolidGaugeAxis_extend = (highcharts_commonjs_highcharts_commonjs2_highcharts
  *  Functions
  *
  * */
-/**
- * @private
- */
+/** @internal */
 function init(axis) {
-    SolidGaugeAxis_extend(axis, Color_ColorAxisLike);
+    SolidGaugeAxis_extend(axis, Color_ColorAxisBase);
 }
 /* *
  *
  *  Default export
  *
  * */
+/** @internal */
 var SolidGaugeAxis = {
     init: init
 };
+/** @internal */
 /* harmony default export */ var Axis_SolidGaugeAxis = (SolidGaugeAxis);
 
 ;// ./code/es5/es-modules/Series/SolidGauge/SolidGaugeSeriesDefaults.js
@@ -783,11 +795,12 @@ var SolidGaugeAxis = {
  *
  *  Solid angular gauge module
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -810,6 +823,19 @@ var SolidGaugeAxis = {
  * @optionparent plotOptions.solidgauge
  */
 var SolidGaugeSeriesDefaults = {
+    /**
+     * The corner radius of the border surrounding solid gauge. A number
+     * signifies pixels and percentage string, like for example `50%`,
+     * signifies a relative size.
+     *
+     * @sample {highcharts} highcharts/series-solidgauge/pane-borderradius
+     *         Solid gauge with rounded border.
+     *
+     * @type      {number | string}
+     * @since     11.0.0
+     * @product   highcharts
+     * @apioption plotOptions.solidgauge.borderRadius
+     */
     /**
      * The inner radius for points in a solid gauge. Can be given only in
      * percentage, either as a number or a string like `"50%"`.
@@ -988,11 +1014,12 @@ var SolidGaugeSeriesDefaults = {
  *
  *  Solid angular gauge module
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 

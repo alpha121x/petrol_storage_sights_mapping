@@ -1,10 +1,11 @@
 /* *
  *
- *  (c) 2009-2025 Highsoft, Black Label
+ *  (c) 2009-2026 Highsoft AS
+ *  Author: Highsoft, Black Label
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -23,6 +24,15 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
+    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
+        if (ar || !(i in from)) {
+            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
+            ar[i] = from[i];
+        }
+    }
+    return to.concat(ar || Array.prototype.slice.call(from));
+};
 import A from '../../Core/Animation/AnimationUtilities.js';
 var getDeferredAnimation = A.getDeferredAnimation;
 import AnnotationChart from './AnnotationChart.js';
@@ -49,7 +59,7 @@ var destroyObjectProperties = U.destroyObjectProperties, erase = U.erase, fireEv
  * */
 /**
  * Hide or show annotation attached to points.
- * @private
+ * @internal
  */
 function adjustVisibility(item) {
     var label = item.graphic, hasVisiblePoints = item.points.some(function (point) { return (point.series.visible !== false &&
@@ -63,9 +73,7 @@ function adjustVisibility(item) {
         }
     }
 }
-/**
- * @private
- */
+/** @internal */
 function getLabelsAndShapesOptions(baseOptions, newOptions) {
     var mergedOptions = {};
     ['labels', 'shapes'].forEach(function (name) {
@@ -91,7 +99,7 @@ function getLabelsAndShapesOptions(baseOptions, newOptions) {
 /**
  * An annotation class which serves as a container for items like labels or
  * shapes. Created items are positioned on the chart either by linking them to
- * existing points or created mock points
+ * existing points or created mock points.
  *
  * @requires modules/annotations
  *
@@ -112,6 +120,7 @@ var Annotation = /** @class */ (function (_super) {
      * */
     function Annotation(chart, userOptions) {
         var _this = _super.call(this) || this;
+        /** @internal */
         _this.coll = 'annotations';
         /**
          * The chart that the annotation belongs to.
@@ -122,14 +131,15 @@ var Annotation = /** @class */ (function (_super) {
         _this.chart = chart;
         /**
          * The array of points which defines the annotation.
-         * @private
+         *
          * @name Highcharts.Annotation#points
          * @type {Array<Highcharts.Point>}
          */
         _this.points = [];
         /**
          * The array of control points.
-         * @private
+         *
+         * @internal
          * @name Highcharts.Annotation#controlPoints
          * @type {Array<Annotation.ControlPoint>}
          */
@@ -138,14 +148,16 @@ var Annotation = /** @class */ (function (_super) {
         _this.index = -1;
         /**
          * The array of labels which belong to the annotation.
-         * @private
+         *
+         * @internal
          * @name Highcharts.Annotation#labels
          * @type {Array<Highcharts.AnnotationLabelType>}
          */
         _this.labels = [];
         /**
          * The array of shapes which belong to the annotation.
-         * @private
+         *
+         * @internal
          * @name Highcharts.Annotation#shapes
          * @type {Array<Highcharts.AnnotationShapeType>}
          */
@@ -172,7 +184,8 @@ var Annotation = /** @class */ (function (_super) {
         /**
          * The callback that reports to the overlapping labels logic which
          * labels it should account for.
-         * @private
+         *
+         * @internal
          * @name Highcharts.Annotation#labelCollector
          * @type {Function}
          */
@@ -202,9 +215,7 @@ var Annotation = /** @class */ (function (_super) {
      *  Static Functions
      *
      * */
-    /**
-     * @private
-     */
+    /** @internal */
     Annotation.compose = function (ChartClass, NavigationBindingsClass, PointerClass, SVGRendererClass) {
         AnnotationChart.compose(Annotation, ChartClass, PointerClass);
         ControllableLabel.compose(SVGRendererClass);
@@ -217,9 +228,7 @@ var Annotation = /** @class */ (function (_super) {
      *  Functions
      *
      * */
-    /**
-     * @private
-     */
+    /** @internal */
     Annotation.prototype.addClipPaths = function () {
         this.setClipAxes();
         if (this.clipXAxis &&
@@ -229,9 +238,7 @@ var Annotation = /** @class */ (function (_super) {
             this.clipRect = this.chart.renderer.clipRect(this.getClipBox());
         }
     };
-    /**
-     * @private
-     */
+    /** @internal */
     Annotation.prototype.addLabels = function () {
         var _this = this;
         var labelsOptions = (this.options.labels || []);
@@ -240,9 +247,7 @@ var Annotation = /** @class */ (function (_super) {
             merge(true, labelsOptions[i], label.options);
         });
     };
-    /**
-     * @private
-     */
+    /** @internal */
     Annotation.prototype.addShapes = function () {
         var _this = this;
         var shapes = this.options.shapes || [];
@@ -256,7 +261,8 @@ var Annotation = /** @class */ (function (_super) {
      * that the annotation belongs to (all annotations are kept in
      * the chart.annotations array) - it is recommended to use
      * {@link Highcharts.Chart#removeAnnotation} instead.
-     * @private
+     *
+     * @internal
      */
     Annotation.prototype.destroy = function () {
         var chart = this.chart, destroyItem = function (item) {
@@ -273,16 +279,14 @@ var Annotation = /** @class */ (function (_super) {
     };
     /**
      * Destroy a single item.
-     * @private
+     * @internal
      */
     Annotation.prototype.destroyItem = function (item) {
         // Erase from shapes or labels array
         erase(this[item.itemType + 's'], item);
         item.destroy();
     };
-    /**
-     * @private
-     */
+    /** @internal */
     Annotation.prototype.getClipBox = function () {
         if (this.clipXAxis && this.clipYAxis) {
             return {
@@ -295,7 +299,7 @@ var Annotation = /** @class */ (function (_super) {
     };
     /**
      * Initialize the annotation properties.
-     * @private
+     * @internal
      */
     Annotation.prototype.initProperties = function (chart, userOptions) {
         this.setOptions(userOptions);
@@ -312,7 +316,7 @@ var Annotation = /** @class */ (function (_super) {
     };
     /**
      * Initialize the annotation.
-     * @private
+     * @internal
      */
     Annotation.prototype.init = function (_annotationOrChart, _userOptions, index) {
         if (index === void 0) { index = this.index; }
@@ -326,10 +330,12 @@ var Annotation = /** @class */ (function (_super) {
         this.animationConfig = getDeferredAnimation(chart, animOptions);
     };
     /**
-     * Initialisation of a single label
-     * @private
+     * Initialization of a single label.
+     * @internal
      */
     Annotation.prototype.initLabel = function (labelOptions, index) {
+        var _a;
+        (_a = this.options.labelOptions) === null || _a === void 0 ? void 0 : _a.align;
         var options = merge(this.options.labelOptions, {
             controlPointOptions: this.options.controlPointOptions
         }, labelOptions), label = new ControllableLabel(this, options, index);
@@ -338,8 +344,9 @@ var Annotation = /** @class */ (function (_super) {
         return label;
     };
     /**
-     * Initialisation of a single shape
-     * @private
+     * Initialization of a single shape.
+     *
+     * @internal
      * @param {Object} shapeOptions
      * a config object for a single shape
      * @param {number} index
@@ -349,14 +356,12 @@ var Annotation = /** @class */ (function (_super) {
     Annotation.prototype.initShape = function (shapeOptions, index) {
         var options = merge(this.options.shapeOptions, {
             controlPointOptions: this.options.controlPointOptions
-        }, shapeOptions), shape = new (Annotation.shapesMap[options.type])(this, options, index);
+        }, shapeOptions), shape = new Annotation.shapesMap[options.type || 'rect'](this, options, index);
         shape.itemType = 'shape';
         this.shapes.push(shape);
         return shape;
     };
-    /**
-     * @private
-     */
+    /** @internal */
     Annotation.prototype.redraw = function (animation) {
         this.linkPoints();
         if (!this.graphic) {
@@ -371,7 +376,7 @@ var Annotation = /** @class */ (function (_super) {
     };
     /**
      * Redraw a single item.
-     * @private
+     * @internal
      */
     Annotation.prototype.redrawItem = function (item, animation) {
         item.linkPoints();
@@ -388,9 +393,7 @@ var Annotation = /** @class */ (function (_super) {
             }
         }
     };
-    /**
-     * @private
-     */
+    /** @internal */
     Annotation.prototype.redrawItems = function (items, animation) {
         var i = items.length;
         // Needs a backward loop. Labels/shapes array might be modified due to
@@ -401,19 +404,18 @@ var Annotation = /** @class */ (function (_super) {
     };
     /**
      * See {@link Highcharts.Chart#removeAnnotation}.
-     * @private
+     * @internal
      */
     Annotation.prototype.remove = function () {
         // Let chart.update() remove annotations on demand
         return this.chart.removeAnnotation(this);
     };
-    /**
-     * @private
-     */
+    /** @internal */
     Annotation.prototype.render = function () {
         var renderer = this.chart.renderer;
         this.graphic = renderer
             .g('annotation')
+            .addClass(this.options.className || '')
             .attr({
             opacity: 0,
             zIndex: this.options.zIndex,
@@ -446,33 +448,28 @@ var Annotation = /** @class */ (function (_super) {
         this.addEvents();
         this.renderControlPoints();
     };
-    /**
-     * @private
-     */
+    /** @internal */
     Annotation.prototype.renderItem = function (item) {
         item.render(item.itemType === 'label' ?
             this.labelsGroup :
             this.shapesGroup);
     };
-    /**
-     * @private
-     */
+    /** @internal */
     Annotation.prototype.renderItems = function (items) {
         var i = items.length;
         while (i--) {
             this.renderItem(items[i]);
         }
     };
-    /**
-     * @private
-     */
+    /** @internal */
     Annotation.prototype.setClipAxes = function () {
-        var xAxes = this.chart.xAxis, yAxes = this.chart.yAxis, linkedAxes = (this.options.labels || [])
-            .concat(this.options.shapes || [])
-            .reduce(function (axes, labelOrShape) {
+        var _a, _b;
+        var xAxes = this.chart.xAxis, yAxes = this.chart.yAxis, linkedAxes = __spreadArray(__spreadArray([], ((_a = this.options.labels) !== null && _a !== void 0 ? _a : []), true), ((_b = this.options.shapes) !== null && _b !== void 0 ? _b : []), true).reduce(function (axes, labelOrShape) {
+            var _a;
             var point = labelOrShape &&
                 (labelOrShape.point ||
-                    (labelOrShape.points && labelOrShape.points[0]));
+                    (('points' in labelOrShape) &&
+                        ((_a = labelOrShape.points) === null || _a === void 0 ? void 0 : _a[0])));
             return [
                 xAxes[point && point.xAxis] || axes[0],
                 yAxes[point && point.yAxis] || axes[1]
@@ -481,9 +478,7 @@ var Annotation = /** @class */ (function (_super) {
         this.clipXAxis = linkedAxes[0];
         this.clipYAxis = linkedAxes[1];
     };
-    /**
-     * @private
-     */
+    /** @internal */
     Annotation.prototype.setControlPointsVisibility = function (visible) {
         var setItemControlPointsVisibility = function (item) {
             item.setControlPointsVisibility(visible);
@@ -494,9 +489,7 @@ var Annotation = /** @class */ (function (_super) {
         this.shapes.forEach(setItemControlPointsVisibility);
         this.labels.forEach(setItemControlPointsVisibility);
     };
-    /**
-     * @private
-     */
+    /** @internal */
     Annotation.prototype.setLabelCollector = function () {
         var annotation = this;
         annotation.labelCollector = function () {
@@ -511,21 +504,27 @@ var Annotation = /** @class */ (function (_super) {
     };
     /**
      * Set an annotation options.
-     * @private
+     *
+     * @internal
      * @param {Highcharts.AnnotationsOptions} userOptions
      *        User options for an annotation
      */
     Annotation.prototype.setOptions = function (userOptions) {
+        var _a;
+        var _b;
         this.options = merge(
         // Shared for all annotation types
         this.defaultOptions, 
         // The static typeOptions from the class
         (userOptions.type &&
-            this.defaultOptions.types[userOptions.type]) || {}, userOptions);
+            ((_a = this.defaultOptions.types) === null || _a === void 0 ? void 0 : _a[userOptions.type])) || {}, userOptions);
+        // Safe access for `.typeOptions!`
+        (_b = this.options).typeOptions || (_b.typeOptions = {});
     };
     /**
      * Set the annotation's visibility.
-     * @private
+     *
+     * @internal
      * @param {boolean} [visible]
      * Whether to show or hide an annotation. If the param is omitted, the
      * annotation's visibility is toggled.
@@ -552,9 +551,10 @@ var Annotation = /** @class */ (function (_super) {
      *
      * @function Highcharts.Annotation#update
      *
-     * @param {Partial<Highcharts.AnnotationsOptions>} userOptions
+     * @param {Highcharts.AnnotationsOptions} userOptions
      *        New user options for the annotation.
-     *
+     * @param {boolean} [redraw]
+     *        Whether to redraw the chart's annotations.
      */
     Annotation.prototype.update = function (userOptions, redraw) {
         var chart = this.chart, labelsAndShapes = getLabelsAndShapesOptions(this.userOptions, userOptions), userOptionsIndex = chart.annotations.indexOf(this), options = merge(true, this.userOptions, userOptions);
@@ -572,20 +572,16 @@ var Annotation = /** @class */ (function (_super) {
         fireEvent(this, 'afterUpdate');
         this.isUpdating = false;
     };
-    /**
-     * @private
-     */
+    /** @internal */
     Annotation.ControlPoint = ControlPoint;
-    /**
-     * @private
-     */
+    /** @internal */
     Annotation.MockPoint = MockPoint;
     /**
      * An object uses for mapping between a shape type and a constructor.
      * To add a new shape type extend this object with type name as a key
      * and a constructor as its value.
      *
-     * @private
+     * @internal
      */
     Annotation.shapesMap = {
         'rect': ControllableRect,
@@ -594,9 +590,7 @@ var Annotation = /** @class */ (function (_super) {
         'path': ControllablePath,
         'image': ControllableImage
     };
-    /**
-     * @private
-     */
+    /** @internal */
     Annotation.types = {};
     return Annotation;
 }(EventEmitter));
@@ -606,7 +600,7 @@ defaultOptions.annotations = AnnotationDefaults;
  * List of events for `annotation.options.events` that should not be
  * added to `annotation.graphic` but to the `annotation`.
  *
- * @private
+ * @internal
  * @type {Array<string>}
  */
 Annotation.prototype.nonDOMEvents = ['add', 'afterUpdate', 'drag', 'remove'];
@@ -630,7 +624,7 @@ export default Annotation;
  * @requires modules/annotations
  */
 /**
- * @private
+ * @internal
  * @typedef {
  *          Highcharts.AnnotationControllableCircle|
  *          Highcharts.AnnotationControllableImage|
@@ -640,7 +634,7 @@ export default Annotation;
  * @requires modules/annotations
  */
 /**
- * @private
+ * @internal
  * @typedef {
  *          Highcharts.AnnotationControllableLabel
  *     } Highcharts.AnnotationLabelType
@@ -648,7 +642,7 @@ export default Annotation;
  */
 /**
  * A point-like object, a mock point or a point used in series.
- * @private
+ * @internal
  * @typedef {
  *          Highcharts.AnnotationMockPoint|
  *          Highcharts.Point
@@ -656,12 +650,16 @@ export default Annotation;
  * @requires modules/annotations
  */
 /**
- * Shape point as string, object or function.
+ * Annotation point, which can be:
+ * - a string: the ID of an existing series point,
+ * - an object: mock point options,
+ * - a function: returning either mock point options object or a point.
  *
+ * @requires modules/annotations
  * @typedef {
  *          string|
  *          Highcharts.AnnotationMockPointOptionsObject|
  *          Highcharts.AnnotationMockPointFunction
- *     } Highcharts.AnnotationShapePointOptions
+ *     } Highcharts.AnnotationMockPointOptions
  */
 (''); // Keeps doclets above in JS file

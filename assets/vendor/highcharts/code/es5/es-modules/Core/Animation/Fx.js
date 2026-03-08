@@ -1,10 +1,11 @@
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -29,7 +30,7 @@ var isNumber = U.isNumber, objectEach = U.objectEach;
  * let rect = renderer.rect(0, 0, 10, 10).add();
  * rect.animate({ width: 100 });
  *
- * @private
+ * @internal
  * @class
  * @name Highcharts.Fx
  *
@@ -49,6 +50,10 @@ var Fx = /** @class */ (function () {
      *
      * */
     function Fx(elem, options, prop) {
+        /**
+         * Current position of the animation, a value between 0 and 1.
+         * @internal
+         */
         this.pos = NaN;
         this.options = options;
         this.elem = elem;
@@ -254,7 +259,7 @@ var Fx = /** @class */ (function () {
         }
         /**
          * If shifting points, prepend a dummy point to the end path.
-         * @private
+         * @internal
          */
         function prepend(arr, other) {
             while (arr.length < fullLength) {
@@ -288,7 +293,7 @@ var Fx = /** @class */ (function () {
         }
         /**
          * Copy and append last point until the length matches the end length.
-         * @private
+         * @internal
          */
         function append(arr) {
             while (arr.length < fullLength) {
@@ -378,6 +383,7 @@ var Fx = /** @class */ (function () {
      *  Static Properties
      *
      * */
+    /** @internal */
     Fx.timers = [];
     return Fx;
 }());
@@ -386,4 +392,5 @@ var Fx = /** @class */ (function () {
  *  Default Export
  *
  * */
+/** @internal */
 export default Fx;

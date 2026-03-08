@@ -2,11 +2,12 @@
  *
  *  Popup generator for Stock tools
  *
- *  (c) 2009-2025 Sebastian Bochan
+ *  (c) 2009-2026 Highsoft AS
+ *  Author: Sebastian Bochan
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -24,7 +25,7 @@ var addEvent = U.addEvent, createElement = U.createElement, defined = U.defined,
  * */
 /**
  * Enum for properties which should have dropdown list.
- * @private
+ * @internal
  */
 var DropdownProperties;
 (function (DropdownProperties) {
@@ -33,7 +34,7 @@ var DropdownProperties;
 })(DropdownProperties || (DropdownProperties = {}));
 /**
  * List of available algorithms for the specific indicator.
- * @private
+ * @internal
  */
 var dropdownParameters = {
     'algorithm-pivotpoints': ['standard', 'fibonacci', 'camarilla'],
@@ -46,7 +47,8 @@ var dropdownParameters = {
  * */
 /**
  * Create two columns (divs) in HTML.
- * @private
+ *
+ * @internal
  * @param {Highcharts.HTMLDOMElement} container
  * Container of columns
  * @return {Highcharts.Dictionary<Highcharts.HTMLDOMElement>}
@@ -73,7 +75,7 @@ function addColsContainer(container) {
 /**
  * Create indicator's form. It contains two tabs (ADD and EDIT) with
  * content.
- * @private
+ * @internal
  */
 function addForm(chart, _options, callback) {
     var lang = this.lang;
@@ -107,7 +109,8 @@ function addForm(chart, _options, callback) {
  * fields are added:
  * - hidden input - contains indicator type (required for callback)
  * - select - list of series which can be linked with indicator
- * @private
+ *
+ * @internal
  * @param {Highcharts.Chart} chart
  * Chart
  * @param {Highcharts.Series} series
@@ -143,7 +146,7 @@ function addFormFields(chart, series, seriesType, rhsColWrapper) {
  * Create HTML list of all indicators (ADD mode) or added indicators
  * (EDIT mode).
  *
- * @private
+ * @internal
  *
  * @param {Highcharts.AnnotationChart} chart
  *        The chart object.
@@ -244,7 +247,8 @@ function addIndicatorList(chart, parentDiv, listType, filter) {
  * Recurrent function which lists all fields, from params object and
  * create them as inputs. Each input has unique `data-name` attribute,
  * which keeps chain of fields i.e params.styles.fontSize.
- * @private
+ *
+ * @internal
  * @param {Highcharts.Chart} chart
  * Chart
  * @param {string} parentNode
@@ -298,7 +302,7 @@ function addParamInputs(chart, parentNode, fields, type, parentDiv) {
 /**
  * Add searchbox HTML element and its' label.
  *
- * @private
+ * @internal
  *
  * @param {Highcharts.AnnotationChart} chart
  *        The chart object.
@@ -350,7 +354,7 @@ function addSearchBox(chart, parentDiv) {
 /**
  * Add selection HTML element and its' label.
  *
- * @private
+ * @internal
  *
  * @param {string} indicatorType
  * Type of the indicator i.e. sma, ema...
@@ -379,7 +383,7 @@ function addSelection(indicatorType, optionName, parentDiv) {
 /**
  * Get and add selection options.
  *
- * @private
+ * @internal
  *
  * @param {Highcharts.AnnotationChart} chart
  *        The chart object.
@@ -441,7 +445,7 @@ function addSelectionOptions(chart, optionName, selectBox, indicatorType, parame
  * Filter object of series which are not indicators.
  * If the filter string exists, check against it.
  *
- * @private
+ * @internal
  *
  * @param {Highcharts.FilteredSeries} series
  *        All series are available in the plotOptions.
@@ -496,7 +500,7 @@ function filterSeries(series, filter) {
 /**
  * Filter an array of series and map its names and types.
  *
- * @private
+ * @internal
  *
  * @param {Highcharts.FilteredSeries} series
  *        All series that are available in the plotOptions.
@@ -520,7 +524,8 @@ function filterSeriesArray(series) {
 }
 /**
  * Get amount of indicators added to chart.
- * @private
+ *
+ * @internal
  * @return {number} - Amount of indicators
  */
 function getAmount() {
@@ -536,7 +541,7 @@ function getAmount() {
 /**
  * Extract full name and type of requested indicator.
  *
- * @private
+ * @internal
  *
  * @param {Highcharts.Series} series
  * Series which name is needed(EDITmode - defaultOptions.series,
@@ -568,7 +573,7 @@ function getNameType(series, indicatorType) {
  * Create the selection box for the series,
  * add options and apply the default one.
  *
- * @private
+ * @internal
  *
  * @param {string} indicatorType
  *        Type of the indicator i.e. sma, ema...
@@ -605,8 +610,10 @@ function listAllSeries(indicatorType, optionName, chart, parentDiv, currentSerie
  *  Default Export
  *
  * */
+/** @internal */
 var PopupIndicators = {
     addForm: addForm,
     getAmount: getAmount
 };
+/** @internal */
 export default PopupIndicators;

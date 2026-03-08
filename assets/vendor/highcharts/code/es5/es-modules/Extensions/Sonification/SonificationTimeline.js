@@ -1,25 +1,25 @@
 /* *
  *
- *  (c) 2009-2025 Øystein Moseng
+ *  (c) 2009-2026 Highsoft AS
+ *  Author: Øystein Moseng
  *
  *  Class representing a Timeline with sonification events to play.
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
 import TimelineChannel from './TimelineChannel.js';
 import toMIDI from './MIDI.js';
-import DU from '../DownloadURL.js';
-var downloadURL = DU.downloadURL;
+import { downloadURL } from '../../Shared/DownloadURL.js';
 import U from '../../Core/Utilities.js';
 var defined = U.defined, find = U.find, merge = U.merge;
 /**
  * Get filtered channels. Timestamps are compensated, so that the first
  * event starts immediately.
- * @private
+ * @internal
  */
 function filterChannels(filter, channels) {
     var filtered = channels.map(function (channel) {
@@ -41,7 +41,7 @@ function filterChannels(filter, channels) {
  * The SonificationTimeline class. This class represents a timeline of
  * audio events scheduled to play. It provides functionality for manipulating
  * and navigating the timeline.
- * @private
+ * @internal
  */
 var SonificationTimeline = /** @class */ (function () {
     function SonificationTimeline(options, chart) {

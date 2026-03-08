@@ -2,13 +2,13 @@
  *
  *  This module implements sunburst charts in Highcharts.
  *
- *  (c) 2016-2025 Highsoft AS
+ *  (c) 2016-2026 Highsoft AS
  *
  *  Authors: Jon Arild Nygard
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -27,6 +27,17 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 import CU from '../CenteredUtilities.js';
 var getCenter = CU.getCenter, getStartAndEndRadians = CU.getStartAndEndRadians;
 import H from '../../Core/Globals.js';
@@ -403,14 +414,11 @@ var SunburstSeries = /** @class */ (function (_super) {
         if (hackDataLabelAnimation) {
             series.dataLabelsGroup.attr({ opacity: 0 });
             animateLabels = function () {
-                var s = series;
                 animateLabelsCalled = true;
-                if (s.dataLabelsGroup) {
-                    s.dataLabelsGroup.animate({
-                        opacity: 1,
-                        visibility: 'inherit'
-                    });
-                }
+                series.dataLabelsGroup.animate({
+                    opacity: 1,
+                    visibility: 'inherit'
+                });
             };
         }
         for (var _i = 0, points_1 = points; _i < points_1.length; _i++) {
@@ -455,12 +463,12 @@ var SunburstSeries = /** @class */ (function (_super) {
                 isInside: visible,
                 isNull: !visible // Used for dataLabels & point.draw
             });
-            point.dlOptions = getDlOptions({
+            point.dlOptions = __assign(__assign({}, getDlOptions({
                 point: point,
                 level: level,
                 optionsPoint: point.options,
                 shapeArgs: shape
-            });
+            })), { zIndex: void 0 });
             if (!addedHack && visible) {
                 addedHack = true;
                 onComplete = animateLabels;
@@ -485,7 +493,7 @@ var SunburstSeries = /** @class */ (function (_super) {
             // If animateLabels is called before labels were hidden, then call
             // it again.
             if (animateLabelsCalled) {
-                animateLabels();
+                animateLabels === null || animateLabels === void 0 ? void 0 : animateLabels();
             }
         }
         else {

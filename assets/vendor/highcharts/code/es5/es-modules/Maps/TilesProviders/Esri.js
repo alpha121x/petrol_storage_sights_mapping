@@ -7,6 +7,7 @@
  *  Class
  *
  * */
+/** @internal */
 var Esri = /** @class */ (function () {
     function Esri() {
         /* *
@@ -89,4 +90,5 @@ var Esri = /** @class */ (function () {
  *  Default Export
  *
  * */
+/** @internal */
 export default Esri;

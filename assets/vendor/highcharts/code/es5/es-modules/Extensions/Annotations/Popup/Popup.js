@@ -2,11 +2,12 @@
  *
  *  Popup generator for Stock tools
  *
- *  (c) 2009-2025 Sebastian Bochan
+ *  (c) 2009-2026 Highsoft AS
+ *  Author: Sebastian Bochan
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -43,7 +44,7 @@ var addEvent = U.addEvent, createElement = U.createElement, extend = U.extend, f
 /**
  * Get values from all inputs and selections then create JSON.
  *
- * @private
+ * @internal
  *
  * @param {Highcharts.HTMLDOMElement} parentDiv
  * The container where inputs and selections are created.
@@ -92,6 +93,7 @@ function getFields(parentDiv, type) {
  *  Class
  *
  * */
+/** @internal */
 var Popup = /** @class */ (function (_super) {
     __extends(Popup, _super);
     /* *
@@ -126,8 +128,6 @@ var Popup = /** @class */ (function (_super) {
      * */
     /**
      * Create input with label.
-     *
-     * @private
      *
      * @param {string} option
      *        Chain of fields i.e params.styles.fontSize separated by the dot.
@@ -178,7 +178,7 @@ var Popup = /** @class */ (function (_super) {
     };
     /**
      * Create button.
-     * @private
+     *
      * @param {Highcharts.HTMLDOMElement} parentDiv
      * Container where elements should be added
      * @param {string} label
@@ -208,7 +208,7 @@ var Popup = /** @class */ (function (_super) {
     };
     /**
      * Create content and show popup.
-     * @private
+     *
      * @param {string} - type of popup i.e indicators
      * @param {Highcharts.Chart} - chart
      * @param {Highcharts.AnnotationsOptions} - options
@@ -252,4 +252,5 @@ extend(Popup.prototype, {
  *  Default Export
  *
  * */
+/** @internal */
 export default Popup;

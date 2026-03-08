@@ -1,10 +1,11 @@
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -53,7 +54,7 @@ var tileSize = 256;
 /**
  * The world size in terms of 10k meters in the Web Mercator projection, to
  * match a 256 square tile to zoom level 0.
- * @private
+ * @internal
  */
 var worldSize = 400.979322;
 /* *
@@ -70,7 +71,7 @@ var maps = {};
 /**
  * Compute the zoom from given bounds and the size of the playing field. Used in
  * two places, hence the local function.
- * @private
+ * @internal
  */
 function zoomFromBounds(b, playingField) {
     var width = playingField.width, height = playingField.height, scaleToField = Math.max((b.x2 - b.x1) / (width / tileSize), (b.y2 - b.y1) / (height / tileSize));
@@ -79,7 +80,7 @@ function zoomFromBounds(b, playingField) {
 /**
  * Calculate and set the recommended map view drilldown or drillup if mapData
  * is set for the series.
- * @private
+ * @internal
  */
 function recommendedMapViewAfterDrill(e) {
     var _a, _b;
@@ -146,10 +147,15 @@ var MapView = /** @class */ (function () {
          *  Properties
          *
          * */
+        /** @internal */
         this.allowTransformAnimation = true;
+        /** @internal */
         this.eventsToUnbind = [];
+        /** @internal */
         this.insets = [];
+        /** @internal */
         this.padding = [0, 0, 0, 0];
+        /** @internal */
         this.recommendedMapView = {};
         if (!(this instanceof MapViewInset)) {
             this.recommendMapView(chart, __spreadArray([
@@ -212,6 +218,7 @@ var MapView = /** @class */ (function () {
      *  Static Functions
      *
      * */
+    /** @internal */
     MapView.compose = function (MapChartClass) {
         if (pushUnique(composed, 'MapView')) {
             maps = MapChartClass.maps;
@@ -232,7 +239,7 @@ var MapView = /** @class */ (function () {
     };
     /**
      * Return the composite bounding box of a collection of bounding boxes
-     * @private
+     * @internal
      */
     MapView.compositeBounds = function (arrayOfBounds) {
         if (arrayOfBounds.length) {
@@ -250,7 +257,7 @@ var MapView = /** @class */ (function () {
     };
     /**
      * Merge two collections of insets by the id.
-     * @private
+     * @internal
      */
     MapView.mergeInsets = function (a, b) {
         var toObject = function (insets) {
@@ -272,7 +279,7 @@ var MapView = /** @class */ (function () {
      * */
     /**
      * Create MapViewInset instances from insets options
-     * @private
+     * @internal
      */
     MapView.prototype.createInsets = function () {
         var _this = this;
@@ -285,13 +292,13 @@ var MapView = /** @class */ (function () {
         }
     };
     /**
-     * Fit the view to given bounds
+     * Fit the view to the given bounds.
      *
      * @function Highcharts.MapView#fitToBounds
-     * @param {Object} bounds
+     * @param {Highcharts.MapBounds} bounds
      *        Bounds in terms of projected units given as  `{ x1, y1, x2, y2 }`.
      *        If not set, fit to the bounds of the current data set
-     * @param {number|string} [padding=0]
+     * @param {Highcharts.MapViewPaddingType} [padding=0]
      *        Padding inside the bounds. A number signifies pixels, while a
      *        percentage string (like `5%`) can be used as a fraction of the
      *        plot area size.
@@ -325,6 +332,7 @@ var MapView = /** @class */ (function () {
             this.setView(center, zoom, redraw, animation);
         }
     };
+    /** @internal */
     MapView.prototype.getField = function (padded) {
         if (padded === void 0) { padded = true; }
         var padding = padded ? this.padding : [0, 0, 0, 0];
@@ -335,6 +343,7 @@ var MapView = /** @class */ (function () {
             height: this.chart.plotHeight - padding[0] - padding[2]
         };
     };
+    /** @internal */
     MapView.prototype.getGeoMap = function (map) {
         if (isString(map)) {
             if (maps[map] && maps[map].type === 'Topology') {
@@ -351,6 +360,7 @@ var MapView = /** @class */ (function () {
             }
         }
     };
+    /** @internal */
     MapView.prototype.getMapBBox = function () {
         var bounds = this.getProjectedBounds(), scale = this.getScale();
         if (bounds) {
@@ -368,6 +378,7 @@ var MapView = /** @class */ (function () {
             };
         }
     };
+    /** @internal */
     MapView.prototype.getProjectedBounds = function () {
         var projection = this.projection;
         var allBounds = this.chart.series.reduce(function (acc, s) {
@@ -402,12 +413,16 @@ var MapView = /** @class */ (function () {
         }
         return this.projection.bounds || MapView.compositeBounds(allBounds);
     };
+    /** @internal */
     MapView.prototype.getScale = function () {
         // A zoom of 0 means the world (360x360 degrees) fits in a 256x256 px
         // tile
         return (tileSize / worldSize) * Math.pow(2, this.zoom);
     };
-    // Calculate the SVG transform to be applied to series groups
+    /**
+     * Calculate the SVG transform to be applied to series groups.
+     * @internal
+     */
     MapView.prototype.getSVGTransform = function () {
         var _a = this.playingField, x = _a.x, y = _a.y, width = _a.width, height = _a.height, projectedCenter = this.projection.forward(this.center), flipFactor = this.projection.hasCoordinates ? -1 : 1, scaleX = this.getScale(), scaleY = scaleX * flipFactor, translateX = x + width / 2 - projectedCenter[0] * scaleX, translateY = y + height / 2 - projectedCenter[1] * scaleY;
         return { scaleX: scaleX, scaleY: scaleY, translateX: translateX, translateY: translateY };
@@ -476,6 +491,33 @@ var MapView = /** @class */ (function () {
         }
     };
     /**
+     * Convert pixel position to longitude and latitude.
+     *
+     * @function Highcharts.MapView#pixelsToLonLat
+     * @since 10.0.0
+     * @param  {Highcharts.PositionObject} pos
+     *         The position in pixels
+     * @return {Highcharts.MapLonLatObject|undefined}
+     *         The map coordinates
+     */
+    MapView.prototype.pixelsToLonLat = function (pos) {
+        return this.projectedUnitsToLonLat(this.pixelsToProjectedUnits(pos));
+    };
+    /**
+     * Convert pixel position to projected units
+     *
+     * @function Highcharts.MapView#pixelsToProjectedUnits
+     * @param {Highcharts.PositionObject} pos
+     *        The position in pixels
+     * @return {Highcharts.PositionObject} The position in projected units
+     */
+    MapView.prototype.pixelsToProjectedUnits = function (pos) {
+        var x = pos.x, y = pos.y, scale = this.getScale(), projectedCenter = this.projection.forward(this.center), field = this.playingField, centerPxX = field.x + field.width / 2, centerPxY = field.y + field.height / 2;
+        var projectedX = projectedCenter[0] + (x - centerPxX) / scale;
+        var projectedY = projectedCenter[1] - (y - centerPxY) / scale;
+        return { x: projectedX, y: projectedY };
+    };
+    /**
      * Calculate longitude/latitude values for a point or position. Returns an
      * object with the numeric properties `lon` and `lat`.
      *
@@ -520,6 +562,20 @@ var MapView = /** @class */ (function () {
         }
         var coordinates = this.projection.inverse([point.x, point.y]);
         return { lon: coordinates[0], lat: coordinates[1] };
+    };
+    /**
+     * Convert projected units to pixel position
+     *
+     * @function Highcharts.MapView#projectedUnitsToPixels
+     * @param {Highcharts.PositionObject} pos
+     *        The position in projected units
+     * @return {Highcharts.PositionObject} The position in pixels
+     */
+    MapView.prototype.projectedUnitsToPixels = function (pos) {
+        var scale = this.getScale(), projectedCenter = this.projection.forward(this.center), field = this.playingField, centerPxX = field.x + field.width / 2, centerPxY = field.y + field.height / 2;
+        var x = centerPxX - scale * (projectedCenter[0] - pos.x);
+        var y = centerPxY + scale * (projectedCenter[1] - pos.y);
+        return { x: x, y: y };
     };
     /**
      * Calculate and set the recommended map view based on provided map data
@@ -610,6 +666,7 @@ var MapView = /** @class */ (function () {
             this.update(this.recommendedMapView);
         }
     };
+    /** @internal */
     MapView.prototype.redraw = function (animation) {
         this.chart.series.forEach(function (s) {
             if (s.useMapGeometry) {
@@ -715,47 +772,7 @@ var MapView = /** @class */ (function () {
             this.redraw(animation);
         }
     };
-    /**
-     * Convert projected units to pixel position
-     *
-     * @function Highcharts.MapView#projectedUnitsToPixels
-     * @param {Highcharts.PositionObject} pos
-     *        The position in projected units
-     * @return {Highcharts.PositionObject} The position in pixels
-     */
-    MapView.prototype.projectedUnitsToPixels = function (pos) {
-        var scale = this.getScale(), projectedCenter = this.projection.forward(this.center), field = this.playingField, centerPxX = field.x + field.width / 2, centerPxY = field.y + field.height / 2;
-        var x = centerPxX - scale * (projectedCenter[0] - pos.x);
-        var y = centerPxY + scale * (projectedCenter[1] - pos.y);
-        return { x: x, y: y };
-    };
-    /**
-     * Convert pixel position to longitude and latitude.
-     *
-     * @function Highcharts.MapView#pixelsToLonLat
-     * @since 10.0.0
-     * @param  {Highcharts.PositionObject} pos
-     *         The position in pixels
-     * @return {Highcharts.MapLonLatObject|undefined}
-     *         The map coordinates
-     */
-    MapView.prototype.pixelsToLonLat = function (pos) {
-        return this.projectedUnitsToLonLat(this.pixelsToProjectedUnits(pos));
-    };
-    /**
-     * Convert pixel position to projected units
-     *
-     * @function Highcharts.MapView#pixelsToProjectedUnits
-     * @param {Highcharts.PositionObject} pos
-     *        The position in pixels
-     * @return {Highcharts.PositionObject} The position in projected units
-     */
-    MapView.prototype.pixelsToProjectedUnits = function (pos) {
-        var x = pos.x, y = pos.y, scale = this.getScale(), projectedCenter = this.projection.forward(this.center), field = this.playingField, centerPxX = field.x + field.width / 2, centerPxY = field.y + field.height / 2;
-        var projectedX = projectedCenter[0] + (x - centerPxX) / scale;
-        var projectedY = projectedCenter[1] - (y - centerPxY) / scale;
-        return { x: projectedX, y: projectedY };
-    };
+    /** @internal */
     MapView.prototype.setUpEvents = function () {
         var _this = this;
         var chart = this.chart;
@@ -868,6 +885,7 @@ var MapView = /** @class */ (function () {
             }
         });
     };
+    /** @internal */
     MapView.prototype.render = function () {
         // We need a group for the insets
         if (!this.group) {
@@ -1029,7 +1047,7 @@ var MapViewInset = /** @class */ (function (_super) {
      * */
     /**
      * Get the playing field in pixels
-     * @private
+     * @internal
      */
     MapViewInset.prototype.getField = function (padded) {
         if (padded === void 0) { padded = true; }
@@ -1050,7 +1068,7 @@ var MapViewInset = /** @class */ (function (_super) {
     };
     /**
      * Get the hit zone in pixels.
-     * @private
+     * @internal
      */
     MapViewInset.prototype.getHitZone = function () {
         var _a = this, chart = _a.chart, mapView = _a.mapView, options = _a.options, coordinates = (options.field || {}).coordinates;
@@ -1071,13 +1089,14 @@ var MapViewInset = /** @class */ (function (_super) {
             };
         }
     };
+    /** @internal */
     MapViewInset.prototype.getProjectedBounds = function () {
         return MapView.compositeBounds(this.allBounds);
     };
     /**
      * Determine whether a point on the main projected plane is inside the
      * geoBounds of the inset.
-     * @private
+     * @internal
      */
     MapViewInset.prototype.isInside = function (point) {
         var _a = this, geoBoundsProjectedBox = _a.geoBoundsProjectedBox, geoBoundsProjectedPolygon = _a.geoBoundsProjectedPolygon;
@@ -1097,7 +1116,7 @@ var MapViewInset = /** @class */ (function (_super) {
     };
     /**
      * Render the map view inset with the border path
-     * @private
+     * @internal
      */
     MapViewInset.prototype.render = function () {
         var _a = this, chart = _a.chart, mapView = _a.mapView, options = _a.options, borderPath = options.borderPath || options.field;
@@ -1135,6 +1154,7 @@ var MapViewInset = /** @class */ (function (_super) {
             this.border[animate ? 'animate' : 'attr']({ d: d });
         }
     };
+    /** @internal */
     MapViewInset.prototype.destroy = function () {
         if (this.border) {
             this.border = this.border.destroy();
@@ -1143,7 +1163,7 @@ var MapViewInset = /** @class */ (function (_super) {
     };
     /**
      * No chart-level events for insets
-     * @private
+     * @internal
      */
     MapViewInset.prototype.setUpEvents = function () { };
     return MapViewInset;
@@ -1154,3 +1174,14 @@ var MapViewInset = /** @class */ (function (_super) {
  *
  * */
 export default MapView;
+/* *
+ *
+ *  API Declarations
+ *
+ * */
+/**
+ * Possible values for the specific `relativeTo` option.
+ *
+ * @typedef {"mapBoundingBox"|"plotBox"} Highcharts.MapViewInsetOptionsRelativeToValue
+ */
+''; // Keeps doclets above in JS file

@@ -1,10 +1,11 @@
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -442,7 +443,7 @@ var ColumnSeries = /** @class */ (function (_super) {
      * @function Highcharts.seriesTypes.column#pointAttribs
      */
     ColumnSeries.prototype.pointAttribs = function (point, state) {
-        var _a, _b;
+        var _a, _b, _c;
         var options = this.options, p2o = this.pointAttrToOptions || {}, strokeOption = p2o.stroke || 'borderColor', strokeWidthOption = p2o['stroke-width'] || 'borderWidth';
         var stateOptions, zone, brightness, fill = (point && point.color) || this.color, 
         // Set to fill when borderColor null:
@@ -471,9 +472,7 @@ var ColumnSeries = /** @class */ (function (_super) {
         if (state && point) {
             stateOptions = merge(options.states[state], 
             // #6401
-            point.options.states &&
-                point.options.states[state] ||
-                {});
+            ((_c = point.options.states) === null || _c === void 0 ? void 0 : _c[state]) || {});
             brightness = stateOptions.brightness;
             fill =
                 stateOptions.color || (typeof brightness !== 'undefined' &&
@@ -567,6 +566,7 @@ var ColumnSeries = /** @class */ (function (_super) {
      * @private
      */
     ColumnSeries.prototype.drawTracker = function (points) {
+        var _a;
         if (points === void 0) { points = this.points; }
         var series = this, chart = series.chart, pointer = chart.pointer, onMouseOver = function (e) {
             pointer === null || pointer === void 0 ? void 0 : pointer.normalize(e);
@@ -600,20 +600,27 @@ var ColumnSeries = /** @class */ (function (_super) {
         });
         // Add the event listeners, we need to do this only once
         if (!series._hasTracking) {
-            series.trackerGroups.forEach(function (key) {
-                if (series[key]) {
-                    // We don't always have dataLabelsGroup
-                    series[key]
-                        .addClass('highcharts-tracker')
-                        .on('mouseover', onMouseOver)
-                        .on('mouseout', function (e) {
-                        pointer === null || pointer === void 0 ? void 0 : pointer.onTrackerMouseOut(e);
-                    })
-                        .on('touchstart', onMouseOver);
-                    if (!chart.styledMode && series.options.cursor) {
-                        series[key]
-                            .css({ cursor: series.options.cursor });
-                    }
+            (_a = series.trackerGroups) === null || _a === void 0 ? void 0 : _a.reduce(function (acc, key) {
+                if (key === 'dataLabelsGroup') {
+                    acc.push.apply(acc, (series.dataLabelsGroups || []));
+                }
+                else {
+                    acc.push(series[key]);
+                }
+                return acc;
+            }, []).forEach(function (group) {
+                if (!group) {
+                    // Skip undefined
+                    return;
+                }
+                group.addClass('highcharts-tracker')
+                    .on('mouseover', onMouseOver)
+                    .on('mouseout', function (e) {
+                    pointer === null || pointer === void 0 ? void 0 : pointer.onTrackerMouseOut(e);
+                })
+                    .on('touchstart', onMouseOver);
+                if (!chart.styledMode && series.options.cursor) {
+                    group.css({ cursor: series.options.cursor });
                 }
             });
             series._hasTracking = true;

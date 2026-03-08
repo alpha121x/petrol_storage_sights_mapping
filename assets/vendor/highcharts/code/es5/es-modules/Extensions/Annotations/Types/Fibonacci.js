@@ -1,6 +1,5 @@
 /* *
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -19,6 +18,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+var _a;
 import Annotation from '../Annotation.js';
 import D from '../../../Core/Defaults.js';
 var defaultOptions = D.defaultOptions;
@@ -26,7 +26,7 @@ import MockPoint from '../MockPoint.js';
 import Tunnel from './Tunnel.js';
 import U from '../../../Core/Utilities.js';
 var merge = U.merge;
-if (defaultOptions.annotations) {
+if ((_a = defaultOptions.annotations) === null || _a === void 0 ? void 0 : _a.types) {
     defaultOptions.annotations.types.fibonacci = merge(defaultOptions.annotations.types.tunnel, 
     /**
      * Options for the fibonacci annotation type.
@@ -57,7 +57,7 @@ if (defaultOptions.annotations) {
             height: 2,
             /**
              * An array of background colors:
-             * Default to:
+             * Defaults to:
              * ```
              * [
              * 'rgba(130, 170, 255, 0.4)',
@@ -115,9 +115,7 @@ if (defaultOptions.annotations) {
  *  Functions
  *
  * */
-/**
- * @private
- */
+/** @internal */
 function createPathDGenerator(retracementIndex, isBackground) {
     return function () {
         var annotation = this.annotation;
@@ -141,6 +139,7 @@ function createPathDGenerator(retracementIndex, isBackground) {
  *  Class
  *
  * */
+/** @internal */
 var Fibonacci = /** @class */ (function (_super) {
     __extends(Fibonacci, _super);
     function Fibonacci() {

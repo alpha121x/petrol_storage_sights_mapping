@@ -1,10 +1,11 @@
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -129,10 +130,10 @@ var MapSeries = /** @class */ (function (_super) {
      * @private
      */
     MapSeries.prototype.drawMapDataLabels = function () {
+        var _this = this;
+        var _a;
         _super.prototype.drawDataLabels.call(this);
-        if (this.dataLabelsGroup) {
-            this.dataLabelsGroup.clip(this.chart.clipRect);
-        }
+        (_a = this.dataLabelsGroups) === null || _a === void 0 ? void 0 : _a.forEach(function (g) { return g === null || g === void 0 ? void 0 : g.clip(_this.chart.clipRect); });
     };
     /**
      * Use the drawPoints method of column, that is able to handle simple
@@ -402,8 +403,8 @@ var MapSeries = /** @class */ (function (_super) {
      * @private
      */
     MapSeries.prototype.pointAttribs = function (point, state) {
-        var _a;
-        var _b = point.series.chart, mapView = _b.mapView, styledMode = _b.styledMode;
+        var _a, _b, _c;
+        var _d = point.series.chart, mapView = _d.mapView, styledMode = _d.styledMode;
         var attr = styledMode ?
             this.colorAttribs(point) :
             ColumnSeries.prototype.pointAttribs.call(this, point, state);
@@ -411,14 +412,11 @@ var MapSeries = /** @class */ (function (_super) {
         var pointStrokeWidth = this.getStrokeWidth(point.options);
         // Handle state specific border or line width
         if (state) {
-            var stateOptions = merge(this.options.states &&
-                this.options.states[state], point.options.states &&
-                point.options.states[state] ||
-                {}), stateStrokeWidth = this.getStrokeWidth(stateOptions);
+            var stateOptions = merge((_a = this.options.states) === null || _a === void 0 ? void 0 : _a[state], ((_b = point.options.states) === null || _b === void 0 ? void 0 : _b[state]) || {}), stateStrokeWidth = this.getStrokeWidth(stateOptions);
             if (defined(stateStrokeWidth)) {
                 pointStrokeWidth = stateStrokeWidth;
             }
-            attr.stroke = (_a = stateOptions.borderColor) !== null && _a !== void 0 ? _a : point.color;
+            attr.stroke = (_c = stateOptions.borderColor) !== null && _c !== void 0 ? _c : point.color;
         }
         if (pointStrokeWidth && mapView) {
             pointStrokeWidth /= mapView.getScale();
@@ -437,6 +435,11 @@ var MapSeries = /** @class */ (function (_super) {
         // mapData.
         if (!point.visible) {
             attr.fill = this.options.nullColor;
+        }
+        // Set opacity: if point is null and nullInteraction is true, force
+        // opacity 1. Otherwise use point/series opacity or default 1 (#23019)
+        if (point.isNull && this.options.nullInteraction) {
+            attr.opacity = 1;
         }
         if (defined(pointStrokeWidth)) {
             attr['stroke-width'] = pointStrokeWidth;

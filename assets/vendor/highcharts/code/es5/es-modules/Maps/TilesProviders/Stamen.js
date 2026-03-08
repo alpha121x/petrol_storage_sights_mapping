@@ -7,6 +7,7 @@
  *  Class
  *
  * */
+/** @internal */
 var Stamen = /** @class */ (function () {
     function Stamen() {
         /* *
@@ -65,4 +66,5 @@ var Stamen = /** @class */ (function () {
  *  Default Export
  *
  * */
+/** @internal */
 export default Stamen;

@@ -1,10 +1,11 @@
 /* *
  *
- *  (c) 2010-2025 Hubert Kozik, Kamil Musiałowski
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Hubert Kozik, Kamil Musiałowski
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -27,7 +28,7 @@ import H from '../../Core/Globals.js';
 var composed = H.composed;
 import SeriesRegistry from '../../Core/Series/SeriesRegistry.js';
 var MapSeries = SeriesRegistry.seriesTypes.map;
-import TilesProvidersRegistry from '../../Maps/TilesProviders/TilesProviderRegistry.js';
+import TilesProviderRegistry from '../../Maps/TilesProviders/TilesProviderRegistry.js';
 import TiledWebMapSeriesDefaults from './TiledWebMapSeriesDefaults.js';
 import U from '../../Core/Utilities.js';
 var addEvent = U.addEvent, defined = U.defined, error = U.error, merge = U.merge, pick = U.pick, pushUnique = U.pushUnique;
@@ -40,7 +41,7 @@ var addEvent = U.addEvent, defined = U.defined, error = U.error, merge = U.merge
 function onRecommendMapView(e) {
     var geoBounds = e.geoBounds, chart = e.chart, twm = (chart.options.series || []).filter(function (s) { return s.type === 'tiledwebmap'; })[0];
     if (twm && twm.provider && twm.provider.type && !twm.provider.url) {
-        var ProviderDefinition = TilesProvidersRegistry[twm.provider.type];
+        var ProviderDefinition = TilesProviderRegistry[twm.provider.type];
         if (!defined(ProviderDefinition)) {
             error('Highcharts warning: Tiles Provider not defined in the ' +
                 'Provider Registry.', false);
@@ -207,7 +208,7 @@ var TiledWebMapSeries = /** @class */ (function (_super) {
             ((tileSize / worldSize) * Math.pow(2, zoomFloor)), scaledTileSize = scale * 256;
         if (provider && (provider.type || provider.url)) {
             if (provider.type && !provider.url) {
-                var ProviderDefinition = TilesProvidersRegistry[provider.type];
+                var ProviderDefinition = TilesProviderRegistry[provider.type];
                 if (!defined(ProviderDefinition)) {
                     error('Highcharts warning: Tiles Provider \'' +
                         provider.type + '\' not defined in the Provider' +
@@ -496,9 +497,9 @@ var TiledWebMapSeries = /** @class */ (function (_super) {
                 'Provider Registry.', false);
         }
     };
-    TiledWebMapSeries.prototype.update = function () {
+    TiledWebMapSeries.prototype.update = function (options) {
         var _a;
-        var series = this, transformGroups = series.transformGroups, chart = this.chart, mapView = chart.mapView, options = arguments[0], provider = options.provider;
+        var transformGroups = this.transformGroups, chart = this.chart, mapView = chart.mapView, provider = options.provider;
         if (transformGroups) {
             transformGroups.forEach(function (group) {
                 if (Object.keys(group).length !== 0) {
@@ -509,19 +510,17 @@ var TiledWebMapSeries = /** @class */ (function (_super) {
         }
         if (mapView &&
             !defined((_a = chart.userOptions.mapView) === null || _a === void 0 ? void 0 : _a.projection) &&
-            provider &&
-            provider.type) {
-            var ProviderDefinition = TilesProvidersRegistry[provider.type];
+            (provider === null || provider === void 0 ? void 0 : provider.type)) {
+            var ProviderDefinition = TilesProviderRegistry[provider.type];
             if (ProviderDefinition) {
-                var def = new ProviderDefinition(), providerProjectionName = def.initialProjectionName;
                 mapView.update({
                     projection: {
-                        name: providerProjectionName
+                        name: (new ProviderDefinition()).initialProjectionName
                     }
                 });
             }
         }
-        _super.prototype.update.apply(series, arguments);
+        _super.prototype.update.apply(this, arguments);
     };
     TiledWebMapSeries.defaultOptions = merge(MapSeries.defaultOptions, TiledWebMapSeriesDefaults);
     return TiledWebMapSeries;

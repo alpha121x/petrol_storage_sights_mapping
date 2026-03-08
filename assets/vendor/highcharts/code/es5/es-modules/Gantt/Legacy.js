@@ -1,11 +1,11 @@
 /* *
  *
- *  (c) 2016 Highsoft AS
+ *  (c) 2016-2026 Highsoft AS
  *  Authors: Øystein Moseng, Lars A. V. Cabrera, Jon Arild Nygard
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -27,7 +27,6 @@ var max = Math.max, min = Math.min;
  * Returns a minimum of 1 pixel margin.
  *
  * @deprecated
- * @private
  * @function
  *
  * @param {Array<object>} obstacles
@@ -35,6 +34,7 @@ var max = Math.max, min = Math.min;
  *
  * @return {number}
  *         The calculated margin in pixels. At least 1.
+ * @internal
  */
 function calculateObstacleMargin(obstacles) {
     var distances = [], len = obstacles.length;
@@ -63,7 +63,7 @@ function calculateObstacleMargin(obstacles) {
 /**
  * Compute smallest distance between two rectangles
  * @deprecated
- * @private
+ * @internal
  */
 function distance(a, b, bbMargin) {
     // Count the distance even if we are slightly off
@@ -83,7 +83,7 @@ function distance(a, b, bbMargin) {
  * Warn if using legacy options. Copy the options over. Note that this will
  * still break if using the legacy options in chart.update, addSeries etc.
  * @deprecated
- * @private
+ * @internal
  */
 function warnLegacy(chart) {
     if (chart.options.pathfinder ||
@@ -106,11 +106,14 @@ function warnLegacy(chart) {
  * */
 /**
  * Contains detached legacy code not used anymore after tree shaking.
+ *
  * @deprecated
+ * @internal
  */
 var legacy = {
     calculateObstacleMargin: calculateObstacleMargin,
     distance: distance,
     warnLegacy: warnLegacy
 };
+/** @internal */
 export default legacy;

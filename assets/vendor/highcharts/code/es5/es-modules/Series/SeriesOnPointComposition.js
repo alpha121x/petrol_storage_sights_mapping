@@ -1,10 +1,11 @@
 /* *
  *
- *  (c) 2010-2025 Rafal Sebestjanski, Piotr Madej
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Rafal Sebestjanski, Piotr Madej
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -12,7 +13,6 @@ import DataTableCore from '../Data/DataTableCore.js';
 import H from '../Core/Globals.js';
 var composed = H.composed;
 import Point from '../Core/Series/Point.js';
-import Series from '../Core/Series/Series.js';
 import SeriesRegistry from '../Core/Series/SeriesRegistry.js';
 var bubble = SeriesRegistry.seriesTypes.bubble;
 import SVGRenderer from '../Core/Renderer/SVG/SVGRenderer.js';

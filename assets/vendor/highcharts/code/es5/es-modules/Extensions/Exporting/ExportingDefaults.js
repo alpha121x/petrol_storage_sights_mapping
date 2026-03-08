@@ -1,10 +1,11 @@
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -18,8 +19,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 var __generator = (this && this.__generator) || function (thisArg, body) {
-    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
-    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g = Object.create((typeof Iterator === "function" ? Iterator : Object).prototype);
+    return g.next = verb(0), g["throw"] = verb(1), g["return"] = verb(2), typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
     function verb(n) { return function (v) { return step([n, v]); }; }
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
@@ -92,7 +93,8 @@ var exporting = {
      *
      * @see [styledMode](#chart.styledMode)
      *
-     * @sample {highcharts} highcharts/exporting/apply-stylesheets/
+     * @sample    {highcharts} highcharts/exporting/apply-stylesheets/
+     *            Export with custom stylesheet
      *
      * @type      {boolean}
      * @default   false
@@ -211,6 +213,11 @@ var exporting = {
      * [svg2pdf.js](https://github.com/yWorks/svg2pdf.js), required for client
      * side export in certain browsers.
      *
+     * Note: Highcharts cannot take responsibility for the security of any
+     * external libraries (including [optional dependencies](https://www.highcharts.com/docs/getting-started/optional-dependencies))
+     * loaded through `exporting.libURL`. These libraries are not licensed or
+     * warrantied under the Highcharts license.
+     *
      * @type      {string}
      * @default   https://code.highcharts.com/{version}/lib
      * @since     5.0.0
@@ -287,7 +294,7 @@ var exporting = {
     type: 'image/png',
     /**
      * The URL for the server module converting the SVG string to an image
-     * format. By default this points to Highchart's free web service.
+     * format. By default this points to Highcharts free web service.
      *
      * @since 2.0
      */
@@ -402,15 +409,6 @@ var exporting = {
              * @apioption exporting.buttons.contextButton.onclick
              */
             /**
-             * See [navigation.buttonOptions.symbolFill](
-             * #navigation.buttonOptions.symbolFill).
-             *
-             * @type      {Highcharts.ColorString}
-             * @default   #666666
-             * @since     2.0
-             * @apioption exporting.buttons.contextButton.symbolFill
-             */
-            /**
              * The horizontal position of the button relative to the `align`
              * option.
              *
@@ -500,42 +498,40 @@ var exporting = {
      * @sample highcharts/exporting/menuitemdefinitions-webp/
      *         Adding a custom menu item for WebP export
      *
-     *
-     * @type    {Highcharts.Dictionary<Highcharts.ExportingMenuObject>}
-     * @default {"viewFullscreen": {}, "printChart": {}, "separator": {}, "downloadPNG": {}, "downloadJPEG": {}, "downloadPDF": {}, "downloadSVG": {}}
-     * @since   5.0.13
+     * @type     {Highcharts.Dictionary<Highcharts.ExportingMenuObject>}
+     * @since    5.0.13
      */
     menuItemDefinitions: {
-        /**
-         * @ignore
-         */
         viewFullscreen: {
+            /**
+             * @see [lang.viewFullscreen](#lang.viewFullscreen)
+             * @default viewFullscreen
+             */
             textKey: 'viewFullscreen',
             onclick: function () {
                 var _a;
                 (_a = this.fullscreen) === null || _a === void 0 ? void 0 : _a.toggle();
             }
         },
-        /**
-         * @ignore
-         */
         printChart: {
+            /**
+             * @see [lang.printChart](#lang.printChart)
+             * @default printChart
+             */
             textKey: 'printChart',
             onclick: function () {
                 var _a;
                 (_a = this.exporting) === null || _a === void 0 ? void 0 : _a.print();
             }
         },
-        /**
-         * @ignore
-         */
         separator: {
             separator: true
         },
-        /**
-         * @ignore
-         */
         downloadPNG: {
+            /**
+             * @see [lang.downloadPNG](#lang.downloadPNG)
+             * @default downloadPNG
+             */
             textKey: 'downloadPNG',
             onclick: function () {
                 return __awaiter(this, void 0, void 0, function () {
@@ -551,10 +547,11 @@ var exporting = {
                 });
             }
         },
-        /**
-         * @ignore
-         */
         downloadJPEG: {
+            /**
+             * @see [lang.downloadJPEG](#lang.downloadJPEG)
+             * @default downloadJPEG
+             */
             textKey: 'downloadJPEG',
             onclick: function () {
                 return __awaiter(this, void 0, void 0, function () {
@@ -572,10 +569,11 @@ var exporting = {
                 });
             }
         },
-        /**
-         * @ignore
-         */
         downloadPDF: {
+            /**
+             * @see [lang.downloadPDF](#lang.downloadPDF)
+             * @default downloadPDF
+             */
             textKey: 'downloadPDF',
             onclick: function () {
                 return __awaiter(this, void 0, void 0, function () {
@@ -593,10 +591,11 @@ var exporting = {
                 });
             }
         },
-        /**
-         * @ignore
-         */
         downloadSVG: {
+            /**
+             * @see [lang.downloadSVG](#lang.downloadSVG)
+             * @default downloadSVG
+             */
             textKey: 'downloadSVG',
             onclick: function () {
                 return __awaiter(this, void 0, void 0, function () {
@@ -626,6 +625,7 @@ var lang = {
      * in full screen.
      *
      * @since 8.0.1
+     * @requires modules/exporting
      */
     viewFullscreen: 'View in full screen',
     /**
@@ -633,6 +633,7 @@ var lang = {
      * from full screen.
      *
      * @since 8.0.1
+     * @requires modules/exporting
      */
     exitFullscreen: 'Exit from full screen',
     /**
@@ -966,9 +967,11 @@ var navigation = {
  *  Default Export
  *
  * */
+/** @internal */
 var ExportingDefaults = {
     exporting: exporting,
     lang: lang,
     navigation: navigation
 };
+/** @internal */
 export default ExportingDefaults;

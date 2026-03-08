@@ -1,10 +1,10 @@
 /* *
  *
- *  (c) 2009-2025 Highsoft AS
+ *  (c) 2009-2026 Highsoft AS
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  *  Authors:
  *  - Torstein Hønsi
@@ -12,6 +12,7 @@
  *  - Wojciech Chmiel
  *  - Sophie Bremer
  *  - Jomar Hønsi
+ *  - Kamil Kubik
  *
  * */
 'use strict';
@@ -33,7 +34,7 @@ var __extends = (this && this.__extends) || (function () {
 import DataConnector from './DataConnector.js';
 import GoogleSheetsConverter from '../Converters/GoogleSheetsConverter.js';
 import U from '../../Core/Utilities.js';
-var merge = U.merge, pick = U.pick, defined = U.defined;
+var merge = U.merge, pick = U.pick, fireEvent = U.fireEvent;
 /* *
  *
  *  Functions
@@ -69,19 +70,14 @@ var GoogleSheetsConnector = /** @class */ (function (_super) {
     /**
      * Constructs an instance of GoogleSheetsConnector
      *
-     * @param {GoogleSheetsConnector.UserOptions} [options]
+     * @param {Partial<GoogleSheetsConnectorOptions>} [options]
      * Options for the connector and converter.
-     *
-     * @param {Array<DataTableOptions>} [dataTables]
-     * Multiple connector data tables options.
-     *
      */
-    function GoogleSheetsConnector(options, dataTables) {
+    function GoogleSheetsConnector(options) {
         var _this = this;
         var mergedOptions = merge(GoogleSheetsConnector.defaultOptions, options);
-        _this = _super.call(this, mergedOptions, dataTables) || this;
-        _this.options = defined(dataTables) ?
-            merge(mergedOptions, { dataTables: dataTables }) : mergedOptions;
+        _this = _super.call(this, mergedOptions) || this;
+        _this.options = mergedOptions;
         return _this;
     }
     /* *
@@ -89,6 +85,16 @@ var GoogleSheetsConnector = /** @class */ (function (_super) {
      *  Functions
      *
      * */
+    /**
+     * Overrides the DataConnector method. Emits an event on the connector to
+     * all registered callbacks of this event.
+     *
+     * @param {GoogleSheetsConnector.Event} e
+     * Event object containing additional event information.
+     */
+    GoogleSheetsConnector.prototype.emit = function (e) {
+        fireEvent(this, e.type, e);
+    };
     /**
      * Loads data from a Google Spreadsheet.
      *
@@ -101,11 +107,13 @@ var GoogleSheetsConnector = /** @class */ (function (_super) {
     GoogleSheetsConnector.prototype.load = function (eventDetail) {
         var _this = this;
         var _a;
-        var connector = this, tables = connector.dataTables, _b = connector.options, dataModifier = _b.dataModifier, dataRefreshRate = _b.dataRefreshRate, enablePolling = _b.enablePolling, googleAPIKey = _b.googleAPIKey, googleSpreadsheetKey = _b.googleSpreadsheetKey, dataTables = _b.dataTables, url = GoogleSheetsConnector.buildFetchURL(googleAPIKey, googleSpreadsheetKey, connector.options);
+        var connector = this;
+        var options = connector.options;
+        var dataRefreshRate = options.dataRefreshRate, enablePolling = options.enablePolling, googleAPIKey = options.googleAPIKey, googleSpreadsheetKey = options.googleSpreadsheetKey, dataTables = options.dataTables;
+        var url = GoogleSheetsConnector.buildFetchURL(googleAPIKey, googleSpreadsheetKey, options);
         connector.emit({
             type: 'load',
             detail: eventDetail,
-            tables: tables,
             url: url
         });
         if (!URL.canParse(url)) {
@@ -118,26 +126,24 @@ var GoogleSheetsConnector = /** @class */ (function (_super) {
                 throw new Error(json.error.message);
             }
             _this.initConverters(json, function (key) {
-                var _a, _b;
-                var options = _this.options;
                 var tableOptions = dataTables === null || dataTables === void 0 ? void 0 : dataTables.find(function (dataTable) { return dataTable.key === key; });
-                // Takes over the connector default options.
-                var mergedTableOptions = {
-                    dataTableKey: key,
-                    firstRowAsNames: (_a = tableOptions === null || tableOptions === void 0 ? void 0 : tableOptions.firstRowAsNames) !== null && _a !== void 0 ? _a : options.firstRowAsNames,
-                    beforeParse: (_b = tableOptions === null || tableOptions === void 0 ? void 0 : tableOptions.beforeParse) !== null && _b !== void 0 ? _b : options.beforeParse
+                // The data table options takes precedence over the
+                // connector options.
+                var _a = tableOptions || {}, _b = _a.firstRowAsNames, firstRowAsNames = _b === void 0 ? options.firstRowAsNames : _b, _c = _a.beforeParse, beforeParse = _c === void 0 ? options.beforeParse : _c;
+                var converterOptions = {
+                    firstRowAsNames: firstRowAsNames,
+                    beforeParse: beforeParse
                 };
-                return new GoogleSheetsConverter(merge(_this.options, mergedTableOptions));
+                return new GoogleSheetsConverter(converterOptions);
             }, function (converter, data) {
-                converter.parse({ json: data });
+                return converter.parse({ json: data });
             });
-            return connector.setModifierOptions(dataModifier, dataTables);
+            return connector.applyTableModifiers();
         })
             .then(function () {
             connector.emit({
                 type: 'afterLoad',
                 detail: eventDetail,
-                tables: tables,
                 url: url
             });
             // Polling
@@ -149,8 +155,7 @@ var GoogleSheetsConnector = /** @class */ (function (_super) {
             connector.emit({
                 type: 'loadError',
                 detail: eventDetail,
-                error: error,
-                tables: tables
+                error: error
             });
             throw error;
         });
@@ -161,6 +166,8 @@ var GoogleSheetsConnector = /** @class */ (function (_super) {
      *
      * */
     GoogleSheetsConnector.defaultOptions = {
+        id: 'google-sheets-connector',
+        type: 'GoogleSheets',
         googleAPIKey: '',
         googleSpreadsheetKey: '',
         enablePolling: false,
@@ -198,12 +205,12 @@ var GoogleSheetsConnector = /** @class */ (function (_super) {
     function buildFetchURL(apiKey, sheetKey, options) {
         if (options === void 0) { options = {}; }
         var url = new URL("https://sheets.googleapis.com/v4/spreadsheets/".concat(sheetKey, "/values/"));
-        var range = options.onlyColumnNames ?
+        var range = options.onlyColumnIds ?
             'A1:Z1' : buildQueryRange(options);
         url.pathname += range;
         var searchParams = url.searchParams;
         searchParams.set('alt', 'json');
-        if (!options.onlyColumnNames) {
+        if (!options.onlyColumnIds) {
             searchParams.set('dateTimeRenderOption', 'FORMATTED_STRING');
             searchParams.set('majorDimension', 'COLUMNS');
             searchParams.set('valueRenderOption', 'UNFORMATTED_VALUE');
@@ -230,6 +237,11 @@ var GoogleSheetsConnector = /** @class */ (function (_super) {
     }
     GoogleSheetsConnector.buildQueryRange = buildQueryRange;
 })(GoogleSheetsConnector || (GoogleSheetsConnector = {}));
+/* *
+ *
+ *  Registry
+ *
+ * */
 DataConnector.registerType('GoogleSheets', GoogleSheetsConnector);
 /* *
  *

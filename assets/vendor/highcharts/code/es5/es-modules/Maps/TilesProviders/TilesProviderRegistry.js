@@ -1,6 +1,5 @@
 /* *
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -20,6 +19,7 @@ import USGS from './USGS.js';
  *  Constants
  *
  * */
+/** @internal */
 var tilesProviderRegistry = {
     Esri: Esri,
     LimaLabs: LimaLabs,
@@ -33,4 +33,5 @@ var tilesProviderRegistry = {
  *  Default Export
  *
  * */
+/** @internal */
 export default tilesProviderRegistry;

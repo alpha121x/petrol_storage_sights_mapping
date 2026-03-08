@@ -1,10 +1,11 @@
 /* *
  *
- *  (c) 2023 Torstein Honsi, Askel Eirik Johansson
+ *  (c) 2023-2026 Highsoft AS
+ *  Author: Torstein Honsi, Askel Eirik Johansson
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -19,7 +20,8 @@ var getAssignedAxis = NBU.getAssignedAxis;
  * */
 var composedClasses = [], defaultOptions = {
     enabled: true,
-    sensitivity: 1.1
+    sensitivity: 1.1,
+    showResetButton: false
 };
 var wheelTimer;
 /* *
@@ -27,9 +29,7 @@ var wheelTimer;
  *  Functions
  *
  * */
-/**
- * @private
- */
+/** @internal */
 var optionsToObject = function (options) {
     if (!isObject(options)) {
         options = {
@@ -38,9 +38,7 @@ var optionsToObject = function (options) {
     }
     return merge(defaultOptions, options);
 };
-/**
- * @private
- */
+/** @internal */
 var zoomBy = function (chart, howMuch, xAxis, yAxis, mouseX, mouseY, options) {
     var type = pick(options.type, chart.zooming.type, '');
     var axes = [];
@@ -71,7 +69,8 @@ var zoomBy = function (chart, howMuch, xAxis, yAxis, mouseX, mouseY, options) {
             width: 10 * howMuch,
             height: 10 * howMuch
         },
-        trigger: 'mousewheel'
+        trigger: 'mousewheel',
+        allowResetButton: options.showResetButton
     });
     if (hasZoomed) {
         if (defined(wheelTimer)) {
@@ -87,9 +86,7 @@ var zoomBy = function (chart, howMuch, xAxis, yAxis, mouseX, mouseY, options) {
     }
     return hasZoomed;
 };
-/**
- * @private
- */
+/** @internal */
 function onAfterGetContainer() {
     var _this = this;
     var wheelZoomOptions = optionsToObject(this.zooming.mouseWheel);
@@ -110,9 +107,7 @@ function onAfterGetContainer() {
         });
     }
 }
-/**
- * @private
- */
+/** @internal */
 function compose(ChartClass) {
     if (composedClasses.indexOf(ChartClass) === -1) {
         composedClasses.push(ChartClass);
@@ -193,5 +188,18 @@ export default MouseWheelZoomComposition;
  * @since 11.1.0
  * @requires  modules/mouse-wheel-zoom
  * @apioption chart.zooming.mouseWheel.type
+ */
+/**
+ * Whether to enable the reset zoom button when zooming with the mouse wheel.
+ *
+ * @type      {boolean}
+ * @default   false
+ * @since {next}
+ * @requires  modules/mouse-wheel-zoom
+ * @sample    {highcharts} highcharts/mouse-wheel-zoom/reset-zoom-button
+ *            Enable reset zoom button for mouse wheel zooming
+ * @sample    {highstock} stock/mouse-wheel-zoom/reset-zoom-button
+ *            Enable reset zoom button for mouse wheel zooming
+ * @apioption chart.zooming.mouseWheel.showResetButton
  */
 (''); // Keeps doclets above in JS file

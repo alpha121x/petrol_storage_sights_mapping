@@ -1,10 +1,11 @@
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -142,13 +143,14 @@ var WaterfallSeries = /** @class */ (function (_super) {
     // Return an empty path initially, because we need to know the stroke-width
     // in order to set the final path.
     WaterfallSeries.prototype.getGraphPath = function () {
-        return [['M', 0, 0]];
+        var _a;
+        return ((_a = this.graph) === null || _a === void 0 ? void 0 : _a.pathArray) || [['M', 0, 0]];
     };
     // Draw columns' connector lines
     WaterfallSeries.prototype.getCrispPath = function () {
         var _a, _b;
         var // Skip points where Y is not a number (#18636)
-        data = this.data.filter(function (d) { return isNumber(d.y); }), yAxis = this.yAxis, length = data.length, graphLineWidth = ((_a = this.graph) === null || _a === void 0 ? void 0 : _a.strokeWidth()) || 0, reversedXAxis = this.xAxis.reversed, reversedYAxis = this.yAxis.reversed, stacking = this.options.stacking, path = [];
+        data = this.points.filter(function (d) { return isNumber(d.y); }), yAxis = this.yAxis, length = data.length, graphLineWidth = ((_a = this.graph) === null || _a === void 0 ? void 0 : _a.strokeWidth()) || 0, reversedXAxis = this.xAxis.reversed, reversedYAxis = this.yAxis.reversed, stacking = this.options.stacking, path = [];
         for (var i = 1; i < length; i++) {
             if (!( // Skip lines that would pass over the null point (#18636)
             this.options.connectNulls ||
@@ -167,8 +169,7 @@ var WaterfallSeries = /** @class */ (function (_super) {
                 // value
                 var yPos = void 0;
                 if (stacking) {
-                    var connectorThreshold = prevStackX.connectorThreshold;
-                    yPos = crisp(yAxis.translate(connectorThreshold, false, true, false, true) +
+                    yPos = crisp(yAxis.translate(prevStackX.connectorThreshold || 0, false, true, false, true) +
                         (reversedYAxis ? isPos : 0), graphLineWidth);
                 }
                 else {
@@ -207,12 +208,11 @@ var WaterfallSeries = /** @class */ (function (_super) {
     // The graph is initially drawn with an empty definition, then updated with
     // crisp rendering.
     WaterfallSeries.prototype.drawGraph = function () {
+        var _a;
         LineSeries.prototype.drawGraph.call(this);
-        if (this.graph) {
-            this.graph.attr({
-                d: this.getCrispPath()
-            });
-        }
+        (_a = this.graph) === null || _a === void 0 ? void 0 : _a.animate({
+            d: this.getCrispPath()
+        });
     };
     // Waterfall has stacking along the x-values too.
     WaterfallSeries.prototype.setStackedPoints = function (axis) {

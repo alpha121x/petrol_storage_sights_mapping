@@ -1,10 +1,10 @@
 /* *
  *
- *  (c) 2020-2025 Highsoft AS
+ *  (c) 2020-2026 Highsoft AS
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  *  Authors:
  *  - Sebastian Bochan
@@ -14,6 +14,8 @@
  * */
 'use strict';
 import DataTable from '../../Data/DataTable.js';
+import ColumnUtils from '../../Data/ColumnUtils.js';
+var convertToNumber = ColumnUtils.convertToNumber;
 import U from '../Utilities.js';
 var defined = U.defined, uniqueKey = U.uniqueKey;
 /* *
@@ -25,7 +27,7 @@ var defined = U.defined, uniqueKey = U.uniqueKey;
  * Class to convert Highcharts series data to table and get series data from the
  * table.
  *
- * @private
+ * @internal
  */
 var DataSeriesConverter = /** @class */ (function () {
     /* *
@@ -72,14 +74,15 @@ var DataSeriesConverter = /** @class */ (function () {
             for (var i = 0, iEnd = table.getRowCount(); i < iEnd; i++) {
                 isCellFound = false;
                 pointOptions = {
-                    x: table.getCellAsNumber('x', i, true)
+                    x: convertToNumber(table.getCell('x', i), true)
                 };
                 for (var j = 0, jEnd = pointArrayMap.length; j < jEnd; j++) {
                     cellName = pointArrayMap[j] + '_' + seriesId;
                     cell = table.getCell(cellName, i);
                     if (typeof cell !== 'undefined') {
                         isCellFound = true;
-                        pointOptions[pointArrayMap[j]] = table.getCellAsNumber(cellName, i);
+                        pointOptions[pointArrayMap[j]] =
+                            convertToNumber(table.getCell(cellName, i));
                     }
                 }
                 if (isCellFound) {
@@ -204,4 +207,5 @@ var DataSeriesConverter = /** @class */ (function () {
  *  Default Export
  *
  * */
+/** @internal */
 export default DataSeriesConverter;

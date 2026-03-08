@@ -2,11 +2,12 @@
  *
  *  Highcharts variwide module
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -47,17 +48,15 @@ function onAxisAfterDrawCrosshair(e) {
  */
 function onAxisAfterRender() {
     const axis = this;
-    if (this.variwide) {
-        this.chart.labelCollectors.push(function () {
-            return axis.tickPositions
-                .filter((pos) => !!axis.ticks[pos].label)
-                .map((pos, i) => {
-                const label = axis.ticks[pos].label;
-                label.labelrank = axis.zData[i];
-                return label;
-            });
-        });
-    }
+    this.chart.labelCollectors.push(function () {
+        return axis.variwide ? axis.tickPositions
+            .filter((pos) => !!axis.ticks[pos].label)
+            .map((pos, i) => {
+            const label = axis.ticks[pos].label;
+            label.labelrank = axis.zData?.[i];
+            return label;
+        }) : [];
+    });
 }
 /**
  * @private

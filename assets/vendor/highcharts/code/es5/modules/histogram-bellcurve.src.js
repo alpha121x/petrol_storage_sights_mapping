@@ -1,12 +1,14 @@
+// SPDX-License-Identifier: LicenseRef-Highcharts
 /**
- * @license Highcharts JS v12.3.0 (2025-06-21)
+ * @license Highcharts JS v12.5.0 (2026-01-12)
  * @module highcharts/modules/histogram-bellcurve
  * @requires highcharts
  *
- * (c) 2010-2025 Highsoft AS
+ * (c) 2010-2026 Highsoft AS
  * Author: Sebastian Domas
  *
- * License: www.highcharts.com/license
+ * A commercial license may be required depending on use.
+ * See www.highcharts.com/license
  */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
@@ -116,7 +118,6 @@ var highcharts_Series_commonjs_highcharts_Series_commonjs2_highcharts_Series_roo
 ;// ./code/es5/es-modules/Series/DerivedComposition.js
 /* *
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -253,12 +254,12 @@ var DerivedComposition;
 ;// ./code/es5/es-modules/Series/Histogram/HistogramSeriesDefaults.js
 /* *
  *
- *  (c) 2010-2025 Highsoft AS
+ *  (c) 2010-2026 Highsoft AS
  *  Author: Sebastian Domas
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -347,12 +348,12 @@ var highcharts_SeriesRegistry_commonjs_highcharts_SeriesRegistry_commonjs2_highc
 ;// ./code/es5/es-modules/Series/Histogram/HistogramSeries.js
 /* *
  *
- *  (c) 2010-2025 Highsoft AS
+ *  (c) 2010-2026 Highsoft AS
  *  Author: Sebastian Domas
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -377,23 +378,22 @@ var __extends = (undefined && undefined.__extends) || (function () {
 
 var ColumnSeries = (highcharts_SeriesRegistry_commonjs_highcharts_SeriesRegistry_commonjs2_highcharts_SeriesRegistry_root_Highcharts_SeriesRegistry_default()).seriesTypes.column;
 
-var arrayMax = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).arrayMax, arrayMin = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).arrayMin, correctFloat = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).correctFloat, extend = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).extend, isNumber = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).isNumber, merge = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).merge;
+var arrayMax = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).arrayMax, arrayMin = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).arrayMin, correctFloat = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).correctFloat, isNumber = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).isNumber, merge = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).merge;
 /* ************************************************************************** *
  *  HISTOGRAM
  * ************************************************************************** */
 /**
- * A dictionary with formulas for calculating number of bins based on the
- * base series
+ * A dictionary with formulas for calculating number of bins based on data
  **/
 var binsNumberFormulas = {
-    'square-root': function (baseSeries) {
-        return Math.ceil(Math.sqrt(baseSeries.options.data.length));
+    'square-root': function (data) {
+        return Math.ceil(Math.sqrt(data.length));
     },
-    'sturges': function (baseSeries) {
-        return Math.ceil(Math.log(baseSeries.options.data.length) * Math.LOG2E);
+    'sturges': function (data) {
+        return Math.ceil(Math.log(data.length) * Math.LOG2E);
     },
-    'rice': function (baseSeries) {
-        return Math.ceil(2 * Math.pow(baseSeries.options.data.length, 1 / 3));
+    'rice': function (data) {
+        return Math.ceil(2 * Math.pow(data.length, 1 / 3));
     }
 };
 /**
@@ -433,15 +433,23 @@ var HistogramSeries = /** @class */ (function (_super) {
      *  Functions
      *
      * */
-    HistogramSeries.prototype.binsNumber = function () {
+    HistogramSeries.prototype.binsNumber = function (data) {
         var binsNumberOption = this.options.binsNumber;
         var binsNumber = binsNumberFormulas[binsNumberOption] ||
                 // #7457
                 (typeof binsNumberOption === 'function' && binsNumberOption);
-        return Math.ceil((binsNumber && binsNumber(this.baseSeries)) ||
+        return Math.ceil((binsNumber && binsNumber(data)) ||
             (isNumber(binsNumberOption) ?
                 binsNumberOption :
-                binsNumberFormulas['square-root'](this.baseSeries)));
+                binsNumberFormulas['square-root'](data)));
+    };
+    HistogramSeries.prototype.setData = function (data, redraw, animation, updatePoints) {
+        if (redraw === void 0) { redraw = true; }
+        var alteredData;
+        if (typeof data !== 'undefined' && data.length > 0) {
+            alteredData = this.derivedData(data.filter(isNumber), this.binsNumber(data), this.options.binWidth);
+        }
+        _super.prototype.setData.call(this, alteredData, redraw, animation, updatePoints);
     };
     HistogramSeries.prototype.derivedData = function (baseData, binsNumber, binWidth) {
         var series = this,
@@ -505,10 +513,7 @@ var HistogramSeries = /** @class */ (function (_super) {
             this.setData([]);
             return;
         }
-        var data = this.derivedData(yData,
-            this.binsNumber(),
-            this.options.binWidth);
-        this.setData(data, false);
+        this.setData(yData, false, void 0, false);
     };
     /* *
      *
@@ -518,9 +523,6 @@ var HistogramSeries = /** @class */ (function (_super) {
     HistogramSeries.defaultOptions = merge(ColumnSeries.defaultOptions, Histogram_HistogramSeriesDefaults);
     return HistogramSeries;
 }(ColumnSeries));
-extend(HistogramSeries.prototype, {
-    hasDerivedData: Series_DerivedComposition.hasDerivedData
-});
 Series_DerivedComposition.compose(HistogramSeries);
 highcharts_SeriesRegistry_commonjs_highcharts_SeriesRegistry_commonjs2_highcharts_SeriesRegistry_root_Highcharts_SeriesRegistry_default().registerSeriesType('histogram', HistogramSeries);
 /* *
@@ -533,13 +535,13 @@ highcharts_SeriesRegistry_commonjs_highcharts_SeriesRegistry_commonjs2_highchart
 ;// ./code/es5/es-modules/Series/Bellcurve/BellcurveSeriesDefaults.js
 /* *
  *
- *  (c) 2010-2025 Highsoft AS
+ *  (c) 2010-2026 Highsoft AS
  *
  *  Author: Sebastian Domas
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -660,13 +662,13 @@ var BellcurveSeriesDefaults = {
 ;// ./code/es5/es-modules/Series/Bellcurve/BellcurveSeries.js
 /* *
  *
- *  (c) 2010-2025 Highsoft AS
+ *  (c) 2010-2026 Highsoft AS
  *
  *  Author: Sebastian Domas
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -751,6 +753,17 @@ var BellcurveSeries = /** @class */ (function (_super) {
      *  Functions
      *
      * */
+    BellcurveSeries.prototype.setData = function (data, redraw, animation, updatePoints) {
+        if (redraw === void 0) { redraw = true; }
+        var alteredData;
+        if (typeof data !== 'undefined' && data.length > 0) {
+            data = data.filter(BellcurveSeries_isNumber),
+                this.setMean(data);
+            this.setStandardDeviation(data);
+            alteredData = this.derivedData(this.mean || 0, this.standardDeviation || 0);
+        }
+        _super.prototype.setData.call(this, alteredData, redraw, animation, updatePoints);
+    };
     BellcurveSeries.prototype.derivedData = function (mean, standardDeviation) {
         var options = this.options,
             intervals = options.intervals,
@@ -766,24 +779,20 @@ var BellcurveSeries = /** @class */ (function (_super) {
         return data;
     };
     BellcurveSeries.prototype.setDerivedData = function () {
-        var _a;
+        var _a,
+            _b;
         var series = this;
-        if (((_a = series.baseSeries) === null || _a === void 0 ? void 0 : _a.getColumn('y').length) || 0 > 1) {
-            series.setMean();
-            series.setStandardDeviation();
-            series.setData(series.derivedData(series.mean || 0, series.standardDeviation || 0), false, void 0, false);
+        if ((_a = series.baseSeries) === null || _a === void 0 ? void 0 : _a.getColumn('y').length) {
+            series.setData((_b = series.baseSeries) === null || _b === void 0 ? void 0 : _b.getColumn('y'), false, void 0, false);
         }
-        return (void 0);
     };
-    BellcurveSeries.prototype.setMean = function () {
-        var _a;
+    BellcurveSeries.prototype.setMean = function (data) {
         var series = this;
-        series.mean = BellcurveSeries_correctFloat(BellcurveSeries.mean(((_a = series.baseSeries) === null || _a === void 0 ? void 0 : _a.getColumn('y')) || []));
+        series.mean = BellcurveSeries_correctFloat(BellcurveSeries.mean(data || []));
     };
-    BellcurveSeries.prototype.setStandardDeviation = function () {
-        var _a;
+    BellcurveSeries.prototype.setStandardDeviation = function (data) {
         var series = this;
-        series.standardDeviation = BellcurveSeries_correctFloat(BellcurveSeries.standardDeviation(((_a = series.baseSeries) === null || _a === void 0 ? void 0 : _a.getColumn('y')) || [], series.mean));
+        series.standardDeviation = BellcurveSeries_correctFloat(BellcurveSeries.standardDeviation(data || [], series.mean));
     };
     /* *
      *

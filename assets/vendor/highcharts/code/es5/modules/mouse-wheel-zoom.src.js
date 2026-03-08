@@ -1,13 +1,16 @@
+// SPDX-License-Identifier: LicenseRef-Highcharts
 /**
- * @license Highcharts JS v12.3.0 (2025-06-21)
+ * @license Highcharts JS v12.5.0 (2026-01-12)
  * @module highcharts/modules/mouse-wheel-zoom
  * @requires highcharts
  *
  * Mousewheel zoom module
  *
- * (c) 2023 Askel Eirik Johansson
+ * (c) 2023-2026 Highsoft AS
+ * Author: Askel Eirik Johansson
  *
- * License: www.highcharts.com/license
+ * A commercial license may be required depending on use.
+ * See www.highcharts.com/license
  */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
@@ -100,11 +103,12 @@ var highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default 
 ;// ./code/es5/es-modules/Extensions/Annotations/NavigationBindingsUtilities.js
 /* *
  *
- *  (c) 2009-2025 Highsoft, Black Label
+ *  (c) 2009-2026 Highsoft AS
+ *  Author: Highsoft, Black Label
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -118,7 +122,7 @@ var defined = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highchar
 /**
  * Define types for editable fields per annotation. There is no need to define
  * numbers, because they won't change their type to string.
- * @private
+ * @internal
  */
 var annotationsFieldsTypes = {
     backgroundColor: 'string',
@@ -140,7 +144,7 @@ var annotationsFieldsTypes = {
 /**
  * Returns the first xAxis or yAxis that was clicked with its value.
  *
- * @private
+ * @internal
  *
  * @param {Array<Highcharts.PointerAxisCoordinateObject>} coords
  *        All the chart's x or y axes with a current pointer's axis value.
@@ -167,7 +171,7 @@ function getAssignedAxis(coords) {
 /**
  * Get field type according to value
  *
- * @private
+ * @internal
  *
  * @param {'boolean'|'number'|'string'} value
  * Atomic type (one of: string, number, boolean)
@@ -192,21 +196,24 @@ function getFieldType(key, value) {
  *  Default Export
  *
  * */
+/** @internal */
 var NavigationBindingUtilities = {
     annotationsFieldsTypes: annotationsFieldsTypes,
     getAssignedAxis: getAssignedAxis,
     getFieldType: getFieldType
 };
+/** @internal */
 /* harmony default export */ var NavigationBindingsUtilities = (NavigationBindingUtilities);
 
 ;// ./code/es5/es-modules/Extensions/MouseWheelZoom/MouseWheelZoom.js
 /* *
  *
- *  (c) 2023 Torstein Honsi, Askel Eirik Johansson
+ *  (c) 2023-2026 Highsoft AS
+ *  Author: Torstein Honsi, Askel Eirik Johansson
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -221,7 +228,8 @@ var MouseWheelZoom_getAssignedAxis = NavigationBindingsUtilities.getAssignedAxis
  * */
 var composedClasses = [], defaultOptions = {
     enabled: true,
-    sensitivity: 1.1
+    sensitivity: 1.1,
+    showResetButton: false
 };
 var wheelTimer;
 /* *
@@ -229,9 +237,7 @@ var wheelTimer;
  *  Functions
  *
  * */
-/**
- * @private
- */
+/** @internal */
 var optionsToObject = function (options) {
     if (!isObject(options)) {
         options = {
@@ -240,9 +246,7 @@ var optionsToObject = function (options) {
     }
     return merge(defaultOptions, options);
 };
-/**
- * @private
- */
+/** @internal */
 var zoomBy = function (chart, howMuch, xAxis, yAxis, mouseX, mouseY, options) {
     var type = MouseWheelZoom_pick(options.type,
         chart.zooming.type, '');
@@ -274,7 +278,8 @@ var zoomBy = function (chart, howMuch, xAxis, yAxis, mouseX, mouseY, options) {
             width: 10 * howMuch,
             height: 10 * howMuch
         },
-        trigger: 'mousewheel'
+        trigger: 'mousewheel',
+        allowResetButton: options.showResetButton
     });
     if (hasZoomed) {
         if (MouseWheelZoom_defined(wheelTimer)) {
@@ -290,9 +295,7 @@ var zoomBy = function (chart, howMuch, xAxis, yAxis, mouseX, mouseY, options) {
     }
     return hasZoomed;
 };
-/**
- * @private
- */
+/** @internal */
 function onAfterGetContainer() {
     var _this = this;
     var wheelZoomOptions = optionsToObject(this.zooming.mouseWheel);
@@ -325,9 +328,7 @@ function onAfterGetContainer() {
         });
     }
 }
-/**
- * @private
- */
+/** @internal */
 function compose(ChartClass) {
     if (composedClasses.indexOf(ChartClass) === -1) {
         composedClasses.push(ChartClass);
@@ -408,6 +409,19 @@ var MouseWheelZoomComposition = {
  * @since 11.1.0
  * @requires  modules/mouse-wheel-zoom
  * @apioption chart.zooming.mouseWheel.type
+ */
+/**
+ * Whether to enable the reset zoom button when zooming with the mouse wheel.
+ *
+ * @type      {boolean}
+ * @default   false
+ * @since {next}
+ * @requires  modules/mouse-wheel-zoom
+ * @sample    {highcharts} highcharts/mouse-wheel-zoom/reset-zoom-button
+ *            Enable reset zoom button for mouse wheel zooming
+ * @sample    {highstock} stock/mouse-wheel-zoom/reset-zoom-button
+ *            Enable reset zoom button for mouse wheel zooming
+ * @apioption chart.zooming.mouseWheel.showResetButton
  */
 (''); // Keeps doclets above in JS file
 

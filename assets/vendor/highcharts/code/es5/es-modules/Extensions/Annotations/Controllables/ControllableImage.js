@@ -1,6 +1,5 @@
 /* *
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -29,9 +28,9 @@ import ControllableLabel from './ControllableLabel.js';
 /**
  * A controllable image class.
  *
+ * @internal
  * @requires modules/annotations
  *
- * @private
  * @class
  * @name Highcharts.AnnotationControllableImage
  *
@@ -114,4 +113,5 @@ var ControllableImage = /** @class */ (function (_super) {
  *  Default Export
  *
  * */
+/** @internal */
 export default ControllableImage;

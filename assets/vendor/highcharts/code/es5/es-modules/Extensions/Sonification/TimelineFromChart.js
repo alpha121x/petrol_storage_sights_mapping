@@ -1,12 +1,13 @@
 /* *
  *
- *  (c) 2009-2025 Øystein Moseng
+ *  (c) 2009-2026 Highsoft AS
+ *  Author: Øystein Moseng
  *
  *  Build a timeline from a chart.
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -33,7 +34,7 @@ var isNoteDefinition = function (str) {
 };
 /**
  * Get the value of a point property from string.
- * @private
+ * @internal
  */
 function getPointPropValue(point, prop) {
     var ret;
@@ -49,7 +50,7 @@ function getPointPropValue(point, prop) {
 /**
  * Get chart wide min/max for a set of props, as well as per
  * series min/max for selected props.
- * @private
+ * @internal
  */
 function getChartExtremesForProps(chart, props, perSeriesProps) {
     var series = chart.series, numProps = props.length, numSeriesProps = perSeriesProps.length, initCache = function (propList) {
@@ -98,7 +99,7 @@ function getChartExtremesForProps(chart, props, perSeriesProps) {
 /**
  * Build a cache of prop extremes for the chart. Goes through
  * options to find out which props are needed.
- * @private
+ * @internal
  */
 function getPropMetrics(chart) {
     var globalOpts = chart.options.sonification ||
@@ -186,7 +187,7 @@ function getPropMetrics(chart) {
 }
 /**
  * Map a relative value onto a virtual axis.
- * @private
+ * @internal
  */
 function mapToVirtualAxis(value, valueExtremes, virtualAxisExtremes, invert, logarithmic // Virtual axis is logarithmic
 ) {
@@ -221,7 +222,7 @@ function mapToVirtualAxis(value, valueExtremes, virtualAxisExtremes, invert, log
 }
 /**
  * Get the value of a mapped parameter for a point.
- * @private
+ * @internal
  */
 function getMappingParameterValue(context, propMetrics, useSeriesExtremes, defaultMapping, mappingOptions, contextValueProp) {
     if (typeof mappingOptions === 'number') {
@@ -306,7 +307,7 @@ function getMappingParameterValue(context, propMetrics, useSeriesExtremes, defau
 }
 /**
  * Get mapping parameter value with defined fallback and defaults.
- * @private
+ * @internal
  */
 function getParamValWithDefault(context, propMetrics, useSeriesExtremes, mappingParamOptions, fallback, defaults, contextValueProp) {
     return pick(getMappingParameterValue(context, propMetrics, useSeriesExtremes, extend({
@@ -315,7 +316,7 @@ function getParamValWithDefault(context, propMetrics, useSeriesExtremes, mapping
 }
 /**
  * Get time value for a point event.
- * @private
+ * @internal
  */
 function getPointTime(point, startTime, duration, timeMappingOptions, propMetrics, useSeriesExtremes) {
     var time = getParamValWithDefault({ point: point, time: 0 }, propMetrics, useSeriesExtremes, timeMappingOptions, 0, { min: 0, max: duration, mapTo: 'x' });
@@ -323,7 +324,7 @@ function getPointTime(point, startTime, duration, timeMappingOptions, propMetric
 }
 /**
  * Get duration for a series
- * @private
+ * @internal
  */
 function getAvailableDurationForSeries(series, totalDuration, propMetrics, afterSeriesWait) {
     var timeProp, seriesDuration;
@@ -355,7 +356,7 @@ function getAvailableDurationForSeries(series, totalDuration, propMetrics, after
 }
 /**
  * Build and add a track to the timeline.
- * @private
+ * @internal
  */
 function addTimelineChannelFromTrack(timeline, audioContext, destinationNode, options) {
     var speechOpts = options, instrMappingOpts = (options.mapping || {}), engine = options.type === 'speech' ?
@@ -377,7 +378,7 @@ function addTimelineChannelFromTrack(timeline, audioContext, destinationNode, op
 }
 /**
  * Add event from a point to a mapped instrument track.
- * @private
+ * @internal
  */
 function addMappedInstrumentEvent(context, channel, mappingOptions, propMetrics, roundToMusicalNotes, contextValueProp) {
     var getParam = function (param, fallback, defaults, parent) { return getParamValWithDefault(context, propMetrics, false, (parent || mappingOptions)[param], fallback, defaults, contextValueProp); };
@@ -450,7 +451,7 @@ function addMappedInstrumentEvent(context, channel, mappingOptions, propMetrics,
 }
 /**
  * Get the message value to speak for a point.
- * @private
+ * @internal
  */
 function getSpeechMessageValue(context, messageParam) {
     return format(typeof messageParam === 'function' ?
@@ -459,7 +460,7 @@ function getSpeechMessageValue(context, messageParam) {
 }
 /**
  * Add an event from a point to a mapped speech track.
- * @private
+ * @internal
  */
 function addMappedSpeechEvent(context, channel, mappingOptions, propMetrics, contextValueProp) {
     var getParam = function (param, fallback, defaults) { return getParamValWithDefault(context, propMetrics, false, mappingOptions[param], fallback, defaults, contextValueProp); };
@@ -479,7 +480,7 @@ function addMappedSpeechEvent(context, channel, mappingOptions, propMetrics, con
 }
 /**
  * Add events to a channel for a point&track combo.
- * @private
+ * @internal
  */
 function addMappedEventForPoint(context, channel, trackOptions, propMetrics) {
     var eventsAdded = [];
@@ -497,7 +498,7 @@ function addMappedEventForPoint(context, channel, trackOptions, propMetrics) {
 }
 /**
  * Get a reduced set of points from a list, depending on grouping opts.
- * @private
+ * @internal
  */
 function getGroupedPoints(pointGroupOpts, points) {
     var alg = pointGroupOpts.algorithm || 'minmax', r = function (ix) { return (points[ix] ? [points[ix].point] : []); };
@@ -543,7 +544,7 @@ function getGroupedPoints(pointGroupOpts, points) {
 }
 /**
  * Should a track be active for this event?
- * @private
+ * @internal
  */
 function isActive(context, activeWhen, lastPropValue) {
     if (typeof activeWhen === 'function') {
@@ -574,7 +575,7 @@ function isActive(context, activeWhen, lastPropValue) {
 }
 /**
  * Build a new timeline object from a chart.
- * @private
+ * @internal
  */
 function timelineFromChart(audioContext, destinationNode, chart) {
     var options = chart.options.sonification ||

@@ -1,6 +1,5 @@
 /* *
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -26,6 +25,7 @@ import MockPoint from '../MockPoint.js';
  *  Class
  *
  * */
+/** @internal */
 var BasicAnnotation = /** @class */ (function (_super) {
     __extends(BasicAnnotation, _super);
     function BasicAnnotation() {
@@ -37,9 +37,7 @@ var BasicAnnotation = /** @class */ (function (_super) {
      *
      * */
     BasicAnnotation.prototype.addControlPoints = function () {
-        var options = this.options, controlPoints = BasicAnnotation.basicControlPoints, annotationType = this.basicType, optionsGroup = (options.labels ||
-            options.shapes ||
-            []);
+        var options = this.options, controlPoints = BasicAnnotation.basicControlPoints, annotationType = this.basicType, optionsGroup = options.labels || options.shapes || [];
         optionsGroup.forEach(function (group) {
             group.controlPoints = controlPoints[annotationType];
         });
@@ -49,8 +47,12 @@ var BasicAnnotation = /** @class */ (function (_super) {
         if (options.shapes) {
             delete options.labelOptions;
             var type = options.shapes[0].type;
+            // TODO: Casting to be dropped by implementing this className
+            // option in both code and types. Currently neither work nor is
+            // documented properly.
             options.shapes[0].className =
-                (options.shapes[0].className || '') + ' highcharts-basic-shape';
+                (options.shapes[0].className || '') +
+                    ' highcharts-basic-shape';
             // The rectangle is rendered as a path, whereas other basic shapes
             // are rendered as their respective SVG shapes.
             if (type && type !== 'path') {
@@ -148,7 +150,7 @@ var BasicAnnotation = /** @class */ (function (_super) {
                             points[2].y = y;
                             // Bottom left
                             points[3].y = y;
-                            if (shapes && shapes[0]) {
+                            if (shapes === null || shapes === void 0 ? void 0 : shapes[0]) {
                                 shapes[0].points = target.options.points;
                             }
                         }
@@ -171,9 +173,8 @@ var BasicAnnotation = /** @class */ (function (_super) {
                     // TRANSLATION
                     drag: function (e, target) {
                         var annotation = target.annotation, position = this.mouseMoveToTranslation(e), shapes = annotation.userOptions.shapes;
-                        target.setRadius(Math.max(target.options.r +
-                            position.y /
-                                Math.sin(Math.PI / 4), 5));
+                        target.setRadius(Math.max((target.options.r || 0) +
+                            position.y / Math.sin(Math.PI / 4), 5));
                         if (shapes && shapes[0]) {
                             shapes[0].r = target.options.r;
                             shapes[0].point = target.options.point;
@@ -239,4 +240,5 @@ Annotation.types.basicAnnotation = BasicAnnotation;
  *  Default Export
  *
  * */
+/** @internal */
 export default BasicAnnotation;

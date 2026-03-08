@@ -1,10 +1,11 @@
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -19,13 +20,17 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
 };
 import A from '../Core/Animation/AnimationUtilities.js';
 var animObject = A.animObject;
+import BorderRadius from '../Extensions/BorderRadius.js';
+var optionsToObject = BorderRadius.optionsToObject;
+import D from '../Core/Defaults.js';
+var defaultOptions = D.defaultOptions;
 import H from '../Core/Globals.js';
 var composed = H.composed;
 import Series from '../Core/Series/Series.js';
 import Pane from '../Extensions/Pane/Pane.js';
 import RadialAxis from '../Core/Axis/RadialAxis.js';
 import U from '../Core/Utilities.js';
-var addEvent = U.addEvent, defined = U.defined, find = U.find, isNumber = U.isNumber, merge = U.merge, pick = U.pick, pushUnique = U.pushUnique, relativeLength = U.relativeLength, splat = U.splat, uniqueKey = U.uniqueKey, wrap = U.wrap;
+var addEvent = U.addEvent, defined = U.defined, find = U.find, isNumber = U.isNumber, isObject = U.isObject, merge = U.merge, pick = U.pick, pushUnique = U.pushUnique, relativeLength = U.relativeLength, splat = U.splat, uniqueKey = U.uniqueKey, wrap = U.wrap;
 /* *
  *
  *  Functions
@@ -333,6 +338,35 @@ function onSeriesAfterInit() {
             this.isRadialSeries = true;
             if (this.is('column')) {
                 this.isRadialBar = true;
+            }
+        }
+    }
+}
+/**
+ * Apply conditional rounding to polar bars
+ */
+function onSeriesAfterColumnTranslate() {
+    var _a;
+    var _b, _c;
+    var _d = this, chart = _d.chart, options = _d.options, yAxis = _d.yAxis;
+    if (options.borderRadius &&
+        chart.polar &&
+        chart.inverted) {
+        var seriesDefault = (_c = (_b = defaultOptions.plotOptions) === null || _b === void 0 ? void 0 : _b[this.type]) === null || _c === void 0 ? void 0 : _c.borderRadius, _e = optionsToObject(options.borderRadius, isObject(seriesDefault) ? seriesDefault : {}), scope = _e.scope, _f = _e.where, where = _f === void 0 ? 'end' : _f;
+        for (var _i = 0, _g = this.points; _i < _g.length; _i++) {
+            var point = _g[_i];
+            var shapeArgs = point.shapeArgs;
+            if (point.shapeType === 'arc' && shapeArgs) {
+                var brStart = where === 'all', brEnd = true;
+                if (options.stacking && scope === 'stack') {
+                    brStart = point.stackY === point.y && where === 'all',
+                        brEnd = point.stackY === point.stackTotal;
+                }
+                if (yAxis.reversed) {
+                    _a = [brEnd, brStart], brStart = _a[0], brEnd = _a[1];
+                }
+                shapeArgs.brStart = brStart;
+                shapeArgs.brEnd = brEnd;
             }
         }
     }
@@ -925,7 +959,7 @@ var PolarAdditions = /** @class */ (function () {
      *
      * */
     PolarAdditions.compose = function (AxisClass, ChartClass, PointerClass, SeriesClass, TickClass, PointClass, AreaSplineRangeSeriesClass, ColumnSeriesClass, LineSeriesClass, SplineSeriesClass) {
-        Pane.compose(ChartClass, PointerClass);
+        Pane.compose(ChartClass, PointerClass, SeriesClass);
         RadialAxis.compose(AxisClass, TickClass);
         if (pushUnique(composed, 'Polar')) {
             var chartProto = ChartClass.prototype, pointProto = PointClass.prototype, pointerProto = PointerClass.prototype, seriesProto = SeriesClass.prototype;
@@ -938,6 +972,10 @@ var PolarAdditions = /** @class */ (function () {
             addEvent(PointerClass, 'getSelectionMarkerAttrs', onPointerGetSelectionMarkerAttrs);
             addEvent(PointerClass, 'getSelectionBox', onPointerGetSelectionBox);
             addEvent(SeriesClass, 'afterInit', onSeriesAfterInit);
+            addEvent(SeriesClass, 'afterColumnTranslate', onSeriesAfterColumnTranslate, {
+                // After columnrange and polar column modifications
+                order: 9
+            });
             addEvent(SeriesClass, 'afterTranslate', onSeriesAfterTranslate, { order: 2 } // Run after translation of ||-coords
             );
             addEvent(SeriesClass, 'afterColumnTranslate', onAfterColumnTranslate, { order: 4 });

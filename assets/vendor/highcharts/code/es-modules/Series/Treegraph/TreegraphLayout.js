@@ -1,10 +1,11 @@
 /* *
  *
- *  (c) 2010-2025 Pawel Lysy Grzegorz Blachlinski
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Pawel Lysy Grzegorz Blachlinski
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -199,7 +200,7 @@ class TreegraphLayout {
         // left to right with root node close to the chart border, this is why
         // x and y positions are switched.
         node.yPosition = node.preX + modSum;
-        node.xPosition = node.level;
+        node.xPosition = node.point?.x ?? node.level;
         for (const child of node.children) {
             treeLayout.secondWalk(child, modSum + node.mod);
         }
@@ -234,8 +235,10 @@ class TreegraphLayout {
      * right outernal node or defaultAncestor.
      *
      * @param {TreegraphNode} node
+     * Treegraph node.
+     *
      * @param {TreegraphNode} defaultAncestor
-     *        The default ancestor of the passed node.
+     * The default ancestor of the passed node.
      */
     apportion(node, defaultAncestor) {
         const treeLayout = this, leftSibling = node.getLeftSibling();
@@ -284,9 +287,13 @@ class TreegraphLayout {
      * Shifts the subtree from leftNode to rightNode.
      *
      * @param {TreegraphNode} leftNode
+     * Left treegraph node.
+     *
      * @param {TreegraphNode} rightNode
+     * Right treegraph node.
+     *
      * @param {number} shift
-     *        The value, by which the subtree should be moved.
+     * The value, by which the subtree should be moved.
      */
     moveSubtree(leftNode, rightNode, shift) {
         const subtrees = rightNode.relativeXPosition - leftNode.relativeXPosition;
@@ -310,8 +317,8 @@ class TreegraphLayout {
                 node.parent = node.oldParentNode.parent;
                 node.parentNode = node.oldParentNode;
                 // Delete dummyNode
-                delete node.oldParentNode.children[node.relativeXPosition];
-                node.oldParentNode.children[node.relativeXPosition] = node;
+                node.oldParentNode.children
+                    .splice(node.relativeXPosition, 1, node);
                 node.oldParentNode = void 0;
             }
         }

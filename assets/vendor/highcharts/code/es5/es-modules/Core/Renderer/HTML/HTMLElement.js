@@ -1,10 +1,11 @@
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -45,7 +46,7 @@ var attr = U.attr, css = U.css, createElement = U.createElement, defined = U.def
  * element and SVG groups, and as identical CSS properties on the HTML element
  * and the ancestry divs. (#3542)
  *
- * @private
+ * @internal
  */
 function commonSetter(value, key, elem) {
     var _a;
@@ -61,7 +62,7 @@ function commonSetter(value, key, elem) {
  * contain the HTML span. These div elements are translated and styled like
  * original `g` counterparts.
  *
- * @private
+ * @internal
  */
 var decorateSVGGroup = function (g, container) {
     var _a;
@@ -84,7 +85,7 @@ var decorateSVGGroup = function (g, container) {
          *
          * Reverted the fix for #6957 due to positioning problems and offline
          * export (#7254, #7280, #7529)
-         * @private
+         * @internal
          */
         g.translateXSetter = g.translateYSetter = function (value, key) {
             g[key] = value;
@@ -156,7 +157,7 @@ var HTMLElement = /** @class */ (function (_super) {
     }
     /**
      * Compose
-     * @private
+     * @internal
      */
     HTMLElement.compose = function (SVGRendererClass) {
         if (pushUnique(composed, this.compose)) {
@@ -164,7 +165,7 @@ var HTMLElement = /** @class */ (function (_super) {
              * Create a HTML text node. This is used by the SVG renderer `text`
              * and `label` functions through the `useHTML` parameter.
              *
-             * @private
+             * @internal
              */
             SVGRendererClass.prototype.html = function (str, x, y) {
                 return new HTMLElement(this, 'span')
@@ -179,7 +180,7 @@ var HTMLElement = /** @class */ (function (_super) {
     };
     /**
      * Get the correction in X and Y positioning as the element is rotated.
-     * @private
+     * @internal
      */
     HTMLElement.prototype.getSpanCorrection = function (width, baseline, alignCorrection) {
         this.xCorr = -width * alignCorrection;
@@ -187,7 +188,7 @@ var HTMLElement = /** @class */ (function (_super) {
     };
     /**
      * Apply CSS to HTML elements. This is used in text within SVG rendering.
-     * @private
+     * @internal
      */
     HTMLElement.prototype.css = function (styles) {
         var element = this.element, 
@@ -231,7 +232,7 @@ var HTMLElement = /** @class */ (function (_super) {
      * Called internally from the `SVGElement.getBBox` function and subsequently
      * rotated.
      *
-     * @private
+     * @internal
      */
     HTMLElement.prototype.htmlGetBBox = function () {
         var element = this.element;
@@ -245,7 +246,7 @@ var HTMLElement = /** @class */ (function (_super) {
     /**
      * Batch update styles and attributes related to transform
      *
-     * @private
+     * @internal
      */
     HTMLElement.prototype.updateTransform = function () {
         var _this = this;
@@ -261,8 +262,7 @@ var HTMLElement = /** @class */ (function (_super) {
             if (_this.textPxLength) {
                 return _this.textPxLength;
             }
-            // Reset multiline/ellipsis in order to read width (#4928,
-            // #5417)
+            // Reset multiline/ellipsis in order to read width (#4928, #5417)
             css(element, {
                 width: '',
                 whiteSpace: whiteSpace || 'nowrap'
@@ -290,7 +290,8 @@ var HTMLElement = /** @class */ (function (_super) {
             // Calling offsetWidth affects rendering time as it forces layout
             // (#7656).
             if (textWidth !== oldTextWidth) { // #983, #1254
-                var textPxLength = getTextPxLength(), textWidthNum = textWidth || 0, willOverWrap = element.style.textOverflow === '' &&
+                var textPxLength = getTextPxLength(), textWidthNum = textWidth || 0, willOverWrap = !renderer.styledMode &&
+                    element.style.textOverflow === '' &&
                     element.style.webkitLineClamp;
                 if ((textWidthNum > oldTextWidth ||
                     textPxLength > textWidthNum ||
@@ -397,7 +398,7 @@ var HTMLElement = /** @class */ (function (_super) {
      * Add the element to a group wrapper. For HTML elements, a parallel div
      * will be created for each ancenstor SVG `g` element.
      *
-     * @private
+     * @internal
      */
     HTMLElement.prototype.add = function (parentGroup) {
         var _a = this, foreignObject = _a.foreignObject, renderer = _a.renderer, container = renderer.box.parentNode, parents = [];
@@ -449,7 +450,7 @@ var HTMLElement = /** @class */ (function (_super) {
     };
     /**
      * Text setter
-     * @private
+     * @internal
      */
     HTMLElement.prototype.textSetter = function (value) {
         if (value !== this.textStr) {
@@ -463,7 +464,7 @@ var HTMLElement = /** @class */ (function (_super) {
     /**
      * Align setter
      *
-     * @private
+     * @internal
      */
     HTMLElement.prototype.alignSetter = function (value) {
         this.alignValue = this.textAlign = value;
@@ -471,7 +472,7 @@ var HTMLElement = /** @class */ (function (_super) {
     };
     /**
      * Various setters which rely on update transform
-     * @private
+     * @internal
      */
     HTMLElement.prototype.xSetter = function (value, key) {
         this[key] = value;

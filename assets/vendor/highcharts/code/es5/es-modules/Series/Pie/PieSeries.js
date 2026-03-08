@@ -1,10 +1,11 @@
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -177,11 +178,11 @@ var PieSeries = /** @class */ (function (_super) {
     };
     /**
      * Define hasData function for non-cartesian series. Returns true if the
-     * series has points at all.
+     * series has at least one visible point (#23235)
      * @private
      */
     PieSeries.prototype.hasData = function () {
-        return !!this.dataTable.rowCount;
+        return this.points.some(function (point) { return point.visible; });
     };
     /**
      * Draw the data points

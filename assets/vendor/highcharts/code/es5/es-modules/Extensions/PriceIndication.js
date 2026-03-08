@@ -1,11 +1,13 @@
+// SPDX-License-Identifier: LicenseRef-Highcharts
 /**
- * (c) 2009-2025 Sebastian Bochann
+ * (c) 2009-2026 Highsoft AS
+ * Author: Sebastian Bochann
  *
  * Price indicator for Highcharts
  *
- * License: www.highcharts.com/license
+ * A commercial license may be required depending on use.
+ * See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  */
 'use strict';
 import H from '../Core/Globals.js';
@@ -17,18 +19,39 @@ var addEvent = U.addEvent, merge = U.merge, pushUnique = U.pushUnique;
  *  Composition
  *
  * */
-/** @private */
+/** @internal */
 function compose(SeriesClass) {
     if (pushUnique(composed, 'PriceIndication')) {
         addEvent(SeriesClass, 'afterRender', onSeriesAfterRender);
+        addEvent(SeriesClass, 'hide', onSeriesHide);
     }
 }
-/** @private */
+/**
+ * Hides price indication when parent series is hidden. Showing the indicator is
+ * handled by the `onSeriesAfterRender` function.
+ *
+ * @internal
+ *
+ */
+function onSeriesHide() {
+    var series = this;
+    [
+        'lastPrice',
+        'lastPriceLabel',
+        'lastVisiblePrice',
+        'lastVisiblePriceLabel'
+    ].forEach(function (key) {
+        var _a;
+        (_a = series[key]) === null || _a === void 0 ? void 0 : _a.hide();
+    });
+}
+/** @internal */
 function onSeriesAfterRender() {
     var _a;
     var series = this, seriesOptions = series.options, lastVisiblePrice = seriesOptions.lastVisiblePrice, lastPrice = seriesOptions.lastPrice;
     if ((lastVisiblePrice || lastPrice) &&
-        seriesOptions.id !== 'highcharts-navigator-series') {
+        seriesOptions.id !== 'highcharts-navigator-series' &&
+        series.visible) {
         var xAxis = series.xAxis, yAxis = series.yAxis, origOptions = yAxis.crosshair, origGraphic = yAxis.cross, origLabel = yAxis.crossLabel, points = series.points, pLength = points.length, dataLength = series.dataTable.rowCount, x = series.getColumn('x')[dataLength - 1], y = (_a = series.getColumn('y')[dataLength - 1]) !== null && _a !== void 0 ? _a : series.getColumn('close')[dataLength - 1];
         var yValue = void 0;
         if (lastPrice && lastPrice.enabled) {

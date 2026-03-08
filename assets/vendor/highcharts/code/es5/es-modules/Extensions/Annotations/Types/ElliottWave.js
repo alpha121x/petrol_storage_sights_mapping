@@ -1,6 +1,5 @@
 /* *
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -19,13 +18,14 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+var _a;
 import Annotation from '../Annotation.js';
 import CrookedLine from './CrookedLine.js';
 import D from '../../../Core/Defaults.js';
 var defaultOptions = D.defaultOptions;
 import U from '../../../Core/Utilities.js';
 var merge = U.merge;
-if (defaultOptions.annotations) {
+if ((_a = defaultOptions.annotations) === null || _a === void 0 ? void 0 : _a.types) {
     defaultOptions.annotations.types.elliottWave = merge(defaultOptions.annotations.types.crookedLine, 
     /**
      * Options for the elliott wave annotation type.
@@ -71,6 +71,7 @@ if (defaultOptions.annotations) {
  *  Class
  *
  * */
+/** @internal */
 var ElliottWave = /** @class */ (function (_super) {
     __extends(ElliottWave, _super);
     function ElliottWave() {

@@ -1,6 +1,5 @@
 /* *
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -19,6 +18,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+var _a;
 import Annotation from '../Annotation.js';
 import ControlPoint from '../ControlPoint.js';
 import D from '../../../Core/Defaults.js';
@@ -26,7 +26,7 @@ var defaultOptions = D.defaultOptions;
 import MockPoint from '../MockPoint.js';
 import U from '../../../Core/Utilities.js';
 var merge = U.merge;
-if (defaultOptions.annotations) {
+if ((_a = defaultOptions.annotations) === null || _a === void 0 ? void 0 : _a.types) {
     /**
     * Options for the crooked line annotation type.
     *
@@ -40,10 +40,6 @@ if (defaultOptions.annotations) {
         /**
          * @extends   annotations.labelOptions
          * @apioption annotations.types.crookedLine.labelOptions
-         */
-        /**
-         * @extends   annotations.shapeOptions
-         * @apioption annotations.types.crookedLine.shapeOptions
          */
         /**
          * Additional options for an annotation with the type.
@@ -93,6 +89,7 @@ if (defaultOptions.annotations) {
         },
         /**
          * @excluding positioner, events
+         * @extends annotations.controlPointOptions
          */
         controlPointOptions: {
             positioner: function (target) {
@@ -126,6 +123,7 @@ if (defaultOptions.annotations) {
  *  Class
  *
  * */
+/** @internal */
 var CrookedLine = /** @class */ (function (_super) {
     __extends(CrookedLine, _super);
     function CrookedLine() {
@@ -138,17 +136,20 @@ var CrookedLine = /** @class */ (function (_super) {
      * */
     /**
      * Overrides default setter to get axes from typeOptions.
-     * @private
      */
     CrookedLine.prototype.setClipAxes = function () {
-        this.clipXAxis = this.chart.xAxis[this.options.typeOptions.xAxis];
-        this.clipYAxis = this.chart.yAxis[this.options.typeOptions.yAxis];
+        var _a, _b;
+        this.clipXAxis = this.chart.xAxis[(_a = this.options.typeOptions) === null || _a === void 0 ? void 0 : _a.xAxis];
+        this.clipYAxis = this.chart.yAxis[(_b = this.options.typeOptions) === null || _b === void 0 ? void 0 : _b.yAxis];
     };
     CrookedLine.prototype.getPointsOptions = function () {
-        var typeOptions = this.options.typeOptions;
+        var _a;
+        var typeOptions = (_a = this.options).typeOptions || (_a.typeOptions = {});
         return (typeOptions.points || []).map(function (pointOptions) {
-            pointOptions.xAxis = typeOptions.xAxis;
-            pointOptions.yAxis = typeOptions.yAxis;
+            if (typeof pointOptions !== 'string') {
+                pointOptions.xAxis = typeOptions.xAxis;
+                pointOptions.yAxis = typeOptions.yAxis;
+            }
             return pointOptions;
         });
     };
@@ -163,7 +164,8 @@ var CrookedLine = /** @class */ (function (_super) {
         }, this);
     };
     CrookedLine.prototype.addShapes = function () {
-        var typeOptions = this.options.typeOptions, shape = this.initShape(merge(typeOptions.line, {
+        var _a;
+        var typeOptions = (_a = this.options).typeOptions || (_a.typeOptions = {}), shape = this.initShape(merge(typeOptions.line, {
             type: 'path',
             className: 'highcharts-crooked-lines',
             points: this.points.map(function (_point, i) { return (function (target) {

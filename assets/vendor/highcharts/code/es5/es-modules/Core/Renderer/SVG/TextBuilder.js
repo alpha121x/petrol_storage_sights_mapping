@@ -1,10 +1,11 @@
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -24,11 +25,16 @@ var stringWithEllipsis = function (text, currentIndex) {
  * */
 /**
  * SVG Text Builder
- * @private
+ * @internal
  * @class
  * @name Highcharts.TextBuilder
  */
 var TextBuilder = /** @class */ (function () {
+    /**
+     * Constructs a new TextBuilder instance.
+     * @internal
+     * @param svgElement The SVG element to build text for.
+     */
     function TextBuilder(svgElement) {
         var textStyles = svgElement.styles;
         this.renderer = svgElement.renderer;
@@ -44,9 +50,7 @@ var TextBuilder = /** @class */ (function () {
      * Build an SVG representation of the pseudo HTML given in the object's
      * svgElement.
      *
-     * @private
-     *
-     * @return {void}.
+     * @internal
      */
     TextBuilder.prototype.buildSVG = function () {
         var wrapper = this.svgElement, textNode = wrapper.element, renderer = wrapper.renderer, textStr = pick(wrapper.textStr, '').toString(), hasMarkup = textStr.indexOf('<') !== -1, childNodes = textNode.childNodes, tempParent = !wrapper.added && renderer.box, regexMatchBreaks = /<br.*?>/g, 
@@ -115,9 +119,7 @@ var TextBuilder = /** @class */ (function () {
      * Modify the DOM of the generated SVG structure. This function only does
      * operations that cannot be done until the elements are attached to the
      * DOM, like doing layout based on rendered metrics of the added elements.
-     *
-     * @private
-     *
+     * @internal
      */
     TextBuilder.prototype.modifyDOM = function () {
         var _this = this;
@@ -262,9 +264,11 @@ var TextBuilder = /** @class */ (function () {
     };
     /**
      * Get the rendered line height of a <text>, <tspan> or pure text node.
-     * @private
-     * @param {DOMElementType|Text} node The node to check for
-     * @return {number} The rendered line height
+     * @internal
+     * @param {DOMElementType|Text} node
+     * The node to check for.
+     * @return {number}
+     * The rendered line height.
      */
     TextBuilder.prototype.getLineHeight = function (node) {
         // If the node is a text node, use its parent
@@ -280,10 +284,7 @@ var TextBuilder = /** @class */ (function () {
      * much heavy lifting as we can here, before doing the final processing in
      * the modifyDOM function. The original data is mutated.
      *
-     * @private
-     *
      * @param {ASTNode[]} nodes The AST nodes
-     *
      */
     TextBuilder.prototype.modifyTree = function (nodes) {
         var _this = this;
@@ -383,8 +384,8 @@ var TextBuilder = /** @class */ (function () {
                         lengths[end] = startAt +
                             parentNode.getSubStringLength(0, words ? end + 1 : end);
                     }
-                    catch (e) {
-                        '';
+                    catch (_a) {
+                        // Ignore error
                     }
                 }
             }
@@ -441,15 +442,17 @@ var TextBuilder = /** @class */ (function () {
         svgElement.actualWidth = actualWidth;
         svgElement.rotation = rotation; // Apply rotation again.
     };
-    /*
+    /**
      * Un-escape HTML entities based on the public `renderer.escapes` list
      *
-     * @private
+     * @param {string} inputStr
+     * The string to unescape
      *
-     * @param {string} inputStr The string to unescape
-     * @param {Array<string>} [except] Exceptions
+     * @param {Array<string>} [except]
+     * Exceptions
      *
-     * @return {string} The processed string
+     * @return {string}
+     * The processed string
      */
     TextBuilder.prototype.unescapeEntities = function (inputStr, except) {
         objectEach(this.renderer.escapes, function (value, key) {
@@ -461,4 +464,5 @@ var TextBuilder = /** @class */ (function () {
     };
     return TextBuilder;
 }());
+/** @internal */
 export default TextBuilder;

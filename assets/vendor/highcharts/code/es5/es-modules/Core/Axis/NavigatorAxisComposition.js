@@ -1,10 +1,11 @@
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -17,9 +18,7 @@ var addEvent = U.addEvent, correctFloat = U.correctFloat, defined = U.defined, i
  *  Functions
  *
  * */
-/**
- * @private
- */
+/** @internal */
 function onAxisInit() {
     var axis = this;
     if (!axis.navigatorAxis) {
@@ -30,7 +29,7 @@ function onAxisInit() {
  * For Stock charts, override selection zooming with some special features
  * because X axis zooming is already allowed by the Navigator and Range
  * selector.
- * @private
+ * @internal
  */
 function onAxisSetExtremes(e) {
     var axis = this, chart = axis.chart, chartOptions = chart.options, navigator = chartOptions.navigator, navigatorAxis = axis.navigatorAxis, pinchType = chart.zooming.pinchType, rangeSelector = chartOptions.rangeSelector, zoomType = chart.zooming.type;
@@ -70,10 +69,7 @@ function onAxisSetExtremes(e) {
  *  Class
  *
  * */
-/**
- * @private
- * @class
- */
+/** @internal */
 var NavigatorAxisAdditions = /** @class */ (function () {
     /* *
      *
@@ -88,9 +84,6 @@ var NavigatorAxisAdditions = /** @class */ (function () {
      *  Static Functions
      *
      * */
-    /**
-     * @private
-     */
     NavigatorAxisAdditions.compose = function (AxisClass) {
         if (!AxisClass.keepProps.includes('navigatorAxis')) {
             AxisClass.keepProps.push('navigatorAxis');
@@ -103,9 +96,6 @@ var NavigatorAxisAdditions = /** @class */ (function () {
      *  Functions
      *
      * */
-    /**
-     * @private
-     */
     NavigatorAxisAdditions.prototype.destroy = function () {
         this.axis = void 0;
     };
@@ -113,7 +103,7 @@ var NavigatorAxisAdditions = /** @class */ (function () {
      * Add logic to normalize the zoomed range in order to preserve the pressed
      * state of range selector buttons
      *
-     * @private
+     * @internal
      * @function Highcharts.Axis#toFixedRange
      */
     NavigatorAxisAdditions.prototype.toFixedRange = function (pxMin, pxMax, fixedMin, fixedMax) {
@@ -141,4 +131,5 @@ var NavigatorAxisAdditions = /** @class */ (function () {
  *  Default Export
  *
  * */
+/** @internal */
 export default NavigatorAxisAdditions;

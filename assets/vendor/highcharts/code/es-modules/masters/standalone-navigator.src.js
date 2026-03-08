@@ -1,12 +1,15 @@
-/* *
+// SPDX-License-Identifier: LicenseRef-Highcharts
+/**
+ * @license Highchart JS v12.5.0 (2026-01-12)
+ * @module highcharts/standalone-navigator
  *
- *  (c) 2010-2025 Mateusz Bernacik
+ * Standalone Navigator for Highcharts.
  *
- *  License: www.highcharts.com/license
+ * (c) 2009-2026 Highsoft AS
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
- *
- * */
+ * A commercial license may be required depending on use.
+ * See www.highcharts.com/license
+ */
 'use strict';
 import Highcharts from './highcharts.src.js';
 import './modules/navigator.src.js';

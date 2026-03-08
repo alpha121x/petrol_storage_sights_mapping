@@ -7,6 +7,7 @@
  *  Class
  *
  * */
+/** @internal */
 var Thunderforest = /** @class */ (function () {
     function Thunderforest() {
         /* *
@@ -75,4 +76,5 @@ var Thunderforest = /** @class */ (function () {
  *  Default Export
  *
  * */
+/** @internal */
 export default Thunderforest;

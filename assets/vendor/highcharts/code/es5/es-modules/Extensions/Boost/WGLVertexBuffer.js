@@ -1,12 +1,11 @@
 /* *
  *
- *  (c) 2019-2025 Highsoft AS
+ *  (c) 2019-2026 Highsoft AS
  *
  *  Boost module: stripped-down renderer for higher performance
  *
  *  License: highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -20,7 +19,7 @@
  * A vertex buffer is a set of vertices which are passed to the GPU
  * in a single call.
  *
- * @private
+ * @internal
  * @class
  * @name WGLVertexBuffer
  *
@@ -60,15 +59,15 @@ var WGLVertexBuffer = /** @class */ (function () {
     /**
      * Note about pre-allocated buffers:
      *     - This is slower for charts with many series
-     * @private
+     * @internal
      */
     WGLVertexBuffer.prototype.allocate = function (size) {
         this.iterator = -1;
         this.preAllocated = new Float32Array(size * 4);
     };
     /**
-     * Bind the buffer
-     * @private
+     * Bind the buffer.
+     * @internal
      */
     WGLVertexBuffer.prototype.bind = function () {
         if (!this.buffer) {
@@ -81,8 +80,9 @@ var WGLVertexBuffer = /** @class */ (function () {
         /// gl.enableVertexAttribArray(vertAttribute);
     };
     /**
-     * Build the buffer
-     * @private
+     * Build the buffer.
+     *
+     * @internal
      * @param {Array<number>} dataIn
      * Zero padded array of indices
      * @param {string} attrib
@@ -116,9 +116,7 @@ var WGLVertexBuffer = /** @class */ (function () {
         farray = false;
         return true;
     };
-    /**
-     * @private
-     */
+    /** @internal */
     WGLVertexBuffer.prototype.destroy = function () {
         if (this.buffer) {
             this.gl.deleteBuffer(this.buffer);
@@ -131,7 +129,8 @@ var WGLVertexBuffer = /** @class */ (function () {
     };
     /**
      * Adds data to the pre-allocated buffer.
-     * @private
+     *
+     * @internal
      * @param {number} x
      * X data
      * @param {number} y
@@ -150,9 +149,9 @@ var WGLVertexBuffer = /** @class */ (function () {
         }
     };
     /**
-     * Render the buffer
+     * Render the buffer.
      *
-     * @private
+     * @internal
      * @param {number} from
      * Start indice.
      * @param {number} to
@@ -189,4 +188,5 @@ var WGLVertexBuffer = /** @class */ (function () {
  *  Default Export
  *
  * */
+/** @internal */
 export default WGLVertexBuffer;

@@ -1,12 +1,13 @@
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
  *  Extensions to the SVGRenderer class to enable 3D shapes
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -36,6 +37,7 @@ var defined = U.defined, pick = U.pick;
  *  Class
  *
  * */
+/** @internal */
 var SVGElement3D = /** @class */ (function (_super) {
     __extends(SVGElement3D, _super);
     function SVGElement3D() {
@@ -61,7 +63,7 @@ var SVGElement3D = /** @class */ (function (_super) {
      * */
     /**
      * The init is used by base - renderer.Element
-     * @private
+     * @internal
      */
     SVGElement3D.prototype.initArgs = function (args) {
         var elem3d = this, renderer = elem3d.renderer, paths = renderer[elem3d.pathType + 'Path'](args), zIndexes = paths.zIndexes;
@@ -93,7 +95,7 @@ var SVGElement3D = /** @class */ (function (_super) {
     };
     /**
      * Single property setter that applies options to each part
-     * @private
+     * @internal
      */
     SVGElement3D.prototype.singleSetterForParts = function (prop, val, values, verb, duration, complete) {
         var elem3d = this, newAttr = {}, optionsToApply = [null, null, (verb || 'attr'), duration, complete], hasZIndexes = values === null || values === void 0 ? void 0 : values.zIndexes;
@@ -124,7 +126,7 @@ var SVGElement3D = /** @class */ (function (_super) {
     };
     /**
      * Calls function for each part. Used for attr, animate and destroy.
-     * @private
+     * @internal
      */
     SVGElement3D.prototype.processParts = function (props, partsProps, verb, duration, complete) {
         var elem3d = this;
@@ -143,13 +145,14 @@ var SVGElement3D = /** @class */ (function (_super) {
     };
     /**
      * Destroy all parts
-     * @private
+     * @internal
      */
     SVGElement3D.prototype.destroy = function () {
         this.processParts(null, null, 'destroy');
         return _super.prototype.destroy.call(this);
     };
     // Following functions are SVGElement3DCuboid (= base)
+    /** @internal */
     SVGElement3D.prototype.attr = function (args, val, complete, continueAnimation) {
         // Resolve setting attributes by string name
         if (typeof args === 'string' && typeof val !== 'undefined') {
@@ -162,6 +165,7 @@ var SVGElement3D = /** @class */ (function (_super) {
         }
         return _super.prototype.attr.call(this, args, void 0, complete, continueAnimation);
     };
+    /** @internal */
     SVGElement3D.prototype.animate = function (args, duration, complete) {
         if (defined(args.x) && defined(args.y)) {
             var paths = this.renderer[this.pathType + 'Path'](args), forcedSides = paths.forcedSides;
@@ -182,6 +186,7 @@ var SVGElement3D = /** @class */ (function (_super) {
         }
         return this;
     };
+    /** @internal */
     SVGElement3D.prototype.fillSetter = function (fill) {
         var elem3d = this;
         elem3d.forcedSides = elem3d.forcedSides || [];
@@ -206,4 +211,5 @@ var SVGElement3D = /** @class */ (function (_super) {
  *  Default Export
  *
  * */
+/** @internal */
 export default SVGElement3D;

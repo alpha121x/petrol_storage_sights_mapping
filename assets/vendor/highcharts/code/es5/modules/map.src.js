@@ -1,13 +1,16 @@
+// SPDX-License-Identifier: LicenseRef-Highcharts
 /**
- * @license Highcharts JS v12.3.0 (2025-06-21)
- * @module highcharts/modules/color-axis
+ * @license Highmaps JS v12.5.0 (2026-01-12)
+ * @module highcharts/modules/map
  * @requires highcharts
  *
- * ColorAxis module
+ * Highmaps as a plugin for Highcharts or Highcharts Stock.
  *
- * (c) 2012-2025 Pawel Potaczek
+ * (c) 2011-2026 Highsoft AS
+ * Author: Torstein Honsi
  *
- * License: www.highcharts.com/license
+ * A commercial license may be required depending on use.
+ * See www.highcharts.com/license
  */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
@@ -180,21 +183,189 @@ var highcharts_Axis_commonjs_highcharts_Axis_commonjs2_highcharts_Axis_root_High
 // EXTERNAL MODULE: external {"amd":["highcharts/highcharts","Color"],"commonjs":["highcharts","Color"],"commonjs2":["highcharts","Color"],"root":["Highcharts","Color"]}
 var highcharts_Color_commonjs_highcharts_Color_commonjs2_highcharts_Color_root_Highcharts_Color_ = __webpack_require__(620);
 var highcharts_Color_commonjs_highcharts_Color_commonjs2_highcharts_Color_root_Highcharts_Color_default = /*#__PURE__*/__webpack_require__.n(highcharts_Color_commonjs_highcharts_Color_commonjs2_highcharts_Color_root_Highcharts_Color_);
-;// ./code/es5/es-modules/Core/Axis/Color/ColorAxisComposition.js
+;// ./code/es5/es-modules/Core/Axis/Color/ColorAxisBase.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
 
 var color = (highcharts_Color_commonjs_highcharts_Color_commonjs2_highcharts_Color_root_Highcharts_Color_default()).parse;
 
-var addEvent = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).addEvent, extend = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).extend, merge = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).merge, pick = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).pick, splat = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).splat;
+var merge = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).merge;
+/* *
+ *
+ *  Namespace
+ *
+ * */
+/** @internal */
+var ColorAxisBase;
+(function (ColorAxisBase) {
+    /* *
+     *
+     *  Declarations
+     *
+     * */
+    /* *
+     *
+     *  Functions
+     *
+     * */
+    /**
+     * Initialize defined data classes.
+     * @internal
+     */
+    function initDataClasses(userOptions) {
+        var axis = this,
+            chart = axis.chart,
+            legendItem = axis.legendItem = axis.legendItem || {},
+            options = axis.options,
+            userDataClasses = userOptions.dataClasses || [];
+        var dataClass,
+            dataClasses,
+            colorCount = chart.options.chart.colorCount,
+            colorCounter = 0,
+            colors;
+        axis.dataClasses = dataClasses = [];
+        legendItem.labels = [];
+        for (var i = 0, iEnd = userDataClasses.length; i < iEnd; ++i) {
+            dataClass = userDataClasses[i];
+            dataClass = merge(dataClass);
+            dataClasses.push(dataClass);
+            if (!chart.styledMode && dataClass.color) {
+                continue;
+            }
+            if (options.dataClassColor === 'category') {
+                if (!chart.styledMode) {
+                    colors = chart.options.colors || [];
+                    colorCount = colors.length;
+                    dataClass.color = colors[colorCounter];
+                }
+                dataClass.colorIndex = colorCounter;
+                // Loop back to zero
+                colorCounter++;
+                if (colorCounter === colorCount) {
+                    colorCounter = 0;
+                }
+            }
+            else {
+                dataClass.color = color(options.minColor).tweenTo(color(options.maxColor), iEnd < 2 ? 0.5 : i / (iEnd - 1) // #3219
+                );
+            }
+        }
+    }
+    ColorAxisBase.initDataClasses = initDataClasses;
+    /**
+     * Create initial color stops.
+     * @internal
+     */
+    function initStops() {
+        var axis = this,
+            options = axis.options,
+            stops = axis.stops = options.stops || [
+                [0,
+            options.minColor || ''],
+                [1,
+            options.maxColor || '']
+            ];
+        for (var i = 0, iEnd = stops.length; i < iEnd; ++i) {
+            stops[i].color = color(stops[i][1]);
+        }
+    }
+    ColorAxisBase.initStops = initStops;
+    /**
+     * Normalize logarithmic values.
+     * @internal
+     */
+    function normalizedValue(value) {
+        var axis = this,
+            max = axis.max || 0,
+            min = axis.min || 0;
+        if (axis.logarithmic) {
+            value = axis.logarithmic.log2lin(value);
+        }
+        return 1 - ((max - value) /
+            ((max - min) || 1));
+    }
+    ColorAxisBase.normalizedValue = normalizedValue;
+    /**
+     * Translate from a value to a color.
+     * @internal
+     */
+    function toColor(value, point) {
+        var axis = this;
+        var dataClasses = axis.dataClasses;
+        var stops = axis.stops;
+        var pos,
+            from,
+            to,
+            color,
+            dataClass,
+            i;
+        if (dataClasses) {
+            i = dataClasses.length;
+            while (i--) {
+                dataClass = dataClasses[i];
+                from = dataClass.from;
+                to = dataClass.to;
+                if ((typeof from === 'undefined' || value >= from) &&
+                    (typeof to === 'undefined' || value <= to)) {
+                    color = dataClass.color;
+                    if (point) {
+                        point.dataClass = i;
+                        point.colorIndex = dataClass.colorIndex;
+                    }
+                    break;
+                }
+            }
+        }
+        else {
+            pos = axis.normalizedValue(value);
+            i = stops.length;
+            while (i--) {
+                if (pos > stops[i][0]) {
+                    break;
+                }
+            }
+            from = stops[i] || stops[i + 1];
+            to = stops[i + 1] || from;
+            // The position within the gradient
+            pos = 1 - (to[0] - pos) / ((to[0] - from[0]) || 1);
+            color = from.color.tweenTo(to.color, pos);
+        }
+        return color;
+    }
+    ColorAxisBase.toColor = toColor;
+})(ColorAxisBase || (ColorAxisBase = {}));
+/* *
+ *
+ *  Default Export
+ *
+ * */
+/* harmony default export */ var Color_ColorAxisBase = (ColorAxisBase);
+
+;// ./code/es5/es-modules/Core/Axis/Color/ColorAxisComposition.js
+/* *
+ *
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
+ *
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
+ *
+ *
+ * */
+
+
+var ColorAxisComposition_color = (highcharts_Color_commonjs_highcharts_Color_commonjs2_highcharts_Color_root_Highcharts_Color_default()).parse;
+
+var addEvent = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).addEvent, extend = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).extend, ColorAxisComposition_merge = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).merge, pick = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).pick, splat = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).splat;
 /* *
  *
  *  Composition
@@ -218,9 +389,7 @@ var ColorAxisComposition;
      *  Functions
      *
      * */
-    /**
-     * @private
-     */
+    /** @internal */
     function compose(ColorAxisClass, ChartClass, FxClass, LegendClass, SeriesClass) {
         var chartProto = ChartClass.prototype,
             fxProto = FxClass.prototype,
@@ -252,7 +421,7 @@ var ColorAxisComposition;
     ColorAxisComposition.compose = compose;
     /**
      * Extend the chart createAxes method to also make the color axis.
-     * @private
+     * @internal
      */
     function onChartAfterCreateAxes() {
         var _this = this;
@@ -268,7 +437,7 @@ var ColorAxisComposition;
     /**
      * Add the color axis. This also removes the axis' own series to prevent
      * them from showing up individually.
-     * @private
+     * @internal
      */
     function onLegendAfterGetAllItems(e) {
         var _this = this;
@@ -317,9 +486,7 @@ var ColorAxisComposition;
             e.allItems.unshift(colorAxisItems[i]);
         }
     }
-    /**
-     * @private
-     */
+    /** @internal */
     function onLegendAfterColorizeItem(e) {
         if (e.visible && e.item.legendColor) {
             e.item.legendItem.symbol.attr({
@@ -329,7 +496,7 @@ var ColorAxisComposition;
     }
     /**
      * Updates in the legend need to be reflected in the color axis. (#6888)
-     * @private
+     * @internal
      */
     function onLegendAfterUpdate(e) {
         var _a;
@@ -339,7 +506,7 @@ var ColorAxisComposition;
     }
     /**
      * Calculate and set colors for points.
-     * @private
+     * @internal
      */
     function onSeriesAfterTranslate() {
         var _a;
@@ -350,7 +517,7 @@ var ColorAxisComposition;
     }
     /**
      * Add colorAxis to series axisTypes.
-     * @private
+     * @internal
      */
     function onSeriesBindAxes() {
         var axisTypes = this.axisTypes;
@@ -363,7 +530,7 @@ var ColorAxisComposition;
     }
     /**
      * Set the visibility of a single point
-     * @private
+     * @internal
      * @function Highcharts.colorPointMixin.setVisible
      * @param {boolean} visible
      */
@@ -383,7 +550,7 @@ var ColorAxisComposition;
     /**
      * In choropleth maps, the color is a result of the value, so this needs
      * translation too
-     * @private
+     * @internal
      * @function Highcharts.colorSeriesMixin.translateColors
      */
     function seriesTranslateColors() {
@@ -410,9 +577,7 @@ var ColorAxisComposition;
             }
         });
     }
-    /**
-     * @private
-     */
+    /** @internal */
     function wrapChartCreateAxis(ChartClass) {
         var superCreateAxis = ChartClass.prototype.createAxis;
         ChartClass.prototype.createAxis = function (type, options) {
@@ -421,7 +586,7 @@ var ColorAxisComposition;
                 return superCreateAxis.apply(chart, arguments);
             }
             var axis = new ColorAxisConstructor(chart,
-                merge(options.axis, {
+                ColorAxisComposition_merge(options.axis, {
                     index: chart[type].length,
                     isX: false
                 }));
@@ -442,17 +607,17 @@ var ColorAxisComposition;
     }
     /**
      * Handle animation of the color attributes directly.
-     * @private
+     * @internal
      */
     function wrapFxFillSetter() {
-        this.elem.attr('fill', color(this.start).tweenTo(color(this.end), this.pos), void 0, true);
+        this.elem.attr('fill', ColorAxisComposition_color(this.start).tweenTo(ColorAxisComposition_color(this.end), this.pos), void 0, true);
     }
     /**
      * Handle animation of the color attributes directly.
-     * @private
+     * @internal
      */
     function wrapFxStrokeSetter() {
-        this.elem.attr('stroke', color(this.start).tweenTo(color(this.end), this.pos), void 0, true);
+        this.elem.attr('stroke', ColorAxisComposition_color(this.start).tweenTo(ColorAxisComposition_color(this.end), this.pos), void 0, true);
     }
 })(ColorAxisComposition || (ColorAxisComposition = {}));
 /* *
@@ -465,11 +630,12 @@ var ColorAxisComposition;
 ;// ./code/es5/es-modules/Core/Axis/Color/ColorAxisDefaults.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -572,18 +738,6 @@ var colorAxisDefaults = {
      * @apioption colorAxis.dataClasses
      */
     /**
-     * The layout of the color axis. Can be `'horizontal'` or `'vertical'`.
-     * If none given, the color axis has the same layout as the legend.
-     *
-     * @sample highcharts/coloraxis/horizontal-layout/
-     *         Horizontal color axis layout with vertical legend
-     *
-     * @type      {string|undefined}
-     * @since     7.2.0
-     * @product   highcharts highstock highmaps
-     * @apioption colorAxis.layout
-     */
-    /**
      * The color of each data class. If not set, the color is pulled
      * from the global or chart-specific [colors](#colors) array. In
      * styled mode, this option is ignored. Instead, use colors defined
@@ -634,6 +788,18 @@ var colorAxisDefaults = {
      * @type      {number}
      * @product   highcharts highstock highmaps
      * @apioption colorAxis.dataClasses.to
+     */
+    /**
+     * The layout of the color axis. Can be `'horizontal'` or `'vertical'`.
+     * If none given, the color axis has the same layout as the legend.
+     *
+     * @sample highcharts/coloraxis/horizontal-layout/
+     *         Horizontal color axis layout with vertical legend
+     *
+     * @type      {string|undefined}
+     * @since     7.2.0
+     * @product   highcharts highstock highmaps
+     * @apioption colorAxis.layout
      */
     /** @ignore-option */
     lineWidth: 0,
@@ -861,11 +1027,10 @@ var colorAxisDefaults = {
      */
     /**
      * Whether to reverse the axis so that the highest number is closest
-     * to the origin. Defaults to `false` in a horizontal legend and
-     * `true` in a vertical legend, where the smallest value starts on
-     * top.
+     * to the origin. Defaults to `false`.
      *
      * @type      {boolean}
+     * @default   false
      * @product   highcharts highstock highmaps
      * @apioption colorAxis.reversed
      */
@@ -936,171 +1101,6 @@ var colorAxisDefaults = {
  * */
 /* harmony default export */ var ColorAxisDefaults = (colorAxisDefaults);
 
-;// ./code/es5/es-modules/Core/Axis/Color/ColorAxisLike.js
-/* *
- *
- *  (c) 2010-2025 Torstein Honsi
- *
- *  License: www.highcharts.com/license
- *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
- *
- * */
-
-
-var ColorAxisLike_color = (highcharts_Color_commonjs_highcharts_Color_commonjs2_highcharts_Color_root_Highcharts_Color_default()).parse;
-
-var ColorAxisLike_merge = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).merge;
-/* *
- *
- *  Namespace
- *
- * */
-var ColorAxisLike;
-(function (ColorAxisLike) {
-    /* *
-     *
-     *  Declarations
-     *
-     * */
-    /* *
-     *
-     *  Functions
-     *
-     * */
-    /**
-     * Initialize defined data classes.
-     * @private
-     */
-    function initDataClasses(userOptions) {
-        var axis = this,
-            chart = axis.chart,
-            legendItem = axis.legendItem = axis.legendItem || {},
-            options = axis.options,
-            userDataClasses = userOptions.dataClasses || [];
-        var dataClass,
-            dataClasses,
-            colorCount = chart.options.chart.colorCount,
-            colorCounter = 0,
-            colors;
-        axis.dataClasses = dataClasses = [];
-        legendItem.labels = [];
-        for (var i = 0, iEnd = userDataClasses.length; i < iEnd; ++i) {
-            dataClass = userDataClasses[i];
-            dataClass = ColorAxisLike_merge(dataClass);
-            dataClasses.push(dataClass);
-            if (!chart.styledMode && dataClass.color) {
-                continue;
-            }
-            if (options.dataClassColor === 'category') {
-                if (!chart.styledMode) {
-                    colors = chart.options.colors || [];
-                    colorCount = colors.length;
-                    dataClass.color = colors[colorCounter];
-                }
-                dataClass.colorIndex = colorCounter;
-                // Loop back to zero
-                colorCounter++;
-                if (colorCounter === colorCount) {
-                    colorCounter = 0;
-                }
-            }
-            else {
-                dataClass.color = ColorAxisLike_color(options.minColor).tweenTo(ColorAxisLike_color(options.maxColor), iEnd < 2 ? 0.5 : i / (iEnd - 1) // #3219
-                );
-            }
-        }
-    }
-    ColorAxisLike.initDataClasses = initDataClasses;
-    /**
-     * Create initial color stops.
-     * @private
-     */
-    function initStops() {
-        var axis = this,
-            options = axis.options,
-            stops = axis.stops = options.stops || [
-                [0,
-            options.minColor || ''],
-                [1,
-            options.maxColor || '']
-            ];
-        for (var i = 0, iEnd = stops.length; i < iEnd; ++i) {
-            stops[i].color = ColorAxisLike_color(stops[i][1]);
-        }
-    }
-    ColorAxisLike.initStops = initStops;
-    /**
-     * Normalize logarithmic values.
-     * @private
-     */
-    function normalizedValue(value) {
-        var axis = this,
-            max = axis.max || 0,
-            min = axis.min || 0;
-        if (axis.logarithmic) {
-            value = axis.logarithmic.log2lin(value);
-        }
-        return 1 - ((max - value) /
-            ((max - min) || 1));
-    }
-    ColorAxisLike.normalizedValue = normalizedValue;
-    /**
-     * Translate from a value to a color.
-     * @private
-     */
-    function toColor(value, point) {
-        var axis = this;
-        var dataClasses = axis.dataClasses;
-        var stops = axis.stops;
-        var pos,
-            from,
-            to,
-            color,
-            dataClass,
-            i;
-        if (dataClasses) {
-            i = dataClasses.length;
-            while (i--) {
-                dataClass = dataClasses[i];
-                from = dataClass.from;
-                to = dataClass.to;
-                if ((typeof from === 'undefined' || value >= from) &&
-                    (typeof to === 'undefined' || value <= to)) {
-                    color = dataClass.color;
-                    if (point) {
-                        point.dataClass = i;
-                        point.colorIndex = dataClass.colorIndex;
-                    }
-                    break;
-                }
-            }
-        }
-        else {
-            pos = axis.normalizedValue(value);
-            i = stops.length;
-            while (i--) {
-                if (pos > stops[i][0]) {
-                    break;
-                }
-            }
-            from = stops[i] || stops[i + 1];
-            to = stops[i + 1] || from;
-            // The position within the gradient
-            pos = 1 - (to[0] - pos) / ((to[0] - from[0]) || 1);
-            color = from.color.tweenTo(to.color, pos);
-        }
-        return color;
-    }
-    ColorAxisLike.toColor = toColor;
-})(ColorAxisLike || (ColorAxisLike = {}));
-/* *
- *
- *  Default Export
- *
- * */
-/* harmony default export */ var Color_ColorAxisLike = (ColorAxisLike);
-
 // EXTERNAL MODULE: external {"amd":["highcharts/highcharts","LegendSymbol"],"commonjs":["highcharts","LegendSymbol"],"commonjs2":["highcharts","LegendSymbol"],"root":["Highcharts","LegendSymbol"]}
 var highcharts_LegendSymbol_commonjs_highcharts_LegendSymbol_commonjs2_highcharts_LegendSymbol_root_Highcharts_LegendSymbol_ = __webpack_require__(500);
 var highcharts_LegendSymbol_commonjs_highcharts_LegendSymbol_commonjs2_highcharts_LegendSymbol_root_Highcharts_LegendSymbol_default = /*#__PURE__*/__webpack_require__.n(highcharts_LegendSymbol_commonjs_highcharts_LegendSymbol_commonjs2_highcharts_LegendSymbol_root_Highcharts_LegendSymbol_);
@@ -1110,11 +1110,12 @@ var highcharts_SeriesRegistry_commonjs_highcharts_SeriesRegistry_commonjs2_highc
 ;// ./code/es5/es-modules/Core/Axis/Color/ColorAxis.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -1171,14 +1172,14 @@ var ColorAxis = /** @class */ (function (_super) {
      *  Constructors
      *
      * */
-    /**
-     * @private
-     */
+    /** @internal */
     function ColorAxis(chart, userOptions) {
         var _this = _super.call(this,
             chart,
             userOptions) || this;
+        /** @internal */
         _this.coll = 'colorAxis';
+        /** @internal */
         _this.visible = true;
         _this.init(chart, userOptions);
         return _this;
@@ -1188,6 +1189,7 @@ var ColorAxis = /** @class */ (function (_super) {
      *  Static Functions
      *
      * */
+    /** @internal */
     ColorAxis.compose = function (ChartClass, FxClass, LegendClass, SeriesClass) {
         Color_ColorAxisComposition.compose(ColorAxis, ChartClass, FxClass, LegendClass, SeriesClass);
     };
@@ -1214,7 +1216,7 @@ var ColorAxis = /** @class */ (function (_super) {
                 userOptions.layout !== 'vertical' :
                 legend.layout !== 'vertical';
         axis.side = userOptions.side || horiz ? 2 : 1;
-        axis.reversed = userOptions.reversed || !horiz;
+        axis.reversed = userOptions.reversed;
         axis.opposite = !horiz;
         _super.prototype.init.call(this, chart, userOptions, 'colorAxis');
         // `super.init` saves the extended user options, now replace it with the
@@ -1245,7 +1247,7 @@ var ColorAxis = /** @class */ (function (_super) {
     };
     /**
      * Override so that ticks are not added in data class axes (#6914)
-     * @private
+     * @internal
      */
     ColorAxis.prototype.setTickPositions = function () {
         if (!this.dataClasses) {
@@ -1254,7 +1256,7 @@ var ColorAxis = /** @class */ (function (_super) {
     };
     /**
      * Extend the setOptions method to process extreme colors and color stops.
-     * @private
+     * @internal
      */
     ColorAxis.prototype.setOptions = function (userOptions) {
         var options = ColorAxis_merge(defaultOptions.colorAxis,
@@ -1269,9 +1271,7 @@ var ColorAxis = /** @class */ (function (_super) {
         _super.prototype.setOptions.call(this, options);
         this.options.crosshair = this.options.marker;
     };
-    /**
-     * @private
-     */
+    /** @internal */
     ColorAxis.prototype.setAxisSize = function () {
         var _a;
         var axis = this,
@@ -1297,7 +1297,7 @@ var ColorAxis = /** @class */ (function (_super) {
     /**
      * Override the getOffset method to add the whole axis groups inside the
      * legend.
-     * @private
+     * @internal
      */
     ColorAxis.prototype.getOffset = function () {
         var _a;
@@ -1329,16 +1329,16 @@ var ColorAxis = /** @class */ (function (_super) {
             // First time only
             if (!axis.added) {
                 axis.added = true;
-                axis.labelLeft = 0;
-                axis.labelRight = axis.width;
             }
+            axis.labelLeft = 0;
+            axis.labelRight = axis.width;
             // Reset it to avoid color axis reserving space
             axis.chart.axisOffset[axis.side] = sideOffset;
         }
     };
     /**
      * Create the color gradient.
-     * @private
+     * @internal
      */
     ColorAxis.prototype.setLegendColor = function () {
         var axis = this;
@@ -1362,7 +1362,7 @@ var ColorAxis = /** @class */ (function (_super) {
     };
     /**
      * The color axis appears inside the legend and has its own legend symbol.
-     * @private
+     * @internal
      */
     ColorAxis.prototype.drawLegendSymbol = function (legend, item) {
         var _a;
@@ -1407,21 +1407,17 @@ var ColorAxis = /** @class */ (function (_super) {
     };
     /**
      * Fool the legend.
-     * @private
+     * @internal
      */
     ColorAxis.prototype.setState = function (state) {
         this.series.forEach(function (series) {
             series.setState(state);
         });
     };
-    /**
-     * @private
-     */
+    /** @internal */
     ColorAxis.prototype.setVisible = function () {
     };
-    /**
-     * @private
-     */
+    /** @internal */
     ColorAxis.prototype.getSeriesExtremes = function () {
         var axis = this;
         var series = axis.series;
@@ -1520,9 +1516,7 @@ var ColorAxis = /** @class */ (function (_super) {
             }
         }
     };
-    /**
-     * @private
-     */
+    /** @internal */
     ColorAxis.prototype.getPlotLinePath = function (options) {
         var axis = this,
             left = axis.left,
@@ -1581,7 +1575,7 @@ var ColorAxis = /** @class */ (function (_super) {
     };
     /**
      * Destroy color axis legend items.
-     * @private
+     * @internal
      */
     ColorAxis.prototype.destroyItems = function () {
         var axis = this,
@@ -1598,7 +1592,10 @@ var ColorAxis = /** @class */ (function (_super) {
         }
         chart.isDirtyLegend = true;
     };
-    //   Removing the whole axis (#14283)
+    /**
+     * Removing the whole axis (#14283)
+     * @internal
+     */
     ColorAxis.prototype.destroy = function () {
         this.chart.isDirtyLegend = true;
         this.destroyItems();
@@ -1618,7 +1615,7 @@ var ColorAxis = /** @class */ (function (_super) {
     };
     /**
      * Get the legend item symbols for data classes.
-     * @private
+     * @internal
      */
     ColorAxis.prototype.getDataClassLegendSymbols = function () {
         var axis = this,
@@ -1705,7 +1702,7 @@ var ColorAxis = /** @class */ (function (_super) {
     };
     /**
      * Get size of color axis symbol.
-     * @private
+     * @internal
      */
     ColorAxis.prototype.getSize = function () {
         var axis = this,
@@ -1735,16 +1732,15 @@ var ColorAxis = /** @class */ (function (_super) {
      *  Static Properties
      *
      * */
+    /** @internal */
     ColorAxis.defaultLegendLength = 200;
-    /**
-     * @private
-     */
+    /** @internal */
     ColorAxis.keepProps = [
         'legendItem'
     ];
     return ColorAxis;
 }((highcharts_Axis_commonjs_highcharts_Axis_commonjs2_highcharts_Axis_root_Highcharts_Axis_default())));
-ColorAxis_extend(ColorAxis.prototype, Color_ColorAxisLike);
+ColorAxis_extend(ColorAxis.prototype, Color_ColorAxisBase);
 /* *
  *
  *  Registry
@@ -1771,7 +1767,20 @@ Array.prototype.push.apply((highcharts_Axis_commonjs_highcharts_Axis_commonjs2_h
 ''; // Detach doclet above
 
 ;// ./code/es5/es-modules/masters/modules/coloraxis.src.js
-
+// SPDX-License-Identifier: LicenseRef-Highcharts
+/**
+ * @license Highcharts JS v12.5.0 (2026-01-12)
+ * @module highcharts/modules/color-axis
+ * @requires highcharts
+ *
+ * ColorAxis module
+ *
+ * (c) 2012-2026 Highsoft AS
+ * Author: Pawel Potaczek
+ *
+ * A commercial license may be required depending on use.
+ * See www.highcharts.com/license
+ */
 
 
 
@@ -1783,11 +1792,12 @@ G.ColorAxis.compose(G.Chart, G.Fx, G.Legend, G.Series);
 ;// ./code/es5/es-modules/Maps/MapNavigationDefaults.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -1895,10 +1905,9 @@ var mapNavigation = {
     /**
      * The individual buttons for the map navigation. This usually includes
      * the zoom in and zoom out buttons. Properties for each button is
-     * inherited from
-     * [mapNavigation.buttonOptions](#mapNavigation.buttonOptions), while
-     * individual options can be overridden. But default, the `onclick`, `text`
-     * and `y` options are individual.
+     * inherited from [mapNavigation.buttonOptions](#mapNavigation.buttonOptions),
+     * while individual options can be overridden. But default, the `onclick`,
+     * `text` and `y` options are individual.
      */
     buttons: {
         /**
@@ -2048,11 +2057,12 @@ var mapNavigationDefaults = {
 ;// ./code/es5/es-modules/Maps/MapPointer.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -2063,6 +2073,7 @@ var MapPointer_defined = (highcharts_commonjs_highcharts_commonjs2_highcharts_ro
  *  Composition
  *
  * */
+/** @internal */
 var MapPointer;
 (function (MapPointer) {
     /* *
@@ -2079,7 +2090,7 @@ var MapPointer;
      * */
     /**
      * Extend the Pointer.
-     * @private
+     * @internal
      */
     function compose(PointerClass) {
         var pointerProto = PointerClass.prototype;
@@ -2095,7 +2106,7 @@ var MapPointer;
     MapPointer.compose = compose;
     /**
      * The event handler for the doubleclick event.
-     * @private
+     * @internal
      */
     function onContainerDblClick(e) {
         var chart = this.chart;
@@ -2112,7 +2123,7 @@ var MapPointer;
     }
     /**
      * The event handler for the mouse scroll event.
-     * @private
+     * @internal
      */
     function onContainerMouseWheel(e) {
         var chart = this.chart;
@@ -2146,7 +2157,7 @@ var MapPointer;
     }
     /**
      * Add lon and lat information to pointer events
-     * @private
+     * @internal
      */
     function wrapNormalize(proceed, e, chartPosition) {
         var chart = this.chart;
@@ -2164,7 +2175,7 @@ var MapPointer;
     }
     /**
      * The pinchType is inferred from mapNavigation options.
-     * @private
+     * @internal
      */
     function wrapZoomOption(proceed) {
         var mapNavigation = this.chart.options.mapNavigation;
@@ -2181,16 +2192,18 @@ var MapPointer;
  *  Default Export
  *
  * */
+/** @internal */
 /* harmony default export */ var Maps_MapPointer = (MapPointer);
 
 ;// ./code/es5/es-modules/Maps/MapSymbols.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -2205,9 +2218,7 @@ var symbols;
  *  Functions
  *
  * */
-/**
- *
- */
+/** @internal */
 function bottomButton(x, y, w, h, options) {
     if (options) {
         var r = (options === null || options === void 0 ? void 0 : options.r) || 0;
@@ -2216,17 +2227,13 @@ function bottomButton(x, y, w, h, options) {
     }
     return symbols.roundedRect(x, y, w, h, options);
 }
-/**
- *
- */
+/** @internal */
 function compose(SVGRendererClass) {
     symbols = SVGRendererClass.prototype.symbols;
     symbols.bottombutton = bottomButton;
     symbols.topbutton = topButton;
 }
-/**
- *
- */
+/** @internal */
 function topButton(x, y, w, h, options) {
     if (options) {
         var r = (options === null || options === void 0 ? void 0 : options.r) || 0;
@@ -2239,19 +2246,22 @@ function topButton(x, y, w, h, options) {
  *  Default Export
  *
  * */
+/** @internal */
 var MapSymbols = {
     compose: compose
 };
+/** @internal */
 /* harmony default export */ var Maps_MapSymbols = (MapSymbols);
 
 ;// ./code/es5/es-modules/Maps/MapNavigation.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -2269,9 +2279,7 @@ var MapNavigation_addEvent = (highcharts_commonjs_highcharts_commonjs2_highchart
  *  Functions
  *
  * */
-/**
- * @private
- */
+/** @internal */
 function stopEvent(e) {
     var _a,
         _b;
@@ -2290,7 +2298,7 @@ function stopEvent(e) {
  * The MapNavigation handles buttons for navigation in addition to mousewheel
  * and doubleclick handlers for chart zooming.
  *
- * @private
+ * @internal
  * @class
  * @name MapNavigation
  *
@@ -2554,6 +2562,7 @@ var MapNavigation = /** @class */ (function () {
  *  Default Export
  *
  * */
+/** @internal */
 /* harmony default export */ var Maps_MapNavigation = (MapNavigation);
 
 // EXTERNAL MODULE: external {"amd":["highcharts/highcharts","SVGElement"],"commonjs":["highcharts","SVGElement"],"commonjs2":["highcharts","SVGElement"],"root":["Highcharts","SVGElement"]}
@@ -2562,11 +2571,12 @@ var highcharts_SVGElement_commonjs_highcharts_SVGElement_commonjs2_highcharts_SV
 ;// ./code/es5/es-modules/Series/ColorMapComposition.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -2695,11 +2705,12 @@ var highcharts_Series_commonjs_highcharts_Series_commonjs2_highcharts_Series_roo
 ;// ./code/es5/es-modules/Series/CenteredUtilities.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -2850,11 +2861,12 @@ var highcharts_SVGRenderer_commonjs_highcharts_SVGRenderer_commonjs2_highcharts_
 ;// ./code/es5/es-modules/Core/Chart/MapChart.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -3002,6 +3014,15 @@ var MapChart = /** @class */ (function (_super) {
                 void 0);
         }
     };
+    /**
+     * A wrapper for the chart's update function that will additionally run
+     * recommendMapView on chart.map change.
+     *
+     * @function Highcharts.MapChart#update
+     *
+     * @param {Highcharts.Options} options
+     *        The chart options.
+     */
     MapChart.prototype.update = function (options) {
         var _a;
         // Calculate and set the recommended map view if map option is set
@@ -3118,15 +3139,20 @@ var MapChart = /** @class */ (function (_super) {
 ;// ./code/es5/es-modules/Maps/MapUtilities.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
-// Compute bounds from a path element
+/**
+ * Compute bounds from a path element.
+ *
+ * @internal
+ */
 var boundsFromPath = function (path) {
     var x2 = -Number.MAX_VALUE,
         x1 = Number.MAX_VALUE,
@@ -3154,19 +3180,22 @@ var boundsFromPath = function (path) {
  *  Default Export
  *
  * */
+/** @internal */
 var MapUtilities = {
     boundsFromPath: boundsFromPath
 };
+/** @internal */
 /* harmony default export */ var Maps_MapUtilities = (MapUtilities);
 
 ;// ./code/es5/es-modules/Series/Map/MapPoint.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -3406,11 +3435,12 @@ MapPoint_extend(MapPoint.prototype, {
 ;// ./code/es5/es-modules/Series/Map/MapSeriesDefaults.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -3955,6 +3985,11 @@ var MapSeriesDefaults = {
  * @product   highmaps
  * @apioption series.map.data.events
  */
+/**
+ * @extends   plotOptions.map.states
+ * @product   highmaps
+ * @apioption series.map.data.states
+ */
 /* *
  *
  *  Default Export
@@ -3965,11 +4000,12 @@ var MapSeriesDefaults = {
 ;// ./code/es5/es-modules/Maps/MapViewDefaults.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -4044,7 +4080,7 @@ var MapViewDefaults = {
      * @sample {highmaps} maps/demo/mappoint-mapmarker
      *         Padding for individual sides
      *
-     * @type  {number|string|Array<number|string>}
+     * @type  {Highcharts.MapViewPaddingType}
      */
     padding: 0,
     /**
@@ -4106,6 +4142,7 @@ var MapViewDefaults = {
          *         Projection explorer
          * @sample maps/mapview/projection-america-centric
          *         America-centric world map
+         * @type   {Highcharts.ProjectionRotationOption}
          */
         rotation: void 0
     },
@@ -4161,12 +4198,14 @@ var MapViewDefaults = {
         padding: '10%',
         /**
          * What coordinate system the `field` and `borderPath` should relate to.
-         * If `plotBox`, they will be fixed to the plot box and responsively
-         * move in relation to the main map. If `mapBoundingBox`, they will be
-         * fixed to the map bounding box, which is constant and centered in
-         * different chart sizes and ratios.
          *
-         * @validvalue ["plotBox", "mapBoundingBox"]
+         * If `plotBox`, they will be fixed to the plot box and responsively
+         * move in relation to the main map.
+         *
+         * If `mapBoundingBox`, they will be fixed to the map bounding box,
+         * which is constant and centered in different chart sizes and ratios.
+         *
+         * @type {Highcharts.MapViewInsetOptionsRelativeToValue}
          */
         relativeTo: 'mapBoundingBox',
         /**
@@ -4273,11 +4312,12 @@ var highcharts_Templating_commonjs_highcharts_Templating_commonjs2_highcharts_Te
 ;// ./code/es5/es-modules/Maps/GeoJSONComposition.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -4315,7 +4355,8 @@ var GeoJSONComposition;
      * X and Y coordinates in terms of projected values
      */
     function chartFromLatLonToPoint(lonLat) {
-        return this.mapView && this.mapView.lonLatToProjectedUnits(lonLat);
+        var _a;
+        return (_a = this.mapView) === null || _a === void 0 ? void 0 : _a.lonLatToProjectedUnits(lonLat);
     }
     /**
      * Deprecated. Use `MapView.projectedUnitsToLonLat` instead.
@@ -4334,7 +4375,8 @@ var GeoJSONComposition;
      * An object with `lat` and `lon` properties.
      */
     function chartFromPointToLatLon(point) {
-        return this.mapView && this.mapView.projectedUnitsToLonLat(point);
+        var _a;
+        return (_a = this.mapView) === null || _a === void 0 ? void 0 : _a.projectedUnitsToLonLat(point);
     }
     /**
      * Highcharts Maps only. Get point from latitude and longitude using
@@ -4466,7 +4508,7 @@ var GeoJSONComposition;
             } : normalized);
         return { lat: projected.y, lon: projected.x };
     }
-    /** @private */
+    /** @internal */
     function compose(ChartClass) {
         var chartProto = ChartClass.prototype;
         if (!chartProto.transformFromLatLon) {
@@ -4573,6 +4615,9 @@ var GeoJSONComposition;
      * Convert a TopoJSON topology to GeoJSON. By default the first object is
      * handled.
      * Based on https://github.com/topojson/topojson-specification
+     *
+     * @requires modules/map
+     * @internal
      */
     function topo2geo(topology, objectName) {
         // Decode first object/feature as default
@@ -4661,7 +4706,7 @@ var GeoJSONComposition;
     GeoJSONComposition.topo2geo = topo2geo;
     /**
      * Override addCredits to include map source by default.
-     * @private
+     * @internal
      */
     function wrapChartAddCredit(proceed, credits) {
         credits = GeoJSONComposition_merge(true, this.options.credits, credits);
@@ -4824,7 +4869,7 @@ var GeoJSONComposition;
  * An array of GeoJSON or TopoJSON objects or strings used as map data for
  * series.
  *
- * @typedef {Array<*>|GeoJSON|TopoJSON|string} Highcharts.MapDataType
+ * @typedef {Array<*>|Highcharts.GeoJSON|Highcharts.TopoJSON|string} Highcharts.MapDataType
  */
 /**
  * A TopoJSON object, see description on the
@@ -4832,16 +4877,54 @@ var GeoJSONComposition;
  *
  * @typedef {Object} Highcharts.TopoJSON
  */
+/**
+ * Rotation of the projection in terms of degrees `[lambda, phi, gamma]`.
+ * 1st number is mandatory, while 2nd and 3rd are optional.
+ *
+ * @typedef {"TypeScript: [number]|[number,number]|[number,number,number]"} Highcharts.ProjectionRotationOption
+ */
+/**
+ * The padding of the map view. Can be either a number of pixels, a percentage
+ * string, or an array of either. If an array is given, it sets the top, right,
+ * bottom, left paddings respectively.
+ *
+ * @interface Highcharts.MapViewPaddingType
+ * @typedef {number|string|Array<number|string>} Highcharts.MapViewPaddingType
+ */
+/**
+ * Object containing the bounds of the map.
+ * All coordinates are in projected units.
+ *
+ * @interface Highcharts.MapBounds
+ */ /**
+* The center of the bounding box.
+* @name Highcharts.MapBounds#midX
+*/ /**
+* The center of the bounding box.
+* @name Highcharts.MapBounds#midY
+*/ /**
+* First point's X of the bounding box.
+* @name Highcharts.MapBounds#x1
+*/ /**
+* First point's Y of the bounding box.
+* @name Highcharts.MapBounds#y1
+*/ /**
+* Second point's X of the bounding box.
+* @name Highcharts.MapBounds#x2
+*/ /**
+* Second point's Y of the bounding box.
+* @name Highcharts.MapBounds#y2
+*/
 ''; // Detach doclets above
 
 ;// ./code/es5/es-modules/Core/Geometry/GeometryUtilities.js
 /* *
  *
- *  (c) 2010-2025 Highsoft AS
+ *  (c) 2010-2026 Highsoft AS
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -4850,6 +4933,7 @@ var GeoJSONComposition;
  *  Namespace
  *
  * */
+/** @internal */
 var GeometryUtilities;
 (function (GeometryUtilities) {
     /* *
@@ -4860,7 +4944,7 @@ var GeometryUtilities;
     /**
      * Calculates the center between a list of points.
      *
-     * @private
+     * @internal
      *
      * @param {Array<Highcharts.PositionObject>} points
      * A list of points to calculate the center of.
@@ -4885,7 +4969,7 @@ var GeometryUtilities;
      * Calculates the distance between two points based on their x and y
      * coordinates.
      *
-     * @private
+     * @internal
      *
      * @param {Highcharts.PositionObject} p1
      * The x and y coordinates of the first point.
@@ -4903,7 +4987,7 @@ var GeometryUtilities;
     /**
      * Calculates the angle between two points.
      * @todo add unit tests.
-     * @private
+     * @internal
      * @param {Highcharts.PositionObject} p1 The first point.
      * @param {Highcharts.PositionObject} p2 The second point.
      * @return {number} Returns the angle in radians.
@@ -4914,7 +4998,7 @@ var GeometryUtilities;
     GeometryUtilities.getAngleBetweenPoints = getAngleBetweenPoints;
     /**
      * Test for point in polygon. Polygon defined as array of [x,y] points.
-     * @private
+     * @internal
      * @param {PositionObject} point The point potentially within a polygon.
      * @param {Array<Array<number>>} polygon The polygon potentially containing the point.
      */
@@ -4949,16 +5033,17 @@ var GeometryUtilities;
  *  Default Export
  *
  * */
+/** @internal */
 /* harmony default export */ var Geometry_GeometryUtilities = (GeometryUtilities);
 
 ;// ./code/es5/es-modules/Core/Geometry/PolygonClip.js
 /* *
  *
- *  (c) 2010-2025 Highsoft AS
+ *  (c) 2010-2026 Highsoft AS
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -4969,7 +5054,7 @@ var GeometryUtilities;
  * */
 /**
  * Simple line string clipping. Clip to bounds and insert intersection points.
- * @private
+ * @internal
  */
 function clipLineString(line, boundsPolygon) {
     var ret = [],
@@ -4991,7 +5076,7 @@ function clipLineString(line, boundsPolygon) {
 }
 /**
  * Clip a polygon to another polygon using the Sutherland/Hodgman algorithm.
- * @private
+ * @internal
  */
 function clipPolygon(subjectPolygon, boundsPolygon, closed) {
     if (closed === void 0) { closed = true; }
@@ -5026,12 +5111,12 @@ function clipPolygon(subjectPolygon, boundsPolygon, closed) {
     }
     return outputList;
 }
-/** @private */
+/** @internal */
 function isInside(clipEdge1, clipEdge2, p) {
     return ((clipEdge2[0] - clipEdge1[0]) * (p[1] - clipEdge1[1]) >
         (clipEdge2[1] - clipEdge1[1]) * (p[0] - clipEdge1[0]));
 }
-/** @private */
+/** @internal */
 function intersection(clipEdge1, clipEdge2, prevPoint, currentPoint) {
     var dc = [
             clipEdge1[0] - clipEdge2[0],
@@ -5056,15 +5141,27 @@ function intersection(clipEdge1, clipEdge2, prevPoint, currentPoint) {
  *  Default Export
  *
  * */
+/** @internal */
 var PolygonClip = {
     clipLineString: clipLineString,
     clipPolygon: clipPolygon
 };
+/** @internal */
 /* harmony default export */ var Geometry_PolygonClip = (PolygonClip);
 
 ;// ./code/es5/es-modules/Maps/Projections/LambertConformalConic.js
 /* *
- * Lambert Conformal Conic projection
+ *
+ *  Lambert Conformal Conic projection
+ *
+ *  (c) 2021-2026 Highsoft AS
+ *
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
+ *
+ *  Authors:
+ *  - Torstein Honsi
+ *
  * */
 
 /* *
@@ -5079,6 +5176,26 @@ var sign = Math.sign ||
  *  Class
  *
  * */
+/**
+ * The Lambert conformal conic projection (LCC) is a conic map projection used
+ * for many national and regional mapping systems.
+ *
+ * Its advantage lies in mapping smaller areas like countries or continents.
+ * Two standard parallels are given, and between these, the distortion is
+ * minimal.
+ *
+ * In Highcharts, LCC is the default projection when loading a map smaller than
+ * 180 degrees width and 90 degrees height.
+ *
+ * For custom use, `rotation` should be set to adjust the reference longitude,
+ * in addition to the `parallels` option.
+ *
+ * @class
+ * @name Highcharts.LambertConformalConic
+ *
+ * @param {Highcharts.MapViewProjectionOptions} options
+ * The projection options, with support for `parallels`.
+ */
 var LambertConformalConic = /** @class */ (function () {
     /* *
      *
@@ -5165,11 +5282,19 @@ var LambertConformalConic = /** @class */ (function () {
 ;// ./code/es5/es-modules/Maps/Projections/EqualEarth.js
 /* *
  *
- * Equal Earth projection, an equal-area projection designed to minimize
- * distortion and remain pleasing to the eye.
+ *  Equal Earth projection, an equal-area projection designed to minimize
+ *  distortion and remain pleasing to the eye.
  *
- * Invented by Bojan Šavrič, Bernhard Jenny, and Tom Patterson in 2018. It is
- * inspired by the widely used Robinson projection.
+ *  Invented by Bojan Šavrič, Bernhard Jenny, and Tom Patterson in 2018. It is
+ *  inspired by the widely used Robinson projection.
+ *
+ *  (c) 2020-2026 Highsoft AS
+ *
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
+ *
+ *  Authors:
+ *  - Torstein Honsi
  *
  * */
 
@@ -5184,6 +5309,21 @@ var A1 = 1.340264, A2 = -0.081106, A3 = 0.000893, A4 = 0.003796, M = Math.sqrt(3
  *  Class
  *
  * */
+/**
+ * The Equal Earth map projection is an equal-area pseudocylindrical projection
+ * for world maps, invented by Bojan Šavrič, Bernhard Jenny, and Tom Patterson
+ * in 2018. It is inspired by the widely used Robinson projection, but unlike
+ * the Robinson projection, retains the relative size of areas. The projection
+ * equations are simple to implement and fast to evaluate.
+ *
+ * We chose this as the default world map projection for Highcharts because it
+ * is visually pleasing like Robinson, but avoids the political problem of
+ * rendering high-latitude regions like Europe and North America larger than
+ * tropical regions.
+ *
+ * @class
+ * @name Highcharts.EqualEarth
+ */
 var EqualEarth = /** @class */ (function () {
     function EqualEarth() {
         /* *
@@ -5191,6 +5331,7 @@ var EqualEarth = /** @class */ (function () {
          *  Properties
          *
          * */
+        /** @internal */
         this.bounds = {
             x1: -200.37508342789243,
             x2: 200.37508342789243,
@@ -5254,7 +5395,17 @@ var EqualEarth = /** @class */ (function () {
 
 ;// ./code/es5/es-modules/Maps/Projections/Miller.js
 /* *
- * Miller projection
+ *
+ *  Miller projection
+ *
+ *  (c) 2021-2026 Highsoft AS
+ *
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
+ *
+ *  Authors:
+ *  - Torstein Honsi
+ *
  * */
 
 /* *
@@ -5268,6 +5419,19 @@ var quarterPI = Math.PI / 4, Miller_deg2rad = Math.PI / 180, Miller_scale = 63.7
  *  Class
  *
  * */
+/**
+ * The Miller cylindrical projection is a modified Mercator projection, proposed
+ * by Osborn Maitland Miller in 1942. Compared to Mercator, the vertical
+ * exaggeration of polar areas is smaller, so the relative size of areas is
+ * more correct.
+ *
+ * Highcharts used this as the default map projection for world maps until the
+ * Map Collection v2.0 and Highcharts v10.0, when projection math was moved to
+ * the client side and EqualEarth chosen as the default world map projection.
+ *
+ * @class
+ * @name Highcharts.Miller
+ */
 var Miller = /** @class */ (function () {
     function Miller() {
         /* *
@@ -5275,6 +5439,7 @@ var Miller = /** @class */ (function () {
          *  Properties
          *
          * */
+        /** @internal */
         this.bounds = {
             x1: -200.37508342789243,
             x2: 200.37508342789243,
@@ -5310,7 +5475,17 @@ var Miller = /** @class */ (function () {
 
 ;// ./code/es5/es-modules/Maps/Projections/Orthographic.js
 /* *
- * Orthographic projection
+ *
+ *  Orthographic projection
+ *
+ *  (c) 2021-2026 Highsoft AS
+ *
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
+ *
+ *  Authors:
+ *  - Torstein Honsi
+ *
  * */
 
 /* *
@@ -5324,6 +5499,19 @@ var Orthographic_deg2rad = Math.PI / 180, Orthographic_scale = 63.78460826781007
  *  Class
  *
  * */
+/**
+ * The orthographic projection is an azimuthal perspective projection,
+ * projecting the Earth's surface from an infinite distance to a plane.
+ * It gives the illusion of a three-dimensional globe.
+ *
+ * Its disadvantage is that it fails to render the whole world in one view.
+ * However, since the distortion is small at the center of the view, it is great
+ * at rendering limited areas of the globe, or at showing the positions of areas
+ * on the globe.
+ *
+ * @class
+ * @name Highcharts.Orthographic
+ */
 var Orthographic = /** @class */ (function () {
     function Orthographic() {
         /* *
@@ -5331,7 +5519,9 @@ var Orthographic = /** @class */ (function () {
          *  Properties
          *
          * */
+        /** @internal */
         this.antimeridianCutting = false;
+        /** @internal */
         this.bounds = {
             x1: -Orthographic_scale,
             x2: Orthographic_scale,
@@ -5375,7 +5565,17 @@ var Orthographic = /** @class */ (function () {
 
 ;// ./code/es5/es-modules/Maps/Projections/WebMercator.js
 /* *
- * Web Mercator projection, used for most online map tile services
+ *
+ *  Web Mercator projection, used for most online map tile services
+ *
+ *  (c) 2021-2026 Highsoft AS
+ *
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
+ *
+ *  Authors:
+ *  - Torstein Honsi
+ *
  * */
 
 /* *
@@ -5389,6 +5589,22 @@ var r = 63.78137, WebMercator_deg2rad = Math.PI / 180;
  *  Class
  *
  * */
+/**
+ * Web Mercator is a variant of the Mercator map projection and is the de facto
+ * standard for Web mapping applications.
+ *
+ * Web Mercator is primarily created for tiled map services, as when zooming in
+ * to smaller scales, the angle between lines on the surface is approximately
+ * retained.
+ *
+ * The great disadvantage of Web Mercator is that areas inflate with distance
+ * from the equator. For example, in the world map, Greenland appears roughly
+ * the same size as Africa. In reality Africa is 14 times larger, as is apparent
+ * from the Equal Earth or Orthographic projections.
+ *
+ * @class
+ * @name Highcharts.WebMercator
+ */
 var WebMercator = /** @class */ (function () {
     function WebMercator() {
         /* *
@@ -5396,13 +5612,18 @@ var WebMercator = /** @class */ (function () {
          *  Properties
          *
          * */
+        /** @internal */
         this.bounds = {
             x1: -200.37508342789243,
             x2: 200.37508342789243,
             y1: -200.3750834278071,
             y2: 200.3750834278071
         };
-        this.maxLatitude = 85.0511287798; // The latitude that defines a square
+        /**
+         * The latitude that defines a square.
+         * @internal
+         */
+        this.maxLatitude = 85.0511287798;
     }
     /* *
      *
@@ -5437,7 +5658,15 @@ var WebMercator = /** @class */ (function () {
 ;// ./code/es5/es-modules/Maps/Projections/ProjectionRegistry.js
 /* *
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
+ *  Projection registry
+ *
+ *  (c) 2021-2026 Highsoft AS
+ *
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
+ *
+ *  Authors:
+ *  - Torstein Honsi
  *
  * */
 
@@ -5473,11 +5702,12 @@ var projectionRegistry = {
 ;// ./code/es5/es-modules/Maps/Projection.js
 /* *
  *
- *  (c) 2021 Torstein Honsi
+ *  (c) 2021-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -5512,7 +5742,6 @@ floatCorrection = 0.000001;
 /**
  * Keep longitude within -180 and 180. This is faster than using the modulo
  * operator, and preserves the distinction between -180 and 180.
- * @private
  */
 var wrapLon = function (lon) {
     // Replacing the if's with while would increase the range, but make it prone
@@ -5527,12 +5756,10 @@ var wrapLon = function (lon) {
 };
 /**
  * Calculate the haversine of an angle.
- * @private
  */
 var hav = function (radians) { return (1 - Math.cos(radians)) / 2; };
 /**
 * Calculate the haversine of an angle from two coordinates.
-* @private
 */
 var havFromCoords = function (point1, point2) {
     var cos = Math.cos,
@@ -5550,6 +5777,7 @@ var havFromCoords = function (point1, point2) {
  *  Class
  *
  * */
+/** @internal */
 var Projection = /** @class */ (function () {
     /* *
      *
@@ -5558,12 +5786,16 @@ var Projection = /** @class */ (function () {
      * */
     function Projection(options) {
         if (options === void 0) { options = {}; }
-        // Whether the chart has points, lines or polygons given as coordinates
-        // with positive up, as opposed to paths in the SVG plane with positive
-        // down.
+        /**
+         * Whether the chart has points, lines or polygons given as coordinates
+         * with positive up, as opposed to paths in the SVG plane with positive
+         * down.
+         */
         this.hasCoordinates = false;
-        // Whether the chart has true projection as opposed to pre-projected geojson
-        // as in the legacy map collection.
+        /**
+         * Whether the chart has true projection as opposed to pre-projected geojson
+         * as in the legacy map collection.
+         */
         this.hasGeoProjection = false;
         this.maxLatitude = 90;
         this.options = options;
@@ -5610,14 +5842,12 @@ var Projection = /** @class */ (function () {
      * */
     /**
      * Add a projection definition to the registry, accessible by its `name`.
-     * @private
      */
     Projection.add = function (name, definition) {
         Projection.registry[name] = definition;
     };
     /**
      * Calculate the distance in meters between two given coordinates.
-     * @private
      */
     Projection.distance = function (point1, point2) {
         var atan2 = Math.atan2,
@@ -5631,7 +5861,6 @@ var Projection = /** @class */ (function () {
     };
     /**
      * Calculate the geodesic line string between two given coordinates.
-     * @private
      */
     Projection.geodesic = function (point1, point2, inclusive, stepDistance) {
         if (stepDistance === void 0) { stepDistance = 500000; }
@@ -5724,7 +5953,6 @@ var Projection = /** @class */ (function () {
     /**
      * Take the rotation options and returns the appropriate projection
      * functions.
-     * @private
      */
     Projection.prototype.getRotator = function (rotation) {
         var deltaLambda = rotation[0] * Projection_deg2rad,
@@ -5774,7 +6002,6 @@ var Projection = /** @class */ (function () {
     /**
      * Project a lonlat coordinate position to xy. Dynamically overridden when
      * projection is set.
-     * @private
      */
     Projection.prototype.forward = function (lonLat) {
         return lonLat;
@@ -5782,7 +6009,6 @@ var Projection = /** @class */ (function () {
     /**
      * Unproject an xy chart coordinate position to lonlat. Dynamically
      * overridden when projection is set.
-     * @private
      */
     Projection.prototype.inverse = function (xy) {
         return xy;
@@ -5919,7 +6145,6 @@ var Projection = /** @class */ (function () {
     };
     /**
      * Take a GeoJSON geometry and return a translated SVGPath.
-     * @private
      */
     Projection.prototype.path = function (geometry) {
         var _this = this;
@@ -6137,16 +6362,18 @@ var Projection = /** @class */ (function () {
  *  Default Export
  *
  * */
+/** @internal */
 /* harmony default export */ var Maps_Projection = (Projection);
 
 ;// ./code/es5/es-modules/Maps/MapView.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -6199,7 +6426,7 @@ var tileSize = 256;
 /**
  * The world size in terms of 10k meters in the Web Mercator projection, to
  * match a 256 square tile to zoom level 0.
- * @private
+ * @internal
  */
 var worldSize = 400.979322;
 /* *
@@ -6216,7 +6443,7 @@ var maps = {};
 /**
  * Compute the zoom from given bounds and the size of the playing field. Used in
  * two places, hence the local function.
- * @private
+ * @internal
  */
 function zoomFromBounds(b, playingField) {
     var width = playingField.width, height = playingField.height, scaleToField = Math.max((b.x2 - b.x1) / (width / tileSize), (b.y2 - b.y1) / (height / tileSize));
@@ -6225,7 +6452,7 @@ function zoomFromBounds(b, playingField) {
 /**
  * Calculate and set the recommended map view drilldown or drillup if mapData
  * is set for the series.
- * @private
+ * @internal
  */
 function recommendedMapViewAfterDrill(e) {
     var _a,
@@ -6293,10 +6520,15 @@ var MapView = /** @class */ (function () {
          *  Properties
          *
          * */
+        /** @internal */
         this.allowTransformAnimation = true;
+        /** @internal */
         this.eventsToUnbind = [];
+        /** @internal */
         this.insets = [];
+        /** @internal */
         this.padding = [0, 0, 0, 0];
+        /** @internal */
         this.recommendedMapView = {};
         if (!(this instanceof MapViewInset)) {
             this.recommendMapView(chart, MapView_spreadArray([
@@ -6362,6 +6594,7 @@ var MapView = /** @class */ (function () {
      *  Static Functions
      *
      * */
+    /** @internal */
     MapView.compose = function (MapChartClass) {
         if (MapView_pushUnique(MapView_composed, 'MapView')) {
             maps = MapChartClass.maps;
@@ -6382,7 +6615,7 @@ var MapView = /** @class */ (function () {
     };
     /**
      * Return the composite bounding box of a collection of bounding boxes
-     * @private
+     * @internal
      */
     MapView.compositeBounds = function (arrayOfBounds) {
         if (arrayOfBounds.length) {
@@ -6400,7 +6633,7 @@ var MapView = /** @class */ (function () {
     };
     /**
      * Merge two collections of insets by the id.
-     * @private
+     * @internal
      */
     MapView.mergeInsets = function (a, b) {
         var toObject = function (insets) {
@@ -6424,7 +6657,7 @@ var MapView = /** @class */ (function () {
      * */
     /**
      * Create MapViewInset instances from insets options
-     * @private
+     * @internal
      */
     MapView.prototype.createInsets = function () {
         var _this = this;
@@ -6440,13 +6673,13 @@ var MapView = /** @class */ (function () {
         }
     };
     /**
-     * Fit the view to given bounds
+     * Fit the view to the given bounds.
      *
      * @function Highcharts.MapView#fitToBounds
-     * @param {Object} bounds
+     * @param {Highcharts.MapBounds} bounds
      *        Bounds in terms of projected units given as  `{ x1, y1, x2, y2 }`.
      *        If not set, fit to the bounds of the current data set
-     * @param {number|string} [padding=0]
+     * @param {Highcharts.MapViewPaddingType} [padding=0]
      *        Padding inside the bounds. A number signifies pixels, while a
      *        percentage string (like `5%`) can be used as a fraction of the
      *        plot area size.
@@ -6487,6 +6720,7 @@ var MapView = /** @class */ (function () {
             this.setView(center, zoom, redraw, animation);
         }
     };
+    /** @internal */
     MapView.prototype.getField = function (padded) {
         if (padded === void 0) { padded = true; }
         var padding = padded ? this.padding : [0, 0, 0, 0];
@@ -6497,6 +6731,7 @@ var MapView = /** @class */ (function () {
             height: this.chart.plotHeight - padding[0] - padding[2]
         };
     };
+    /** @internal */
     MapView.prototype.getGeoMap = function (map) {
         if (isString(map)) {
             if (maps[map] && maps[map].type === 'Topology') {
@@ -6513,6 +6748,7 @@ var MapView = /** @class */ (function () {
             }
         }
     };
+    /** @internal */
     MapView.prototype.getMapBBox = function () {
         var bounds = this.getProjectedBounds(),
             scale = this.getScale();
@@ -6534,6 +6770,7 @@ var MapView = /** @class */ (function () {
             };
         }
     };
+    /** @internal */
     MapView.prototype.getProjectedBounds = function () {
         var projection = this.projection;
         var allBounds = this.chart.series.reduce(function (acc,
@@ -6569,12 +6806,16 @@ var MapView = /** @class */ (function () {
         }
         return this.projection.bounds || MapView.compositeBounds(allBounds);
     };
+    /** @internal */
     MapView.prototype.getScale = function () {
         // A zoom of 0 means the world (360x360 degrees) fits in a 256x256 px
         // tile
         return (tileSize / worldSize) * Math.pow(2, this.zoom);
     };
-    // Calculate the SVG transform to be applied to series groups
+    /**
+     * Calculate the SVG transform to be applied to series groups.
+     * @internal
+     */
     MapView.prototype.getSVGTransform = function () {
         var _a = this.playingField, x = _a.x, y = _a.y, width = _a.width, height = _a.height, projectedCenter = this.projection.forward(this.center), flipFactor = this.projection.hasCoordinates ? -1 : 1, scaleX = this.getScale(), scaleY = scaleX * flipFactor, translateX = x + width / 2 - projectedCenter[0] * scaleX, translateY = y + height / 2 - projectedCenter[1] * scaleY;
         return { scaleX: scaleX, scaleY: scaleY, translateX: translateX, translateY: translateY };
@@ -6649,6 +6890,33 @@ var MapView = /** @class */ (function () {
         }
     };
     /**
+     * Convert pixel position to longitude and latitude.
+     *
+     * @function Highcharts.MapView#pixelsToLonLat
+     * @since 10.0.0
+     * @param  {Highcharts.PositionObject} pos
+     *         The position in pixels
+     * @return {Highcharts.MapLonLatObject|undefined}
+     *         The map coordinates
+     */
+    MapView.prototype.pixelsToLonLat = function (pos) {
+        return this.projectedUnitsToLonLat(this.pixelsToProjectedUnits(pos));
+    };
+    /**
+     * Convert pixel position to projected units
+     *
+     * @function Highcharts.MapView#pixelsToProjectedUnits
+     * @param {Highcharts.PositionObject} pos
+     *        The position in pixels
+     * @return {Highcharts.PositionObject} The position in projected units
+     */
+    MapView.prototype.pixelsToProjectedUnits = function (pos) {
+        var x = pos.x, y = pos.y, scale = this.getScale(), projectedCenter = this.projection.forward(this.center), field = this.playingField, centerPxX = field.x + field.width / 2, centerPxY = field.y + field.height / 2;
+        var projectedX = projectedCenter[0] + (x - centerPxX) / scale;
+        var projectedY = projectedCenter[1] - (y - centerPxY) / scale;
+        return { x: projectedX, y: projectedY };
+    };
+    /**
      * Calculate longitude/latitude values for a point or position. Returns an
      * object with the numeric properties `lon` and `lat`.
      *
@@ -6697,6 +6965,20 @@ var MapView = /** @class */ (function () {
         var coordinates = this.projection.inverse([point.x,
             point.y]);
         return { lon: coordinates[0], lat: coordinates[1] };
+    };
+    /**
+     * Convert projected units to pixel position
+     *
+     * @function Highcharts.MapView#projectedUnitsToPixels
+     * @param {Highcharts.PositionObject} pos
+     *        The position in projected units
+     * @return {Highcharts.PositionObject} The position in pixels
+     */
+    MapView.prototype.projectedUnitsToPixels = function (pos) {
+        var scale = this.getScale(), projectedCenter = this.projection.forward(this.center), field = this.playingField, centerPxX = field.x + field.width / 2, centerPxY = field.y + field.height / 2;
+        var x = centerPxX - scale * (projectedCenter[0] - pos.x);
+        var y = centerPxY + scale * (projectedCenter[1] - pos.y);
+        return { x: x, y: y };
     };
     /**
      * Calculate and set the recommended map view based on provided map data
@@ -6794,6 +7076,7 @@ var MapView = /** @class */ (function () {
             this.update(this.recommendedMapView);
         }
     };
+    /** @internal */
     MapView.prototype.redraw = function (animation) {
         this.chart.series.forEach(function (s) {
             if (s.useMapGeometry) {
@@ -6912,47 +7195,7 @@ var MapView = /** @class */ (function () {
             this.redraw(animation);
         }
     };
-    /**
-     * Convert projected units to pixel position
-     *
-     * @function Highcharts.MapView#projectedUnitsToPixels
-     * @param {Highcharts.PositionObject} pos
-     *        The position in projected units
-     * @return {Highcharts.PositionObject} The position in pixels
-     */
-    MapView.prototype.projectedUnitsToPixels = function (pos) {
-        var scale = this.getScale(), projectedCenter = this.projection.forward(this.center), field = this.playingField, centerPxX = field.x + field.width / 2, centerPxY = field.y + field.height / 2;
-        var x = centerPxX - scale * (projectedCenter[0] - pos.x);
-        var y = centerPxY + scale * (projectedCenter[1] - pos.y);
-        return { x: x, y: y };
-    };
-    /**
-     * Convert pixel position to longitude and latitude.
-     *
-     * @function Highcharts.MapView#pixelsToLonLat
-     * @since 10.0.0
-     * @param  {Highcharts.PositionObject} pos
-     *         The position in pixels
-     * @return {Highcharts.MapLonLatObject|undefined}
-     *         The map coordinates
-     */
-    MapView.prototype.pixelsToLonLat = function (pos) {
-        return this.projectedUnitsToLonLat(this.pixelsToProjectedUnits(pos));
-    };
-    /**
-     * Convert pixel position to projected units
-     *
-     * @function Highcharts.MapView#pixelsToProjectedUnits
-     * @param {Highcharts.PositionObject} pos
-     *        The position in pixels
-     * @return {Highcharts.PositionObject} The position in projected units
-     */
-    MapView.prototype.pixelsToProjectedUnits = function (pos) {
-        var x = pos.x, y = pos.y, scale = this.getScale(), projectedCenter = this.projection.forward(this.center), field = this.playingField, centerPxX = field.x + field.width / 2, centerPxY = field.y + field.height / 2;
-        var projectedX = projectedCenter[0] + (x - centerPxX) / scale;
-        var projectedY = projectedCenter[1] - (y - centerPxY) / scale;
-        return { x: projectedX, y: projectedY };
-    };
+    /** @internal */
     MapView.prototype.setUpEvents = function () {
         var _this = this;
         var chart = this.chart;
@@ -7088,6 +7331,7 @@ var MapView = /** @class */ (function () {
             }
         });
     };
+    /** @internal */
     MapView.prototype.render = function () {
         // We need a group for the insets
         if (!this.group) {
@@ -7258,7 +7502,7 @@ var MapViewInset = /** @class */ (function (_super) {
      * */
     /**
      * Get the playing field in pixels
-     * @private
+     * @internal
      */
     MapViewInset.prototype.getField = function (padded) {
         if (padded === void 0) { padded = true; }
@@ -7290,7 +7534,7 @@ var MapViewInset = /** @class */ (function (_super) {
     };
     /**
      * Get the hit zone in pixels.
-     * @private
+     * @internal
      */
     MapViewInset.prototype.getHitZone = function () {
         var _a = this,
@@ -7316,13 +7560,14 @@ var MapViewInset = /** @class */ (function (_super) {
             };
         }
     };
+    /** @internal */
     MapViewInset.prototype.getProjectedBounds = function () {
         return MapView.compositeBounds(this.allBounds);
     };
     /**
      * Determine whether a point on the main projected plane is inside the
      * geoBounds of the inset.
-     * @private
+     * @internal
      */
     MapViewInset.prototype.isInside = function (point) {
         var _a = this,
@@ -7344,7 +7589,7 @@ var MapViewInset = /** @class */ (function (_super) {
     };
     /**
      * Render the map view inset with the border path
-     * @private
+     * @internal
      */
     MapViewInset.prototype.render = function () {
         var _a = this,
@@ -7391,6 +7636,7 @@ var MapViewInset = /** @class */ (function (_super) {
             this.border[animate ? 'animate' : 'attr']({ d: d });
         }
     };
+    /** @internal */
     MapViewInset.prototype.destroy = function () {
         if (this.border) {
             this.border = this.border.destroy();
@@ -7399,7 +7645,7 @@ var MapViewInset = /** @class */ (function (_super) {
     };
     /**
      * No chart-level events for insets
-     * @private
+     * @internal
      */
     MapViewInset.prototype.setUpEvents = function () { };
     return MapViewInset;
@@ -7410,15 +7656,27 @@ var MapViewInset = /** @class */ (function (_super) {
  *
  * */
 /* harmony default export */ var Maps_MapView = (MapView);
+/* *
+ *
+ *  API Declarations
+ *
+ * */
+/**
+ * Possible values for the specific `relativeTo` option.
+ *
+ * @typedef {"mapBoundingBox"|"plotBox"} Highcharts.MapViewInsetOptionsRelativeToValue
+ */
+''; // Keeps doclets above in JS file
 
 ;// ./code/es5/es-modules/Series/Map/MapSeries.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -7551,10 +7809,10 @@ var MapSeries = /** @class */ (function (_super) {
      * @private
      */
     MapSeries.prototype.drawMapDataLabels = function () {
+        var _this = this;
+        var _a;
         _super.prototype.drawDataLabels.call(this);
-        if (this.dataLabelsGroup) {
-            this.dataLabelsGroup.clip(this.chart.clipRect);
-        }
+        (_a = this.dataLabelsGroups) === null || _a === void 0 ? void 0 : _a.forEach(function (g) { return g === null || g === void 0 ? void 0 : g.clip(_this.chart.clipRect); });
     };
     /**
      * Use the drawPoints method of column, that is able to handle simple
@@ -7846,10 +8104,12 @@ var MapSeries = /** @class */ (function (_super) {
      * @private
      */
     MapSeries.prototype.pointAttribs = function (point, state) {
-        var _a;
-        var _b = point.series.chart,
-            mapView = _b.mapView,
-            styledMode = _b.styledMode;
+        var _a,
+            _b,
+            _c;
+        var _d = point.series.chart,
+            mapView = _d.mapView,
+            styledMode = _d.styledMode;
         var attr = styledMode ?
                 this.colorAttribs(point) :
                 ColumnSeries.prototype.pointAttribs.call(this,
@@ -7859,16 +8119,12 @@ var MapSeries = /** @class */ (function (_super) {
         var pointStrokeWidth = this.getStrokeWidth(point.options);
         // Handle state specific border or line width
         if (state) {
-            var stateOptions = MapSeries_merge(this.options.states &&
-                    this.options.states[state],
-                point.options.states &&
-                    point.options.states[state] ||
-                    {}),
+            var stateOptions = MapSeries_merge((_a = this.options.states) === null || _a === void 0 ? void 0 : _a[state], ((_b = point.options.states) === null || _b === void 0 ? void 0 : _b[state]) || {}),
                 stateStrokeWidth = this.getStrokeWidth(stateOptions);
             if (MapSeries_defined(stateStrokeWidth)) {
                 pointStrokeWidth = stateStrokeWidth;
             }
-            attr.stroke = (_a = stateOptions.borderColor) !== null && _a !== void 0 ? _a : point.color;
+            attr.stroke = (_c = stateOptions.borderColor) !== null && _c !== void 0 ? _c : point.color;
         }
         if (pointStrokeWidth && mapView) {
             pointStrokeWidth /= mapView.getScale();
@@ -7887,6 +8143,11 @@ var MapSeries = /** @class */ (function (_super) {
         // mapData.
         if (!point.visible) {
             attr.fill = this.options.nullColor;
+        }
+        // Set opacity: if point is null and nullInteraction is true, force
+        // opacity 1. Otherwise use point/series opacity or default 1 (#23019)
+        if (point.isNull && this.options.nullInteraction) {
+            attr.opacity = 1;
         }
         if (MapSeries_defined(pointStrokeWidth)) {
             attr['stroke-width'] = pointStrokeWidth;
@@ -8218,11 +8479,12 @@ highcharts_SeriesRegistry_commonjs_highcharts_SeriesRegistry_commonjs2_highchart
 ;// ./code/es5/es-modules/Series/MapLine/MapLineSeriesDefaults.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -8356,11 +8618,12 @@ var MapLineSeriesDefaults = {
 ;// ./code/es5/es-modules/Series/MapLine/MapLineSeries.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -8451,11 +8714,12 @@ highcharts_SeriesRegistry_commonjs_highcharts_SeriesRegistry_commonjs2_highchart
 ;// ./code/es5/es-modules/Series/MapPoint/MapPointPoint.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -8514,11 +8778,12 @@ var MapPointPoint = /** @class */ (function (_super) {
 ;// ./code/es5/es-modules/Series/MapPoint/MapPointSeriesDefaults.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -8556,7 +8821,11 @@ var MapPointSeriesDefaults = {
             color: "#000000" /* Palette.neutralColor100 */
         }
     },
-    legendSymbol: 'lineMarker'
+    legendSymbol: 'lineMarker',
+    stickyTracking: true,
+    tooltip: {
+        pointFormat: '{#if point.name}{point.name}{else}Lat: {point.lat}, Lon: {point.lon}{/if}'
+    }
 };
 /* *
  *
@@ -8722,11 +8991,12 @@ var highcharts_Series_types_scatter_commonjs_highcharts_Series_types_scatter_com
 ;// ./code/es5/es-modules/Series/MapPoint/MapPointSeries.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -8793,10 +9063,12 @@ var MapPointSeries = /** @class */ (function (_super) {
      * */
     /* eslint-disable valid-jsdoc */
     MapPointSeries.prototype.drawDataLabels = function () {
+        var _this = this;
+        var _a;
         _super.prototype.drawDataLabels.call(this);
-        if (this.dataLabelsGroup) {
-            this.dataLabelsGroup.clip(this.chart.clipRect);
-        }
+        (_a = this.dataLabelsGroups) === null || _a === void 0 ? void 0 : _a.forEach(function (g) {
+            g === null || g === void 0 ? void 0 : g.clip(_this.chart.clipRect);
+        });
     };
     /**
      * Resolve `lon`, `lat` or `geometry` options and project the resulted
@@ -8953,13 +9225,13 @@ highcharts_SeriesRegistry_commonjs_highcharts_SeriesRegistry_commonjs2_highchart
 ;// ./code/es5/es-modules/Series/Bubble/BubbleLegendDefaults.js
 /* *
  *
- *  (c) 2010-2025 Highsoft AS
+ *  (c) 2010-2026 Highsoft AS
  *
  *  Author: Paweł Potaczek
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -9221,13 +9493,13 @@ var BubbleLegendDefaults = {
 ;// ./code/es5/es-modules/Series/Bubble/BubbleLegendItem.js
 /* *
  *
- *  (c) 2010-2025 Highsoft AS
+ *  (c) 2010-2026 Highsoft AS
  *
  *  Author: Paweł Potaczek
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -9717,13 +9989,13 @@ var BubbleLegendItem = /** @class */ (function () {
 ;// ./code/es5/es-modules/Series/Bubble/BubbleLegendComposition.js
 /* *
  *
- *  (c) 2010-2025 Highsoft AS
+ *  (c) 2010-2026 Highsoft AS
  *
  *  Author: Paweł Potaczek
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -10008,11 +10280,12 @@ var highcharts_Point_commonjs_highcharts_Point_commonjs2_highcharts_Point_root_H
 ;// ./code/es5/es-modules/Series/Bubble/BubblePoint.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -10097,11 +10370,12 @@ BubblePoint_extend(BubblePoint.prototype, {
 ;// ./code/es5/es-modules/Series/Bubble/BubbleSeries.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -10896,11 +11170,12 @@ highcharts_SeriesRegistry_commonjs_highcharts_SeriesRegistry_commonjs2_highchart
 ;// ./code/es5/es-modules/Series/MapBubble/MapBubblePoint.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -10967,11 +11242,12 @@ MapBubblePoint_extend(MapBubblePoint.prototype, {
 ;// ./code/es5/es-modules/Series/MapBubble/MapBubbleSeries.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -11215,7 +11491,8 @@ var MapBubbleSeries = /** @class */ (function (_super) {
         joinBy: 'hc-key',
         tooltip: {
             pointFormat: '{point.name}: {point.z}'
-        }
+        },
+        stickyTracking: true
     });
     return MapBubbleSeries;
 }(Bubble_BubbleSeries));
@@ -11315,11 +11592,12 @@ highcharts_SeriesRegistry_commonjs_highcharts_SeriesRegistry_commonjs2_highchart
 ;// ./code/es5/es-modules/Series/Heatmap/HeatmapPoint.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -11465,11 +11743,12 @@ HeatmapPoint_extend(HeatmapPoint.prototype, {
 ;// ./code/es5/es-modules/Series/Heatmap/HeatmapSeriesDefaults.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -12105,11 +12384,12 @@ var HeatmapSeriesDefaults = {
 ;// ./code/es5/es-modules/Series/InterpolationUtilities.js
 /* *
  *
- *  (c) 2010-2025 Hubert Kozik
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Hubert Kozik
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -12180,11 +12460,12 @@ var InterpolationUtilities = {
 ;// ./code/es5/es-modules/Series/Heatmap/HeatmapSeries.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -12456,7 +12737,8 @@ var HeatmapSeries = /** @class */ (function (_super) {
             _c,
             _d,
             _e,
-            _f;
+            _f,
+            _g;
         var series = this,
             attr = HeatmapSeries_Series.prototype.pointAttribs.call(series,
             point,
@@ -12483,7 +12765,7 @@ var HeatmapSeries = /** @class */ (function (_super) {
         // Apply old borderWidth property if exists.
         attr['stroke-width'] = borderWidth;
         if (state && state !== 'normal') {
-            var stateOptions = HeatmapSeries_merge((_c = seriesOptions.states) === null || _c === void 0 ? void 0 : _c[state], (_e = (_d = seriesOptions.marker) === null || _d === void 0 ? void 0 : _d.states) === null || _e === void 0 ? void 0 : _e[state], ((_f = point === null || point === void 0 ? void 0 : point.options.states) === null || _f === void 0 ? void 0 : _f[state]) || {});
+            var stateOptions = HeatmapSeries_merge((_c = seriesOptions.states) === null || _c === void 0 ? void 0 : _c[state], (_e = (_d = seriesOptions.marker) === null || _d === void 0 ? void 0 : _d.states) === null || _e === void 0 ? void 0 : _e[state], ((_g = (_f = point === null || point === void 0 ? void 0 : point.options.marker) === null || _f === void 0 ? void 0 : _f.states) === null || _g === void 0 ? void 0 : _g[state]) || {});
             attr.fill =
                 stateOptions.color ||
                     highcharts_Color_commonjs_highcharts_Color_commonjs2_highcharts_Color_root_Highcharts_Color_default().parse(attr.fill).brighten(stateOptions.brightness || 0).get();
@@ -12536,6 +12818,9 @@ var HeatmapSeries = /** @class */ (function (_super) {
 HeatmapSeries_addEvent(HeatmapSeries, 'afterDataClassLegendClick', function () {
     this.isDirtyCanvas = true;
     this.drawPoints();
+    if (this.options.enableMouseTracking) {
+        this.drawTracker(); // #23162, set tracker again after points redraw
+    }
 });
 HeatmapSeries_extend(HeatmapSeries.prototype, {
     axisTypes: Series_ColorMapComposition.seriesMembers.axisTypes,
@@ -12594,17 +12879,7 @@ highcharts_SeriesRegistry_commonjs_highcharts_SeriesRegistry_commonjs2_highchart
 ''; // Detach doclets above
 
 ;// ./code/es5/es-modules/masters/modules/map.src.js
-/**
- * @license Highmaps JS v12.3.0 (2025-06-21)
- * @module highcharts/modules/map
- * @requires highcharts
- *
- * Highmaps as a plugin for Highcharts or Highcharts Stock.
- *
- * (c) 2011-2025 Torstein Honsi
- *
- * License: www.highcharts.com/license
- */
+
 
 
 

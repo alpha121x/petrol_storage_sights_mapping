@@ -1,10 +1,11 @@
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -17,8 +18,7 @@ import SVGElement from '../../Core/Renderer/SVG/SVGElement.js';
 import T from '../../Core/Templating.js';
 var format = T.format;
 import U from '../../Core/Utilities.js';
-import OrdinalAxis from '../../Core/Axis/OrdinalAxis.js';
-var addEvent = U.addEvent, createElement = U.createElement, css = U.css, defined = U.defined, destroyObjectProperties = U.destroyObjectProperties, diffObjects = U.diffObjects, discardElement = U.discardElement, extend = U.extend, fireEvent = U.fireEvent, isNumber = U.isNumber, isString = U.isString, merge = U.merge, objectEach = U.objectEach, pick = U.pick, splat = U.splat;
+var addEvent = U.addEvent, createElement = U.createElement, css = U.css, defined = U.defined, destroyObjectProperties = U.destroyObjectProperties, discardElement = U.discardElement, extend = U.extend, fireEvent = U.fireEvent, isNumber = U.isNumber, isString = U.isString, merge = U.merge, objectEach = U.objectEach, pick = U.pick, splat = U.splat;
 /* *
  *
  *  Functions
@@ -242,7 +242,7 @@ var RangeSelector = /** @class */ (function () {
                 axisRangeUpdateEvent_1(); // Remove event
             });
         }
-        else if (isNumber(newMin) && isNumber(newMax)) {
+        else if (isNumber(newMin) || isNumber(newMax)) {
             // Existing axis object. Set extremes after render time.
             baseAxis.setExtremes(newMin, newMax, pick(redraw, true), void 0, // Auto animation
             {
@@ -365,9 +365,8 @@ var RangeSelector = /** @class */ (function () {
                 range &&
                 actualRange < range) {
                 // Handle ordinal ranges
-                var positions = baseAxis.ordinal.positions, prevOrdinalPosition = OrdinalAxis.Additions.findIndexOf(positions, baseAxis.min, true), nextOrdinalPosition = Math.min(OrdinalAxis.Additions.findIndexOf(positions, baseAxis.max, true) + 1, positions.length - 1);
-                if (positions[nextOrdinalPosition] -
-                    positions[prevOrdinalPosition] > range) {
+                var positions = baseAxis.ordinal.positions;
+                if (positions[positions.length - 1] - positions[0] > range) {
                     isSameRange = true;
                 }
             }
@@ -1219,14 +1218,11 @@ var RangeSelector = /** @class */ (function () {
             }
             // Update current buttons
             for (var i = btnLength - 1; i >= 0; i--) {
-                var diff = diffObjects(newButtonsOptions[i], this.buttonOptions[i]);
-                if (Object.keys(diff).length !== 0) {
-                    var rangeOptions = newButtonsOptions[i];
-                    this.buttons[i].destroy();
-                    dropdown === null || dropdown === void 0 ? void 0 : dropdown.options.remove(i + 1);
-                    this.createButton(rangeOptions, i, width, states);
-                    this.computeButtonRange(rangeOptions);
-                }
+                var rangeOptions = newButtonsOptions[i];
+                this.buttons[i].destroy();
+                dropdown === null || dropdown === void 0 ? void 0 : dropdown.options.remove(i + 1);
+                this.createButton(rangeOptions, i, width, states);
+                this.computeButtonRange(rangeOptions);
             }
             // Create missing buttons
             if (newButtonsOptions.length > this.buttonOptions.length) {
@@ -1359,7 +1355,7 @@ var RangeSelector = /** @class */ (function () {
                 xOffsetForExportButton +
                 inputGroup.getBBox().width >
                 chart.plotWidth) {
-                if (dropdown === 'responsive') {
+                if (dropdown === 'responsive' || dropdown === 'always') {
                     this.collapseButtons();
                 }
                 else {
@@ -1446,9 +1442,7 @@ var RangeSelector = /** @class */ (function () {
         if (dropdown) {
             this.dropdownLabel.hide();
             css(dropdown, {
-                visibility: 'hidden',
-                width: '1px',
-                height: '1px'
+                visibility: 'hidden'
             });
             this.hasVisibleDropdown = false;
         }
@@ -1514,7 +1508,7 @@ var RangeSelector = /** @class */ (function () {
             this.destroy();
             return this.init(chart);
         }
-        this.isDirty = !!options.buttons;
+        this.isDirty = !!options.buttons || !!options.buttonTheme;
         if (redraw) {
             this.render();
         }

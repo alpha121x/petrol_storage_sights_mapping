@@ -1,12 +1,12 @@
 /* *
  *
- *  (c) 2009-2025 Highsoft AS
+ *  (c) 2009-2026 Highsoft AS
  *
  *  Authors: Øystein Moseng, Torstein Hønsi, Jon A. Nygård
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -65,7 +65,7 @@ Supported options for each prop:
         point.path values in order to do it properly (using SVG translate
         is easier, but won't update the data).
 */
-/** @private */
+/** @internal */
 function compose(ChartClass, SeriesClass) {
     DraggableChart.compose(ChartClass);
     var seriesProto = SeriesClass.prototype;
@@ -127,7 +127,7 @@ function compose(ChartClass, SeriesClass) {
 /**
  * On point mouse out. Hide drag handles, depending on state.
  *
- * @private
+ * @internal
  * @function mouseOut
  * @param {Highcharts.Point} point
  *        The point mousing out of.
@@ -146,7 +146,7 @@ function mouseOut(point) {
 /**
  * Mouseover on a point. Show drag handles if the conditions are right.
  *
- * @private
+ * @internal
  * @function mouseOver
  * @param {Highcharts.Point} point
  *        The point mousing over.
@@ -170,7 +170,7 @@ function mouseOver(point) {
 }
 /**
  * Point mouseleave event. See above function for explanation of the timeout.
- * @private
+ * @internal
  */
 function onPointMouseOut() {
     var point = this;
@@ -196,7 +196,7 @@ function onPointMouseOver() {
 }
 /**
  * Hide drag handles on a point if it is removed.
- * @private
+ * @internal
  */
 function onPointRemove() {
     var chart = this.series.chart, dragHandles = chart.dragHandles;
@@ -207,7 +207,7 @@ function onPointRemove() {
 /**
  * Mouseout on resize handle. Handle states, and possibly run mouseOut on point.
  *
- * @private
+ * @internal
  * @function onResizeHandleMouseOut
  * @param {Highcharts.Point} point
  *        The point mousing out of.
@@ -225,7 +225,7 @@ function onResizeHandleMouseOut(point) {
 /**
  * Mousedown on resize handle. Init a drag if the conditions are right.
  *
- * @private
+ * @internal
  * @function onResizeHandleMouseDown
  * @param {Highcharts.PointerEventObject} e
  *        The mousedown event.
@@ -254,7 +254,7 @@ function onResizeHandleMouseDown(e, point, updateProp) {
 /**
  * Get updated point values when dragging a point.
  *
- * @private
+ * @internal
  * @function Highcharts.Point#getDropValues
  *
  * @param {Object} origin
@@ -284,10 +284,10 @@ function pointGetDropValues(origin, newPos, updateProps) {
     /**
      * Utility function to apply precision and limit a value within the
      * draggable range.
-     * @private
+     * @internal
      * @param {number} val
      *        Value to limit
-     * @param {string} direction
+     * @param {string} dir
      *        Axis direction
      * @return {number}
      *         Limited value
@@ -304,10 +304,10 @@ function pointGetDropValues(origin, newPos, updateProps) {
     /**
      * Utility function to apply precision and limit a value within the
      * draggable range used only for Highcharts Maps.
-     * @private
+     * @internal
      * @param {PointerEvent} newPos
      *        PointerEvent, which is used to get the value
-     * @param {string} direction
+     * @param {'x'|'y'} dir
      *        Axis direction
      * @param {string} key
      *        Key for choosing between longitude and latitude
@@ -381,7 +381,7 @@ function pointGetDropValues(origin, newPos, updateProps) {
  * Render drag handles on a point - depending on which handles are enabled - and
  * attach events to them.
  *
- * @private
+ * @internal
  * @function Highcharts.Point#showDragHandles
  */
 function pointShowDragHandles() {
@@ -425,7 +425,7 @@ function pointShowDragHandles() {
             // Correct left edge value depending on the xAxis' type, #16596
             var minEdge = point.series.xAxis.categories ? -0.5 : 0;
             if (!path || pos.x < minEdge || pos.y < 0) {
-                return { value: void 0 };
+                return "continue";
             }
             // If cursor is not set explicitly, use axis direction
             handleAttrs.cursor = handleOptions.cursor ||
@@ -468,15 +468,13 @@ function pointShowDragHandles() {
     // for it.
     for (var _i = 0, _a = Object.keys(dragDropProps); _i < _a.length; _i++) {
         var key = _a[_i];
-        var state_1 = _loop_1(key);
-        if (typeof state_1 === "object")
-            return state_1.value;
+        _loop_1(key);
     }
 }
 /**
  * Returns an SVGElement to use as the guide box for a set of points.
  *
- * @private
+ * @internal
  * @function Highcharts.Series#getGuideBox
  *
  * @param {Array<Highcharts.Point>} points
@@ -515,9 +513,11 @@ function seriesGetGuideBox(points) {
  *  Default Export
  *
  * */
+/** @internal */
 var DraggablePoints = {
     compose: compose
 };
+/** @internal */
 export default DraggablePoints;
 /* *
  *
@@ -584,11 +584,11 @@ export default DraggablePoints;
  * @interface Highcharts.PointDragEventObject
  */ /**
 * New point after drag if only a single one.
-* @name Highcharts.PointDropEventObject#newPoint
+* @name Highcharts.PointDragEventObject#newPoint
 * @type {Highcharts.PointDragDropObject|undefined}
 */ /**
 * New point id after drag if only a single one.
-* @name Highcharts.PointDropEventObject#newPointId
+* @name Highcharts.PointDragEventObject#newPointId
 * @type {string|undefined}
 */ /**
 * New points during drag.

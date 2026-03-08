@@ -1,10 +1,11 @@
 /* *
  *
- *  (c) 2024 Hubert Kozik
+ *  (c) 2024-2026 Highsoft AS
+ *  Author: Hubert Kozik
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -19,7 +20,7 @@ const { addEvent, pushUnique } = U;
  * */
 /**
  * Logic for non-cartesian series zooming and panning
- * @private
+ * @internal
  */
 function onTransform(params) {
     const chart = this, { trigger, selection, reset, from = {}, to = {} } = params, type = chart.zooming.type;
@@ -35,17 +36,17 @@ function onTransform(params) {
                 series.isDirty = true;
                 chart.isDirtyBox = true;
                 params.hasZoomed = true;
-                const { plotSizeX = 0, plotSizeY = 0 } = chart;
+                const { plotWidth = 0, plotHeight = 0 } = chart;
                 if (trigger === 'pan' && series.zooming) {
-                    series.zooming.panX -= (to.x || 0) / plotSizeX;
-                    series.zooming.panY -= (to.y || 0) / plotSizeY;
+                    series.zooming.panX -= (to.x || 0) / plotWidth;
+                    series.zooming.panY -= (to.y || 0) / plotHeight;
                 }
                 else {
                     if (Object.keys(from).length) {
                         const { width: toWidth = 1, height: toHeight = 1 } = to, currentScale = Math.abs(series.group?.scaleX || 1);
                         let { x: zoomX = 0, y: zoomY = 0, width: fromWidth = 1, height: fromHeight = 1 } = from, x = zoomX, y = zoomY, scale = series.zooming?.scale ||
                             series.group?.scaleX ||
-                            1, width = (series.zooming?.width || 1) * plotSizeX, height = (series.zooming?.height || 1) * plotSizeY;
+                            1, width = (series.zooming?.width || 1) * plotWidth, height = (series.zooming?.height || 1) * plotHeight;
                         if (Object.keys(to).length) {
                             width = width * (fromWidth / toWidth);
                             height = height * (fromWidth / toHeight);
@@ -54,7 +55,7 @@ function onTransform(params) {
                             x = zoomX - width / 2;
                             y = zoomY - height / 2;
                             scale =
-                                Math.min(plotSizeX / width, plotSizeY / height);
+                                Math.min(plotWidth / width, plotHeight / height);
                             // Uncomment this block to visualize the zooming
                             // bounding box and the point, which is normalized
                             // position to zoom-in
@@ -80,18 +81,18 @@ function onTransform(params) {
                         else {
                             fromWidth /= currentScale;
                             fromHeight /= currentScale;
-                            scale = Math.min(plotSizeX / fromWidth, plotSizeY / fromHeight);
+                            scale = Math.min(plotWidth / fromWidth, plotHeight / fromHeight);
                             let prevX = 0, prevY = 0;
                             if (series.zooming) {
-                                prevX = series.zooming.x * plotSizeX;
-                                prevY = series.zooming.y * plotSizeY;
+                                prevX = series.zooming.x * plotWidth;
+                                prevY = series.zooming.y * plotHeight;
                             }
                             // Calculate the normalized coefficients of the
                             // rectangle center position
                             const factorX = (zoomX - chart.plotLeft) /
-                                ((plotSizeX - fromWidth * currentScale) ||
+                                ((plotWidth - fromWidth * currentScale) ||
                                     1), factorY = (zoomY - chart.plotTop) /
-                                ((plotSizeY - fromHeight * currentScale) ||
+                                ((plotHeight - fromHeight * currentScale) ||
                                     1);
                             width = fromWidth;
                             height = fromHeight;
@@ -111,26 +112,26 @@ function onTransform(params) {
                             // bounding box and the point, which is normalized
                             // position to zoom-in
                             // chart.renderer.rect(
-                            //    x + chart.plotLeft,
-                            //    y + chart.plotTop,
-                            //    fromWidth,
-                            //    fromHeight,
-                            //    0,
-                            //    2
+                            //     x + chart.plotLeft,
+                            //     y + chart.plotTop,
+                            //     fromWidth,
+                            //     fromHeight,
+                            //     0,
+                            //     2
                             // ).attr({ stroke: 'red' }).add();
                             // chart.renderer.circle(
-                            //    zoomX + chart.plotLeft,
-                            //    zoomY + chart.plotTop,
-                            //    2
+                            //     zoomX + chart.plotLeft,
+                            //     zoomY + chart.plotTop,
+                            //     2
                             // ).attr({ stroke: 'blue' }).add();
                         }
                         series.zooming = {
-                            x: x / plotSizeX,
-                            y: y / plotSizeY,
-                            zoomX: zoomX / plotSizeX,
-                            zoomY: zoomY / plotSizeY,
-                            width: width / plotSizeX,
-                            height: height / plotSizeY,
+                            x: x / plotWidth,
+                            y: y / plotHeight,
+                            zoomX: zoomX / plotWidth,
+                            zoomY: zoomY / plotHeight,
+                            width: width / plotWidth,
+                            height: height / plotHeight,
                             scale,
                             panX: 0,
                             panY: 0
@@ -149,7 +150,7 @@ function onTransform(params) {
 }
 /**
  * Apply zoom into series plot box
- * @private
+ * @internal
  */
 function onGetPlotBox(e) {
     const { chart, group, zooming } = this;
@@ -197,7 +198,7 @@ function onGetPlotBox(e) {
 }
 /**
  * Clip series and data labels group with zoom rect
- * @private
+ * @internal
  */
 function onAfterDrawChartBox() {
     const chart = this;
@@ -215,11 +216,15 @@ function onAfterDrawChartBox() {
         clipRect = chart.zoomClipRect;
     }
     chart.seriesGroup?.clip(clipRect);
-    chart.dataLabelsGroup?.clip(clipRect);
+    chart.series.forEach((series) => {
+        series.dataLabelsParentGroups?.forEach((dataLabelsGroup) => {
+            dataLabelsGroup.clip(clipRect);
+        });
+    });
 }
 /**
  * Adjust tooltip position to scaled series group
- * @private
+ * @internal
  */
 function onGetAnchor(params) {
     if (params.point.series &&
@@ -231,6 +236,10 @@ function onGetAnchor(params) {
         params.ret[1] = (params.ret[1] * scale) + top - chart.plotTop;
     }
 }
+/**
+ * Adjust series group props
+ * @internal
+ */
 function onAfterSetChartSize(params) {
     if (params.skipAxes) {
         this.series.forEach((series) => {
@@ -245,6 +254,19 @@ function onAfterSetChartSize(params) {
         });
     }
 }
+/**
+ * Create data labels parent group for clipping purposes after zoom-in
+ * @internal
+ */
+function onInitDataLabelsGroup({ index, zIndex }) {
+    var _a;
+    if (this.hasDataLabels?.()) {
+        this.dataLabelsParentGroups || (this.dataLabelsParentGroups = []);
+        (_a = this.dataLabelsParentGroups)[index] || (_a[index] = this.chart.renderer.g()
+            .attr({ zIndex })
+            .add());
+    }
+}
 /* *
  *
  *  Class
@@ -253,7 +275,7 @@ function onAfterSetChartSize(params) {
 /**
  * The series type
  *
- * @private
+ * @internal
  * @class
  * @name Highcharts.seriesTypes.tiledwebmap
  *
@@ -271,6 +293,7 @@ class NonCartesianSeriesZoom {
             addEvent(ChartClass, 'transform', onTransform);
             addEvent(ChartClass, 'afterSetChartSize', onAfterSetChartSize);
             addEvent(SeriesClass, 'getPlotBox', onGetPlotBox);
+            addEvent(SeriesClass, 'initDataLabelsGroup', onInitDataLabelsGroup);
             addEvent(TooltipClass, 'getAnchor', onGetAnchor);
         }
     }

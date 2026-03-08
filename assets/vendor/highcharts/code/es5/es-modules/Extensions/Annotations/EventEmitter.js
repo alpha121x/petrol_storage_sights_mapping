@@ -1,10 +1,11 @@
 /* *
  *
- *  (c) 2009-2025 Highsoft, Black Label
+ *  (c) 2009-2026 Highsoft AS
+ *  Author: Highsoft, Black Label
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -17,9 +18,7 @@ var addEvent = U.addEvent, fireEvent = U.fireEvent, objectEach = U.objectEach, p
  *  Class
  *
  * */
-/**
- * @private
- */
+// Internal class, but made public because Annotation extends it.
 var EventEmitter = /** @class */ (function () {
     function EventEmitter() {
     }
@@ -30,7 +29,7 @@ var EventEmitter = /** @class */ (function () {
      * */
     /**
      * Add emitter events.
-     * @private
+     * @internal
      */
     EventEmitter.prototype.addEvents = function () {
         var emitter = this, addMouseDownEvent = function (element) {
@@ -90,6 +89,7 @@ var EventEmitter = /** @class */ (function () {
     };
     /**
      * Destroy the event emitter.
+     * @internal
      */
     EventEmitter.prototype.destroy = function () {
         this.removeDocEvents();
@@ -98,7 +98,7 @@ var EventEmitter = /** @class */ (function () {
     };
     /**
      * Map mouse move event to the radians.
-     * @private
+     * @internal
      */
     EventEmitter.prototype.mouseMoveToRadians = function (e, cx, cy) {
         var prevDy = e.prevChartY - cy, prevDx = e.prevChartX - cx, dy = e.chartY - cy, dx = e.chartX - cx, temp;
@@ -114,7 +114,7 @@ var EventEmitter = /** @class */ (function () {
     };
     /**
      * Map mouse move to the scale factors.
-     * @private
+     * @internal
      */
     EventEmitter.prototype.mouseMoveToScale = function (e, cx, cy) {
         var prevDx = e.prevChartX - cx, prevDy = e.prevChartY - cy, dx = e.chartX - cx, dy = e.chartY - cy;
@@ -131,7 +131,7 @@ var EventEmitter = /** @class */ (function () {
     };
     /**
      * Map mouse move event to the distance between two following events.
-     * @private
+     * @internal
      */
     EventEmitter.prototype.mouseMoveToTranslation = function (e) {
         var dx = e.chartX - e.prevChartX, dy = e.chartY - e.prevChartY, temp;
@@ -148,7 +148,7 @@ var EventEmitter = /** @class */ (function () {
     /**
      * Drag and drop event. All basic annotations should share this
      * capability as well as the extended ones.
-     * @private
+     * @internal
      */
     EventEmitter.prototype.onDrag = function (e) {
         if (this.chart.isInsidePlot(e.chartX - this.chart.plotLeft, e.chartY - this.chart.plotTop, {
@@ -178,7 +178,7 @@ var EventEmitter = /** @class */ (function () {
     };
     /**
      * Mouse down handler.
-     * @private
+     * @internal
      */
     EventEmitter.prototype.onMouseDown = function (e) {
         var _a;
@@ -227,13 +227,14 @@ var EventEmitter = /** @class */ (function () {
     };
     /**
      * Mouse up handler.
+     * @internal
      */
     EventEmitter.prototype.onMouseUp = function () {
         this.removeDocEvents();
     };
     /**
      * Remove emitter document events.
-     * @private
+     * @internal
      */
     EventEmitter.prototype.removeDocEvents = function () {
         if (this.removeDrag) {

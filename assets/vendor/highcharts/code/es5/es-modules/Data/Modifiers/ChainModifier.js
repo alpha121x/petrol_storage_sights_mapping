@@ -1,10 +1,10 @@
 /* *
  *
- *  (c) 2009-2025 Highsoft AS
+ *  (c) 2009-2026 Highsoft AS
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  *  Authors:
  *  - Sophie Bremer
@@ -37,8 +37,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 var __generator = (this && this.__generator) || function (thisArg, body) {
-    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
-    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g = Object.create((typeof Iterator === "function" ? Iterator : Object).prototype);
+    return g.next = verb(0), g["throw"] = verb(1), g["return"] = verb(2), typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
     function verb(n) { return function (v) { return step([n, v]); }; }
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
@@ -65,7 +65,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 import DataModifier from './DataModifier.js';
 import U from '../../Core/Utilities.js';
-var merge = U.merge;
+var addEvent = U.addEvent, fireEvent = U.fireEvent, merge = U.merge;
 /* *
  *
  *  Class
@@ -158,8 +158,10 @@ var ChainModifier = /** @class */ (function (_super) {
         });
     };
     /**
-     * Applies several modifications to the table and returns a modified copy of
-     * the given table.
+     * Sequentially applies all modifiers in the chain to the given table,
+     * updating its `modified` property with the final result.
+     *
+     * *Note:* The `modified` property reference of the table gets replaced.
      *
      * @param {Highcharts.DataTable} table
      * Table to modify.
@@ -179,7 +181,7 @@ var ChainModifier = /** @class */ (function (_super) {
                         modifiers = (this.options.reverse ?
                             this.chain.slice().reverse() :
                             this.chain.slice());
-                        if (table.modified === table) {
+                        if (!table.modified) {
                             table.modified = table.clone(false, eventDetail);
                         }
                         modified = table;
@@ -203,7 +205,7 @@ var ChainModifier = /** @class */ (function (_super) {
                         });
                         throw error_1;
                     case 5:
-                        modified = modified.modified;
+                        modified = modified.getModified();
                         _a.label = 6;
                     case 6:
                         ++i;
@@ -216,117 +218,9 @@ var ChainModifier = /** @class */ (function (_super) {
         });
     };
     /**
-     * Applies partial modifications of a cell change to the property `modified`
-     * of the given modified table.
-     *
-     * *Note:* The `modified` property of the table gets replaced.
-     *
-     * @param {Highcharts.DataTable} table
-     * Modified table.
-     *
-     * @param {string} columnName
-     * Column name of changed cell.
-     *
-     * @param {number|undefined} rowIndex
-     * Row index of changed cell.
-     *
-     * @param {Highcharts.DataTableCellType} cellValue
-     * Changed cell value.
-     *
-     * @param {Highcharts.DataTableEventDetail} [eventDetail]
-     * Custom information for pending events.
-     *
-     * @return {Highcharts.DataTable}
-     * Table with `modified` property as a reference.
-     */
-    ChainModifier.prototype.modifyCell = function (table, columnName, rowIndex, cellValue, eventDetail) {
-        var modifiers = (this.options.reverse ?
-            this.chain.reverse() :
-            this.chain);
-        if (modifiers.length) {
-            var clone = table.clone();
-            for (var i = 0, iEnd = modifiers.length; i < iEnd; ++i) {
-                modifiers[i].modifyCell(clone, columnName, rowIndex, cellValue, eventDetail);
-                clone = clone.modified;
-            }
-            table.modified = clone;
-        }
-        return table;
-    };
-    /**
-     * Applies partial modifications of column changes to the property
-     * `modified` of the given table.
-     *
-     * *Note:* The `modified` property of the table gets replaced.
-     *
-     * @param {Highcharts.DataTable} table
-     * Modified table.
-     *
-     * @param {Highcharts.DataTableColumnCollection} columns
-     * Changed columns as a collection, where the keys are the column names.
-     *
-     * @param {number} [rowIndex=0]
-     * Index of the first changed row.
-     *
-     * @param {Highcharts.DataTableEventDetail} [eventDetail]
-     * Custom information for pending events.
-     *
-     * @return {Highcharts.DataTable}
-     * Table with `modified` property as a reference.
-     */
-    ChainModifier.prototype.modifyColumns = function (table, columns, rowIndex, eventDetail) {
-        var modifiers = (this.options.reverse ?
-            this.chain.reverse() :
-            this.chain.slice());
-        if (modifiers.length) {
-            var clone = table.clone();
-            for (var i = 0, iEnd = modifiers.length; i < iEnd; ++i) {
-                modifiers[i].modifyColumns(clone, columns, rowIndex, eventDetail);
-                clone = clone.modified;
-            }
-            table.modified = clone;
-        }
-        return table;
-    };
-    /**
-     * Applies partial modifications of row changes to the property `modified`
-     * of the given table.
-     *
-     * *Note:* The `modified` property of the table gets replaced.
-     *
-     * @param {Highcharts.DataTable} table
-     * Modified table.
-     *
-     * @param {Array<(Highcharts.DataTableRow|Highcharts.DataTableRowObject)>} rows
-     * Changed rows.
-     *
-     * @param {number} [rowIndex]
-     * Index of the first changed row.
-     *
-     * @param {Highcharts.DataTableEventDetail} [eventDetail]
-     * Custom information for pending events.
-     *
-     * @return {Highcharts.DataTable}
-     * Table with `modified` property as a reference.
-     */
-    ChainModifier.prototype.modifyRows = function (table, rows, rowIndex, eventDetail) {
-        var modifiers = (this.options.reverse ?
-            this.chain.reverse() :
-            this.chain.slice());
-        if (modifiers.length) {
-            var clone = table.clone();
-            for (var i = 0, iEnd = modifiers.length; i < iEnd; ++i) {
-                modifiers[i].modifyRows(clone, rows, rowIndex, eventDetail);
-                clone = clone.modified;
-            }
-            table.modified = clone;
-        }
-        return table;
-    };
-    /**
      * Applies several modifications to the table.
      *
-     * *Note:* The `modified` property of the table gets replaced.
+     * *Note:* The `modified` property reference of the table gets replaced.
      *
      * @param {DataTable} table
      * Table to modify.
@@ -350,10 +244,11 @@ var ChainModifier = /** @class */ (function (_super) {
         var modifiers = (chain.options.reverse ?
             chain.chain.reverse() :
             chain.chain.slice());
-        var modified = table.modified;
+        var modified = table.getModified();
         for (var i = 0, iEnd = modifiers.length, modifier = void 0; i < iEnd; ++i) {
             modifier = modifiers[i];
-            modified = modifier.modifyTable(modified, eventDetail).modified;
+            modified =
+                modifier.modifyTable(modified, eventDetail).getModified();
         }
         table.modified = modified;
         chain.emit({
@@ -385,6 +280,12 @@ var ChainModifier = /** @class */ (function (_super) {
             detail: eventDetail,
             modifier: modifier
         });
+    };
+    ChainModifier.prototype.emit = function (e) {
+        fireEvent(this, e.type, e);
+    };
+    ChainModifier.prototype.on = function (type, callback) {
+        return addEvent(this, type, callback);
     };
     /* *
      *

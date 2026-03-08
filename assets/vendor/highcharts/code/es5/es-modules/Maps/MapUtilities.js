@@ -1,14 +1,19 @@
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
-// Compute bounds from a path element
+/**
+ * Compute bounds from a path element.
+ *
+ * @internal
+ */
 var boundsFromPath = function (path) {
     var x2 = -Number.MAX_VALUE, x1 = Number.MAX_VALUE, y2 = -Number.MAX_VALUE, y1 = Number.MAX_VALUE, validBounds;
     path.forEach(function (seg) {
@@ -31,7 +36,9 @@ var boundsFromPath = function (path) {
  *  Default Export
  *
  * */
+/** @internal */
 var MapUtilities = {
     boundsFromPath: boundsFromPath
 };
+/** @internal */
 export default MapUtilities;

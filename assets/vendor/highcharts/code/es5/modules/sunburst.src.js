@@ -1,12 +1,14 @@
+// SPDX-License-Identifier: LicenseRef-Highcharts
 /**
- * @license Highcharts JS v12.3.0 (2025-06-21)
+ * @license Highcharts JS v12.5.0 (2026-01-12)
  * @module highcharts/modules/sunburst
  * @requires highcharts
  *
- * (c) 2016-2025 Highsoft AS
+ * (c) 2016-2026 Highsoft AS
  * Authors: Jon Arild Nygard
  *
- * License: www.highcharts.com/license
+ * A commercial license may be required depending on use.
+ * See www.highcharts.com/license
  */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
@@ -138,9 +140,9 @@ var highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default 
  *
  *  Authors: Grzegorz Blachlinski, Karol Kolodziej
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -154,10 +156,10 @@ var highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default 
  */
 var lang = {
     /**
+     * The text for the main breadcrumb.
+     *
      * @since   10.0.0
      * @product highcharts highmaps
-     *
-     * @private
      */
     mainBreadcrumb: 'Main'
 };
@@ -172,6 +174,13 @@ var lang = {
  * @optionparent navigation.breadcrumbs
  */
 var options = {
+    /**
+     * The default padding for each button and separator in each direction.
+     *
+     * @type  {number}
+     * @since 10.0.0
+     */
+    buttonSpacing: 5,
     /**
      * A collection of attributes for the buttons. The object takes SVG
      * attributes like `fill`, `stroke`, `stroke-width`, as well as `style`,
@@ -209,13 +218,6 @@ var options = {
             color: "#334eff" /* Palette.highlightColor80 */
         }
     },
-    /**
-     * The default padding for each button and separator in each direction.
-     *
-     * @type  {number}
-     * @since 10.0.0
-     */
-    buttonSpacing: 5,
     /**
      * Fires when clicking on the breadcrumbs button. Two arguments are
      * passed to the function. First breadcrumb button as an SVG element.
@@ -345,6 +347,7 @@ var options = {
          *
          * In styled mode, the breadcrumbs separators are styled by the
          * `.highcharts-separator` rule with its different states.
+         *
          *  @type  {Highcharts.CSSObject}
          *  @since 10.0.0
          */
@@ -394,10 +397,12 @@ var options = {
  *  Default Export
  *
  * */
+/** @internal */
 var BreadcrumbsDefaults = {
     lang: lang,
     options: options
 };
+/** @internal */
 /* harmony default export */ var Breadcrumbs_BreadcrumbsDefaults = (BreadcrumbsDefaults);
 
 // EXTERNAL MODULE: external {"amd":["highcharts/highcharts","Templating"],"commonjs":["highcharts","Templating"],"commonjs2":["highcharts","Templating"],"root":["Highcharts","Templating"]}
@@ -410,9 +415,9 @@ var highcharts_Templating_commonjs_highcharts_Templating_commonjs2_highcharts_Te
  *
  *  Authors: Grzegorz Blachlinski, Karol Kolodziej
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -430,7 +435,7 @@ var addEvent = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcha
  * */
 /**
  * Shift the drillUpButton to make the space for resetZoomButton, #8095.
- * @private
+ * @internal
  */
 function onChartAfterShowResetZoom() {
     var chart = this;
@@ -447,7 +452,7 @@ function onChartAfterShowResetZoom() {
 }
 /**
  * Remove resize/afterSetExtremes at chart destroy.
- * @private
+ * @internal
  */
 function onChartDestroy() {
     if (this.breadcrumbs) {
@@ -457,7 +462,7 @@ function onChartDestroy() {
 }
 /**
  * Logic for making space for the buttons above the plot area
- * @private
+ * @internal
  */
 function onChartGetMargins() {
     var breadcrumbs = this.breadcrumbs;
@@ -483,15 +488,13 @@ function onChartGetMargins() {
         }
     }
 }
-/**
- * @private
- */
+/** @internal */
 function onChartRedraw() {
     this.breadcrumbs && this.breadcrumbs.redraw();
 }
 /**
  * After zooming out, shift the drillUpButton to the previous position, #8095.
- * @private
+ * @internal
  */
 function onChartSelection(event) {
     if (event.resetSelection === true &&
@@ -507,7 +510,7 @@ function onChartSelection(event) {
 /**
  * The Breadcrumbs class
  *
- * @private
+ * @internal
  * @class
  * @name Highcharts.Breadcrumbs
  *
@@ -570,12 +573,6 @@ var Breadcrumbs = /** @class */ (function () {
     };
     /**
      * Set breadcrumbs list.
-     * @function Highcharts.Breadcrumbs#setList
-     *
-     * @param {Highcharts.Breadcrumbs} this
-     *        Breadcrumbs class.
-     * @param {Highcharts.BreadcrumbsOptions} list
-     *        Breadcrumbs list.
      */
     Breadcrumbs.prototype.setList = function (list) {
         this.list = list;
@@ -786,10 +783,7 @@ var Breadcrumbs = /** @class */ (function () {
             breadcrumbsOptions = breadcrumbs.options,
             buttonTheme = merge(breadcrumbsOptions.buttonTheme);
         var button = chart.renderer
-                .button(breadcrumbs.getButtonText(breadcrumb),
-            posX,
-            posY,
-            function (e) {
+                .button(breadcrumbs.getButtonText(breadcrumb), posX, posY, function (e /* @todo (Event|any) */) {
                 // Extract events from button object and call
                 var buttonEvents = breadcrumbsOptions.events &&
                     breadcrumbsOptions.events.click;
@@ -850,17 +844,6 @@ var Breadcrumbs = /** @class */ (function () {
         }
         return separator;
     };
-    /**
-     * Update.
-     * @function Highcharts.Breadcrumbs#update
-     *
-     * @param {Highcharts.Breadcrumbs} this
-     *        Breadcrumbs class.
-     * @param {Highcharts.BreadcrumbsOptions} options
-     *        Breadcrumbs class.
-     * @param {boolean} redraw
-     *        Redraw flag
-     */
     Breadcrumbs.prototype.update = function (options) {
         merge(true, this.options, options);
         this.destroy();
@@ -1045,6 +1028,7 @@ var Breadcrumbs = /** @class */ (function () {
  *  Default Export
  *
  * */
+/** @internal */
 /* harmony default export */ var Breadcrumbs_Breadcrumbs = (Breadcrumbs);
 /* *
  *
@@ -1118,16 +1102,6 @@ var Breadcrumbs = /** @class */ (function () {
  * @name Highcharts.BreadcrumbsAlignOptions#y
  * @type {number}
  */
-/**
- * Options for all breadcrumbs.
- *
- * @interface Highcharts.BreadcrumbsOptions
- */
-/**
- * Button theme.
- * @name Highcharts.BreadcrumbsOptions#buttonTheme
- * @type { SVGAttributes | undefined }
- */
 (''); // Keeps doclets above in JS file
 
 // EXTERNAL MODULE: external {"amd":["highcharts/highcharts","Color"],"commonjs":["highcharts","Color"],"commonjs2":["highcharts","Color"],"root":["Highcharts","Color"]}
@@ -1142,11 +1116,12 @@ var highcharts_SVGElement_commonjs_highcharts_SVGElement_commonjs2_highcharts_SV
 ;// ./code/es5/es-modules/Series/ColorMapComposition.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -1275,13 +1250,13 @@ var highcharts_Series_commonjs_highcharts_Series_commonjs2_highcharts_Series_roo
 ;// ./code/es5/es-modules/Series/Treemap/TreemapAlgorithmGroup.js
 /* *
  *
- *  (c) 2014-2025 Highsoft AS
+ *  (c) 2014-2026 Highsoft AS
  *
  *  Authors: Jon Arild Nygard / Oystein Moseng
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -1369,11 +1344,12 @@ var TreemapAlgorithmGroup = /** @class */ (function () {
 ;// ./code/es5/es-modules/Series/Treemap/TreemapNode.js
 /* *
  *
- *  (c) 2010-2025 Pawel Lysy
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Pawel Lysy
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -1419,7 +1395,6 @@ var TreemapNode = /** @class */ (function () {
 ;// ./code/es5/es-modules/Series/DrawPointUtilities.js
 /* *
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -1461,7 +1436,7 @@ function draw(point, params) {
             (point.series &&
                 point.series.options.animation);
     var graphic = point.graphic;
-    params.attribs = __assign(__assign({}, params.attribs), { 'class': point.getClassName() }) || {};
+    params.attribs = __assign(__assign({}, params.attribs), { 'class': point.getClassName() });
     if ((point.shouldDraw())) {
         if (!graphic) {
             if (params.shapeType === 'text') {
@@ -1513,13 +1488,13 @@ var DrawPointUtilities = {
 ;// ./code/es5/es-modules/Series/Treemap/TreemapPoint.js
 /* *
  *
- *  (c) 2014-2025 Highsoft AS
+ *  (c) 2014-2026 Highsoft AS
  *
  *  Authors: Jon Arild Nygard / Oystein Moseng
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -1630,13 +1605,13 @@ TreemapPoint_extend(TreemapPoint.prototype, {
 ;// ./code/es5/es-modules/Series/Treemap/TreemapSeriesDefaults.js
 /* *
  *
- *  (c) 2014-2025 Highsoft AS
+ *  (c) 2014-2026 Highsoft AS
  *
  *  Authors: Jon Arild Nygard / Oystein Moseng
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -2359,13 +2334,13 @@ var TreemapSeriesDefaults = {
 ;// ./code/es5/es-modules/Series/Treemap/TreemapUtilities.js
 /* *
  *
- *  (c) 2014-2025 Highsoft AS
+ *  (c) 2014-2026 Highsoft AS
  *
  *  Authors: Jon Arild Nygard / Oystein Moseng
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -2409,13 +2384,13 @@ var TreemapUtilities;
 ;// ./code/es5/es-modules/Series/TreeUtilities.js
 /* *
  *
- *  (c) 2014-2025 Highsoft AS
+ *  (c) 2014-2026 Highsoft AS
  *
  *  Authors: Jon Arild Nygard / Oystein Moseng
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -2665,13 +2640,13 @@ var TreeUtilities = {
 ;// ./code/es5/es-modules/Series/Treemap/TreemapSeries.js
 /* *
  *
- *  (c) 2014-2025 Highsoft AS
+ *  (c) 2014-2026 Highsoft AS
  *
  *  Authors: Jon Arild Nygard / Oystein Moseng
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -2735,23 +2710,31 @@ function onSeriesAfterBindAxes() {
     var series = this,
         xAxis = series.xAxis,
         yAxis = series.yAxis;
-    var treeAxis;
     if (xAxis && yAxis) {
         if (series.is('treemap')) {
-            treeAxis = {
-                endOnTick: false,
-                gridLineWidth: 0,
-                lineWidth: 0,
-                min: 0,
-                minPadding: 0,
-                max: axisMax,
-                maxPadding: 0,
-                startOnTick: false,
-                title: void 0,
-                tickPositions: []
-            };
-            TreemapSeries_extend(yAxis.options, treeAxis);
-            TreemapSeries_extend(xAxis.options, treeAxis);
+            // Treemap and treegraph axes are used for the layout, but are
+            // hidden by default.
+            var treeAxisDefaults = {
+                    endOnTick: false,
+                    startOnTick: false,
+                    visible: false
+                };
+            // Treemap layout depends on specific scaling of both axes
+            if (!series.is('treegraph')) {
+                treeAxisDefaults.min = 0;
+                treeAxisDefaults.max = axisMax;
+                treeAxisDefaults.tickPositions = [];
+            }
+            TreemapSeries_merge(true, xAxis.options, treeAxisDefaults, xAxis.userOptions);
+            TreemapSeries_merge(true, yAxis.options, treeAxisDefaults, yAxis.userOptions);
+            // Set the propertys on the axis object
+            xAxis.visible = xAxis.options.visible;
+            yAxis.visible = yAxis.options.visible;
+            // Set `isCartesian` conditionally. Because non-cartesian zoom won't
+            // work if it is true, and the axis will not show if it is false.
+            if (series.is('treegraph')) {
+                this.isCartesian = xAxis.visible;
+            }
             treemapAxisDefaultValues = true;
         }
         else if (treemapAxisDefaultValues) {
@@ -3354,7 +3337,9 @@ var TreemapSeries = /** @class */ (function (_super) {
                 }
             }
             // Merge custom options with point options
-            point.dlOptions = TreemapSeries_merge(options, point.options.dataLabels);
+            point.dlOptions = TreemapSeries_merge(options, point.options.dataLabels, {
+                zIndex: void 0
+            });
         }
         _super.prototype.drawDataLabels.call(this, points);
     };
@@ -3375,8 +3360,7 @@ var TreemapSeries = /** @class */ (function (_super) {
             allowTraversingTree = options.allowTraversingTree;
         for (var _i = 0, points_2 = points; _i < points_2.length; _i++) {
             var point = points_2[_i];
-            var levelDynamic = point.node.levelDynamic,
-                animatableAttribs = {},
+            var animatableAttribs = {},
                 attribs = {},
                 css = {},
                 groupKey = 'level-group-' + point.node.level,
@@ -3408,9 +3392,9 @@ var TreemapSeries = /** @class */ (function (_super) {
                 if (!series[groupKey]) {
                     series[groupKey] = renderer.g(groupKey)
                         .attr({
-                        // @todo Set the zIndex based upon the number of
-                        // levels, instead of using 1000
-                        zIndex: 1000 - (levelDynamic || 0)
+                        // Use the static level in order to retain z-index
+                        // when data is updated (#23432).
+                        zIndex: -(point.node.level || 0)
                     })
                         .add(series.group);
                     series[groupKey].survive = true;
@@ -3570,6 +3554,9 @@ var TreemapSeries = /** @class */ (function (_super) {
             child = series.buildTree(series.points[i].id, i, level + 1, list, id);
             height = Math.max(child.height + 1, height);
             children.push(child);
+            if (series.is('treegraph')) {
+                child.visible = true;
+            }
         }
         var node = new series.NodeClass().init(id,
             index,
@@ -3587,6 +3574,10 @@ var TreemapSeries = /** @class */ (function (_super) {
         if (point) {
             point.node = node;
             node.point = point;
+            // Handle x-axis value for treegraph
+            if (!TreemapSeries_defined(point.options.x)) {
+                point.x = level;
+            }
         }
         return node;
     };
@@ -3973,7 +3964,9 @@ var TreemapSeries = /** @class */ (function (_super) {
             childrenTotal: childrenTotal,
             // Ignore this node if point is not visible
             ignore: !(TreemapSeries_pick(point === null || point === void 0 ? void 0 : point.visible, true) && (val > 0)),
-            isLeaf: tree.visible && !childrenTotal,
+            isLeaf: tree.visible && !(series.type === 'treegraph' ?
+                children.length > 0 :
+                childrenTotal),
             isGroup: point === null || point === void 0 ? void 0 : point.isGroup,
             levelDynamic: (tree.level - (levelIsConstant ? 0 : nodeRoot.level)),
             name: TreemapSeries_pick(point === null || point === void 0 ? void 0 : point.name, ''),
@@ -4127,11 +4120,12 @@ highcharts_SeriesRegistry_commonjs_highcharts_SeriesRegistry_commonjs2_highchart
 ;// ./code/es5/es-modules/Series/CenteredUtilities.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -4278,13 +4272,13 @@ var CenteredUtilities;
  *
  *  This module implements sunburst charts in Highcharts.
  *
- *  (c) 2016-2025 Highsoft AS
+ *  (c) 2016-2026 Highsoft AS
  *
  *  Authors: Jon Arild Nygard
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -4397,13 +4391,13 @@ SunburstPoint_extend(SunburstPoint.prototype, {
  *
  *  This module implements sunburst charts in Highcharts.
  *
- *  (c) 2016-2025 Highsoft AS
+ *  (c) 2016-2026 Highsoft AS
  *
  *  Authors: Jon Arild Nygard
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -4534,11 +4528,12 @@ var SunburstUtilities = {
 ;// ./code/es5/es-modules/Series/Sunburst/SunburstNode.js
 /* *
  *
- *  (c) 2010-2025 Pawel Lysy
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Pawel Lysy
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -4586,13 +4581,13 @@ var SunburstNode = /** @class */ (function (_super) {
  *
  *  This module implements sunburst charts in Highcharts.
  *
- *  (c) 2016-2025 Highsoft AS
+ *  (c) 2016-2026 Highsoft AS
  *
  *  Authors: Jon Arild Nygard
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -4943,11 +4938,12 @@ var SunburstSeriesDefaults = {
  *
  *  Highcharts module with textPath functionality.
  *
- *  (c) 2009-2025 Torstein Honsi
+ *  (c) 2009-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -5124,7 +5120,7 @@ function setPolygon(event) {
                         }
                     }
                 }
-                catch (e) {
+                catch (_d) {
                     // Safari fails on getStartPositionOfChar even if the
                     // character is within the `textContent.length`
                     break;
@@ -5134,14 +5130,14 @@ function setPolygon(event) {
             try {
                 var srcCharIndex = i + lineIndex,
                     charPos = tp.getEndPositionOfChar(srcCharIndex),
-                    _d = appendTopAndBottom(srcCharIndex,
+                    _e = appendTopAndBottom(srcCharIndex,
                     charPos),
-                    lower = _d[0],
-                    upper = _d[1];
+                    lower = _e[0],
+                    upper = _e[1];
                 polygon.unshift(upper);
                 polygon.unshift(lower);
             }
-            catch (e) {
+            catch (_f) {
                 // Safari fails on getStartPositionOfChar even if the character
                 // is within the `textContent.length`
                 break;
@@ -5198,13 +5194,13 @@ var TextPath = {
  *
  *  This module implements sunburst charts in Highcharts.
  *
- *  (c) 2016-2025 Highsoft AS
+ *  (c) 2016-2026 Highsoft AS
  *
  *  Authors: Jon Arild Nygard
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -5227,6 +5223,17 @@ var SunburstSeries_extends = (undefined && undefined.__extends) || (function () 
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+var SunburstSeries_assign = (undefined && undefined.__assign) || function () {
+    SunburstSeries_assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return SunburstSeries_assign.apply(this, arguments);
+};
 
 var getCenter = Series_CenteredUtilities.getCenter, getStartAndEndRadians = Series_CenteredUtilities.getStartAndEndRadians;
 
@@ -5666,14 +5673,11 @@ var SunburstSeries = /** @class */ (function (_super) {
         if (hackDataLabelAnimation) {
             series.dataLabelsGroup.attr({ opacity: 0 });
             animateLabels = function () {
-                var s = series;
                 animateLabelsCalled = true;
-                if (s.dataLabelsGroup) {
-                    s.dataLabelsGroup.animate({
-                        opacity: 1,
-                        visibility: 'inherit'
-                    });
-                }
+                series.dataLabelsGroup.animate({
+                    opacity: 1,
+                    visibility: 'inherit'
+                });
             };
         }
         for (var _i = 0, points_1 = points; _i < points_1.length; _i++) {
@@ -5723,12 +5727,12 @@ var SunburstSeries = /** @class */ (function (_super) {
                 isInside: visible,
                 isNull: !visible // Used for dataLabels & point.draw
             });
-            point.dlOptions = getDlOptions({
+            point.dlOptions = SunburstSeries_assign(SunburstSeries_assign({}, getDlOptions({
                 point: point,
                 level: level,
                 optionsPoint: point.options,
                 shapeArgs: shape
-            });
+            })), { zIndex: void 0 });
             if (!addedHack && visible) {
                 addedHack = true;
                 onComplete = animateLabels;
@@ -5753,7 +5757,7 @@ var SunburstSeries = /** @class */ (function (_super) {
             // If animateLabels is called before labels were hidden, then call
             // it again.
             if (animateLabelsCalled) {
-                animateLabels();
+                animateLabels === null || animateLabels === void 0 ? void 0 : animateLabels();
             }
         }
         else {

@@ -1,14 +1,15 @@
 /* *
  *
- *  (c) 2009-2025 Highsoft AS
+ *  (c) 2009-2026 Highsoft AS
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  *  Authors:
  *  - Sophie Bremer
  *  - Gøran Slettemark
+ *  - Dawid Dragula
  *
  * */
 'use strict';
@@ -21,7 +22,6 @@ var addEvent = U.addEvent, fireEvent = U.fireEvent, merge = U.merge;
  * */
 /**
  * Abstract class to provide an interface for modifying a table.
- *
  */
 var DataModifier = /** @class */ (function () {
     function DataModifier() {
@@ -95,7 +95,9 @@ var DataModifier = /** @class */ (function () {
         fireEvent(this, e.type, e);
     };
     /**
-     * Returns a modified copy of the given table.
+     * Modifies the given table and sets its `modified` property as a reference
+     * to the modified table. If `modified` property does not exist on the
+     * original table, it's always created.
      *
      * @param {Highcharts.DataTable} table
      * Table to modify.
@@ -109,7 +111,7 @@ var DataModifier = /** @class */ (function () {
     DataModifier.prototype.modify = function (table, eventDetail) {
         var modifier = this;
         return new Promise(function (resolve, reject) {
-            if (table.modified === table) {
+            if (!table.modified) {
                 table.modified = table.clone(false, eventDetail);
             }
             try {
@@ -121,90 +123,9 @@ var DataModifier = /** @class */ (function () {
                     detail: eventDetail,
                     table: table
                 });
-                reject(e);
+                reject(e instanceof Error ? e : new Error('' + e));
             }
         });
-    };
-    /**
-     * Applies partial modifications of a cell change to the property `modified`
-     * of the given modified table.
-     *
-     * @param {Highcharts.DataTable} table
-     * Modified table.
-     *
-     * @param {string} columnName
-     * Column name of changed cell.
-     *
-     * @param {number|undefined} rowIndex
-     * Row index of changed cell.
-     *
-     * @param {Highcharts.DataTableCellType} cellValue
-     * Changed cell value.
-     *
-     * @param {Highcharts.DataTableEventDetail} [eventDetail]
-     * Custom information for pending events.
-     *
-     * @return {Highcharts.DataTable}
-     * Table with `modified` property as a reference.
-     */
-    DataModifier.prototype.modifyCell = function (table, 
-    /* eslint-disable @typescript-eslint/no-unused-vars */
-    columnName, rowIndex, cellValue, eventDetail
-    /* eslint-enable @typescript-eslint/no-unused-vars */
-    ) {
-        return this.modifyTable(table);
-    };
-    /**
-     * Applies partial modifications of column changes to the property
-     * `modified` of the given table.
-     *
-     * @param {Highcharts.DataTable} table
-     * Modified table.
-     *
-     * @param {Highcharts.DataTableColumnCollection} columns
-     * Changed columns as a collection, where the keys are the column names.
-     *
-     * @param {number} [rowIndex=0]
-     * Index of the first changed row.
-     *
-     * @param {Highcharts.DataTableEventDetail} [eventDetail]
-     * Custom information for pending events.
-     *
-     * @return {Highcharts.DataTable}
-     * Table with `modified` property as a reference.
-     */
-    DataModifier.prototype.modifyColumns = function (table, 
-    /* eslint-disable @typescript-eslint/no-unused-vars */
-    columns, rowIndex, eventDetail
-    /* eslint-enable @typescript-eslint/no-unused-vars */
-    ) {
-        return this.modifyTable(table);
-    };
-    /**
-     * Applies partial modifications of row changes to the property `modified`
-     * of the given table.
-     *
-     * @param {Highcharts.DataTable} table
-     * Modified table.
-     *
-     * @param {Array<(Highcharts.DataTableRow|Highcharts.DataTableRowObject)>} rows
-     * Changed rows.
-     *
-     * @param {number} [rowIndex]
-     * Index of the first changed row.
-     *
-     * @param {Highcharts.DataTableEventDetail} [eventDetail]
-     * Custom information for pending events.
-     *
-     * @return {Highcharts.DataTable}
-     * Table with `modified` property as a reference.
-     */
-    DataModifier.prototype.modifyRows = function (table, 
-    /* eslint-disable @typescript-eslint/no-unused-vars */
-    rows, rowIndex, eventDetail
-    /* eslint-enable @typescript-eslint/no-unused-vars */
-    ) {
-        return this.modifyTable(table);
     };
     /**
      * Registers a callback for a specific modifier event.

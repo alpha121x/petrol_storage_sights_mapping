@@ -1,10 +1,11 @@
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -47,7 +48,9 @@ var Tick = /** @class */ (function () {
      *
      * */
     function Tick(axis, pos, type, noLabel, parameters) {
+        /** @internal */
         this.isNew = true;
+        /** @internal */
         this.isNewLabel = true;
         /**
          * The related axis of the tick.
@@ -89,7 +92,7 @@ var Tick = /** @class */ (function () {
     /**
      * Write the tick label.
      *
-     * @private
+     * @internal
      * @function Highcharts.Tick#addLabel
      */
     Tick.prototype.addLabel = function () {
@@ -218,7 +221,7 @@ var Tick = /** @class */ (function () {
     /**
      * Render and return the label of the tick.
      *
-     * @private
+     * @internal
      * @function Highcharts.Tick#createLabel
      */
     Tick.prototype.createLabel = function (str, labelOptions, xy) {
@@ -243,7 +246,7 @@ var Tick = /** @class */ (function () {
     /**
      * Destructor for the tick prototype
      *
-     * @private
+     * @internal
      * @function Highcharts.Tick#destroy
      */
     Tick.prototype.destroy = function () {
@@ -252,7 +255,7 @@ var Tick = /** @class */ (function () {
     /**
      * Gets the x and y positions for ticks in terms of pixels.
      *
-     * @private
+     * @internal
      * @function Highcharts.Tick#getPosition
      *
      * @param {boolean} horiz
@@ -301,7 +304,7 @@ var Tick = /** @class */ (function () {
     };
     /**
      * Get the x, y position of the tick label
-     * @private
+     * @internal
      */
     Tick.prototype.getLabelPosition = function (x, y, label, horiz, labelOptions, tickmarkOffset, index, step) {
         var axis = this.axis, transA = axis.transA, reversed = ( // #7911
@@ -354,7 +357,7 @@ var Tick = /** @class */ (function () {
     /**
      * Get the offset height or width of the label
      *
-     * @private
+     * @internal
      * @function Highcharts.Tick#getLabelSize
      */
     Tick.prototype.getLabelSize = function () {
@@ -364,7 +367,7 @@ var Tick = /** @class */ (function () {
     };
     /**
      * Extendible method to return the path of the marker
-     * @private
+     * @internal
      */
     Tick.prototype.getMarkPath = function (x, y, tickLength, tickWidth, horiz, renderer) {
         if (horiz === void 0) { horiz = false; }
@@ -382,7 +385,7 @@ var Tick = /** @class */ (function () {
      * Handle the label overflow by adjusting the labels to the left and right
      * edge, or hide them if they collide into the neighbour label.
      *
-     * @private
+     * @internal
      * @function Highcharts.Tick#handleOverflow
      */
     Tick.prototype.handleOverflow = function (xy) {
@@ -445,7 +448,7 @@ var Tick = /** @class */ (function () {
     /**
      * Try to replace the label if the same one already exists.
      *
-     * @private
+     * @internal
      * @function Highcharts.Tick#moveLabel
      */
     Tick.prototype.moveLabel = function (str, labelOptions) {
@@ -482,7 +485,7 @@ var Tick = /** @class */ (function () {
     /**
      * Put everything in place
      *
-     * @private
+     * @internal
      * @param {number} index
      *
      * @param {boolean} [old]
@@ -516,7 +519,7 @@ var Tick = /** @class */ (function () {
     /**
      * Renders the gridLine.
      *
-     * @private
+     * @internal
      * @function Highcharts.Tick#renderGridLine
      * @param {boolean} old  Whether or not the tick is old
      * @param {number} opacity  The opacity of the grid line
@@ -572,7 +575,7 @@ var Tick = /** @class */ (function () {
     /**
      * Renders the tick mark.
      *
-     * @private
+     * @internal
      * @function Highcharts.Tick#renderMark
      * @param {Highcharts.PositionObject} xy  The position vector of the mark
      * @param {number} opacity  The opacity of the mark
@@ -615,7 +618,7 @@ var Tick = /** @class */ (function () {
      * Note: The label should already be created in init(), so it should only
      * have to be moved into place.
      *
-     * @private
+     * @internal
      * @function Highcharts.Tick#renderLabel
      * @param {Highcharts.PositionObject} xy  The position vector of the label
      * @param {boolean} old  Whether or not the tick is old
@@ -667,7 +670,7 @@ var Tick = /** @class */ (function () {
      * Replace labels with the moved ones to perform animation. Additionally
      * destroy unused labels.
      *
-     * @private
+     * @internal
      * @function Highcharts.Tick#replaceMovedLabel
      */
     Tick.prototype.replaceMovedLabel = function () {
@@ -696,7 +699,7 @@ export default Tick;
  * */
 /**
  * Optional parameters for the tick.
- * @private
+ * @internal
  * @interface Highcharts.TickParametersObject
  */ /**
 * Set category for the tick.

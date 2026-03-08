@@ -1,16 +1,17 @@
 /* *
  *
- *  (c) 2009-2025 Highsoft AS
+ *  (c) 2009-2026 Highsoft AS
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  *  Authors:
  *  - Torstein Hønsi
  *  - Christer Vasseng
  *  - Gøran Slettemark
  *  - Sophie Bremer
+ *  - Kamil Kubik
  *
  * */
 'use strict';
@@ -32,7 +33,7 @@ var __extends = (this && this.__extends) || (function () {
 import CSVConverter from '../Converters/CSVConverter.js';
 import DataConnector from './DataConnector.js';
 import U from '../../Core/Utilities.js';
-var merge = U.merge, defined = U.defined;
+var merge = U.merge, fireEvent = U.fireEvent;
 /* *
  *
  *  Class
@@ -53,19 +54,14 @@ var CSVConnector = /** @class */ (function (_super) {
     /**
      * Constructs an instance of CSVConnector.
      *
-     * @param {CSVConnector.UserOptions} [options]
+     * @param {Partial<CSVConnectorOptions>} [options]
      * Options for the connector and converter.
-     *
-     * @param {Array<DataTableOptions>} [dataTables]
-     * Multiple connector data tables options.
-     *
      */
-    function CSVConnector(options, dataTables) {
+    function CSVConnector(options) {
         var _this = this;
         var mergedOptions = merge(CSVConnector.defaultOptions, options);
-        _this = _super.call(this, mergedOptions, dataTables) || this;
-        _this.options = defined(dataTables) ?
-            merge(mergedOptions, { dataTables: dataTables }) : mergedOptions;
+        _this = _super.call(this, mergedOptions) || this;
+        _this.options = mergedOptions;
         if (mergedOptions.enablePolling) {
             _this.startPolling(Math.max(mergedOptions.dataRefreshRate || 0, 1) * 1000);
         }
@@ -76,6 +72,16 @@ var CSVConnector = /** @class */ (function (_super) {
      *  Functions
      *
      * */
+    /**
+     * Overrides the DataConnector method. Emits an event on the connector to
+     * all registered callbacks of this event.
+     *
+     * @param {CSVConnector.Event} e
+     * Event object containing additional event information.
+     */
+    CSVConnector.prototype.emit = function (e) {
+        fireEvent(this, e.type, e);
+    };
     /**
      * Initiates the loading of the CSV source to the connector
      *
@@ -88,12 +94,12 @@ var CSVConnector = /** @class */ (function (_super) {
     CSVConnector.prototype.load = function (eventDetail) {
         var _this = this;
         var _a;
-        var connector = this, tables = connector.dataTables, _b = connector.options, csv = _b.csv, csvURL = _b.csvURL, dataModifier = _b.dataModifier, dataTables = _b.dataTables;
+        var connector = this;
+        var options = connector.options;
+        var csv = options.csv, csvURL = options.csvURL, dataTables = options.dataTables, decimalPoint = options.decimalPoint;
         connector.emit({
             type: 'load',
-            csv: csv,
-            detail: eventDetail,
-            tables: tables
+            csv: csv
         });
         return Promise
             .resolve(csvURL ?
@@ -104,38 +110,34 @@ var CSVConnector = /** @class */ (function (_super) {
             .then(function (csv) {
             if (csv) {
                 _this.initConverters(csv, function (key) {
-                    var _a, _b;
-                    var options = _this.options;
                     var tableOptions = dataTables === null || dataTables === void 0 ? void 0 : dataTables.find(function (dataTable) { return dataTable.key === key; });
-                    // Takes over the connector default options.
-                    var mergedTableOptions = {
-                        dataTableKey: key,
-                        firstRowAsNames: (_a = tableOptions === null || tableOptions === void 0 ? void 0 : tableOptions.firstRowAsNames) !== null && _a !== void 0 ? _a : options.firstRowAsNames,
-                        beforeParse: (_b = tableOptions === null || tableOptions === void 0 ? void 0 : tableOptions.beforeParse) !== null && _b !== void 0 ? _b : options.beforeParse
+                    // The data table options takes precedence over the
+                    // connector options.
+                    var _a = tableOptions || {}, _b = _a.firstRowAsNames, firstRowAsNames = _b === void 0 ? options.firstRowAsNames : _b, _c = _a.beforeParse, beforeParse = _c === void 0 ? options.beforeParse : _c;
+                    var converterOptions = {
+                        decimalPoint: decimalPoint,
+                        firstRowAsNames: firstRowAsNames,
+                        beforeParse: beforeParse
                     };
-                    return new CSVConverter(merge(_this.options, mergedTableOptions));
+                    return new CSVConverter(merge(options, converterOptions));
                 }, function (converter, data) {
-                    converter.parse({ csv: data });
+                    return converter.parse({ csv: data });
                 });
             }
-            return connector
-                .setModifierOptions(dataModifier, dataTables)
-                .then(function () { return csv; });
+            return connector.applyTableModifiers().then(function () { return csv; });
         })
             .then(function (csv) {
             connector.emit({
                 type: 'afterLoad',
-                csv: csv,
                 detail: eventDetail,
-                tables: tables
+                csv: csv
             });
             return connector;
         })['catch'](function (error) {
             connector.emit({
                 type: 'loadError',
                 detail: eventDetail,
-                error: error,
-                tables: tables
+                error: error
             });
             throw error;
         });
@@ -146,6 +148,8 @@ var CSVConnector = /** @class */ (function (_super) {
      *
      * */
     CSVConnector.defaultOptions = {
+        id: 'csv-connector',
+        type: 'CSV',
         csv: '',
         csvURL: '',
         enablePolling: false,
@@ -154,6 +158,11 @@ var CSVConnector = /** @class */ (function (_super) {
     };
     return CSVConnector;
 }(DataConnector));
+/* *
+ *
+ *  Registry
+ *
+ * */
 DataConnector.registerType('CSV', CSVConnector);
 /* *
  *

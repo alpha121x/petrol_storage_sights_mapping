@@ -1,12 +1,11 @@
 /* *
  *
- *  (c) 2019-2025 Highsoft AS
+ *  (c) 2019-2026 Highsoft AS
  *
  *  Boost module: stripped-down renderer for higher performance
  *
  *  License: highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -53,9 +52,7 @@ var contexts = [
  *  Functions
  *
  * */
-/**
- * @private
- */
+/** @internal */
 function compose(ChartClass, AxisClass, SeriesClass, seriesTypes, PointClass, ColorClass) {
     var wglMode = hasWebGLSupport();
     if (!wglMode) {
@@ -127,7 +124,7 @@ function hasWebGLSupport() {
                     return true;
                 }
             }
-            catch (e) {
+            catch (_a) {
                 // Silent error
             }
         }
@@ -139,10 +136,12 @@ function hasWebGLSupport() {
  *  Default Export
  *
  * */
+/** @internal */
 var Boost = {
     compose: compose,
     hasWebGLSupport: hasWebGLSupport
 };
+/** @internal */
 export default Boost;
 /* *
  *
@@ -175,6 +174,10 @@ export default Boost;
  *         Line chart with hundreds of series
  * @sample highcharts/boost/scatter
  *         Scatter chart
+ * @sample highcharts/boost/scatter-pointcolor
+ *         Scatter chart with colored points
+ * @sample highcharts/boost/scatter-colorbypoint
+ *         Scatter chart with colorByPoint
  * @sample highcharts/boost/area
  *         Area chart
  * @sample highcharts/boost/arearange

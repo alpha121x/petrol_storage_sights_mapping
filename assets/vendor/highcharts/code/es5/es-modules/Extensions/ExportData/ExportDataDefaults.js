@@ -2,11 +2,12 @@
  *
  *  Experimental data export module for Highcharts
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -17,7 +18,7 @@
  * */
 /**
  * @optionparent exporting
- * @private
+ * @internal
  */
 var exporting = {
     /**
@@ -33,7 +34,7 @@ var exporting = {
      * @apioption exporting.tableCaption
      */
     /**
-     * Options for exporting data to CSV or ExCel, or displaying the data
+     * Options for exporting data to CSV or Excel, or displaying the data
      * in a HTML table or a JavaScript structure.
      *
      * This module adds data export options to the export menu and provides
@@ -55,34 +56,31 @@ var exporting = {
      */
     csv: {
         /**
-         *
          * Options for annotations in the export-data table.
          *
          * @since    8.2.0
          * @requires modules/export-data
          * @requires modules/annotations
-         *
-         *
          */
         annotations: {
             /**
-            * The way to mark the separator for annotations
-            * combined in one export-data table cell.
-            *
-            * @since    8.2.0
-            * @requires modules/annotations
-            */
+             * The way to mark the separator for annotations
+             * combined in one export-data table cell.
+             *
+             * @since    8.2.0
+             * @requires modules/annotations
+             */
             itemDelimiter: '; ',
             /**
-            * When several labels are assigned to a specific point,
-            * they will be displayed in one field in the table.
-            *
-            * @sample highcharts/export-data/join-annotations/
-            *         Concatenate point annotations with itemDelimiter set.
-            *
-            * @since    8.2.0
-            * @requires modules/annotations
-            */
+             * When several labels are assigned to a specific point,
+             * they will be displayed in one field in the table.
+             *
+             * @sample highcharts/export-data/join-annotations/
+             *         Concatenate point annotations with itemDelimiter set.
+             *
+             * @since    8.2.0
+             * @requires modules/annotations
+             */
             join: false
         },
         /**
@@ -142,36 +140,15 @@ var exporting = {
          */
         lineDelimiter: '\n'
     },
-    /**
-     * An object consisting of definitions for the menu items in the context
-     * menu. Each key value pair has a `key` that is referenced in the
-     * [menuItems](#exporting.buttons.contextButton.menuItems) setting,
-     * and a `value`, which is an object with the following properties:
-     *
-     * - **onclick:** The click handler for the menu item
-     *
-     * - **text:** The text for the menu item
-     *
-     * - **textKey:** If internationalization is required, the key to a language
-     *   string
-     *
-     * Custom text for the "exitFullScreen" can be set only in lang options
-     * (it is not a separate button).
-     *
-     * @sample highcharts/exporting/menuitemdefinitions/
-     *         Menu item definitions
-     * @sample highcharts/exporting/menuitemdefinitions-webp/
-     *         Adding a custom menu item for WebP export
-     *
-     * @type     {Highcharts.Dictionary<Highcharts.ExportingMenuObject>}
-     * @default  {"downloadCSV": {}, "downloadXLS": {}, "viewData": {}}
-     * @requires modules/export-data
-     */
     menuItemDefinitions: {
         /**
-         * @ignore
+         * @requires modules/export-data
          */
         downloadCSV: {
+            /**
+             * @see [lang.downloadCSV](#lang.downloadCSV)
+             * @default downloadCSV
+             */
             textKey: 'downloadCSV',
             onclick: function () {
                 var _a;
@@ -179,9 +156,13 @@ var exporting = {
             }
         },
         /**
-         * @ignore
+         * @requires modules/export-data
          */
         downloadXLS: {
+            /**
+             * @see [lang.downloadXLS](#lang.downloadXLS)
+             * @default downloadXLS
+             */
             textKey: 'downloadXLS',
             onclick: function () {
                 var _a;
@@ -189,9 +170,13 @@ var exporting = {
             }
         },
         /**
-         * @ignore
+         * @requires modules/export-data
          */
         viewData: {
+            /**
+             * @see [lang.viewData](#lang.viewData)
+             * @default viewData
+             */
             textKey: 'viewData',
             onclick: function () {
                 var _a;
@@ -199,6 +184,17 @@ var exporting = {
             }
         }
     },
+    /**
+     * Display a message when export is in progress. Uses
+     * [Chart.showLoading()](/class-reference/Highcharts.Chart#showLoading).
+     *
+     * The message can be altered by changing
+     * [lang.exportInProgress](#lang.exportInProgress).
+     *
+     * @since    11.3.0
+     * @requires modules/export-data
+     */
+    showExportInProgress: true,
     /**
      * Show a HTML table below the chart with the chart's current data.
      *
@@ -234,21 +230,12 @@ var exporting = {
      * @since    6.0.4
      * @requires modules/export-data
      */
-    useRowspanHeaders: true,
-    /**
-     * Display a message when export is in progress.
-     * Uses [Chart.setLoading()](/class-reference/Highcharts.Chart#setLoading)
-     *
-     * The message can be altered by changing [](#lang.exporting.exportInProgress)
-     *
-     * @since    11.3.0
-     * @requires modules/export-data
-     */
-    showExportInProgress: true
+    useRowspanHeaders: true
 };
+// TODO: no need to be a partial when Options are fully optional.
 /**
  * @optionparent lang
- * @private
+ * @internal
  */
 var lang = {
     /**
@@ -312,10 +299,12 @@ var lang = {
  *  Default Export
  *
  * */
+/** @internal */
 var ExportDataDefaults = {
     exporting: exporting,
     lang: lang
 };
+/** @internal */
 export default ExportDataDefaults;
 /* *
  *
@@ -327,7 +316,9 @@ export default ExportDataDefaults;
  * data rows before processed into the final format.
  *
  * @type      {Highcharts.ExportDataCallbackFunction}
+ * @since     7.2.0
  * @context   Highcharts.Chart
+ * @requires  modules/exporting
  * @requires  modules/export-data
  * @apioption chart.events.exportData
  */

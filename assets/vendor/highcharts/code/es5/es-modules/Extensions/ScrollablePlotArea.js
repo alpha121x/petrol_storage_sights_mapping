@@ -1,10 +1,11 @@
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  *  Highcharts feature to make the Y axis stay fixed when scrolling the chart
  *  horizontally on mobile devices. Supports left and right side axes.
@@ -22,7 +23,7 @@ var addEvent = U.addEvent, createElement = U.createElement, css = U.css, defined
  *  Functions
  *
  * */
-/** @private */
+/** @internal */
 function onChartRender() {
     var scrollablePlotArea = this.scrollablePlotArea;
     if ((this.scrollablePixelsX || this.scrollablePixelsY) &&
@@ -31,7 +32,7 @@ function onChartRender() {
     }
     scrollablePlotArea === null || scrollablePlotArea === void 0 ? void 0 : scrollablePlotArea.applyFixed();
 }
-/** @private */
+/** @internal */
 function markDirty() {
     if (this.chart.scrollablePlotArea) {
         this.chart.scrollablePlotArea.isDirty = true;
@@ -115,32 +116,37 @@ var ScrollablePlotArea = /** @class */ (function () {
             addEvent(SeriesClass, 'show', markDirty);
         }
     };
+    /** @internal */
     ScrollablePlotArea.afterSetSize = function (chart, e) {
         var _a = chart.options.chart.scrollablePlotArea || {}, minWidth = _a.minWidth, minHeight = _a.minHeight, clipBox = chart.clipBox, plotBox = chart.plotBox, inverted = chart.inverted, renderer = chart.renderer;
         var scrollablePixelsX, scrollablePixelsY, recalculateHoriz;
-        if (!renderer.forExport) {
-            // The amount of pixels to scroll, the difference between chart
-            // width and scrollable width
-            if (minWidth) {
-                chart.scrollablePixelsX = scrollablePixelsX = Math.max(0, minWidth - chart.chartWidth);
-                if (scrollablePixelsX) {
-                    chart.scrollablePlotBox = merge(chart.plotBox);
-                    plotBox.width = chart.plotWidth += scrollablePixelsX;
-                    clipBox[inverted ? 'height' : 'width'] += scrollablePixelsX;
-                    recalculateHoriz = true;
-                }
-                // Currently we can only do either X or Y
+        // Skip for exporting
+        if (renderer.forExport) {
+            return;
+        }
+        // The amount of pixels to scroll, the difference between chart width
+        // and scrollable width
+        if (minWidth) {
+            chart.scrollablePixelsX = scrollablePixelsX = Math.max(0, minWidth - chart.chartWidth);
+            if (scrollablePixelsX) {
+                chart.scrollablePlotBox = merge(chart.plotBox);
+                plotBox.width = chart.plotWidth += scrollablePixelsX;
+                clipBox[inverted ? 'height' : 'width'] += scrollablePixelsX;
+                recalculateHoriz = true;
             }
-            else if (minHeight) {
-                chart.scrollablePixelsY = scrollablePixelsY = Math.max(0, minHeight - chart.chartHeight);
-                if (defined(scrollablePixelsY)) {
-                    chart.scrollablePlotBox = merge(chart.plotBox);
-                    plotBox.height = chart.plotHeight += scrollablePixelsY;
-                    clipBox[inverted ? 'width' : 'height'] += scrollablePixelsY;
-                    recalculateHoriz = false;
-                }
+            // Currently we can only do either X or Y
+        }
+        else if (minHeight) {
+            chart.scrollablePixelsY = scrollablePixelsY = Math.max(0, minHeight - chart.chartHeight);
+            if (defined(scrollablePixelsY)) {
+                chart.scrollablePlotBox = merge(chart.plotBox);
+                plotBox.height = chart.plotHeight += scrollablePixelsY;
+                clipBox[inverted ? 'width' : 'height'] += scrollablePixelsY;
+                recalculateHoriz = false;
             }
-            if (defined(recalculateHoriz) && !e.skipAxes) {
+        }
+        if (defined(recalculateHoriz)) {
+            if (!e.skipAxes) {
                 for (var _i = 0, _b = chart.axes; _i < _b.length; _i++) {
                     var axis = _b[_i];
                     // Apply the corrected plot size to the axes of the other
@@ -153,6 +159,10 @@ var ScrollablePlotArea = /** @class */ (function () {
                     }
                 }
             }
+        }
+        else {
+            // Clear (potential) old box when a new one was not set
+            delete chart.scrollablePlotBox;
         }
     };
     ScrollablePlotArea.prototype.applyFixed = function () {
@@ -231,7 +241,7 @@ var ScrollablePlotArea = /** @class */ (function () {
     /**
      * These elements are moved over to the fixed renderer and stay fixed when
      * the user scrolls the chart
-     * @private
+     * @internal
      */
     ScrollablePlotArea.prototype.moveFixedElements = function () {
         var _a = this.chart, container = _a.container, inverted = _a.inverted, scrollablePixelsX = _a.scrollablePixelsX, scrollablePixelsY = _a.scrollablePixelsY, fixedRenderer = this.fixedRenderer, fixedSelectors = ScrollablePlotArea.fixedSelectors;
@@ -285,6 +295,7 @@ var ScrollablePlotArea = /** @class */ (function () {
             });
         }
     };
+    /** @internal */
     ScrollablePlotArea.fixedSelectors = [
         '.highcharts-breadcrumbs-group',
         '.highcharts-contextbutton',

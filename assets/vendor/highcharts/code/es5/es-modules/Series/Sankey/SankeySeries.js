@@ -2,11 +2,12 @@
  *
  *  Sankey diagram module
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -25,6 +26,17 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 import H from '../../Core/Globals.js';
 import NodesComposition from '../NodesComposition.js';
 import SankeyPoint from './SankeyPoint.js';
@@ -73,7 +85,10 @@ var SankeySeries = /** @class */ (function (_super) {
             params.level.dataLabels :
             {}), options = merge({
             style: {}
-        }, optionsLevel, optionsPoint);
+        }, optionsLevel, optionsPoint, {
+            // Not a point option. zIndex is set for the data labels group.
+            zIndex: optionsLevel === null || optionsLevel === void 0 ? void 0 : optionsLevel.zIndex
+        });
         return options;
     };
     /* *
@@ -440,10 +455,10 @@ var SankeySeries = /** @class */ (function (_super) {
                 height = node.options.width || options.width || nodeHeight;
             }
             // Calculate data label options for the point
-            node.dlOptions = SankeySeries.getDLOptions({
+            node.dlOptions = __assign(__assign({}, SankeySeries.getDLOptions({
                 level: this.mapOptionsToLevel[node.level],
                 optionsPoint: node.options
-            });
+            })), { zIndex: void 0 });
             // Pass test in drawPoints
             node.plotX = 1;
             node.plotY = 1;

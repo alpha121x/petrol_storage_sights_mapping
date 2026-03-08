@@ -1,10 +1,11 @@
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -15,7 +16,7 @@
  * */
 /**
  * Shared Highcharts properties.
- * @private
+ * @internal
  */
 var Globals;
 (function (Globals) {
@@ -63,7 +64,7 @@ var Globals;
     /**
      * A shared registry between all bundles to keep track of applied
      * compositions.
-     * @private
+     * @internal
      */
     Globals.composed = [];
     /**
@@ -88,14 +89,12 @@ var Globals;
      */
     Globals.dateFormats = {};
     /**
-     * @private
+     * @internal
      * @deprecated
      * @todo Use only `Core/Series/SeriesRegistry.seriesTypes`
      */
     Globals.seriesTypes = {};
-    /**
-     * @private
-     */
+    /** @internal */
     Globals.symbolSizes = {};
     /* *
      *

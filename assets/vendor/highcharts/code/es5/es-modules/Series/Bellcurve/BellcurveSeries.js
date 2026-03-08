@@ -1,12 +1,12 @@
 /* *
  *
- *  (c) 2010-2025 Highsoft AS
+ *  (c) 2010-2026 Highsoft AS
  *
  *  Author: Sebastian Domas
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -84,6 +84,17 @@ var BellcurveSeries = /** @class */ (function (_super) {
      *  Functions
      *
      * */
+    BellcurveSeries.prototype.setData = function (data, redraw, animation, updatePoints) {
+        if (redraw === void 0) { redraw = true; }
+        var alteredData;
+        if (typeof data !== 'undefined' && data.length > 0) {
+            data = data.filter(isNumber),
+                this.setMean(data);
+            this.setStandardDeviation(data);
+            alteredData = this.derivedData(this.mean || 0, this.standardDeviation || 0);
+        }
+        _super.prototype.setData.call(this, alteredData, redraw, animation, updatePoints);
+    };
     BellcurveSeries.prototype.derivedData = function (mean, standardDeviation) {
         var options = this.options, intervals = options.intervals, pointsInInterval = options.pointsInInterval, stop = intervals * pointsInInterval * 2 + 1, increment = standardDeviation / pointsInInterval, data = [];
         var x = mean - intervals * standardDeviation;
@@ -94,24 +105,19 @@ var BellcurveSeries = /** @class */ (function (_super) {
         return data;
     };
     BellcurveSeries.prototype.setDerivedData = function () {
-        var _a;
+        var _a, _b;
         var series = this;
-        if (((_a = series.baseSeries) === null || _a === void 0 ? void 0 : _a.getColumn('y').length) || 0 > 1) {
-            series.setMean();
-            series.setStandardDeviation();
-            series.setData(series.derivedData(series.mean || 0, series.standardDeviation || 0), false, void 0, false);
+        if ((_a = series.baseSeries) === null || _a === void 0 ? void 0 : _a.getColumn('y').length) {
+            series.setData((_b = series.baseSeries) === null || _b === void 0 ? void 0 : _b.getColumn('y'), false, void 0, false);
         }
-        return (void 0);
     };
-    BellcurveSeries.prototype.setMean = function () {
-        var _a;
+    BellcurveSeries.prototype.setMean = function (data) {
         var series = this;
-        series.mean = correctFloat(BellcurveSeries.mean(((_a = series.baseSeries) === null || _a === void 0 ? void 0 : _a.getColumn('y')) || []));
+        series.mean = correctFloat(BellcurveSeries.mean(data || []));
     };
-    BellcurveSeries.prototype.setStandardDeviation = function () {
-        var _a;
+    BellcurveSeries.prototype.setStandardDeviation = function (data) {
         var series = this;
-        series.standardDeviation = correctFloat(BellcurveSeries.standardDeviation(((_a = series.baseSeries) === null || _a === void 0 ? void 0 : _a.getColumn('y')) || [], series.mean));
+        series.standardDeviation = correctFloat(BellcurveSeries.standardDeviation(data || [], series.mean));
     };
     /* *
      *

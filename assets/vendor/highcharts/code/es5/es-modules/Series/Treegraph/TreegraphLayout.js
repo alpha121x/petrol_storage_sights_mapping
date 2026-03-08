@@ -1,10 +1,11 @@
 /* *
  *
- *  (c) 2010-2025 Pawel Lysy Grzegorz Blachlinski
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Pawel Lysy Grzegorz Blachlinski
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -200,14 +201,15 @@ var TreegraphLayout = /** @class */ (function () {
      *        The sum of modifiers of all of the parents.
      */
     TreegraphLayout.prototype.secondWalk = function (node, modSum) {
+        var _a, _b;
         var treeLayout = this;
         // When the chart is not inverted we want the tree to be positioned from
         // left to right with root node close to the chart border, this is why
         // x and y positions are switched.
         node.yPosition = node.preX + modSum;
-        node.xPosition = node.level;
-        for (var _i = 0, _a = node.children; _i < _a.length; _i++) {
-            var child = _a[_i];
+        node.xPosition = (_b = (_a = node.point) === null || _a === void 0 ? void 0 : _a.x) !== null && _b !== void 0 ? _b : node.level;
+        for (var _i = 0, _c = node.children; _i < _c.length; _i++) {
+            var child = _c[_i];
             treeLayout.secondWalk(child, modSum + node.mod);
         }
     };
@@ -241,8 +243,10 @@ var TreegraphLayout = /** @class */ (function () {
      * right outernal node or defaultAncestor.
      *
      * @param {TreegraphNode} node
+     * Treegraph node.
+     *
      * @param {TreegraphNode} defaultAncestor
-     *        The default ancestor of the passed node.
+     * The default ancestor of the passed node.
      */
     TreegraphLayout.prototype.apportion = function (node, defaultAncestor) {
         var treeLayout = this, leftSibling = node.getLeftSibling();
@@ -291,9 +295,13 @@ var TreegraphLayout = /** @class */ (function () {
      * Shifts the subtree from leftNode to rightNode.
      *
      * @param {TreegraphNode} leftNode
+     * Left treegraph node.
+     *
      * @param {TreegraphNode} rightNode
+     * Right treegraph node.
+     *
      * @param {number} shift
-     *        The value, by which the subtree should be moved.
+     * The value, by which the subtree should be moved.
      */
     TreegraphLayout.prototype.moveSubtree = function (leftNode, rightNode, shift) {
         var subtrees = rightNode.relativeXPosition - leftNode.relativeXPosition;
@@ -318,8 +326,8 @@ var TreegraphLayout = /** @class */ (function () {
                 node.parent = node.oldParentNode.parent;
                 node.parentNode = node.oldParentNode;
                 // Delete dummyNode
-                delete node.oldParentNode.children[node.relativeXPosition];
-                node.oldParentNode.children[node.relativeXPosition] = node;
+                node.oldParentNode.children
+                    .splice(node.relativeXPosition, 1, node);
                 node.oldParentNode = void 0;
             }
         }

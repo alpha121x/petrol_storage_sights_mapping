@@ -7,6 +7,7 @@
  *  Class
  *
  * */
+/** @internal */
 var LimaLabs = /** @class */ (function () {
     function LimaLabs() {
         /* *
@@ -33,4 +34,5 @@ var LimaLabs = /** @class */ (function () {
  *  Default Export
  *
  * */
+/** @internal */
 export default LimaLabs;

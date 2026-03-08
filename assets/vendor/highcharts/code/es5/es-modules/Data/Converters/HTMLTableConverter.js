@@ -1,16 +1,17 @@
 /* *
  *
- *  (c) 2009-2025 Highsoft AS
+ *  (c) 2009-2026 Highsoft AS
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  *  Authors:
  *  - Torstein Hønsi
  *  - Gøran Slettemark
  *  - Wojciech Chmiel
  *  - Sophie Bremer
+ *  - Kamil Kubik
  *
  * */
 'use strict';
@@ -41,6 +42,7 @@ var __assign = (this && this.__assign) || function () {
     return __assign.apply(this, arguments);
 };
 import DataConverter from './DataConverter.js';
+import DataConverterUtils from './DataConverterUtils.js';
 import U from '../../Core/Utilities.js';
 var merge = U.merge;
 /* *
@@ -85,14 +87,13 @@ var HTMLTableConverter = /** @class */ (function (_super) {
     /**
      * Constructs an instance of the HTMLTableConverter.
      *
-     * @param {HTMLTableConverter.UserOptions} [options]
+     * @param {Partial<HTMLTableConverterOptions>} [options]
      * Options for the HTMLTableConverter.
      */
     function HTMLTableConverter(options) {
         var _this = this;
         var mergedOptions = merge(HTMLTableConverter.defaultOptions, options);
         _this = _super.call(this, mergedOptions) || this;
-        _this.columns = [];
         _this.headers = [];
         _this.options = mergedOptions;
         if (mergedOptions.tableElement) {
@@ -122,7 +123,7 @@ var HTMLTableConverter = /** @class */ (function (_super) {
     HTMLTableConverter.prototype.export = function (connector, options) {
         if (options === void 0) { options = this.options; }
         var exportNames = (options.firstRowAsNames !== false), useMultiLevelHeaders = options.useMultiLevelHeaders;
-        var columns = connector.getSortedColumns(options.usePresentationOrder), columnNames = Object.keys(columns), htmlRows = [], columnsCount = columnNames.length;
+        var columns = connector.getSortedColumns(), columnIds = Object.keys(columns), htmlRows = [], columnsCount = columnIds.length;
         var rowArray = [];
         var tableHead = '';
         // Add the names as the first row if they should be exported
@@ -131,33 +132,31 @@ var HTMLTableConverter = /** @class */ (function (_super) {
             // If using multilevel headers, the first value
             // of each column is a subcategory
             if (useMultiLevelHeaders) {
-                for (var _i = 0, columnNames_1 = columnNames; _i < columnNames_1.length; _i++) {
-                    var name_1 = columnNames_1[_i];
-                    var column = columns[name_1];
+                for (var _i = 0, columnIds_1 = columnIds; _i < columnIds_1.length; _i++) {
+                    var columnId = columnIds_1[_i];
+                    var column = columns[columnId];
                     if (!Array.isArray(column)) {
                         // Convert to conventional array from typed array
                         // if needed
                         column = Array.from(column);
                     }
                     var subhead = (column.shift() || '').toString();
-                    columns[name_1] = column;
+                    columns[columnId] = column;
                     subcategories.push(subhead);
                 }
-                tableHead = this.getTableHeaderHTML(columnNames, subcategories, options);
+                tableHead = this.getTableHeaderHTML(columnIds, subcategories, options);
             }
             else {
-                tableHead = this.getTableHeaderHTML(void 0, columnNames, options);
+                tableHead = this.getTableHeaderHTML(void 0, columnIds, options);
             }
         }
         for (var columnIndex = 0; columnIndex < columnsCount; columnIndex++) {
-            var columnName = columnNames[columnIndex], column = columns[columnName], columnLength = column.length;
+            var columnId = columnIds[columnIndex], column = columns[columnId], columnLength = column.length;
             for (var rowIndex = 0; rowIndex < columnLength; rowIndex++) {
                 var cellValue = column[rowIndex];
                 if (!rowArray[rowIndex]) {
                     rowArray[rowIndex] = [];
                 }
-                // Alternative: Datatype from HTML attribute with
-                // connector.whatIs(columnName)
                 if (!(typeof cellValue === 'string' ||
                     typeof cellValue === 'number' ||
                     typeof cellValue === 'undefined')) {
@@ -247,7 +246,7 @@ var HTMLTableConverter = /** @class */ (function (_super) {
                     if (cur === subheaders[i]) {
                         if (useRowspanHeaders) {
                             rowspan = 2;
-                            delete subheaders[i];
+                            subheaders.splice(i, 1);
                         }
                         else {
                             rowspan = 1;
@@ -281,7 +280,7 @@ var HTMLTableConverter = /** @class */ (function (_super) {
     /**
      * Initiates the parsing of the HTML table
      *
-     * @param {HTMLTableConverter.UserOptions}[options]
+     * @param {Partial<HTMLTableConverterOptions>}[options]
      * Options for the parser
      *
      * @param {DataEvent.Detail} [eventDetail]
@@ -292,22 +291,22 @@ var HTMLTableConverter = /** @class */ (function (_super) {
      * @emits HTMLTableParser#parseError
      */
     HTMLTableConverter.prototype.parse = function (options, eventDetail) {
-        var converter = this, columns = [], headers = [], parseOptions = merge(converter.options, options), endRow = parseOptions.endRow, startColumn = parseOptions.startColumn, endColumn = parseOptions.endColumn, firstRowAsNames = parseOptions.firstRowAsNames, tableHTML = parseOptions.tableElement || this.tableElement;
+        var converter = this, columnsArray = [], headers = [], parseOptions = merge(converter.options, options), endRow = parseOptions.endRow, startColumn = parseOptions.startColumn, endColumn = parseOptions.endColumn, firstRowAsNames = parseOptions.firstRowAsNames, tableHTML = parseOptions.tableElement || this.tableElement;
         if (!(tableHTML instanceof HTMLElement)) {
             converter.emit({
                 type: 'parseError',
-                columns: columns,
+                columns: columnsArray,
                 detail: eventDetail,
                 headers: headers,
                 error: 'Not a valid HTML Table'
             });
-            return;
+            return {};
         }
         converter.tableElement = tableHTML;
         converter.tableElementID = tableHTML.id;
         this.emit({
             type: 'parse',
-            columns: converter.columns,
+            columns: columnsArray,
             detail: eventDetail,
             headers: converter.headers
         });
@@ -333,20 +332,20 @@ var HTMLTableConverter = /** @class */ (function (_super) {
                 var columnsInRow = rows[rowIndex].children, columnsInRowLength = columnsInRow.length;
                 var columnIndex = 0;
                 while (columnIndex < columnsInRowLength) {
-                    var relativeColumnIndex = columnIndex - startColumn, row = columns[relativeColumnIndex];
+                    var relativeColumnIndex = columnIndex - startColumn, row = columnsArray[relativeColumnIndex];
                     item = columnsInRow[columnIndex];
                     if ((item.tagName === 'TD' ||
                         item.tagName === 'TH') &&
                         (columnIndex >= startColumn &&
                             columnIndex <= endColumn)) {
-                        if (!columns[relativeColumnIndex]) {
-                            columns[relativeColumnIndex] = [];
+                        if (!columnsArray[relativeColumnIndex]) {
+                            columnsArray[relativeColumnIndex] = [];
                         }
-                        var cellValue = converter.asGuessedType(item.innerHTML);
+                        var cellValue = converter.convertByType(item.innerHTML);
                         if (cellValue instanceof Date) {
                             cellValue = cellValue.getTime();
                         }
-                        columns[relativeColumnIndex][rowIndex - startRow] = cellValue;
+                        columnsArray[relativeColumnIndex][rowIndex - startRow] = cellValue;
                         // Loop over all previous indices and make sure
                         // they are nulls, not undefined.
                         var i = 1;
@@ -361,23 +360,14 @@ var HTMLTableConverter = /** @class */ (function (_super) {
             }
             rowIndex++;
         }
-        this.columns = columns;
         this.headers = headers;
         this.emit({
             type: 'afterParse',
-            columns: columns,
+            columns: columnsArray,
             detail: eventDetail,
             headers: headers
         });
-    };
-    /**
-     * Handles converting the parsed data to a table.
-     *
-     * @return {DataTable}
-     * Table from the parsed HTML table
-     */
-    HTMLTableConverter.prototype.getTable = function () {
-        return DataConverter.getTableFromColumns(this.columns, this.headers);
+        return DataConverterUtils.getColumnsCollection(columnsArray, converter.headers);
     };
     /* *
      *
@@ -387,7 +377,7 @@ var HTMLTableConverter = /** @class */ (function (_super) {
     /**
      * Default options
      */
-    HTMLTableConverter.defaultOptions = __assign(__assign({}, DataConverter.defaultOptions), { useRowspanHeaders: true, useMultiLevelHeaders: true });
+    HTMLTableConverter.defaultOptions = __assign(__assign({}, DataConverter.defaultOptions), { useRowspanHeaders: true, useMultiLevelHeaders: true, startColumn: 0, endColumn: Number.MAX_VALUE, startRow: 0, endRow: Number.MAX_VALUE });
     return HTMLTableConverter;
 }(DataConverter));
 DataConverter.registerType('HTMLTable', HTMLTableConverter);

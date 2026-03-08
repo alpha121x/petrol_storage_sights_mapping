@@ -1,10 +1,11 @@
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -90,6 +91,7 @@ var Chart = /** @class */ (function () {
     b, c
     /* eslint-enable @typescript-eslint/no-unused-vars */
     ) {
+        /** @internal */
         this.sharedClips = {};
         var args = __spreadArray([], arguments, true);
         // Remove the optional first argument, renderTo, and set it on this.
@@ -141,7 +143,7 @@ var Chart = /** @class */ (function () {
      * Function setting zoom options after chart init and after chart update.
      * Offers support for deprecated options.
      *
-     * @private
+     * @internal
      * @function Highcharts.Chart#setZoomOptions
      */
     Chart.prototype.setZoomOptions = function () {
@@ -160,7 +162,6 @@ var Chart = /** @class */ (function () {
      * @param {Function} [callback]
      *        Function to run when the chart has loaded and all external
      *        images are loaded.
-     *
      *
      * @emits Highcharts.Chart#event:init
      * @emits Highcharts.Chart#event:afterInit
@@ -299,9 +300,9 @@ var Chart = /** @class */ (function () {
         });
     };
     /**
-     * Internal function to unitialize an individual series.
+     * Internal function to initialize an individual series.
      *
-     * @private
+     * @internal
      * @function Highcharts.Chart#initSeries
      */
     Chart.prototype.initSeries = function (options) {
@@ -320,7 +321,7 @@ var Chart = /** @class */ (function () {
     /**
      * Internal function to set data for all series with enabled sorting.
      *
-     * @private
+     * @internal
      * @function Highcharts.Chart#setSortedData
      */
     Chart.prototype.setSortedData = function () {
@@ -335,7 +336,7 @@ var Chart = /** @class */ (function () {
      * Sort and return chart series in order depending on the number of linked
      * series.
      *
-     * @private
+     * @internal
      * @function Highcharts.Series#getSeriesOrderByLinks
      */
     Chart.prototype.getSeriesOrderByLinks = function () {
@@ -352,9 +353,12 @@ var Chart = /** @class */ (function () {
      * (#248, #1123, #2456, #6112). This function is called on series and axis
      * initialization and destroy.
      *
-     * @private
+     * @internal
      * @function Highcharts.Chart#orderItems
-     * @param {string} coll The collection name
+     *
+     * @param {string} coll
+     * The collection name.
+     *
      * @param {number} [fromIndex=0]
      * If this is given, only the series above this index are handled.
      */
@@ -399,7 +403,7 @@ var Chart = /** @class */ (function () {
      * Get the clipping for a series. Could be called for a series to initialate
      * animating the clip or to set the final clip (only width and x).
      *
-     * @private
+     * @internal
      * @function Highcharts.Chart#getClipBox
      */
     Chart.prototype.getClipBox = function (series, chartCoords) {
@@ -654,9 +658,7 @@ var Chart = /** @class */ (function () {
      */
     Chart.prototype.get = function (id) {
         var series = this.series;
-        /**
-         * @private
-         */
+        /** @internal */
         function itemById(item) {
             return (item.id === id ||
                 (item.options && item.options.id === id));
@@ -675,7 +677,7 @@ var Chart = /** @class */ (function () {
     /**
      * Create the Axis instances based on the config options.
      *
-     * @private
+     * @internal
      * @function Highcharts.Chart#createAxes
      * @emits Highcharts.Chart#event:afterCreateAxes
      * @emits Highcharts.Chart#event:createAxes
@@ -776,10 +778,12 @@ var Chart = /** @class */ (function () {
     /**
      * Apply a title, subtitle or caption for the chart
      *
-     * @private
+     * @internal
      * @function Highcharts.Chart#applyDescription
-     * @param key {string}
+     *
+     * @param {string} key
      * Either title, subtitle or caption
+     *
      * @param {Highcharts.TitleOptions|Highcharts.SubtitleOptions|Highcharts.CaptionOptions|undefined} explicitOptions
      * The options to set, will be merged with default options.
      */
@@ -846,10 +850,11 @@ var Chart = /** @class */ (function () {
      * cache the full offset height for use in `getMargins`. The result is
      * stored in `this.titleOffset`.
      *
-     * @private
+     * @internal
      * @function Highcharts.Chart#layOutTitles
      *
      * @param {boolean} [redraw=true]
+     *
      * @emits Highcharts.Chart#event:afterLayOutTitles
      */
     Chart.prototype.layOutTitles = function (redraw) {
@@ -951,7 +956,7 @@ var Chart = /** @class */ (function () {
     /**
      * Internal function to get the available size of the container element
      *
-     * @private
+     * @internal
      * @function Highcharts.Chart#getContainerBox
      */
     Chart.prototype.getContainerBox = function () {
@@ -979,7 +984,7 @@ var Chart = /** @class */ (function () {
      * and container size. Sets {@link Chart.chartWidth} and
      * {@link Chart.chartHeight}.
      *
-     * @private
+     * @internal
      * @function Highcharts.Chart#getChartSize
      */
     Chart.prototype.getChartSize = function () {
@@ -1013,7 +1018,7 @@ var Chart = /** @class */ (function () {
      * parents, then save the original display properties, and when the true
      * size is retrieved, reset them. Used on first render and on redraws.
      *
-     * @private
+     * @internal
      * @function Highcharts.Chart#temporaryDisplay
      *
      * @param {boolean} [revert]
@@ -1088,7 +1093,7 @@ var Chart = /** @class */ (function () {
      * Get the containing element, determine the size and create the inner
      * container div to hold the chart.
      *
-     * @private
+     * @internal
      * @function Highcharts.Chart#afterGetContainer
      * @emits Highcharts.Chart#event:afterGetContainer
      */
@@ -1203,7 +1208,7 @@ var Chart = /** @class */ (function () {
      * Title, subtitle and legend have already been rendered at this stage, but
      * will be moved into their final positions.
      *
-     * @private
+     * @internal
      * @function Highcharts.Chart#getMargins
      * @emits Highcharts.Chart#event:getMargins
      */
@@ -1228,7 +1233,7 @@ var Chart = /** @class */ (function () {
         }
     };
     /**
-     * @private
+     * @internal
      * @function Highcharts.Chart#getAxisMargins
      */
     Chart.prototype.getAxisMargins = function () {
@@ -1249,9 +1254,9 @@ var Chart = /** @class */ (function () {
             getOffset(colorAxis);
         }
         // Add the axis offsets
-        marginNames.forEach(function (m, side) {
+        marginNames.forEach(function (marginName, side) {
             if (!defined(margin[side])) {
-                chart[m] += axisOffset[side];
+                chart[marginName] += axisOffset[side];
             }
         });
         chart.setChartSize();
@@ -1318,7 +1323,7 @@ var Chart = /** @class */ (function () {
      * Toggle the event handlers necessary for auto resizing, depending on the
      * `chart.reflow` option.
      *
-     * @private
+     * @internal
      * @function Highcharts.Chart#setReflow
      */
     Chart.prototype.setReflow = function () {
@@ -1430,7 +1435,7 @@ var Chart = /** @class */ (function () {
      * Set the public chart properties. This is done before and after the
      * pre-render to determine margin sizes.
      *
-     * @private
+     * @internal
      * @function Highcharts.Chart#setChartSize
      * @emits Highcharts.Chart#event:afterSetChartSize
      */
@@ -1502,14 +1507,14 @@ var Chart = /** @class */ (function () {
     /**
      * Initial margins before auto size margins are applied.
      *
-     * @private
+     * @internal
      * @function Highcharts.Chart#resetMargins
      */
     Chart.prototype.resetMargins = function () {
         fireEvent(this, 'resetMargins');
         var chart = this, chartOptions = chart.options.chart, plotBorderWidth = chartOptions.plotBorderWidth || 0, halfWidth = Math.round(plotBorderWidth) / 2;
         // Create margin and spacing array
-        ['margin', 'spacing'].forEach(function splashArrays(target) {
+        ['margin', 'spacing'].forEach(function (target) {
             var value = chartOptions[target], values = isObject(value) ? value : [value, value, value, value];
             [
                 'Top',
@@ -1517,13 +1522,15 @@ var Chart = /** @class */ (function () {
                 'Bottom',
                 'Left'
             ].forEach(function (sideName, side) {
-                chart[target][side] = pick(chartOptions[target + sideName], values[side]);
+                var _a;
+                chart[target][side] = ((_a = chartOptions["".concat(target).concat(sideName)]) !== null && _a !== void 0 ? _a : values[side]);
             });
         });
         // Set margin names like chart.plotTop, chart.plotLeft,
         // chart.marginRight, chart.marginBottom.
-        marginNames.forEach(function (m, side) {
-            chart[m] = pick(chart.margin[side], chart.spacing[side]);
+        marginNames.forEach(function (marginName, side) {
+            var _a;
+            chart[marginName] = (_a = chart.margin[side]) !== null && _a !== void 0 ? _a : chart.spacing[side];
         });
         chart.axisOffset = [0, 0, 0, 0]; // Top, right, bottom, left
         chart.clipOffset = [
@@ -1538,7 +1545,7 @@ var Chart = /** @class */ (function () {
      * Internal function to draw or redraw the borders and backgrounds for chart
      * and plot area.
      *
-     * @private
+     * @internal
      * @function Highcharts.Chart#drawChartBox
      * @emits Highcharts.Chart#event:afterDrawChartBox
      */
@@ -1647,7 +1654,7 @@ var Chart = /** @class */ (function () {
      * options and series. This mainly applies to the chart.inverted property,
      * and in extensions to the chart.angular and chart.polar properties.
      *
-     * @private
+     * @internal
      * @function Highcharts.Chart#propFromSeries
      */
     Chart.prototype.propFromSeries = function () {
@@ -1686,7 +1693,7 @@ var Chart = /** @class */ (function () {
      * `linkedTo` option. This is done from `Chart.render`, and after
      * `Chart.addSeries` and `Series.remove`.
      *
-     * @private
+     * @internal
      * @function Highcharts.Chart#linkSeries
      * @emits Highcharts.Chart#event:afterLinkSeries
      */
@@ -1698,34 +1705,28 @@ var Chart = /** @class */ (function () {
         });
         // Apply new links
         chartSeries.forEach(function (series) {
-            var linkedTo = series.options.linkedTo;
-            if (isString(linkedTo)) {
-                var linkedParent = void 0;
-                if (linkedTo === ':previous') {
-                    linkedParent = chart.series[series.index - 1];
-                }
-                else {
-                    linkedParent = chart.get(linkedTo);
-                }
+            var _a, _b;
+            var linkedTo = series.options.linkedTo, linkedParent = isString(linkedTo) && (linkedTo === ':previous' ?
+                chartSeries[series.index - 1] :
+                chart.get(linkedTo));
+            if (linkedParent &&
                 // #3341 avoid mutual linking
-                if (linkedParent &&
-                    linkedParent.linkedParent !== series) {
-                    linkedParent.linkedSeries.push(series);
-                    /**
-                     * The parent series of the current series, if the current
-                     * series has a [linkedTo](https://api.highcharts.com/highcharts/series.line.linkedTo)
-                     * setting.
-                     *
-                     * @name Highcharts.Series#linkedParent
-                     * @type {Highcharts.Series}
-                     * @readonly
-                     */
-                    series.linkedParent = linkedParent;
-                    if (linkedParent.enabledDataSorting) {
-                        series.setDataSortingOptions();
-                    }
-                    series.visible = pick(series.options.visible, linkedParent.options.visible, series.visible); // #3879
+                linkedParent.linkedParent !== series) {
+                linkedParent.linkedSeries.push(series);
+                /**
+                 * The parent series of the current series, if the current
+                 * series has a [linkedTo](https://api.highcharts.com/highcharts/series.line.linkedTo)
+                 * setting.
+                 *
+                 * @name Highcharts.Series#linkedParent
+                 * @type {Highcharts.Series}
+                 * @readonly
+                 */
+                series.linkedParent = linkedParent;
+                if (linkedParent.enabledDataSorting) {
+                    series.setDataSortingOptions();
                 }
+                series.visible = ((_b = (_a = series.options.visible) !== null && _a !== void 0 ? _a : linkedParent.options.visible) !== null && _b !== void 0 ? _b : series.visible); // #3879
             }
         });
         fireEvent(this, 'afterLinkSeries', { isUpdating: isUpdating });
@@ -1733,7 +1734,7 @@ var Chart = /** @class */ (function () {
     /**
      * Render series for the chart.
      *
-     * @private
+     * @internal
      * @function Highcharts.Chart#renderSeries
      */
     Chart.prototype.renderSeries = function () {
@@ -1745,7 +1746,7 @@ var Chart = /** @class */ (function () {
     /**
      * Render all graphics for the chart. Runs internally on initialization.
      *
-     * @private
+     * @internal
      * @function Highcharts.Chart#render
      */
     Chart.prototype.render = function () {
@@ -1840,9 +1841,6 @@ var Chart = /** @class */ (function () {
         chart.seriesGroup || (chart.seriesGroup = renderer.g('series-group')
             .attr({ zIndex: 3 })
             .shadow(chart.options.chart.seriesGroupShadow)
-            .add());
-        chart.dataLabelsGroup || (chart.dataLabelsGroup = renderer.g('datalabels-group')
-            .attr({ zIndex: 6 })
             .add());
         chart.renderSeries();
         // Credits
@@ -1971,7 +1969,7 @@ var Chart = /** @class */ (function () {
     /**
      * Prepare for first rendering after all data are loaded.
      *
-     * @private
+     * @internal
      * @function Highcharts.Chart#firstRender
      * @emits Highcharts.Chart#event:beforeRender
      */
@@ -2016,7 +2014,7 @@ var Chart = /** @class */ (function () {
      * in the chart. Runs the callbacks and triggers the `load` and `render`
      * events.
      *
-     * @private
+     * @internal
      * @function Highcharts.Chart#onload
      * @emits Highcharts.Chart#event:load
      * @emits Highcharts.Chart#event:render
@@ -2036,12 +2034,13 @@ var Chart = /** @class */ (function () {
             this.setReflow();
         }
         this.warnIfA11yModuleNotLoaded();
+        this.warnIfCSSNotLoaded();
         // Don't run again
         this.hasLoaded = true;
     };
     /**
      * Emit console warning if the a11y module is not loaded.
-     * @private
+     * @internal
      */
     Chart.prototype.warnIfA11yModuleNotLoaded = function () {
         var _a = this, options = _a.options, title = _a.title;
@@ -2059,6 +2058,18 @@ var Chart = /** @class */ (function () {
                     'usable for people with disabilities. Set the ' +
                     '"accessibility.enabled" option to false to remove this ' +
                     'warning. See https://www.highcharts.com/docs/accessibility/accessibility-module.', false, this);
+            }
+        }
+    };
+    /**
+     * Emit console warning if the highcharts.css file is not loaded.
+     * @internal
+     */
+    Chart.prototype.warnIfCSSNotLoaded = function () {
+        if (this.styledMode) {
+            var containerStyle = win.getComputedStyle(this.container);
+            if (containerStyle.zIndex !== '0') {
+                error(35, false, this);
             }
         }
     };
@@ -2178,17 +2189,17 @@ var Chart = /** @class */ (function () {
     /**
      * Factory for creating different axis types.
      *
-     * @private
+     * @internal
      * @function Highcharts.Chart#createAxis
      *
      * @param {string} coll
-     *        An axis type.
+     * An axis type.
      *
      * @param {...Array<*>} arguments
-     *        All arguments for the constructor.
+     * All arguments for the constructor.
      *
      * @return {Highcharts.Axis}
-     *         The newly generated Axis object.
+     * The newly generated Axis object.
      */
     Chart.prototype.createAxis = function (coll, options) {
         var axis = new Axis(this, options.axis, coll);
@@ -2591,9 +2602,7 @@ var Chart = /** @class */ (function () {
             btnOptions.relativeTo === 'spacingBox' ?
             null :
             'plotBox');
-        /**
-         * @private
-         */
+        /** @internal */
         function zoomOut() {
             chart.zoomOut();
         }
@@ -2627,7 +2636,7 @@ var Chart = /** @class */ (function () {
      * called on mouse move, and the distance to pan is computed from chartX
      * compared to the first chartX position in the dragging operation.
      *
-     * @private
+     * @internal
      * @function Highcharts.Chart#pan
      * @param {Highcharts.PointerEventObject} event
      * @param {string} panning
@@ -2676,21 +2685,21 @@ var Chart = /** @class */ (function () {
      * - In a mousewheel zoom, the `to` rectangle is a 10x10 px square,
      *   while the `to` rectangle reflects the scale around that.
      *
-     * @private
+     * @internal
      * @function Highcharts.Chart#transform
      */
     Chart.prototype.transform = function (params) {
         var _a;
         var _this = this;
         var _b, _c, _d;
-        var _e = params.axes, axes = _e === void 0 ? this.axes : _e, event = params.event, _f = params.from, from = _f === void 0 ? {} : _f, reset = params.reset, selection = params.selection, _g = params.to, to = _g === void 0 ? {} : _g, trigger = params.trigger, _h = this, inverted = _h.inverted, time = _h.time;
+        var _e = params.axes, axes = _e === void 0 ? this.axes : _e, event = params.event, _f = params.from, from = _f === void 0 ? {} : _f, reset = params.reset, selection = params.selection, _g = params.to, to = _g === void 0 ? {} : _g, trigger = params.trigger, _h = params.allowResetButton, allowResetButton = _h === void 0 ? true : _h, _j = this, inverted = _j.inverted, time = _j.time;
         // Remove active points for shared tooltip
         (_b = this.hoverPoints) === null || _b === void 0 ? void 0 : _b.forEach(function (point) { return point.setState(); });
         fireEvent(this, 'transform', params);
         var hasZoomed = params.hasZoomed || false, displayButton, isAnyAxisPanning;
         for (var _i = 0, axes_3 = axes; _i < axes_3.length; _i++) {
             var axis = axes_3[_i];
-            var horiz = axis.horiz, len = axis.len, _j = axis.minPointOffset, minPointOffset = _j === void 0 ? 0 : _j, options = axis.options, reversed = axis.reversed, wh = horiz ? 'width' : 'height', xy = horiz ? 'x' : 'y', toLength = pick(to[wh], axis.len), fromLength = pick(from[wh], axis.len), 
+            var horiz = axis.horiz, len = axis.len, _k = axis.minPointOffset, minPointOffset = _k === void 0 ? 0 : _k, options = axis.options, reversed = axis.reversed, wh = horiz ? 'width' : 'height', xy = horiz ? 'x' : 'y', toLength = pick(to[wh], axis.len), fromLength = pick(from[wh], axis.len), 
             // If fingers pinched very close on this axis, treat as pan
             scale = Math.abs(toLength) < 10 ?
                 1 :
@@ -2727,10 +2736,10 @@ var Chart = /** @class */ (function () {
                 !reset &&
                 axis.coll === 'yAxis' &&
                 !allExtremes) {
-                for (var _k = 0, _l = axis.series; _k < _l.length; _k++) {
-                    var series = _l[_k];
+                for (var _l = 0, _m = axis.series; _l < _m.length; _l++) {
+                    var series = _m[_l];
                     var seriesExtremes = series.getExtremes(series.getProcessedData(true).modified
-                        .getColumn('y') || [], true);
+                        .getColumn(series.pointValKey || 'y') || [], true);
                     allExtremes !== null && allExtremes !== void 0 ? allExtremes : (allExtremes = {
                         dataMin: Number.MAX_VALUE,
                         dataMax: -Number.MAX_VALUE
@@ -2743,7 +2752,7 @@ var Chart = /** @class */ (function () {
                 }
                 axis.allExtremes = allExtremes;
             }
-            var _m = extend(axis.getExtremes(), allExtremes || {}), dataMin = _m.dataMin, dataMax = _m.dataMax, min = _m.min, max = _m.max, optionsMin = time.parse(options.min), optionsMax = time.parse(options.max), 
+            var _o = extend(axis.getExtremes(), allExtremes || {}), dataMin = _o.dataMin, dataMax = _o.dataMax, min = _o.min, max = _o.max, optionsMin = time.parse(options.min), optionsMax = time.parse(options.max), 
             // For boosted chart where data extremes are skipped
             safeDataMin = dataMin !== null && dataMin !== void 0 ? dataMin : optionsMin, safeDataMax = dataMax !== null && dataMax !== void 0 ? dataMax : optionsMax, range = newMax - newMin, padRange = axis.categories ? 0 : Math.min(range, safeDataMax - safeDataMin), paddedMin = safeDataMin - padRange * (defined(optionsMin) ? 0 : options.minPadding), paddedMax = safeDataMax + padRange * (defined(optionsMax) ? 0 : options.maxPadding), 
             // We're allowed to zoom outside the data extremes if we're
@@ -2790,24 +2799,21 @@ var Chart = /** @class */ (function () {
                         // panning/zooming hard. Reset and redraw after the
                         // operation has finished.
                         axis.isPanning = trigger !== 'zoom';
-                        if (axis.isPanning) {
+                        if (axis.isPanning && trigger !== 'mousewheel') {
                             isAnyAxisPanning = true; // #21319
                         }
                         axis.setExtremes(reset ? void 0 : newMin, reset ? void 0 : newMax, false, false, { move: move, trigger: trigger, scale: scale });
                         if (!reset &&
-                            (newMin > floor || newMax < ceiling) &&
-                            trigger !== 'mousewheel') {
-                            displayButton = true;
+                            (newMin > floor || newMax < ceiling)) {
+                            displayButton = allowResetButton;
                         }
                     }
                     hasZoomed = true;
                 }
-                // Show the resetZoom button for non-cartesian series,
-                // except when triggered by mouse wheel zoom
+                // Show the resetZoom button for non-cartesian series.
                 if (!this.hasCartesianSeries &&
-                    !reset &&
-                    trigger !== 'mousewheel') {
-                    displayButton = true;
+                    !reset) {
+                    displayButton = allowResetButton;
                 }
                 if (event) {
                     this[horiz ? 'mouseDownX' : 'mouseDownY'] =
@@ -2855,7 +2861,7 @@ extend(Chart.prototype, {
      * Note: We need to define these references after initializers are bound to
      * chart's prototype.
      *
-     * @private
+     * @internal
      */
     collectionsWithInit: {
         // CollectionName: [ initializingMethod, [extraArguments] ]
@@ -2866,7 +2872,7 @@ extend(Chart.prototype, {
     /**
      * These collections (arrays) implement update() methods with support for
      * one-to-one option.
-     * @private
+     * @internal
      */
     collectionsWithUpdate: [
         'xAxis',
@@ -2876,7 +2882,7 @@ extend(Chart.prototype, {
     /**
      * These properties cause isDirtyBox to be set to true when updating. Can be
      * extended from plugins.
-     * @private
+     * @internal
      */
     propsRequireDirtyBox: [
         'backgroundColor',
@@ -2893,7 +2899,7 @@ extend(Chart.prototype, {
     /**
      * These properties require a full reflow of chart elements, best
      * implemented through running `Chart.setSize` internally (#8190).
-     * @private
+     * @internal
      */
     propsRequireReflow: [
         'margin',
@@ -2910,7 +2916,7 @@ extend(Chart.prototype, {
     /**
      * These properties cause all series to be updated when updating. Can be
      * extended from plugins.
-     * @private
+     * @internal
      */
     propsRequireUpdateSeries: [
         'chart.inverted',

@@ -3,11 +3,12 @@
  *  Highcharts module to hide overlapping data labels.
  *  This module is included in Highcharts.
  *
- *  (c) 2009-2025 Torstein Honsi
+ *  (c) 2009-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -24,7 +25,7 @@ var addEvent = U.addEvent, getAlignFactor = U.getAlignFactor, fireEvent = U.fire
  * Hide overlapping labels. Labels are moved and faded in and out on zoom to
  * provide a smooth visual impression.
  *
- * @private
+ * @internal
  * @function Highcharts.Chart#hideOverlappingLabels
  * @param {Array<Highcharts.SVGElement>} labels
  *        Rendered data labels
@@ -76,7 +77,7 @@ function chartHideOverlappingLabels(labels) {
     }
     // Prevent a situation in a gradually rising slope, that each label will
     // hide the previous one because the previous one always has lower rank.
-    labels.sort(function (a, b) { return (b.labelrank || 0) - (a.labelrank || 0); });
+    labels.sort(function (a, b) { return ((b === null || b === void 0 ? void 0 : b.labelrank) || 0) - ((a === null || a === void 0 ? void 0 : a.labelrank) || 0); });
     // Detect overlapping labels
     for (var i = 0; i < len; ++i) {
         label1 = labels[i];
@@ -89,11 +90,11 @@ function chartHideOverlappingLabels(labels) {
             if (box1 &&
                 box2 &&
                 label1 !== label2 && // #6465, polar chart with connectEnds
-                label1.newOpacity !== 0 &&
-                label2.newOpacity !== 0 &&
+                (label1 === null || label1 === void 0 ? void 0 : label1.newOpacity) !== 0 &&
+                (label2 === null || label2 === void 0 ? void 0 : label2.newOpacity) !== 0 &&
                 // #15863 dataLabels are no longer hidden by translation
-                label1.visibility !== 'hidden' &&
-                label2.visibility !== 'hidden') {
+                (label1 === null || label1 === void 0 ? void 0 : label1.visibility) !== 'hidden' &&
+                (label2 === null || label2 === void 0 ? void 0 : label2.visibility) !== 'hidden') {
                 var box2Poly = box2.polygon;
                 // If labels have polygons, only evaluate
                 // based on polygons
@@ -109,10 +110,12 @@ function chartHideOverlappingLabels(labels) {
                     toHide = true;
                 }
                 if (toHide) {
-                    var overlappingLabel = (label1.labelrank < label2.labelrank ?
+                    var overlappingLabel = ((label1 === null || label1 === void 0 ? void 0 : label1.labelrank) < (label2 === null || label2 === void 0 ? void 0 : label2.labelrank) ?
                         label1 :
-                        label2), labelText = overlappingLabel.text;
-                    overlappingLabel.newOpacity = 0;
+                        label2), labelText = overlappingLabel === null || overlappingLabel === void 0 ? void 0 : overlappingLabel.text;
+                    if (overlappingLabel) {
+                        overlappingLabel.newOpacity = 0;
+                    }
                     if (labelText === null || labelText === void 0 ? void 0 : labelText.element.querySelector('textPath')) {
                         labelText.hide();
                     }
@@ -123,7 +126,7 @@ function chartHideOverlappingLabels(labels) {
     // Hide or show
     for (var _i = 0, labels_1 = labels; _i < labels_1.length; _i++) {
         var label_1 = labels_1[_i];
-        if (hideOrShow(label_1, chart)) {
+        if (label_1 && hideOrShow(label_1, chart)) {
             isLabelAffected = true;
         }
     }
@@ -131,8 +134,8 @@ function chartHideOverlappingLabels(labels) {
         fireEvent(chart, 'afterHideAllOverlappingLabels');
     }
 }
-/** @private */
-function compose(ChartClass) {
+/** @internal */
+export function composeOverlappingDataLabels(ChartClass) {
     var chartProto = ChartClass.prototype;
     if (!chartProto.hideOverlappingLabels) {
         chartProto.hideOverlappingLabels = chartHideOverlappingLabels;
@@ -142,7 +145,7 @@ function compose(ChartClass) {
 /**
  * Hide or show labels based on opacity.
  *
- * @private
+ * @internal
  * @function hideOrShow
  * @param {Highcharts.SVGElement} label
  * The label.
@@ -188,7 +191,7 @@ function hideOrShow(label, chart) {
  * Collect potential overlapping data labels. Stack labels probably don't need
  * to be considered because they are usually accompanied by data labels that lie
  * inside the columns.
- * @private
+ * @internal
  */
 function onChartRender() {
     var _a;
@@ -252,12 +255,3 @@ function onChartRender() {
     }
     this.hideOverlappingLabels(labels);
 }
-/* *
- *
- *  Default Export
- *
- * */
-var OverlappingDataLabels = {
-    compose: compose
-};
-export default OverlappingDataLabels;

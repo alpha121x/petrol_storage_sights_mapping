@@ -1,14 +1,17 @@
+// SPDX-License-Identifier: LicenseRef-Highcharts
 /**
- * @license Highcharts JS v12.3.0 (2025-06-21)
+ * @license Highcharts JS v12.5.0 (2026-01-12)
  * @module highcharts/modules/offline-exporting
  * @requires highcharts
  * @requires highcharts/modules/exporting
  *
  * Client side exporting module
  *
- * (c) 2015-2025 Torstein Honsi / Oystein Moseng
+ * (c) 2015-2026 Highsoft AS
+ * Author: Torstein Honsi / Oystein Moseng
  *
- * License: www.highcharts.com/license
+ * A commercial license may be required depending on use.
+ * See www.highcharts.com/license
  */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
@@ -112,14 +115,15 @@ __webpack_require__.d(__webpack_exports__, {
 // EXTERNAL MODULE: external {"amd":["highcharts/highcharts"],"commonjs":["highcharts"],"commonjs2":["highcharts"],"root":["Highcharts"]}
 var highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_ = __webpack_require__(944);
 var highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default = /*#__PURE__*/__webpack_require__.n(highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_);
-;// ./code/es5/es-modules/Extensions/DownloadURL.js
+;// ./code/es5/es-modules/Shared/DownloadURL.js
 /* *
  *
- *  (c) 2015-2025 Oystein Moseng
+ *  (c) 2015-2026 Highsoft AS
+ *  Author: Oystein Moseng
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  *  Mixin for downloading content in the browser
  *
@@ -148,7 +152,7 @@ var domurl = win.URL || win.webkitURL || win;
 /**
  * Convert base64 dataURL to Blob if supported, otherwise returns undefined.
  *
- * @private
+ * @internal
  * @function Highcharts.dataURLtoBlob
  *
  * @param {string} dataURL
@@ -182,7 +186,7 @@ function dataURLtoBlob(dataURL) {
 /**
  * Download a data URL in the browser. Can also take a blob as first param.
  *
- * @private
+ * @internal
  * @function Highcharts.downloadURL
  *
  * @param {string | global.URL} dataURL
@@ -242,7 +246,7 @@ function downloadURL(dataURL, filename) {
 /**
  * Asynchronously downloads a script from a provided location.
  *
- * @private
+ * @internal
  * @function Highcharts.getScript
  *
  * @param {string} scriptLocation
@@ -260,23 +264,63 @@ function getScript(scriptLocation) {
         };
         // Reject in case of fail
         script.onerror = function () {
-            reject(error("Error loading script ".concat(scriptLocation)));
+            var msg = "Error loading script ".concat(scriptLocation);
+            error(msg);
+            reject(new Error(msg));
         };
         // Append the newly created script
         head.appendChild(script);
     });
+}
+/**
+ * Get a blob object from content, if blob is supported.
+ *
+ * @internal
+ * @function Highcharts.getBlobFromContent
+ *
+ * @param {string} content
+ * The content to create the blob from.
+ * @param {string} type
+ * The type of the content.
+ *
+ * @return {string | undefined}
+ * The blob object, or undefined if not supported.
+ *
+ * @requires modules/exporting
+ * @requires modules/export-data
+ */
+function getBlobFromContent(content, type) {
+    var nav = win.navigator,
+        domurl = win.URL || win.webkitURL || win;
+    try {
+        // MS specific
+        if ((nav.msSaveOrOpenBlob) && win.MSBlobBuilder) {
+            var blob = new win.MSBlobBuilder();
+            blob.append(content);
+            return blob.getBlob('image/svg+xml');
+        }
+        return domurl.createObjectURL(new win.Blob(['\uFEFF' + content], // #7084
+        { type: type }));
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    }
+    catch (e) {
+        // Ignore
+    }
 }
 /* *
  *
  *  Default Export
  *
  * */
+/** @internal */
 var DownloadURL = {
     dataURLtoBlob: dataURLtoBlob,
     downloadURL: downloadURL,
+    getBlobFromContent: getBlobFromContent,
     getScript: getScript
 };
-/* harmony default export */ var Extensions_DownloadURL = (DownloadURL);
+/** @internal */
+/* harmony default export */ var Shared_DownloadURL = (DownloadURL);
 
 // EXTERNAL MODULE: external {"amd":["highcharts/highcharts","AST"],"commonjs":["highcharts","AST"],"commonjs2":["highcharts","AST"],"root":["Highcharts","AST"]}
 var highcharts_AST_commonjs_highcharts_AST_commonjs2_highcharts_AST_root_Highcharts_AST_ = __webpack_require__(660);
@@ -287,11 +331,12 @@ var highcharts_Chart_commonjs_highcharts_Chart_commonjs2_highcharts_Chart_root_H
 ;// ./code/es5/es-modules/Extensions/OfflineExporting/OfflineExportingDefaults.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -302,7 +347,7 @@ var highcharts_Chart_commonjs_highcharts_Chart_commonjs2_highcharts_Chart_root_H
  * */
 /**
  * @optionparent exporting
- * @private
+ * @internal
  */
 var exporting = {};
 /* *
@@ -320,11 +365,12 @@ var OfflineExportingDefaults = {
  *
  *  Client side exporting module
  *
- *  (c) 2015 Torstein Honsi / Oystein Moseng
+ *  (c) 2015-2026 Highsoft AS
+ *  Author: Torstein Honsi / Oystein Moseng
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -345,8 +391,8 @@ var __generator = (undefined && undefined.__generator) || function (thisArg, bod
         f,
         y,
         t,
-        g;
-    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+        g = Object.create((typeof Iterator === "function" ? Iterator : Object).prototype);
+    return g.next = verb(0), g["throw"] = verb(1), g["return"] = verb(2), typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
     function verb(n) { return function (v) { return step([n, v]); }; }
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
@@ -376,7 +422,6 @@ var __generator = (undefined && undefined.__generator) || function (thisArg, bod
 
 var getOptions = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).getOptions, setOptions = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).setOptions;
 
-var OfflineExporting_downloadURL = Extensions_DownloadURL.downloadURL, OfflineExporting_getScript = Extensions_DownloadURL.getScript;
 
 var composed = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).composed, OfflineExporting_doc = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).doc, OfflineExporting_win = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).win;
 
@@ -397,7 +442,7 @@ var OfflineExporting;
     /**
      * Composition function.
      *
-     * @private
+     * @internal
      * @function compose
      *
      * @param {ExportingClass} ExportingClass
@@ -438,12 +483,12 @@ var OfflineExporting;
                             if (!(type === 'application/pdf')) return [3 /*break*/, 6];
                             if (!!((_b = OfflineExporting_win.jspdf) === null || _b === void 0 ? void 0 : _b.jsPDF)) return [3 /*break*/, 4];
                             // Get jspdf
-                            return [4 /*yield*/, OfflineExporting_getScript("" + libURL + "jspdf.js")];
+                            return [4 /*yield*/, getScript("" + libURL + "jspdf.js")];
                         case 2:
                             // Get jspdf
                             _c.sent();
                             // Get svg2pdf
-                            return [4 /*yield*/, OfflineExporting_getScript("" + libURL + "svg2pdf.js")];
+                            return [4 /*yield*/, getScript("" + libURL + "svg2pdf.js")];
                         case 3:
                             // Get svg2pdf
                             _c.sent();
@@ -538,7 +583,7 @@ var OfflineExporting;
      * function processes the SVG, applies necessary font adjustments, converts
      * it to a PDF, and initiates the file download.
      *
-     * @private
+     * @internal
      * @async
      * @function downloadPDF
      *
@@ -577,7 +622,7 @@ var OfflineExporting;
                     case 2:
                         pdfData = _a.sent();
                         // Download the PDF
-                        OfflineExporting_downloadURL(pdfData, filename);
+                        downloadURL(pdfData, filename);
                         _a.label = 3;
                     case 3: return [2 /*return*/];
                 }
@@ -592,7 +637,7 @@ var OfflineExporting;
      * It fetches font files (if provided in `pdfFont`), converts them to
      * base64, and registers them with jsPDF.
      *
-     * @private
+     * @internal
      * @function loadPdfFonts
      *
      * @param {SVGElement} svgElement
@@ -646,24 +691,24 @@ var OfflineExporting;
                                 blob_1,
                                 reader_1,
                                 base64,
-                                e_1;
-                            return __generator(this, function (_b) {
-                                switch (_b.label) {
+                                _b;
+                            return __generator(this, function (_c) {
+                                switch (_c.label) {
                                     case 0:
                                         url = pdfFont === null || pdfFont === void 0 ? void 0 : pdfFont[variant];
                                         if (!url) return [3 /*break*/, 7];
-                                        _b.label = 1;
+                                        _c.label = 1;
                                     case 1:
-                                        _b.trys.push([1, 5, , 6]);
+                                        _c.trys.push([1, 5, , 6]);
                                         return [4 /*yield*/, OfflineExporting_win.fetch(url)];
                                     case 2:
-                                        response = _b.sent();
+                                        response = _c.sent();
                                         if (!response.ok) {
                                             throw new Error("Failed to fetch font: ".concat(url));
                                         }
                                         return [4 /*yield*/, response.blob()];
                                     case 3:
-                                        blob_1 = _b.sent(), reader_1 = new FileReader();
+                                        blob_1 = _c.sent(), reader_1 = new FileReader();
                                         return [4 /*yield*/, new Promise(function (resolve, reject) {
                                                 reader_1.onloadend = function () {
                                                     if (typeof reader_1.result === 'string') {
@@ -677,14 +722,14 @@ var OfflineExporting;
                                                 reader_1.readAsDataURL(blob_1);
                                             })];
                                     case 4:
-                                        base64 = _b.sent();
+                                        base64 = _c.sent();
                                         addFont(variant, base64);
                                         if (variant === 'normal') {
                                             normalBase64 = base64;
                                         }
                                         return [3 /*break*/, 6];
                                     case 5:
-                                        e_1 = _b.sent();
+                                        _b = _c.sent();
                                         return [3 /*break*/, 6];
                                     case 6: return [3 /*break*/, 8];
                                     case 7:
@@ -692,7 +737,7 @@ var OfflineExporting;
                                         if (normalBase64) {
                                             addFont(variant, normalBase64);
                                         }
-                                        _b.label = 8;
+                                        _c.label = 8;
                                     case 8: return [2 /*return*/];
                                 }
                             });
@@ -720,7 +765,7 @@ var OfflineExporting;
      * a given SVG string, applies font styles inherited from parent elements,
      * and removes text outlines and title elements to improve PDF rendering.
      *
-     * @private
+     * @internal
      * @function preparePDF
      *
      * @param {string} svg
@@ -798,7 +843,7 @@ var OfflineExporting;
      * Transform from PDF to SVG.
      *
      * @async
-     * @private
+     * @internal
      * @function svgToPdf
      *
      * @param {Highcharts.SVGElement} svgElement
@@ -889,9 +934,9 @@ var OfflineExporting;
 
 var G = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default());
 // Compatibility
-G.dataURLtoBlob = G.dataURLtoBlob || Extensions_DownloadURL.dataURLtoBlob;
+G.dataURLtoBlob = G.dataURLtoBlob || Shared_DownloadURL.dataURLtoBlob;
 G.downloadSVGLocal = OfflineExporting_OfflineExporting.downloadSVGLocal;
-G.downloadURL = G.downloadURL || Extensions_DownloadURL.downloadURL;
+G.downloadURL = G.downloadURL || Shared_DownloadURL.downloadURL;
 // Compose
 OfflineExporting_OfflineExporting.compose(G.Exporting);
 /* harmony default export */ var offline_exporting_src = ((highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()));

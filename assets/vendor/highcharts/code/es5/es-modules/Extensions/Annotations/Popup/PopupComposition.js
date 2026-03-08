@@ -2,11 +2,12 @@
  *
  *  Popup generator for Stock tools
  *
- *  (c) 2009-2025 Sebastian Bochan
+ *  (c) 2009-2026 Highsoft AS
+ *  Author: Sebastian Bochan
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -20,9 +21,7 @@ var addEvent = U.addEvent, pushUnique = U.pushUnique, wrap = U.wrap;
  *  Functions
  *
  * */
-/**
- * @private
- */
+/** @internal */
 function compose(NagivationBindingsClass, PointerClass) {
     if (pushUnique(composed, 'Popup')) {
         addEvent(NagivationBindingsClass, 'closePopup', onNavigationBindingsClosePopup);
@@ -30,17 +29,13 @@ function compose(NagivationBindingsClass, PointerClass) {
         wrap(PointerClass.prototype, 'onContainerMouseDown', wrapPointerOnContainerMouserDown);
     }
 }
-/**
- * @private
- */
+/** @internal */
 function onNavigationBindingsClosePopup() {
     if (this.popup) {
         this.popup.closePopup();
     }
 }
-/**
- * @private
- */
+/** @internal */
 function onNavigationBindingsShowPopup(config) {
     if (!this.popup) {
         // Add popup to main container
@@ -54,7 +49,7 @@ function onNavigationBindingsShowPopup(config) {
 /**
  * `onContainerMouseDown` blocks internal popup events, due to e.preventDefault.
  * Related issue #4606
- * @private
+ * @internal
  */
 function wrapPointerOnContainerMouserDown(proceed, e) {
     // Elements is not in popup
@@ -67,7 +62,9 @@ function wrapPointerOnContainerMouserDown(proceed, e) {
  *  Default Export
  *
  * */
+/** @internal */
 var PopupComposition = {
     compose: compose
 };
+/** @internal */
 export default PopupComposition;

@@ -1,10 +1,11 @@
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -789,11 +790,12 @@ const ChartDefaults = {
      * others series in a stack. The shadow can be an object configuration
      * containing `color`, `offsetX`, `offsetY`, `opacity` and `width`.
      *
-     * @sample highcharts/chart/seriesgroupshadow/ Shadow
+     * @sample highcharts/chart/seriesgroupshadow/
+     *         Shadow
      *
      * @type      {boolean|Highcharts.ShadowOptionsObject}
      * @default   false
-     * @apioption chart.shadow
+     * @apioption chart.seriesGroupShadow
      */
     /**
      * Whether to apply a drop shadow to the outer chart area. Requires
@@ -1004,7 +1006,7 @@ const ChartDefaults = {
      * Chart zooming options.
      * @since 10.2.1
      *
-     * @sample     highcharts/plotoptions/sankey-inverted
+     * @sample     highcharts/plotoptions/sankey-node-color
      *             Zooming in sankey series
      * @sample     highcharts/series-treegraph/link-types
      *             Zooming in treegraph series
@@ -1122,13 +1124,9 @@ const ChartDefaults = {
              * @since 10.2.1
              */
             position: {
-                /**
-                 * The horizontal alignment of the button.
-                 */
+                /** @internal */
                 align: 'right',
-                /**
-                 * The horizontal offset of the button.
-                 */
+                /** @internal */
                 x: -10,
                 /**
                  * The vertical alignment of the button.
@@ -1137,9 +1135,7 @@ const ChartDefaults = {
                  * @default    top
                  * @apioption  chart.zooming.resetButton.position.verticalAlign
                  */
-                /**
-                 * The vertical offset of the button.
-                 */
+                /** @internal */
                 y: 10
             }
         }

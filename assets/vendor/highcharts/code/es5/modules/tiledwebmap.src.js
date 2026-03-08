@@ -1,11 +1,13 @@
+// SPDX-License-Identifier: LicenseRef-Highcharts
 /**
- * @license Highcharts JS v12.3.0 (2025-06-21)
+ * @license Highcharts JS v12.5.0 (2026-01-12)
  * @module highcharts/modules/tiledwebmap
  * @requires highcharts
  *
- * (c) 2009-2025
+ * (c) 2009-2026
  *
- * License: www.highcharts.com/license
+ * A commercial license may be required depending on use.
+ * See www.highcharts.com/license
  */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
@@ -112,6 +114,7 @@ var highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default 
  *  Class
  *
  * */
+/** @internal */
 var OpenStreetMap = /** @class */ (function () {
     function OpenStreetMap() {
         /* *
@@ -149,6 +152,7 @@ var OpenStreetMap = /** @class */ (function () {
  *  Default Export
  *
  * */
+/** @internal */
 /* harmony default export */ var TilesProviders_OpenStreetMap = (OpenStreetMap);
 
 ;// ./code/es5/es-modules/Maps/TilesProviders/Stamen.js
@@ -161,6 +165,7 @@ var OpenStreetMap = /** @class */ (function () {
  *  Class
  *
  * */
+/** @internal */
 var Stamen = /** @class */ (function () {
     function Stamen() {
         /* *
@@ -219,6 +224,7 @@ var Stamen = /** @class */ (function () {
  *  Default Export
  *
  * */
+/** @internal */
 /* harmony default export */ var TilesProviders_Stamen = (Stamen);
 
 ;// ./code/es5/es-modules/Maps/TilesProviders/LimaLabs.js
@@ -231,6 +237,7 @@ var Stamen = /** @class */ (function () {
  *  Class
  *
  * */
+/** @internal */
 var LimaLabs = /** @class */ (function () {
     function LimaLabs() {
         /* *
@@ -257,6 +264,7 @@ var LimaLabs = /** @class */ (function () {
  *  Default Export
  *
  * */
+/** @internal */
 /* harmony default export */ var TilesProviders_LimaLabs = (LimaLabs);
 
 ;// ./code/es5/es-modules/Maps/TilesProviders/Thunderforest.js
@@ -269,6 +277,7 @@ var LimaLabs = /** @class */ (function () {
  *  Class
  *
  * */
+/** @internal */
 var Thunderforest = /** @class */ (function () {
     function Thunderforest() {
         /* *
@@ -337,6 +346,7 @@ var Thunderforest = /** @class */ (function () {
  *  Default Export
  *
  * */
+/** @internal */
 /* harmony default export */ var TilesProviders_Thunderforest = (Thunderforest);
 
 ;// ./code/es5/es-modules/Maps/TilesProviders/Esri.js
@@ -349,6 +359,7 @@ var Thunderforest = /** @class */ (function () {
  *  Class
  *
  * */
+/** @internal */
 var Esri = /** @class */ (function () {
     function Esri() {
         /* *
@@ -431,6 +442,7 @@ var Esri = /** @class */ (function () {
  *  Default Export
  *
  * */
+/** @internal */
 /* harmony default export */ var TilesProviders_Esri = (Esri);
 
 ;// ./code/es5/es-modules/Maps/TilesProviders/USGS.js
@@ -443,6 +455,7 @@ var Esri = /** @class */ (function () {
  *  Class
  *
  * */
+/** @internal */
 var USGS = /** @class */ (function () {
     function USGS() {
         /* *
@@ -478,12 +491,12 @@ var USGS = /** @class */ (function () {
  *  Default Export
  *
  * */
+/** @internal */
 /* harmony default export */ var TilesProviders_USGS = (USGS);
 
 ;// ./code/es5/es-modules/Maps/TilesProviders/TilesProviderRegistry.js
 /* *
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -503,6 +516,7 @@ var USGS = /** @class */ (function () {
  *  Constants
  *
  * */
+/** @internal */
 var tilesProviderRegistry = {
     Esri: TilesProviders_Esri,
     LimaLabs: TilesProviders_LimaLabs,
@@ -516,6 +530,7 @@ var tilesProviderRegistry = {
  *  Default Export
  *
  * */
+/** @internal */
 /* harmony default export */ var TilesProviderRegistry = (tilesProviderRegistry);
 
 // EXTERNAL MODULE: external {"amd":["highcharts/highcharts","SeriesRegistry"],"commonjs":["highcharts","SeriesRegistry"],"commonjs2":["highcharts","SeriesRegistry"],"root":["Highcharts","SeriesRegistry"]}
@@ -524,11 +539,12 @@ var highcharts_SeriesRegistry_commonjs_highcharts_SeriesRegistry_commonjs2_highc
 ;// ./code/es5/es-modules/Series/TiledWebMap/TiledWebMapSeriesDefaults.js
 /* *
  *
- *  (c) 2010-2025 Hubert Kozik, Kamil Musiałowski
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Hubert Kozik, Kamil Musiałowski
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -670,11 +686,12 @@ var TiledWebMapSeriesDefaults = {
 ;// ./code/es5/es-modules/Series/TiledWebMap/TiledWebMapSeries.js
 /* *
  *
- *  (c) 2010-2025 Hubert Kozik, Kamil Musiałowski
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Hubert Kozik, Kamil Musiałowski
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -1232,13 +1249,11 @@ var TiledWebMapSeries = /** @class */ (function (_super) {
                 'Provider Registry.', false);
         }
     };
-    TiledWebMapSeries.prototype.update = function () {
+    TiledWebMapSeries.prototype.update = function (options) {
         var _a;
-        var series = this,
-            transformGroups = series.transformGroups,
+        var transformGroups = this.transformGroups,
             chart = this.chart,
             mapView = chart.mapView,
-            options = arguments[0],
             provider = options.provider;
         if (transformGroups) {
             transformGroups.forEach(function (group) {
@@ -1250,20 +1265,17 @@ var TiledWebMapSeries = /** @class */ (function (_super) {
         }
         if (mapView &&
             !defined((_a = chart.userOptions.mapView) === null || _a === void 0 ? void 0 : _a.projection) &&
-            provider &&
-            provider.type) {
+            (provider === null || provider === void 0 ? void 0 : provider.type)) {
             var ProviderDefinition = TilesProviderRegistry[provider.type];
             if (ProviderDefinition) {
-                var def = new ProviderDefinition(),
-                    providerProjectionName = def.initialProjectionName;
                 mapView.update({
                     projection: {
-                        name: providerProjectionName
+                        name: (new ProviderDefinition()).initialProjectionName
                     }
                 });
             }
         }
-        _super.prototype.update.apply(series, arguments);
+        _super.prototype.update.apply(this, arguments);
     };
     TiledWebMapSeries.defaultOptions = merge(MapSeries.defaultOptions, TiledWebMap_TiledWebMapSeriesDefaults);
     return TiledWebMapSeries;

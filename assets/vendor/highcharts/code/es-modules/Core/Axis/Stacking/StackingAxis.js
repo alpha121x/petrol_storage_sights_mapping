@@ -1,16 +1,16 @@
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
 import A from '../../Animation/AnimationUtilities.js';
 const { getDeferredAnimation } = A;
-import Axis from '../Axis.js';
 import SeriesRegistry from '../../Series/SeriesRegistry.js';
 const { series: { prototype: seriesProto } } = SeriesRegistry;
 import StackItem from './StackItem.js';
@@ -24,7 +24,7 @@ const { addEvent, correctFloat, defined, destroyObjectProperties, fireEvent, isN
 /**
  * Generate stacks for each series and calculate stacks total values
  *
- * @private
+ * @internal
  * @function Highcharts.Chart#getStacks
  */
 function chartGetStacks() {
@@ -47,9 +47,7 @@ function chartGetStacks() {
         }
     });
 }
-/**
- * @private
- */
+/** @internal */
 function onAxisDestroy() {
     const stacking = this.stacking;
     if (stacking) {
@@ -62,9 +60,7 @@ function onAxisDestroy() {
         stacking.stackTotalGroup?.destroy();
     }
 }
-/**
- * @private
- */
+/** @internal */
 function onAxisInit() {
     if (!this.stacking) {
         this.stacking = new AxisAdditions(this);
@@ -74,7 +70,7 @@ function onAxisInit() {
  * Get stack indicator, according to it's x-value, to determine points with the
  * same x-value
  *
- * @private
+ * @internal
  * @function Highcharts.Series#getStackIndicator
  */
 function seriesGetStackIndicator(stackIndicator, x, index, key) {
@@ -100,7 +96,7 @@ function seriesGetStackIndicator(stackIndicator, x, index, key) {
 /**
  * Iterate over all stacks and compute the absolute values to percent
  *
- * @private
+ * @internal
  * @function Highcharts.Series#modifyStacks
  */
 function seriesModifyStacks() {
@@ -124,7 +120,7 @@ function seriesModifyStacks() {
 /**
  * Modifier function for percent stacks. Blows up the stack to 100%.
  *
- * @private
+ * @internal
  * @function Highcharts.Series#percentStacker
  */
 function seriesPercentStacker(pointExtremes, stack, i) {
@@ -140,7 +136,7 @@ function seriesPercentStacker(pointExtremes, stack, i) {
  * and `stacking` is not enabled, we need a pseudo (horizontal) stack in order
  * to handle grouping of points within the same category.
  *
- * @private
+ * @internal
  * @function Highcharts.Series#setGroupedPoints
  * @return {void}
  */
@@ -163,7 +159,7 @@ function seriesSetGroupedPoints(axis) {
 /**
  * Adds series' points value to corresponding stack
  *
- * @private
+ * @internal
  * @function Highcharts.Series#setStackedPoints
  */
 function seriesSetStackedPoints(axis, stackingParam) {
@@ -273,14 +269,9 @@ function seriesSetStackedPoints(axis, stackingParam) {
     // Reset old stacks
     stacking.oldStacks = {};
 }
-/* *
- *
- *  Classes
- *
- * */
 /**
  * Adds stacking support to axes.
- * @private
+ * @internal
  * @class
  */
 class AxisAdditions {
@@ -289,9 +280,13 @@ class AxisAdditions {
      *  Constructors
      *
      * */
+    /** @internal */
     constructor(axis) {
+        /** @internal */
         this.oldStacks = {};
+        /** @internal */
         this.stacks = {};
+        /** @internal */
         this.stacksTouched = 0;
         this.axis = axis;
     }
@@ -302,7 +297,7 @@ class AxisAdditions {
      * */
     /**
      * Build the stacks from top down
-     * @private
+     * @internal
      */
     buildStacks() {
         const stacking = this, axis = stacking.axis, axisSeries = axis.series, isXAxis = axis.coll === 'xAxis', reversedStacks = axis.options.reversedStacks, len = axisSeries.length;
@@ -325,9 +320,7 @@ class AxisAdditions {
         }
         fireEvent(axis, 'afterBuildStacks');
     }
-    /**
-     * @private
-     */
+    /** @internal */
     cleanStacks() {
         if (this.oldStacks) {
             this.stacks = this.oldStacks;
@@ -341,7 +334,7 @@ class AxisAdditions {
     }
     /**
      * Set all the stacks to initial states and destroy unused ones.
-     * @private
+     * @internal
      */
     resetStacks() {
         objectEach(this.stacks, (type) => {
@@ -360,9 +353,7 @@ class AxisAdditions {
             });
         });
     }
-    /**
-     * @private
-     */
+    /** @internal */
     renderStackTotals() {
         const stacking = this, axis = stacking.axis, chart = axis.chart, renderer = chart.renderer, stacks = stacking.stacks, stackLabelsAnim = axis.options.stackLabels?.animation, animationConfig = getDeferredAnimation(chart, stackLabelsAnim || false), stackTotalGroup = stacking.stackTotalGroup = (stacking.stackTotalGroup ||
             renderer
@@ -392,6 +383,7 @@ class AxisAdditions {
  *  Composition
  *
  * */
+/** @internal */
 var StackingAxis;
 (function (StackingAxis) {
     /* *
@@ -401,7 +393,7 @@ var StackingAxis;
      * */
     /**
      * Extends axis with stacking support.
-     * @private
+     * @internal
      */
     function compose(AxisClass, ChartClass, SeriesClass) {
         const chartProto = ChartClass.prototype, seriesProto = SeriesClass.prototype;

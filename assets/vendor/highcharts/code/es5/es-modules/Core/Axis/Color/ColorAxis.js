@@ -1,10 +1,11 @@
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -24,9 +25,9 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 import Axis from '../Axis.js';
+import ColorAxisBase from './ColorAxisBase.js';
 import ColorAxisComposition from './ColorAxisComposition.js';
 import ColorAxisDefaults from './ColorAxisDefaults.js';
-import ColorAxisLike from './ColorAxisLike.js';
 import D from '../../Defaults.js';
 var defaultOptions = D.defaultOptions;
 import LegendSymbol from '../../Legend/LegendSymbol.js';
@@ -60,12 +61,12 @@ var ColorAxis = /** @class */ (function (_super) {
      *  Constructors
      *
      * */
-    /**
-     * @private
-     */
+    /** @internal */
     function ColorAxis(chart, userOptions) {
         var _this = _super.call(this, chart, userOptions) || this;
+        /** @internal */
         _this.coll = 'colorAxis';
+        /** @internal */
         _this.visible = true;
         _this.init(chart, userOptions);
         return _this;
@@ -75,6 +76,7 @@ var ColorAxis = /** @class */ (function (_super) {
      *  Static Functions
      *
      * */
+    /** @internal */
     ColorAxis.compose = function (ChartClass, FxClass, LegendClass, SeriesClass) {
         ColorAxisComposition.compose(ColorAxis, ChartClass, FxClass, LegendClass, SeriesClass);
     };
@@ -100,7 +102,7 @@ var ColorAxis = /** @class */ (function (_super) {
             userOptions.layout !== 'vertical' :
             legend.layout !== 'vertical';
         axis.side = userOptions.side || horiz ? 2 : 1;
-        axis.reversed = userOptions.reversed || !horiz;
+        axis.reversed = userOptions.reversed;
         axis.opposite = !horiz;
         _super.prototype.init.call(this, chart, userOptions, 'colorAxis');
         // `super.init` saves the extended user options, now replace it with the
@@ -131,7 +133,7 @@ var ColorAxis = /** @class */ (function (_super) {
     };
     /**
      * Override so that ticks are not added in data class axes (#6914)
-     * @private
+     * @internal
      */
     ColorAxis.prototype.setTickPositions = function () {
         if (!this.dataClasses) {
@@ -140,7 +142,7 @@ var ColorAxis = /** @class */ (function (_super) {
     };
     /**
      * Extend the setOptions method to process extreme colors and color stops.
-     * @private
+     * @internal
      */
     ColorAxis.prototype.setOptions = function (userOptions) {
         var options = merge(defaultOptions.colorAxis, userOptions, 
@@ -154,9 +156,7 @@ var ColorAxis = /** @class */ (function (_super) {
         _super.prototype.setOptions.call(this, options);
         this.options.crosshair = this.options.marker;
     };
-    /**
-     * @private
-     */
+    /** @internal */
     ColorAxis.prototype.setAxisSize = function () {
         var _a;
         var axis = this, chart = axis.chart, symbol = (_a = axis.legendItem) === null || _a === void 0 ? void 0 : _a.symbol;
@@ -178,7 +178,7 @@ var ColorAxis = /** @class */ (function (_super) {
     /**
      * Override the getOffset method to add the whole axis groups inside the
      * legend.
-     * @private
+     * @internal
      */
     ColorAxis.prototype.getOffset = function () {
         var _a;
@@ -210,16 +210,16 @@ var ColorAxis = /** @class */ (function (_super) {
             // First time only
             if (!axis.added) {
                 axis.added = true;
-                axis.labelLeft = 0;
-                axis.labelRight = axis.width;
             }
+            axis.labelLeft = 0;
+            axis.labelRight = axis.width;
             // Reset it to avoid color axis reserving space
             axis.chart.axisOffset[axis.side] = sideOffset;
         }
     };
     /**
      * Create the color gradient.
-     * @private
+     * @internal
      */
     ColorAxis.prototype.setLegendColor = function () {
         var axis = this;
@@ -240,7 +240,7 @@ var ColorAxis = /** @class */ (function (_super) {
     };
     /**
      * The color axis appears inside the legend and has its own legend symbol.
-     * @private
+     * @internal
      */
     ColorAxis.prototype.drawLegendSymbol = function (legend, item) {
         var _a;
@@ -274,21 +274,17 @@ var ColorAxis = /** @class */ (function (_super) {
     };
     /**
      * Fool the legend.
-     * @private
+     * @internal
      */
     ColorAxis.prototype.setState = function (state) {
         this.series.forEach(function (series) {
             series.setState(state);
         });
     };
-    /**
-     * @private
-     */
+    /** @internal */
     ColorAxis.prototype.setVisible = function () {
     };
-    /**
-     * @private
-     */
+    /** @internal */
     ColorAxis.prototype.getSeriesExtremes = function () {
         var axis = this;
         var series = axis.series;
@@ -377,9 +373,7 @@ var ColorAxis = /** @class */ (function (_super) {
             }
         }
     };
-    /**
-     * @private
-     */
+    /** @internal */
     ColorAxis.prototype.getPlotLinePath = function (options) {
         var axis = this, left = axis.left, pos = options.translatedValue, top = axis.top;
         // Crosshairs only
@@ -433,7 +427,7 @@ var ColorAxis = /** @class */ (function (_super) {
     };
     /**
      * Destroy color axis legend items.
-     * @private
+     * @internal
      */
     ColorAxis.prototype.destroyItems = function () {
         var axis = this, chart = axis.chart, legendItem = axis.legendItem || {};
@@ -448,7 +442,10 @@ var ColorAxis = /** @class */ (function (_super) {
         }
         chart.isDirtyLegend = true;
     };
-    //   Removing the whole axis (#14283)
+    /**
+     * Removing the whole axis (#14283)
+     * @internal
+     */
     ColorAxis.prototype.destroy = function () {
         this.chart.isDirtyLegend = true;
         this.destroyItems();
@@ -468,7 +465,7 @@ var ColorAxis = /** @class */ (function (_super) {
     };
     /**
      * Get the legend item symbols for data classes.
-     * @private
+     * @internal
      */
     ColorAxis.prototype.getDataClassLegendSymbols = function () {
         var axis = this, chart = axis.chart, legendItems = (axis.legendItem &&
@@ -546,7 +543,7 @@ var ColorAxis = /** @class */ (function (_super) {
     };
     /**
      * Get size of color axis symbol.
-     * @private
+     * @internal
      */
     ColorAxis.prototype.getSize = function () {
         var axis = this, chart = axis.chart, horiz = axis.horiz, _a = axis.options, colorAxisHeight = _a.height, colorAxisWidth = _a.width, legendOptions = chart.options.legend, width = pick(defined(colorAxisWidth) ?
@@ -562,16 +559,15 @@ var ColorAxis = /** @class */ (function (_super) {
      *  Static Properties
      *
      * */
+    /** @internal */
     ColorAxis.defaultLegendLength = 200;
-    /**
-     * @private
-     */
+    /** @internal */
     ColorAxis.keepProps = [
         'legendItem'
     ];
     return ColorAxis;
 }(Axis));
-extend(ColorAxis.prototype, ColorAxisLike);
+extend(ColorAxis.prototype, ColorAxisBase);
 /* *
  *
  *  Registry

@@ -1,10 +1,11 @@
 /* *
  *
- *  (c) 2010-2025 Pawel Lysy Grzegorz Blachlinski
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Pawel Lysy Grzegorz Blachlinski
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -105,7 +106,8 @@ var TreegraphSeries = /** @class */ (function (_super) {
      */
     TreegraphSeries.prototype.getLayoutModifiers = function () {
         var _this = this;
-        var chart = this.chart, series = this, plotSizeX = chart.plotSizeX, plotSizeY = chart.plotSizeY, columnCount = arrayMax(this.points.map(function (p) { return p.node.xPosition; }));
+        var _a;
+        var chart = this.chart, series = this, plotSizeX = chart.plotSizeX, plotSizeY = chart.plotSizeY, linkWidth = ((_a = series.options.link) === null || _a === void 0 ? void 0 : _a.lineWidth) || 0, columnCount = arrayMax(this.points.map(function (p) { return p.node.xPosition; }));
         var minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity, maxXSize = 0, minXSize = 0, maxYSize = 0, minYSize = 0;
         this.points.forEach(function (point) {
             var _a;
@@ -114,32 +116,27 @@ var TreegraphSeries = /** @class */ (function (_super) {
             if (_this.options.fillSpace && !point.visible) {
                 return;
             }
-            var node = point.node, level = series.mapOptionsToLevel[point.node.level] || {}, markerOptions = merge(_this.options.marker, level.marker, point.options.marker), nodeWidth = (_a = markerOptions.width) !== null && _a !== void 0 ? _a : getNodeWidth(_this, columnCount), radius = relativeLength(markerOptions.radius || 0, Math.min(plotSizeX, plotSizeY)), symbol = markerOptions.symbol, nodeSizeY = (symbol === 'circle' || !markerOptions.height) ?
+            var node = point.node, level = series.mapOptionsToLevel[point.node.level] || {}, markerOptions = merge(_this.options.marker, level.marker, point.options.marker), nodeWidth = (_a = markerOptions.width) !== null && _a !== void 0 ? _a : getNodeWidth(_this, columnCount), radius = relativeLength(markerOptions.radius || 0, Math.min(plotSizeX, plotSizeY)), lineWidth = Math.max(markerOptions.lineWidth || 0, linkWidth), symbol = markerOptions.symbol, nodeSizeY = (symbol === 'circle' || !markerOptions.height) ?
                 radius * 2 :
                 relativeLength(markerOptions.height, plotSizeY), nodeSizeX = symbol === 'circle' || !nodeWidth ?
                 radius * 2 :
                 relativeLength(nodeWidth, plotSizeX);
             node.nodeSizeX = nodeSizeX;
             node.nodeSizeY = nodeSizeY;
-            var lineWidth;
             if (node.xPosition <= minX) {
                 minX = node.xPosition;
-                lineWidth = markerOptions.lineWidth || 0;
                 minXSize = Math.max(nodeSizeX + lineWidth, minXSize);
             }
             if (node.xPosition >= maxX) {
                 maxX = node.xPosition;
-                lineWidth = markerOptions.lineWidth || 0;
                 maxXSize = Math.max(nodeSizeX + lineWidth, maxXSize);
             }
             if (node.yPosition <= minY) {
                 minY = node.yPosition;
-                lineWidth = markerOptions.lineWidth || 0;
                 minYSize = Math.max(nodeSizeY + lineWidth, minYSize);
             }
             if (node.yPosition >= maxY) {
                 maxY = node.yPosition;
-                lineWidth = markerOptions.lineWidth || 0;
                 maxYSize = Math.max(nodeSizeY + lineWidth, maxYSize);
             }
         });
@@ -157,7 +154,8 @@ var TreegraphSeries = /** @class */ (function (_super) {
         var series = this;
         var links = [];
         this.data.forEach(function (point) {
-            var levelOptions = series.mapOptionsToLevel[point.node.level || 0] || {};
+            var _a;
+            var levelOptions = series.mapOptionsToLevel[(_a = point.node.level) !== null && _a !== void 0 ? _a : 0] || {};
             if (point.node.parent) {
                 var pointOptions = merge(levelOptions, point.options);
                 if (!point.linkToParent || point.linkToParent.destroyed) {
@@ -183,8 +181,9 @@ var TreegraphSeries = /** @class */ (function (_super) {
         return links;
     };
     TreegraphSeries.prototype.buildTree = function (id, index, level, list, parent) {
+        var _a;
         var point = this.points[index];
-        level = (point && point.level) || level;
+        level = (_a = point === null || point === void 0 ? void 0 : point.level) !== null && _a !== void 0 ? _a : level;
         return _super.prototype.buildTree.call(this, id, index, level, list, parent);
     };
     TreegraphSeries.prototype.markerAttribs = function () {
@@ -254,21 +253,20 @@ var TreegraphSeries = /** @class */ (function (_super) {
         }
     };
     TreegraphSeries.prototype.translateLink = function (link) {
-        var _a, _b, _c, _d, _e;
-        var fromNode = link.fromNode, toNode = link.toNode, linkWidth = ((_a = this.options.link) === null || _a === void 0 ? void 0 : _a.lineWidth) || 0, factor = pick((_b = this.options.link) === null || _b === void 0 ? void 0 : _b.curveFactor, 0.5), type = pick((_c = link.options.link) === null || _c === void 0 ? void 0 : _c.type, (_d = this.options.link) === null || _d === void 0 ? void 0 : _d.type, 'default');
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j;
+        var fromNode = link.fromNode, toNode = link.toNode, linkWidth = ((_a = this.options.link) === null || _a === void 0 ? void 0 : _a.lineWidth) || 0, factor = pick((_b = this.options.link) === null || _b === void 0 ? void 0 : _b.curveFactor, 0.5), hasXData = toNode.x !== toNode.node.level ||
+            fromNode.x !== fromNode.node.level, type = pick((_c = link.options.link) === null || _c === void 0 ? void 0 : _c.type, (_d = this.options.link) === null || _d === void 0 ? void 0 : _d.type, 'default');
         if (fromNode.shapeArgs && toNode.shapeArgs) {
             var fromNodeWidth = (fromNode.shapeArgs.width || 0), inverted = this.chart.inverted, y1 = crisp((fromNode.shapeArgs.y || 0) +
                 (fromNode.shapeArgs.height || 0) / 2, linkWidth), y2 = crisp((toNode.shapeArgs.y || 0) +
                 (toNode.shapeArgs.height || 0) / 2, linkWidth);
             var x1 = crisp((fromNode.shapeArgs.x || 0) + fromNodeWidth, linkWidth), x2 = crisp(toNode.shapeArgs.x || 0, linkWidth);
             if (inverted) {
-                x1 -= fromNodeWidth;
-                x2 += (toNode.shapeArgs.width || 0);
+                x1 -= Math.round(fromNodeWidth);
+                x2 += Math.round(toNode.shapeArgs.width || 0);
             }
-            var diff = toNode.node.xPosition - fromNode.node.xPosition;
+            var xDiff = toNode.node.xPosition - fromNode.node.xPosition, fullWidth = Math.abs(x2 - x1) + fromNodeWidth, scopeWidth = hasXData ? fullWidth : (fullWidth / xDiff), width = scopeWidth - fromNodeWidth, offset = width * factor * (inverted ? -1 : 1), xMiddle = crisp((x2 + x1) / 2, linkWidth), bendAt = relativeLength((_h = (_f = (_e = link.options.link) === null || _e === void 0 ? void 0 : _e.bendAt) !== null && _f !== void 0 ? _f : (_g = this.options.link) === null || _g === void 0 ? void 0 : _g.bendAt) !== null && _h !== void 0 ? _h : '50%', fullWidth - fromNodeWidth);
             link.shapeType = 'path';
-            var fullWidth = Math.abs(x2 - x1) + fromNodeWidth, width = (fullWidth / diff) - fromNodeWidth, offset = width * factor * (inverted ? -1 : 1);
-            var xMiddle = crisp((x2 + x1) / 2, linkWidth);
             link.plotX = xMiddle;
             link.plotY = y2;
             link.shapeArgs = {
@@ -281,7 +279,8 @@ var TreegraphSeries = /** @class */ (function (_super) {
                     offset: offset,
                     inverted: inverted,
                     parentVisible: toNode.visible,
-                    radius: (_e = this.options.link) === null || _e === void 0 ? void 0 : _e.radius
+                    radius: (_j = this.options.link) === null || _j === void 0 ? void 0 : _j.radius,
+                    bendAt: bendAt
                 })
             };
             link.dlBox = {
@@ -389,8 +388,9 @@ var TreegraphSeries = /** @class */ (function (_super) {
      * @private
      */
     TreegraphSeries.prototype.pointAttribs = function (point, state) {
+        var _a;
         var series = this, levelOptions = point &&
-            series.mapOptionsToLevel[point.node.level || 0] || {}, options = point && point.options, stateOptions = (levelOptions.states &&
+            series.mapOptionsToLevel[(_a = point.node.level) !== null && _a !== void 0 ? _a : 0] || {}, options = point && point.options, stateOptions = (levelOptions.states &&
             levelOptions.states[state]) ||
             {};
         if (point) {
@@ -420,9 +420,11 @@ var TreegraphSeries = /** @class */ (function (_super) {
      * @private
      */
     TreegraphSeries.prototype.translateNode = function (point) {
-        var chart = this.chart, node = point.node, plotSizeY = chart.plotSizeY, plotSizeX = chart.plotSizeX, 
+        var chart = this.chart, node = point.node, _a = point.plotX, plotX = _a === void 0 ? 0 : _a, plotSizeY = chart.plotSizeY, plotSizeX = chart.plotSizeX, 
         // Get the layout modifiers which are common for all nodes.
-        _a = this.layoutModifier, ax = _a.ax, bx = _a.bx, ay = _a.ay, by = _a.by, x = ax * node.xPosition + bx, y = ay * node.yPosition + by, level = this.mapOptionsToLevel[node.level] || {}, markerOptions = merge(this.options.marker, level.marker, point.options.marker), symbol = markerOptions.symbol, height = node.nodeSizeY, width = node.nodeSizeX, reversed = this.options.reversed, nodeX = node.x = (chart.inverted ?
+        _b = this.layoutModifier, ax = _b.ax, bx = _b.bx, ay = _b.ay, by = _b.by, x = this.isCartesian ?
+            (chart.inverted ? plotSizeX - plotX : plotX) :
+            ax * node.xPosition + bx, y = ay * node.yPosition + by, level = this.mapOptionsToLevel[node.level] || {}, markerOptions = merge(this.options.marker, level.marker, point.options.marker), symbol = markerOptions.symbol, height = node.nodeSizeY, width = node.nodeSizeX, reversed = this.options.reversed, nodeX = node.x = (chart.inverted ?
             plotSizeX - width / 2 - x :
             x - width / 2), nodeY = node.y = (!reversed ?
             plotSizeY - y - height / 2 :
@@ -438,7 +440,7 @@ var TreegraphSeries = /** @class */ (function (_super) {
         if (!point.visible && point.linkToParent) {
             var parentNode = point.linkToParent.fromNode;
             if (parentNode) {
-                var parentShapeArgs = parentNode.shapeArgs || {}, _b = parentShapeArgs.x, x_1 = _b === void 0 ? 0 : _b, _c = parentShapeArgs.y, y_1 = _c === void 0 ? 0 : _c, _d = parentShapeArgs.width, width_1 = _d === void 0 ? 0 : _d, _e = parentShapeArgs.height, height_1 = _e === void 0 ? 0 : _e;
+                var parentShapeArgs = parentNode.shapeArgs || {}, _c = parentShapeArgs.x, x_1 = _c === void 0 ? 0 : _c, _d = parentShapeArgs.y, y_1 = _d === void 0 ? 0 : _d, _e = parentShapeArgs.width, width_1 = _e === void 0 ? 0 : _e, _f = parentShapeArgs.height, height_1 = _f === void 0 ? 0 : _f;
                 if (!point.shapeArgs) {
                     point.shapeArgs = {};
                 }

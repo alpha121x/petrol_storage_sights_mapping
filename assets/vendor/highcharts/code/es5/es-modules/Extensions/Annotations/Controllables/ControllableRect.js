@@ -1,6 +1,5 @@
 /* *
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -31,9 +30,9 @@ var merge = U.merge;
 /**
  * A controllable rect class.
  *
+ * @internal
  * @requires modules/annotations
  *
- * @private
  * @class
  * @name Highcharts.AnnotationControllableRect
  *
@@ -119,4 +118,5 @@ var ControllableRect = /** @class */ (function (_super) {
  *  Default Export
  *
  * */
+/** @internal */
 export default ControllableRect;

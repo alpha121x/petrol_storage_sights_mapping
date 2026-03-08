@@ -1,6 +1,5 @@
 /* *
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -89,7 +88,9 @@ var defaultMarkers = {
  *  Default Export
  *
  * */
+/** @internal */
 var ControllableDefaults = {
     defaultMarkers: defaultMarkers
 };
+/** @internal */
 export default ControllableDefaults;

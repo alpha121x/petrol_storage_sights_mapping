@@ -1,10 +1,11 @@
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -42,7 +43,7 @@ var hasPointerEvent = !!win.PointerEvent;
  *
  * */
 /* eslint-disable valid-jsdoc */
-/** @private */
+/** @internal */
 function getWebkitTouches() {
     var fake = [];
     fake.item = function (i) {
@@ -57,7 +58,7 @@ function getWebkitTouches() {
     });
     return fake;
 }
-/** @private */
+/** @internal */
 function translateMSPointer(e, method, wktype, func) {
     var _a, _b;
     var pointer = (_b = charts[(_a = Pointer.hoverChartIndex) !== null && _a !== void 0 ? _a : -1]) === null || _b === void 0 ? void 0 : _b.pointer;
@@ -78,7 +79,7 @@ function translateMSPointer(e, method, wktype, func) {
  *  Class
  *
  * */
-/** @private */
+/** @internal */
 var MSPointer = /** @class */ (function (_super) {
     __extends(MSPointer, _super);
     // Disable default IE actions for pinch and such on chart element
@@ -97,6 +98,15 @@ var MSPointer = /** @class */ (function (_super) {
      *  Static Functions
      *
      * */
+    /**
+     * The isRequired method is required for Highcharts to decide whether to use
+     * this module.
+     *
+     * @internal
+     *
+     * @return {boolean}
+     * Returns true if the module is required.
+     */
     MSPointer.isRequired = function () {
         return !!(!win.TouchEvent && (win.PointerEvent || win.MSPointerEvent));
     };
@@ -107,7 +117,7 @@ var MSPointer = /** @class */ (function (_super) {
      * */
     /**
      * Add or remove the MS Pointer specific events
-     * @private
+     * @internal
      * @function Highcharts.Pointer#batchMSEvents
      */
     MSPointer.prototype.batchMSEvents = function (fn) {
@@ -162,7 +172,7 @@ var MSPointer = /** @class */ (function (_super) {
         }
     };
     /**
-     * @private
+     * @internal
      * @function Highcharts.Pointer#onContainerPointerDown
      */
     MSPointer.prototype.onContainerPointerDown = function (e) {
@@ -175,7 +185,7 @@ var MSPointer = /** @class */ (function (_super) {
         });
     };
     /**
-     * @private
+     * @internal
      * @function Highcharts.Pointer#onContainerPointerMove
      */
     MSPointer.prototype.onContainerPointerMove = function (e) {
@@ -187,7 +197,7 @@ var MSPointer = /** @class */ (function (_super) {
         });
     };
     /**
-     * @private
+     * @internal
      * @function Highcharts.Pointer#onDocumentPointerUp
      */
     MSPointer.prototype.onDocumentPointerUp = function (e) {
@@ -211,15 +221,14 @@ var MSPointer = /** @class */ (function (_super) {
  *  Class Namespace
  *
  * */
+/** @internal */
 (function (MSPointer) {
     /* *
      *
      *  Functions
      *
      * */
-    /**
-     * @private
-     */
+    /** @internal */
     function compose(ChartClass) {
         if (pushUnique(composed, 'Core.MSPointer')) {
             addEvent(ChartClass, 'beforeRender', function () {
@@ -234,4 +243,5 @@ var MSPointer = /** @class */ (function (_super) {
  *  Default Export
  *
  * */
+/** @internal */
 export default MSPointer;

@@ -1,11 +1,10 @@
 /* *
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
 import U from '../Core/Utilities.js';
-const { merge, syncTimeout } = U;
+const { syncTimeout } = U;
 import A from '../Core/Animation/AnimationUtilities.js';
 const { animObject } = A;
 /**
@@ -39,7 +38,8 @@ function initDataLabelsDefer() {
 function initDataLabels() {
     const series = this, dlOptions = series.options.dataLabels;
     if (!series.dataLabelsGroup) {
-        const dataLabelsGroup = this.initDataLabelsGroup();
+        // Those series support only one group of data labels (index 0)
+        const dataLabelsGroup = this.initDataLabelsGroup(0, dlOptions);
         // Apply the dataLabels.style not only to the
         // individual dataLabels but also to the entire group
         if (!series.chart.styledMode && dlOptions?.style) {
@@ -48,12 +48,22 @@ function initDataLabels() {
         // Initialize the opacity of the group to 0 (start of animation)
         dataLabelsGroup.attr({ opacity: 0 });
         if (series.visible) { // #2597, #3023, #3024
+            // #19663, initial data labels animation
+            if (series.options.animation && dlOptions?.animation) {
+                dataLabelsGroup.animate({ opacity: 1 }, dlOptions.animation);
+            }
+            else {
+                dataLabelsGroup.attr({ opacity: 1 });
+            }
             dataLabelsGroup.show();
         }
         return dataLabelsGroup;
     }
     // Place it on first and subsequent (redraw) calls
-    series.dataLabelsGroup.attr(merge({ opacity: 1 }, this.getPlotBox('data-labels')));
+    series.dataLabelsGroup.attr({
+        opacity: 1,
+        ...this.getPlotBox('data-labels')
+    });
     return series.dataLabelsGroup;
 }
 const DataLabelsDeferUtils = {

@@ -1,24 +1,35 @@
 /* *
  *
- *  (c) 2010-2025 Pawel Lysy
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Pawel Lysy
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
 var getLinkPath = {
-    'default': getDefaultPath,
+    'default': getOrthogonalPath,
+    orthogonal: getOrthogonalPath,
     straight: getStraightPath,
     curved: getCurvedPath
 };
 /**
  *
  */
-function getDefaultPath(pathParams) {
-    var x1 = pathParams.x1, y1 = pathParams.y1, x2 = pathParams.x2, y2 = pathParams.y2, _a = pathParams.width, width = _a === void 0 ? 0 : _a, _b = pathParams.inverted, inverted = _b === void 0 ? false : _b, radius = pathParams.radius, parentVisible = pathParams.parentVisible;
-    var path = [
+function getOrthogonalPath(pathParams) {
+    var x1 = pathParams.x1, y1 = pathParams.y1, x2 = pathParams.x2, y2 = pathParams.y2, bendAt = pathParams.bendAt, _a = pathParams.width, width = _a === void 0 ? 0 : _a, _b = pathParams.inverted, inverted = _b === void 0 ? false : _b, radius = pathParams.radius, parentVisible = pathParams.parentVisible;
+    if (parentVisible) {
+        var bend = bendAt !== null && bendAt !== void 0 ? bendAt : (width / 2);
+        return applyRadius([
+            ['M', x1, y1],
+            ['L', x1 + bend * (inverted ? -1 : 1), y1],
+            ['L', x1 + bend * (inverted ? -1 : 1), y2],
+            ['L', x2, y2]
+        ], radius);
+    }
+    return [
         ['M', x1, y1],
         ['L', x1, y1],
         ['C', x1, y1, x1, y2, x1, y2],
@@ -26,14 +37,6 @@ function getDefaultPath(pathParams) {
         ['C', x1, y1, x1, y2, x1, y2],
         ['L', x1, y2]
     ];
-    return parentVisible ?
-        applyRadius([
-            ['M', x1, y1],
-            ['L', x1 + width * (inverted ? -0.5 : 0.5), y1],
-            ['L', x1 + width * (inverted ? -0.5 : 0.5), y2],
-            ['L', x2, y2]
-        ], radius) :
-        path;
 }
 /**
  *

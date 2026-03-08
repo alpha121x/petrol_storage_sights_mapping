@@ -1,10 +1,11 @@
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -179,7 +180,7 @@ function onColumnSeriesAfterInit() {
         var z = 0;
         // @todo grouping === true ?
         if (!(typeof grouping !== 'undefined' && !grouping)) {
-            var stacks = retrieveStacks(this.chart, stacking), stack = seriesOptions.stack || 0;
+            var stacks = retrieveStacks(this.chart, stacking || void 0), stack = seriesOptions.stack || 0;
             var i = // Position within the stack
              void 0; // Position within the stack
             for (i = 0; i < stacks[stack].series.length; i++) {

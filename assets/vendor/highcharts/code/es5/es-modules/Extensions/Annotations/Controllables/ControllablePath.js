@@ -1,6 +1,5 @@
 /* *
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -39,17 +38,13 @@ var TRACKER_FILL = 'rgba(192,192,192,' + (H.svg ? 0.0001 : 0.002) + ')';
  *  Functions
  *
  * */
-/**
- * @private
- */
+/** @internal */
 function createMarkerSetter(markerType) {
     return function (value) {
         this.attr(markerType, 'url(#' + value + ')');
     };
 }
-/**
- * @private
- */
+/** @internal */
 function onChartAfterGetContainer() {
     this.options.defs = merge(defaultMarkers, this.options.defs || {});
     ///  objectEach(this.options.defs, function (def): void {
@@ -64,9 +59,7 @@ function onChartAfterGetContainer() {
     //     }
     // }, this);
 }
-/**
- * @private
- */
+/** @internal */
 function svgRendererAddMarker(id, markerOptions) {
     var options = { attributes: { id: id } };
     var attrs = {
@@ -98,9 +91,9 @@ function svgRendererAddMarker(id, markerOptions) {
 /**
  * A controllable path class.
  *
+ * @internal
  * @requires modules/annotations
  *
- * @private
  * @class
  * @name Highcharts.AnnotationControllablePath
  *
@@ -230,7 +223,7 @@ var ControllablePath = /** @class */ (function (_super) {
     };
     /**
      * Set markers.
-     * @private
+     *
      * @param {Highcharts.AnnotationControllablePath} item
      */
     ControllablePath.prototype.setMarkers = function (item) {
@@ -287,4 +280,5 @@ var ControllablePath = /** @class */ (function (_super) {
  *  Default Export
  *
  * */
+/** @internal */
 export default ControllablePath;

@@ -2,13 +2,13 @@
  *
  *  Marker clusters module.
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
  *
  *  Author: Wojciech Chmiel
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -221,7 +221,7 @@ var baseGeneratePoints,
 /**
  * Points that ids are included in the oldPointsStateId array are hidden
  * before animation. Other ones are destroyed.
- * @private
+ * @internal
  */
 oldPointsStateId = [], stateIdCounter = 0;
 /* *
@@ -229,7 +229,7 @@ oldPointsStateId = [], stateIdCounter = 0;
  *  Functions
  *
  * */
-/** @private */
+/** @internal */
 function compose(highchartsDefaultOptions, ScatterSeriesClass) {
     var scatterProto = ScatterSeriesClass.prototype;
     if (!scatterProto.markerClusterAlgorithms) {
@@ -257,7 +257,7 @@ function compose(highchartsDefaultOptions, ScatterSeriesClass) {
 }
 /**
  * Util function.
- * @private
+ * @internal
  */
 function destroyOldPoints(oldState) {
     var _a, _b;
@@ -268,14 +268,14 @@ function destroyOldPoints(oldState) {
 }
 /**
  * Util function.
- * @private
+ * @internal
  */
 function fadeInElement(elem, opacity, animation) {
     elem.attr({ opacity: opacity }).animate({ opacity: 1 }, animation);
 }
 /**
  * Util function.
- * @private
+ * @internal
  */
 function fadeInNewPointAndDestoryOld(newPointObj, oldPoints, animation, opacity) {
     var _a, _b;
@@ -289,7 +289,7 @@ function fadeInNewPointAndDestoryOld(newPointObj, oldPoints, animation, opacity)
 }
 /**
  * Util function.
- * @private
+ * @internal
  */
 function fadeInStatePoint(stateObj, opacity, animation, fadeinGraphic, fadeinDataLabel) {
     if (stateObj.point) {
@@ -305,7 +305,7 @@ function fadeInStatePoint(stateObj, opacity, animation, fadeinGraphic, fadeinDat
 }
 /**
  * Util function.
- * @private
+ * @internal
  */
 function getClusterPosition(points) {
     var pointsLen = points.length;
@@ -322,7 +322,7 @@ function getClusterPosition(points) {
 /**
  * Util function.Prepare array with sorted data objects to be compared in
  * getPointsState method.
- * @private
+ * @internal
  */
 function getDataState(clusteredData, stateDataLen) {
     var state = [];
@@ -339,14 +339,14 @@ function getDataState(clusteredData, stateDataLen) {
 }
 /**
  * Util function. Generate unique stateId for a state element.
- * @private
+ * @internal
  */
 function getStateId() {
     return Math.random().toString(36).substring(2, 7) + '-' + stateIdCounter++;
 }
 /**
  * Util function.
- * @private
+ * @internal
  */
 function hideStatePoint(stateObj, hideGraphic, hideDataLabel) {
     if (stateObj.point) {
@@ -358,7 +358,7 @@ function hideStatePoint(stateObj, hideGraphic, hideDataLabel) {
         }
     }
 }
-/** @private */
+/** @internal */
 function onPointDrillToCluster(event) {
     var point = event.point || event.target;
     point.firePointEvent('drillToCluster', event, function (e) {
@@ -403,7 +403,7 @@ function onPointDrillToCluster(event) {
 }
 /**
  * Util function.
- * @private
+ * @internal
  */
 function pixelsToValues(series, pos) {
     var chart = series.chart, xAxis = series.xAxis, yAxis = series.yAxis;
@@ -415,7 +415,7 @@ function pixelsToValues(series, pos) {
         y: yAxis ? yAxis.toValue(pos.y) : 0
     };
 }
-/** @private */
+/** @internal */
 function seriesAnimateClusterPoint(clusterObj) {
     var _a, _b, _c, _d, _e, _f, _g;
     var series = this, chart = series.chart, mapView = chart.mapView, animation = animObject((_a = series.options.cluster) === null || _a === void 0 ? void 0 : _a.animation), animDuration = animation.duration || 500, pointsState = (_b = series.markerClusterInfo) === null || _b === void 0 ? void 0 : _b.pointsState, newState = pointsState === null || pointsState === void 0 ? void 0 : pointsState.newState, oldState = pointsState === null || pointsState === void 0 ? void 0 : pointsState.oldState, oldPoints = [];
@@ -524,7 +524,7 @@ function seriesAnimateClusterPoint(clusterObj) {
 }
 /**
  * Destroy clustered data points.
- * @private
+ * @internal
  */
 function seriesDestroyClusteredData() {
     var _a;
@@ -537,7 +537,7 @@ function seriesDestroyClusteredData() {
 }
 /**
  * Override the generatePoints method by adding a reference to grouped data.
- * @private
+ * @internal
  */
 function seriesGeneratePoints() {
     var _a, _b, _c, _d, _e;
@@ -695,7 +695,7 @@ function seriesGeneratePoints() {
         baseGeneratePoints.apply(this);
     }
 }
-/** @private */
+/** @internal */
 function seriesGetClusterDistancesFromPoint(clusters, pointX, pointY) {
     var pointClusterDistance = [];
     for (var clusterIndex = 0; clusterIndex < clusters.length; clusterIndex++) {
@@ -708,7 +708,7 @@ function seriesGetClusterDistancesFromPoint(clusters, pointX, pointY) {
     }
     return pointClusterDistance.sort(function (a, b) { return a.distance - b.distance; });
 }
-/** @private */
+/** @internal */
 function seriesGetClusteredData(groupedData, options) {
     var series = this, data = series.options.data, groupedXData = [], groupedYData = [], clusters = [], // Container for clusters.
     noise = [], // Container for points not belonging to any cluster.
@@ -841,7 +841,7 @@ function seriesGetClusteredData(groupedData, options) {
         groupMap: groupMap
     };
 }
-/** @private */
+/** @internal */
 function seriesGetGridOffset() {
     var series = this, chart = series.chart, xAxis = series.xAxis, yAxis = series.yAxis;
     var plotLeft = 0, plotTop = 0;
@@ -864,7 +864,7 @@ function seriesGetGridOffset() {
 /**
  * Point state used when animation is enabled to compare and bind old points
  * with new ones.
- * @private
+ * @internal
  */
 function seriesGetPointsState(clusteredData, oldMarkerClusterInfo, dataLength) {
     var _a;
@@ -907,7 +907,7 @@ function seriesGetPointsState(clusteredData, oldMarkerClusterInfo, dataLength) {
     }
     return state;
 }
-/** @private */
+/** @internal */
 function seriesGetRealExtremes() {
     var chart = this.chart, x = chart.mapView ? 0 : chart.plotLeft, y = chart.mapView ? 0 : chart.plotTop, p1 = pixelsToValues(this, {
         x: x,
@@ -923,7 +923,7 @@ function seriesGetRealExtremes() {
         maxY: Math.max(realMinY, realMaxY)
     };
 }
-/** @private */
+/** @internal */
 function seriesGetScaledGridSize(options) {
     var series = this, xAxis = series.xAxis, mapView = series.chart.mapView, processedGridSize = options.processedGridSize ||
         clusterDefaults.layoutAlgorithm.gridSize;
@@ -960,7 +960,7 @@ function seriesGetScaledGridSize(options) {
 }
 /**
  * Hide clustered data points.
- * @private
+ * @internal
  */
 function seriesHideClusteredData() {
     var _a, _b;
@@ -984,7 +984,7 @@ function seriesHideClusteredData() {
 }
 /**
  * Check if user algorithm result is valid groupedDataObject.
- * @private
+ * @internal
  */
 function seriesIsValidGroupedDataObject(groupedData) {
     var result = false;
@@ -1006,7 +1006,7 @@ function seriesIsValidGroupedDataObject(groupedData) {
     });
     return result;
 }
-/** @private */
+/** @internal */
 function seriesPreventClusterCollisions(props) {
     var _a;
     var _b, _c, _d;
@@ -1097,7 +1097,7 @@ function seriesPreventClusterCollisions(props) {
 }
 /**
  * Util function.
- * @private
+ * @internal
  */
 function valuesToPixels(series, pos) {
     var chart = series.chart, xAxis = series.xAxis, yAxis = series.yAxis;

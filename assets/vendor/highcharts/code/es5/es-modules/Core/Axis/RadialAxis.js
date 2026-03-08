@@ -1,10 +1,11 @@
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -20,6 +21,7 @@ var addEvent = U.addEvent, correctFloat = U.correctFloat, defined = U.defined, e
  *  Composition
  *
  * */
+/** @internal */
 var RadialAxis;
 (function (RadialAxis) {
     /* *
@@ -38,7 +40,7 @@ var RadialAxis;
      * In case of auto connect, add one closestPointRange to the max value
      * right before tickPositions are computed, so that ticks will extend
      * passed the real max.
-     * @private
+     * @internal
      */
     function beforeSetTickPositions() {
         // If autoConnect is true, polygonal grid lines are connected, and
@@ -63,7 +65,7 @@ var RadialAxis;
     /**
      * Augments methods for the value axis.
      *
-     * @private
+     * @internal
      *
      * @param {Highcharts.Axis} AxisClass
      * Axis class to extend.
@@ -93,7 +95,7 @@ var RadialAxis;
      * Attach and return collecting function for labels in radial axis for
      * anti-collision.
      *
-     * @private
+     * @internal
      */
     function createLabelCollector() {
         var _this = this;
@@ -113,14 +115,14 @@ var RadialAxis;
     }
     /**
      * Creates an empty collector function.
-     * @private
+     * @internal
      */
     function createLabelCollectorHidden() {
         return noop;
     }
     /**
      * Find the correct end values of crosshair in polar.
-     * @private
+     * @internal
      */
     function getCrosshairPosition(options, x1, y1) {
         var center = this.pane.center;
@@ -164,7 +166,7 @@ var RadialAxis;
      * Get the path for the axis line. This method is also referenced in the
      * getPlotLinePath method.
      *
-     * @private
+     * @internal
      * @param {number} _lineWidth
      * Line width is not used.
      * @param {number} [radius]
@@ -222,7 +224,7 @@ var RadialAxis;
     /**
      * Find the path for plot bands along the radial axis.
      *
-     * @private
+     * @internal
      */
     function getPlotBandPath(from, to, options) {
         var chart = this.chart, radiusToPixels = function (radius) {
@@ -234,8 +236,18 @@ var RadialAxis;
                 return r;
             }
             return radius;
-        }, center = this.center, startAngleRad = this.startAngleRad, fullRadius = center[2] / 2, offset = Math.min(this.offset, 0), left = this.left || 0, top = this.top || 0, percentRegex = /%$/, isCircular = this.isCircular; // X axis in a polar chart
-        var start, end, angle, xOnPerimeter, open, path, outerRadius = pick(radiusToPixels(options.outerRadius), fullRadius), innerRadius = radiusToPixels(options.innerRadius), thickness = pick(radiusToPixels(options.thickness), 10);
+        }, center = this.center, startAngleRad = this.startAngleRad, borderRadius = options.borderRadius, fullRadius = center[2] / 2, offset = Math.min(this.offset, 0), left = this.left || 0, top = this.top || 0, percentRegex = /%$/, isCircular = this.isCircular, // X axis in a polar chart
+        trueBands = this.options.plotBands || [], index = trueBands.indexOf(options);
+        var start, end, angle, xOnPerimeter, open, path, outerRadius = pick(radiusToPixels(options.outerRadius), fullRadius), innerRadius = radiusToPixels(options.innerRadius), thickness = pick(radiusToPixels(options.thickness), 10), brStart = true, brEnd = true;
+        // Apply conditional border radius, only for ends of band stacks
+        if (borderRadius && index > -1) {
+            if (trueBands[index - 1] && trueBands[index - 1].to === from) {
+                brStart = false;
+            }
+            if (trueBands[index + 1] && trueBands[index + 1].from === to) {
+                brEnd = false;
+            }
+        }
         // Polygonal plot bands
         if (this.options.gridLineInterpolation === 'polygon') {
             path = this.getPlotLinePath({ value: from }).concat(this.getPlotLinePath({ value: to, reverse: true }));
@@ -270,7 +282,9 @@ var RadialAxis;
                 end: Math.max(start, end),
                 innerR: pick(innerRadius, outerRadius - thickness),
                 open: open,
-                borderRadius: options.borderRadius
+                borderRadius: borderRadius,
+                brStart: brStart,
+                brEnd: brEnd
             });
             // Provide positioning boxes for the label (#6406)
             if (isCircular) {
@@ -395,7 +409,7 @@ var RadialAxis;
      * Returns the x, y coordinate of a point given by a value and a pixel
      * distance from center.
      *
-     * @private
+     * @internal
      * @param {number} value
      * Point value.
      * @param {number} [length]
@@ -431,7 +445,7 @@ var RadialAxis;
     }
     /**
      * Modify radial axis.
-     * @private
+     * @internal
      *
      * @param {Highcharts.Axis} radialAxis
      * Radial axis to modify.
@@ -453,7 +467,7 @@ var RadialAxis;
     }
     /**
      * Modify radial axis as hidden.
-     * @private
+     * @internal
      *
      * @param {Highcharts.Axis} radialAxis
      * Radial axis to modify.
@@ -725,7 +739,7 @@ var RadialAxis;
      * Translate from intermediate plotX (angle), plotY (axis.len - radius)
      * to final chart coordinates.
      *
-     * @private
+     * @internal
      * @param {number} angle
      * Translation angle.
      * @param {number} radius
@@ -749,7 +763,7 @@ var RadialAxis;
      * Override the setAxisSize method to use the arc's circumference as
      * length. This allows tickPixelInterval to apply to pixel lengths along
      * the perimeter.
-     * @private
+     * @internal
      */
     function setAxisSize() {
         var axisProto = this.constructor.prototype;
@@ -784,7 +798,7 @@ var RadialAxis;
      * difference in rotation. This allows the translate method to return
      * angle for any given value.
      *
-     * @private
+     * @internal
      */
     function setAxisTranslation() {
         var axisProto = this.constructor.prototype;
@@ -872,4 +886,5 @@ var RadialAxis;
  *  Default Export
  *
  * */
+/** @internal */
 export default RadialAxis;

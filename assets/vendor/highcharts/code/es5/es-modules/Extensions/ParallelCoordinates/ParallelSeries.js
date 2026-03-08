@@ -2,11 +2,12 @@
  *
  *  Parallel coordinates module
  *
- *  (c) 2010-2025 Pawel Fus
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Pawel Fus
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -33,7 +34,7 @@ var ParallelSeries;
      *  Functions
      *
      * */
-    /** @private */
+    /** @internal */
     function compose(SeriesClass) {
         if (pushUnique(composed, 'ParallelSeries')) {
             var CompoClass = SeriesClass;
@@ -46,7 +47,7 @@ var ParallelSeries;
     ParallelSeries.compose = compose;
     /**
      * Translate each point using corresponding yAxis.
-     * @private
+     * @internal
      */
     function onSeriesAfterTranslate() {
         var series = this, chart = this.chart, points = series.points, dataLength = points && points.length;
@@ -89,7 +90,7 @@ var ParallelSeries;
     /**
      * Bind each series to each yAxis. yAxis needs a reference to all series to
      * calculate extremes.
-     * @private
+     * @internal
      */
     function onSeriesBindAxes(e) {
         var series = this, chart = series.chart;
@@ -107,7 +108,7 @@ var ParallelSeries;
     }
     /**
      * On destroy, we need to remove series from each `axis.series`.
-     * @private
+     * @internal
      */
     function onSeriesDestroy() {
         var series = this, chart = series.chart;
@@ -122,7 +123,7 @@ var ParallelSeries;
         }
     }
     /**
-     * @private
+     * @internal
      */
     function onSeriesAfterGeneratePoints() {
         var _a, _b, _c, _d, _e, _f;

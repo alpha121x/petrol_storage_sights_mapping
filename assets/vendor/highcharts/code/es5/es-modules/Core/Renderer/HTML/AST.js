@@ -1,10 +1,11 @@
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -94,6 +95,15 @@ var AST = /** @class */ (function () {
         });
         return attributes;
     };
+    /**
+     * Utility function to parse a style string to a CSSObject.
+     *
+     * @internal
+     * @param {string} style
+     * The style string to parse.
+     * @return {Highcharts.CSSObject}
+     * The parsed CSSObject.
+     */
     AST.parseStyle = function (style) {
         return style
             .split(';')
@@ -145,11 +155,11 @@ var AST = /** @class */ (function () {
      */
     AST.prototype.addToDOM = function (parent) {
         /**
-         * @private
+         * @internal
          * @param {Highcharts.ASTNode} subtree
-         * HTML/SVG definition
+         * HTML/SVG definition.
          * @param {Element} [subParent]
-         * parent node
+         * Parent node.
          * @return {Highcharts.SVGDOMElement|Highcharts.HTMLDOMElement}
          * The inserted node.
          */
@@ -220,13 +230,11 @@ var AST = /** @class */ (function () {
      * Parse HTML/SVG markup into AST Node objects. Used internally from the
      * constructor.
      *
-     * @private
-     *
-     * @function Highcharts.AST#getNodesFromMarkup
-     *
-     * @param {string} markup The markup string.
-     *
-     * @return {Array<Highcharts.ASTNode>} The parsed nodes.
+     * @internal
+     * @param {string} markup
+     * The markup string.
+     * @return {Array<Highcharts.ASTNode>}
+     * The parsed nodes.
      */
     AST.prototype.parseMarkup = function (markup) {
         var nodes = [];
@@ -242,7 +250,7 @@ var AST = /** @class */ (function () {
                 trustedTypesPolicy.createHTML(markup) :
                 markup, 'text/html');
         }
-        catch (e) {
+        catch (_a) {
             // There are two cases where this fails:
             // 1. IE9 and PhantomJS, where the DOMParser only supports parsing
             //    XML
@@ -501,6 +509,7 @@ var AST = /** @class */ (function () {
         'u',
         'ul'
     ];
+    /** @internal */
     AST.emptyHTML = emptyHTML;
     /**
      * Allow all custom SVG and HTML attributes, references and tags (together

@@ -1,6 +1,5 @@
 /* *
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -19,6 +18,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+var _a;
 import Annotation from '../Annotation.js';
 import CrookedLine from './CrookedLine.js';
 import D from '../../../Core/Defaults.js';
@@ -26,7 +26,7 @@ var defaultOptions = D.defaultOptions;
 import MockPoint from '../MockPoint.js';
 import U from '../../../Core/Utilities.js';
 var merge = U.merge;
-if (defaultOptions.annotations) {
+if ((_a = defaultOptions.annotations) === null || _a === void 0 ? void 0 : _a.types) {
     /**
      * Options for the infinity line annotation type.
      *
@@ -44,6 +44,7 @@ if (defaultOptions.annotations) {
  *  Class
  *
  * */
+/** @internal */
 var InfinityLine = /** @class */ (function (_super) {
     __extends(InfinityLine, _super);
     function InfinityLine() {
@@ -130,8 +131,8 @@ var InfinityLine = /** @class */ (function (_super) {
         }
         var line = this.initShape(merge(typeOptions.line, {
             type: 'path',
-            points: points,
-            className: 'highcharts-infinity-lines'
+            className: 'highcharts-infinity-lines',
+            points: points
         }), 0);
         typeOptions.line = line.options;
     };
@@ -151,19 +152,3 @@ Annotation.types.infinityLine = InfinityLine;
  *
  * */
 export default InfinityLine;
-/* *
- *
- *  API Declarations
- *
- * */
-/**
- * An infinity line annotation.
- *
- * @sample highcharts/annotations-advanced/infinity-line/
- *         Infinity Line
- *
- * @extends   annotations.types.crookedLine
- * @product   highstock
- * @apioption annotations.types.infinityLine
- */
-(''); // Keeps doclets above in transpiled file

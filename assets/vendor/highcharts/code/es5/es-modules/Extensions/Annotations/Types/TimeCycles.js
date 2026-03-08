@@ -2,7 +2,6 @@
  *
  *  Authors: Rafal Sebestjanski and Pawel Lysy
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -21,6 +20,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+var _a;
 import Annotation from '../Annotation.js';
 import CrookedLine from './CrookedLine.js';
 import D from '../../../Core/Defaults.js';
@@ -28,10 +28,10 @@ var defaultOptions = D.defaultOptions;
 import ControlPoint from '../ControlPoint.js';
 import U from '../../../Core/Utilities.js';
 var merge = U.merge, isNumber = U.isNumber, defined = U.defined;
-if (defaultOptions.annotations) {
+if ((_a = defaultOptions.annotations) === null || _a === void 0 ? void 0 : _a.types) {
     defaultOptions.annotations.types.timeCycles = merge(defaultOptions.annotations.types.crookedLine, 
     /**
-     * Options for the  time cycles annotation type.
+     * Options for the time cycles annotation type.
      *
      * @sample highcharts/annotations-advanced/time-cycles/
      *         Time Cycles annotation
@@ -89,6 +89,8 @@ if (defaultOptions.annotations) {
  * */
 /**
  * Function to create start of the path.
+ *
+ * @internal
  * @param {number} x x position of the TimeCycles
  * @param {number} y y position of the TimeCycles
  * @return {string} path
@@ -97,14 +99,14 @@ function getStartingPath(x, y) {
     return ['M', x, y];
 }
 /**
- * Function which generates the path of the halfcircle.
+ * Function which generates the path of the semicircle.
  *
+ * @internal
  * @param {number} pixelInterval diameter of the circle in pixels
- * @param {number} numberOfCircles number of cricles
+ * @param {number} numberOfCircles number of circles
  * @param {number} startX x position of the first circle
  * @param {number} y y position of the bottom of the timeCycles
  * @return {string} path
- *
  */
 function getCirclePath(pixelInterval, numberOfCircles, startX, y) {
     var path = [];
@@ -127,6 +129,7 @@ function getCirclePath(pixelInterval, numberOfCircles, startX, y) {
  *  Class
  *
  * */
+/** @internal */
 var TimeCycles = /** @class */ (function (_super) {
     __extends(TimeCycles, _super);
     function TimeCycles() {

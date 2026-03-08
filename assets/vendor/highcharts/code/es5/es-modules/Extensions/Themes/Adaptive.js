@@ -1,19 +1,22 @@
 /* *
  *
- *   (c) 2010-2025 Highsoft AS
+ *   (c) 2010-2026 Highsoft AS
  *
  *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
  *  Dynamic light/dark theme based on CSS variables
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
+import Chart from '../../Core/Chart/Chart.js';
 import D from '../../Core/Defaults.js';
 var setOptions = D.setOptions;
+import U from '../../Core/Utilities.js';
+var addEvent = U.addEvent;
 /* *
  *
  *  Theme
@@ -24,7 +27,7 @@ var setOptions = D.setOptions;
  */
 var defaultRules = "\n        /* Colors for data series and points */\n        --highcharts-color-0: #2caffe;\n        --highcharts-color-1: #544fc5;\n        --highcharts-color-2: #00e272;\n        --highcharts-color-3: #fe6a35;\n        --highcharts-color-4: #6b8abc;\n        --highcharts-color-5: #d568fb;\n        --highcharts-color-6: #2ee0ca;\n        --highcharts-color-7: #fa4b42;\n        --highcharts-color-8: #feb56a;\n        --highcharts-color-9: #91e8e1;\n\n    /* Chart background, point stroke for markers and columns etc */\n    --highcharts-background-color: #ffffff;\n\n    /*\n    Neutral colors, grayscale by default. The default colors are defined by\n    mixing the background-color with neutral, with a weight corresponding to\n    the number in the name.\n\n    https://www.highcharts.com/samples/highcharts/css/palette-helper\n    */\n\n    /* Strong text. */\n    --highcharts-neutral-color-100: #000000;\n\n    /* Main text, axis labels and some strokes. */\n    --highcharts-neutral-color-80: #333333;\n\n    /* Axis title, connector fallback. */\n    --highcharts-neutral-color-60: #666666;\n\n    /* Credits text, export menu stroke. */\n    --highcharts-neutral-color-40: #999999;\n\n    /* Disabled texts, button strokes, crosshair etc. */\n    --highcharts-neutral-color-20: #cccccc;\n\n    /* Grid lines etc. */\n    --highcharts-neutral-color-10: #e6e6e6;\n\n    /* Minor grid lines etc. */\n    --highcharts-neutral-color-5: #f2f2f2;\n\n    /* Tooltip background, button fills, map null points. */\n    --highcharts-neutral-color-3: #f7f7f7;\n\n    /*\n    Highlights, shades of blue by default\n    */\n\n    /* Drilldown clickable labels, color axis max color. */\n    --highcharts-highlight-color-100: #0022ff;\n\n    /* Selection marker, menu hover, button hover, chart border, navigator\n    series. */\n    --highcharts-highlight-color-80: #334eff;\n\n    /* Navigator mask fill. */\n    --highcharts-highlight-color-60: #667aff;\n\n    /* Ticks and axis line. */\n    --highcharts-highlight-color-20: #ccd3ff;\n\n    /* Pressed button, color axis min color. */\n    --highcharts-highlight-color-10: #e6e9ff;\n\n    /* Indicators */\n    --highcharts-positive-color: #06b535;\n    --highcharts-negative-color: #f21313;\n\n    /* Transparent colors for annotations */\n    --highcharts-annotation-color-0: rgba(130, 170, 255, 0.4);\n    --highcharts-annotation-color-1: rgba(139, 191, 216, 0.4);\n    --highcharts-annotation-color-2: rgba(150, 216, 192, 0.4);\n    --highcharts-annotation-color-3: rgba(156, 229, 161, 0.4);\n    --highcharts-annotation-color-4: rgba(162, 241, 130, 0.4);\n    --highcharts-annotation-color-5: rgba(169, 255, 101, 0.4);\n";
 var darkRules = "\n    /* Colors for data series and points */\n    --highcharts-color-1: #00e272;\n    --highcharts-color-2: #efdf00;\n\n    /* UI colors */\n    --highcharts-background-color: #141414;\n\n    /*\n        Neutral color variations\n        https://www.highcharts.com/samples/highcharts/css/palette-helper\n    */\n    --highcharts-neutral-color-100: #ffffff;\n    --highcharts-neutral-color-80: #d0d0d0;\n    --highcharts-neutral-color-60: #a1a1a1;\n    --highcharts-neutral-color-40: #727272;\n    --highcharts-neutral-color-20: #434343;\n    --highcharts-neutral-color-10: #2c2c2c;\n    --highcharts-neutral-color-5: #202020;\n    --highcharts-neutral-color-3: #1b1b1b;\n\n    /* Highlight color variations */\n    --highcharts-highlight-color-100: #2caffe;\n    --highcharts-highlight-color-80: #2790cf;\n    --highcharts-highlight-color-60: #2271a0;\n    --highcharts-highlight-color-20: #193343;\n    --highcharts-highlight-color-10: #16242b;\n";
-var styleSheet = "\n:root,\n.highcharts-light {\n    ".concat(defaultRules, "\n}\n\n@media (prefers-color-scheme: dark) {\n    :root {\n        ").concat(darkRules, "\n    }\n}\n\n.highcharts-dark {\n    ").concat(darkRules, "\n}\n");
+var styleSheet = "\n:root,\n.highcharts-light {\n    ".concat(defaultRules, "\n}\n\n@media (prefers-color-scheme: dark) {\n    :root {\n        ").concat(darkRules, "\n    }\n}\n\n.highcharts-dark {\n    ").concat(darkRules, "\n}\n\n.highcharts-container {\n    color-scheme: light dark;\n}\n\n.highcharts-light .highcharts-container {\n    color-scheme: light;\n}\n\n.highcharts-dark .highcharts-container {\n    color-scheme: dark;\n}\n");
 var DynamicDefaultTheme;
 (function (DynamicDefaultTheme) {
     /* *
@@ -874,9 +877,21 @@ var DynamicDefaultTheme;
         var style = document.createElement('style');
         style.nonce = 'highcharts';
         style.innerText = styleSheet;
+        style.id = 'highcharts-adaptive-theme';
         document.getElementsByTagName('head')[0].appendChild(style);
         // Apply the theme
         setOptions(DynamicDefaultTheme.options);
+        // Copy it over to the shadow DOM of each chart (#23967)
+        addEvent(Chart, 'afterGetContainer', function () {
+            var _a;
+            var shadowRoot = (_a = this.container
+                .getRootNode().host) === null || _a === void 0 ? void 0 : _a.shadowRoot;
+            if (shadowRoot &&
+                !shadowRoot.getElementById('highcharts-adaptive-theme')) {
+                var adaptiveStyle = style.cloneNode(true);
+                shadowRoot.appendChild(adaptiveStyle);
+            }
+        });
     }
     DynamicDefaultTheme.apply = apply;
 })(DynamicDefaultTheme || (DynamicDefaultTheme = {}));

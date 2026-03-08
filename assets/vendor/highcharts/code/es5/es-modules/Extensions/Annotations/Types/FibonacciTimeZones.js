@@ -2,7 +2,6 @@
  *
  *  Author: Rafal Sebestjanski
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -21,6 +20,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+var _a;
 import Annotation from '../Annotation.js';
 import ControlPoint from '../ControlPoint.js';
 import CrookedLine from './CrookedLine.js';
@@ -30,7 +30,7 @@ import InfinityLine from './InfinityLine.js';
 import MockPoint from '../MockPoint.js';
 import U from '../../../Core/Utilities.js';
 var merge = U.merge;
-if (defaultOptions.annotations) {
+if ((_a = defaultOptions.annotations) === null || _a === void 0 ? void 0 : _a.types) {
     defaultOptions.annotations.types.fibonacciTimeZones = merge(defaultOptions.annotations.types.crookedLine, 
     /**
      * Options for the fibonacci time zones annotation type.
@@ -134,7 +134,7 @@ This is being done for each fibonacci time zone line.
     |---------*--------------------------------------------------------|
         and this point here is found (intersection with the plot area edge)
 
-* @private
+* @internal
 */
 function edgePoint(startIndex, endIndex, fibonacciIndex) {
     return function (target) {
@@ -169,6 +169,7 @@ function edgePoint(startIndex, endIndex, fibonacciIndex) {
  *  Class
  *
  * */
+/** @internal */
 var FibonacciTimeZones = /** @class */ (function (_super) {
     __extends(FibonacciTimeZones, _super);
     function FibonacciTimeZones() {
@@ -180,6 +181,7 @@ var FibonacciTimeZones = /** @class */ (function (_super) {
      *
      * */
     FibonacciTimeZones.prototype.addShapes = function () {
+        var _a;
         var numberOfLines = 11;
         var fibb = 1, nextFibb = 1;
         for (var i = 0; i < numberOfLines; i++) {
@@ -196,10 +198,10 @@ var FibonacciTimeZones = /** @class */ (function (_super) {
             if (i === 1) {
                 this.secondLineEdgePoints = [points[0], points[1]];
             }
-            this.initShape(merge(this.options.typeOptions.line, {
+            this.initShape(merge((_a = this.options.typeOptions) === null || _a === void 0 ? void 0 : _a.line, {
                 type: 'path',
-                points: points,
-                className: 'highcharts-fibonacci-timezones-lines'
+                className: 'highcharts-fibonacci-timezones-lines',
+                points: points
             }), i // Shape's index. Can be found in annotation.shapes[i].index
             );
         }

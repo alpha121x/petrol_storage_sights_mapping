@@ -1,10 +1,11 @@
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -298,7 +299,7 @@ var Axis = /** @class */ (function () {
     /**
      * Merge and set options.
      *
-     * @private
+     * @internal
      * @function Highcharts.Axis#setOptions
      *
      * @param {Highcharts.AxisOptions} userOptions
@@ -404,7 +405,7 @@ var Axis = /** @class */ (function () {
      * Get the minimum and maximum for the series of each axis. The function
      * analyzes the axis series and updates `this.dataMin` and `this.dataMax`.
      *
-     * @private
+     * @internal
      * @function Highcharts.Axis#getSeriesExtremes
      *
      * @emits Highcharts.Axis#event:afterGetSeriesExtremes
@@ -495,7 +496,7 @@ var Axis = /** @class */ (function () {
      * Translate from axis value to pixel position on the chart, or back. Use
      * the `toPixels` and `toValue` functions in applications.
      *
-     * @private
+     * @internal
      * @function Highcharts.Axis#translate
      */
     Axis.prototype.translate = function (val, backwards, cvsCoord, old, handleLog, pointPlacement) {
@@ -507,7 +508,7 @@ var Axis = /** @class */ (function () {
         }
         var minPixelPadding = axis.minPixelPadding, doPostTranslate = (axis.isOrdinal ||
             ((_a = axis.brokenAxis) === null || _a === void 0 ? void 0 : _a.hasBreaks) ||
-            (axis.logarithmic && handleLog)) && axis.lin2val;
+            (axis.logarithmic && handleLog)) && !!axis.lin2val;
         var sign = 1, cvsOffset = 0, localA = old && axis.old ? axis.old.transA : axis.transA, returnValue = 0;
         if (!localA) {
             localA = axis.transA;
@@ -608,7 +609,7 @@ var Axis = /** @class */ (function () {
         /**
          * Check if x is between a and b. If not, either move to a/b
          * or skip, depending on the force parameter.
-         * @private
+         * @internal
          */
         function between(x, a, b) {
             if (force !== 'pass' && (x < a || x > b)) {
@@ -781,7 +782,7 @@ var Axis = /** @class */ (function () {
      * `series.pointRange`. The data can't be processed until we have finally
      * established min and max.
      *
-     * @private
+     * @internal
      * @function Highcharts.Axis#adjustForMinRange
      */
     Axis.prototype.adjustForMinRange = function () {
@@ -861,7 +862,7 @@ var Axis = /** @class */ (function () {
      * Find the closestPointRange across all series, including the single data
      * series.
      *
-     * @private
+     * @internal
      * @function Highcharts.Axis#getClosest
      */
     Axis.prototype.getClosest = function () {
@@ -899,7 +900,7 @@ var Axis = /** @class */ (function () {
      * categories, or if categories aren't provided, search names or create a
      * new category (#2522).
      *
-     * @private
+     * @internal
      * @function Highcharts.Axis#nameToX
      *
      * @param {Highcharts.Point} point
@@ -941,7 +942,7 @@ var Axis = /** @class */ (function () {
     /**
      * When changes have been done to series data, update the axis.names.
      *
-     * @private
+     * @internal
      * @function Highcharts.Axis#updateNames
      */
     Axis.prototype.updateNames = function () {
@@ -986,7 +987,7 @@ var Axis = /** @class */ (function () {
     /**
      * Update translation information.
      *
-     * @private
+     * @internal
      * @function Highcharts.Axis#setAxisTranslation
      *
      * @emits Highcharts.Axis#event:afterSetAxisTranslation
@@ -1064,7 +1065,7 @@ var Axis = /** @class */ (function () {
         fireEvent(this, 'afterSetAxisTranslation');
     };
     /**
-     * @private
+     * @internal
      * @function Highcharts.Axis#minFromRange
      */
     Axis.prototype.minFromRange = function () {
@@ -1075,7 +1076,7 @@ var Axis = /** @class */ (function () {
      * Set the tick positions to round values and optionally extend the extremes
      * to the nearest tick.
      *
-     * @private
+     * @internal
      * @function Highcharts.Axis#setTickInterval
      *
      * @param {boolean} secondPass
@@ -1300,7 +1301,7 @@ var Axis = /** @class */ (function () {
     /**
      * Now we have computed the normalized tickInterval, get the tick positions.
      *
-     * @private
+     * @internal
      * @function Highcharts.Axis#setTickPositions
      *
      * @emits Highcharts.Axis#event:afterSetTickPositions
@@ -1430,7 +1431,7 @@ var Axis = /** @class */ (function () {
      * Handle startOnTick and endOnTick by either adapting to padding min/max or
      * rounded min/max. Also handle single data points.
      *
-     * @private
+     * @internal
      * @function Highcharts.Axis#trimTicks
      *
      * @param {Array<number>} tickPositions
@@ -1477,7 +1478,7 @@ var Axis = /** @class */ (function () {
     /**
      * Check if there are multiple axes in the same pane.
      *
-     * @private
+     * @internal
      * @function Highcharts.Axis#alignToOthers
      *
      * @return {boolean|undefined}
@@ -1547,13 +1548,15 @@ var Axis = /** @class */ (function () {
      * Where the axis wants its threshold, from 0 which is on `axis.min`, to 1 which
      * is on `axis.max`.
      *
-     * @private
+     * @internal
      * @function Highcharts.Axis#getThresholdAlignment
      */
     Axis.prototype.getThresholdAlignment = function (callerAxis) {
         if (!isNumber(this.dataMin) ||
             (this !== callerAxis &&
-                this.series.some(function (s) { return (s.isDirty || s.isDirtyData); }))) {
+                this.series.some(function (s) { var _a; 
+                // The xAxis.isDirty check is for setExtremes (#23677)
+                return s.isDirty || s.isDirtyData || ((_a = s.xAxis) === null || _a === void 0 ? void 0 : _a.isDirty); }))) {
             this.getSeriesExtremes();
         }
         if (isNumber(this.threshold)) {
@@ -1569,7 +1572,7 @@ var Axis = /** @class */ (function () {
      * Find the max ticks of either the x and y axis collection, and record it
      * in `this.tickAmount`.
      *
-     * @private
+     * @internal
      * @function Highcharts.Axis#getTickAmount
      */
     Axis.prototype.getTickAmount = function () {
@@ -1602,7 +1605,7 @@ var Axis = /** @class */ (function () {
      * When using multiple axes, adjust the number of ticks to match the highest
      * number of ticks in that group.
      *
-     * @private
+     * @internal
      * @function Highcharts.Axis#adjustTickAmount
      */
     Axis.prototype.adjustTickAmount = function () {
@@ -1621,9 +1624,11 @@ var Axis = /** @class */ (function () {
         // tick index. Unless `thresholdAlignment` is exactly 0 or 1, avoid the
         // first or last tick because that would lead to series being clipped.
         if (isNumber(thresholdAlignment)) {
-            thresholdTickIndex = thresholdAlignment < 0.5 ?
-                Math.ceil(thresholdAlignment * (tickAmount - 1)) :
-                Math.floor(thresholdAlignment * (tickAmount - 1));
+            thresholdTickIndex = thresholdAlignment === 0 ? 0 :
+                thresholdAlignment === 1 ? tickAmount - 1 :
+                    // Get the closest integer between 1 and
+                    // `tickAmount - 2` (#23787)
+                    Math.round(clamp(thresholdAlignment * (tickAmount - 1), 1, tickAmount - 2));
             if (options.reversed) {
                 thresholdTickIndex = tickAmount - 1 - thresholdTickIndex;
             }
@@ -1709,7 +1714,7 @@ var Axis = /** @class */ (function () {
     /**
      * Set the scale based on data min and max, user set min and max or options.
      *
-     * @private
+     * @internal
      * @function Highcharts.Axis#setScale
      *
      * @emits Highcharts.Axis#event:afterSetScale
@@ -1835,7 +1840,7 @@ var Axis = /** @class */ (function () {
     /**
      * Update the axis metrics.
      *
-     * @private
+     * @internal
      * @function Highcharts.Axis#setAxisSize
      */
     Axis.prototype.setAxisSize = function () {
@@ -1920,7 +1925,7 @@ var Axis = /** @class */ (function () {
      * Compute auto alignment for the axis label based on which side the axis is
      * on and the given rotation for the label.
      *
-     * @private
+     * @internal
      * @function Highcharts.Axis#autoLabelAlign
      *
      * @param {number} rotation
@@ -1931,7 +1936,7 @@ var Axis = /** @class */ (function () {
      * Can be `"center"`, `"left"` or `"right"`.
      */
     Axis.prototype.autoLabelAlign = function (rotation) {
-        var angle = (pick(rotation, 0) - (this.side * 90) + 720) % 360, evt = { align: 'center' };
+        var angle = ((rotation - this.side * 90) % 360 + 360) % 360, evt = { align: 'center' };
         fireEvent(this, 'autoLabelAlign', evt, function (e) {
             if (angle > 15 && angle < 165) {
                 e.align = 'right';
@@ -1945,7 +1950,7 @@ var Axis = /** @class */ (function () {
     /**
      * Get the tick length and width for the axis based on axis options.
      *
-     * @private
+     * @internal
      * @function Highcharts.Axis#tickSize
      *
      * @param {string} [prefix]
@@ -1973,7 +1978,7 @@ var Axis = /** @class */ (function () {
     /**
      * Return the size of the labels.
      *
-     * @private
+     * @internal
      * @function Highcharts.Axis#labelMetrics
      */
     Axis.prototype.labelMetrics = function () {
@@ -1987,7 +1992,7 @@ var Axis = /** @class */ (function () {
      * horizontal axis, this is handled by rotating the labels, removing ticks
      * and adding ellipsis. On a vertical axis remove ticks and add ellipsis.
      *
-     * @private
+     * @internal
      * @function Highcharts.Axis#unsquish
      */
     Axis.prototype.unsquish = function () {
@@ -2054,7 +2059,7 @@ var Axis = /** @class */ (function () {
      * change between the pre-render (from Axis.getOffset) and the final tick
      * rendering and placement.
      *
-     * @private
+     * @internal
      * @function Highcharts.Axis#getSlotWidth
      *
      * @param {Highcharts.Tick} [tick] Optionally, calculate the slot width
@@ -2083,7 +2088,8 @@ var Axis = /** @class */ (function () {
             if (cssWidth !== void 0) {
                 return parseInt(String(cssWidth), 10);
             }
-            if (marginLeft) {
+            // Skip marginLeft for opposite axis to avoid label cutoff, #22821
+            if (!this.opposite && marginLeft) {
                 return marginLeft - chart.spacing[3];
             }
         }
@@ -2094,7 +2100,7 @@ var Axis = /** @class */ (function () {
      * Render the axis labels and determine whether ellipsis or rotation need to
      * be applied.
      *
-     * @private
+     * @internal
      * @function Highcharts.Axis#renderUnsquish
      */
     Axis.prototype.renderUnsquish = function () {
@@ -2150,7 +2156,7 @@ var Axis = /** @class */ (function () {
         }
         // Set the explicit or automatic label alignment
         this.labelAlign = labelOptions.align ||
-            this.autoLabelAlign(this.labelRotation);
+            this.autoLabelAlign(this.labelRotation || 0);
         if (this.labelAlign) {
             attr.align = this.labelAlign;
         }
@@ -2258,7 +2264,7 @@ var Axis = /** @class */ (function () {
     /**
      * Generates a tick for initial positioning.
      *
-     * @private
+     * @internal
      * @function Highcharts.Axis#generateTick
      *
      * @param {number} pos
@@ -2279,7 +2285,7 @@ var Axis = /** @class */ (function () {
     /**
      * Create the axisGroup and gridGroup elements on first iteration.
      *
-     * @private
+     * @internal
      * @function Highcharts.Axis#getOffset
      *
      * @emits Highcharts.Axis#event:afterGetOffset
@@ -2303,7 +2309,7 @@ var Axis = /** @class */ (function () {
     /**
      * Render the tick labels to a preliminary position to get their sizes
      *
-     * @private
+     * @internal
      * @function Highcharts.Axis#getOffset
      *
      * @emits Highcharts.Axis#event:afterGetOffset
@@ -2471,7 +2477,7 @@ var Axis = /** @class */ (function () {
     /**
      * Position the axis title.
      *
-     * @private
+     * @internal
      * @function Highcharts.Axis#getTitlePosition
      *
      * @return {Highcharts.PositionObject}
@@ -2574,7 +2580,7 @@ var Axis = /** @class */ (function () {
     /**
      * Render the axis.
      *
-     * @private
+     * @internal
      * @function Highcharts.Axis#render
      *
      * @emits Highcharts.Axis#event:afterRender
@@ -2732,7 +2738,7 @@ var Axis = /** @class */ (function () {
      * Redraw the axis to reflect changes in the data or axis extremes. Called
      * internally from Highcharts.Chart#redraw.
      *
-     * @private
+     * @internal
      * @function Highcharts.Axis#redraw
      */
     Axis.prototype.redraw = function () {
@@ -2753,7 +2759,7 @@ var Axis = /** @class */ (function () {
      * Returns an array of axis properties, that should be untouched during
      * reinitialization.
      *
-     * @private
+     * @internal
      * @function Highcharts.Axis#getKeepProps
      */
     Axis.prototype.getKeepProps = function () {
@@ -2763,7 +2769,7 @@ var Axis = /** @class */ (function () {
      * Destroys an Axis instance. See {@link Axis#remove} for the API endpoint
      * to fully remove the axis.
      *
-     * @private
+     * @internal
      * @function Highcharts.Axis#destroy
      *
      * @param {boolean} [keepEvents]
@@ -2801,7 +2807,7 @@ var Axis = /** @class */ (function () {
                 axis.plotLinesAndBandsGroups[plotGroup].destroy();
         }
         // Delete all properties and fall back to the prototype.
-        objectEach(axis, function (val, key) {
+        objectEach(axis, function (_val, key) {
             if (axis.getKeepProps().indexOf(key) === -1) {
                 delete axis[key];
             }
@@ -3034,8 +3040,11 @@ var Axis = /** @class */ (function () {
      *  Static Properties
      *
      * */
-    // Properties to survive after destroy, needed for Axis.update (#4317,
-    // #5773, #5881).
+    /**
+     * Properties to survive after destroy, needed for Axis.update (#4317,
+     * #5773, #5881).
+     * @internal
+     */
     Axis.keepProps = [
         'coll',
         'extKey',

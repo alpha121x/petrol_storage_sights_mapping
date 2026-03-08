@@ -1,10 +1,11 @@
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -16,7 +17,7 @@ var distribute = R.distribute;
 import SeriesRegistry from '../../Core/Series/SeriesRegistry.js';
 var Series = SeriesRegistry.series;
 import U from '../../Core/Utilities.js';
-var arrayMax = U.arrayMax, clamp = U.clamp, defined = U.defined, pick = U.pick, pushUnique = U.pushUnique, relativeLength = U.relativeLength;
+var arrayMax = U.arrayMax, clamp = U.clamp, defined = U.defined, isNumber = U.isNumber, pick = U.pick, pushUnique = U.pushUnique, relativeLength = U.relativeLength;
 /* *
  *
  *  Composition
@@ -369,12 +370,13 @@ var ColumnDataLabel;
             // Place the labels in the final position
             this.placeDataLabels();
             this.points.forEach(function (point) {
-                (point.dataLabels || []).forEach(function (dataLabel) {
-                    var _a;
+                var _a;
+                (_a = point.dataLabels) === null || _a === void 0 ? void 0 : _a.forEach(function (dataLabel, i) {
+                    var _a, _b;
                     // #8864: every connector can have individual options
-                    var _b = (dataLabel.options || {}), connectorColor = _b.connectorColor, _c = _b.connectorWidth, connectorWidth = _c === void 0 ? 1 : _c, labelPosition = dataLabel.dataLabelPosition;
+                    var _c = (dataLabel.options || {}), connectorColor = _c.connectorColor, _d = _c.connectorWidth, connectorWidth = _d === void 0 ? 1 : _d, labelPosition = dataLabel.dataLabelPosition;
                     // Draw the connector
-                    if (connectorWidth) {
+                    if (isNumber(connectorWidth)) {
                         var isNew = void 0;
                         connector = dataLabel.connector;
                         if (labelPosition && labelPosition.distance > 0) {
@@ -388,7 +390,7 @@ var ColumnDataLabel;
                                     (point.className ?
                                         ' ' + point.className :
                                         ''))
-                                    .add(series.dataLabelsGroup);
+                                    .add((_a = series.dataLabelsGroups) === null || _a === void 0 ? void 0 : _a[i]);
                             }
                             if (!chart.styledMode) {
                                 connector.attr({
@@ -402,7 +404,7 @@ var ColumnDataLabel;
                                 d: point.getConnectorPath(dataLabel)
                             });
                             connector.attr({
-                                visibility: (_a = labelPosition.attribs) === null || _a === void 0 ? void 0 : _a.visibility
+                                visibility: (_b = labelPosition.attribs) === null || _b === void 0 ? void 0 : _b.visibility
                             });
                         }
                         else if (connector) {

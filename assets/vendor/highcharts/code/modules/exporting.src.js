@@ -1,13 +1,16 @@
+// SPDX-License-Identifier: LicenseRef-Highcharts
 /**
- * @license Highcharts JS v12.3.0 (2025-06-21)
+ * @license Highcharts JS v12.5.0 (2026-01-12)
  * @module highcharts/modules/exporting
  * @requires highcharts
  *
  * Exporting module
  *
- * (c) 2010-2025 Torstein Honsi
+ * (c) 2010-2026 Highsoft AS
+ * Author: Torstein Honsi
  *
- * License: www.highcharts.com/license
+ * A commercial license may be required depending on use.
+ * See www.highcharts.com/license
  */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
@@ -118,13 +121,13 @@ var highcharts_AST_commonjs_highcharts_AST_commonjs2_highcharts_AST_root_Highcha
 var highcharts_Chart_commonjs_highcharts_Chart_commonjs2_highcharts_Chart_root_Highcharts_Chart_ = __webpack_require__(960);
 var highcharts_Chart_commonjs_highcharts_Chart_commonjs2_highcharts_Chart_root_Highcharts_Chart_default = /*#__PURE__*/__webpack_require__.n(highcharts_Chart_commonjs_highcharts_Chart_commonjs2_highcharts_Chart_root_Highcharts_Chart_);
 ;// ./code/es-modules/Core/Chart/ChartNavigationComposition.js
-/**
+/* *
  *
- *  (c) 2010-2025 Paweł Fus
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Paweł Fus
  *
- *  License: www.highcharts.com/license
- *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
  * */
 
@@ -133,6 +136,7 @@ var highcharts_Chart_commonjs_highcharts_Chart_commonjs2_highcharts_Chart_root_H
  *  Composition
  *
  * */
+/** @internal */
 var ChartNavigationComposition;
 (function (ChartNavigationComposition) {
     /* *
@@ -146,9 +150,7 @@ var ChartNavigationComposition;
      *
      * */
     /* eslint-disable valid-jsdoc */
-    /**
-     * @private
-     */
+    /** @internal */
     function compose(chart) {
         if (!chart.navigation) {
             chart.navigation = new Additions(chart);
@@ -164,7 +166,7 @@ var ChartNavigationComposition;
     /**
      * Initializes `chart.navigation` object which delegates `update()` methods
      * to all other common classes (used in exporting and navigationBindings).
-     * @private
+     * @internal
      */
     class Additions {
         /* *
@@ -172,7 +174,9 @@ var ChartNavigationComposition;
          *  Constructor
          *
          * */
+        /** @internal */
         constructor(chart) {
+            /** @internal */
             this.updates = [];
             this.chart = chart;
         }
@@ -184,16 +188,14 @@ var ChartNavigationComposition;
         /**
          * Registers an `update()` method in the `chart.navigation` object.
          *
-         * @private
+         * @internal
          * @param {UpdateFunction} updateFn
          * The `update()` method that will be called in `chart.update()`.
          */
         addUpdate(updateFn) {
             this.chart.navigation.updates.push(updateFn);
         }
-        /**
-         * @private
-         */
+        /** @internal */
         update(options, redraw) {
             this.updates.forEach((updateFn) => {
                 updateFn.call(this.chart, options, redraw);
@@ -207,16 +209,18 @@ var ChartNavigationComposition;
  *  Default Export
  *
  * */
+/** @internal */
 /* harmony default export */ const Chart_ChartNavigationComposition = (ChartNavigationComposition);
 
-;// ./code/es-modules/Extensions/DownloadURL.js
+;// ./code/es-modules/Shared/DownloadURL.js
 /* *
  *
- *  (c) 2015-2025 Oystein Moseng
+ *  (c) 2015-2026 Highsoft AS
+ *  Author: Oystein Moseng
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  *  Mixin for downloading content in the browser
  *
@@ -245,7 +249,7 @@ const domurl = win.URL || win.webkitURL || win;
 /**
  * Convert base64 dataURL to Blob if supported, otherwise returns undefined.
  *
- * @private
+ * @internal
  * @function Highcharts.dataURLtoBlob
  *
  * @param {string} dataURL
@@ -277,7 +281,7 @@ function dataURLtoBlob(dataURL) {
 /**
  * Download a data URL in the browser. Can also take a blob as first param.
  *
- * @private
+ * @internal
  * @function Highcharts.downloadURL
  *
  * @param {string | global.URL} dataURL
@@ -336,7 +340,7 @@ function downloadURL(dataURL, filename) {
 /**
  * Asynchronously downloads a script from a provided location.
  *
- * @private
+ * @internal
  * @function Highcharts.getScript
  *
  * @param {string} scriptLocation
@@ -354,32 +358,72 @@ function getScript(scriptLocation) {
         };
         // Reject in case of fail
         script.onerror = () => {
-            reject(error(`Error loading script ${scriptLocation}`));
+            const msg = `Error loading script ${scriptLocation}`;
+            error(msg);
+            reject(new Error(msg));
         };
         // Append the newly created script
         head.appendChild(script);
     });
+}
+/**
+ * Get a blob object from content, if blob is supported.
+ *
+ * @internal
+ * @function Highcharts.getBlobFromContent
+ *
+ * @param {string} content
+ * The content to create the blob from.
+ * @param {string} type
+ * The type of the content.
+ *
+ * @return {string | undefined}
+ * The blob object, or undefined if not supported.
+ *
+ * @requires modules/exporting
+ * @requires modules/export-data
+ */
+function getBlobFromContent(content, type) {
+    const nav = win.navigator, domurl = win.URL || win.webkitURL || win;
+    try {
+        // MS specific
+        if ((nav.msSaveOrOpenBlob) && win.MSBlobBuilder) {
+            const blob = new win.MSBlobBuilder();
+            blob.append(content);
+            return blob.getBlob('image/svg+xml');
+        }
+        return domurl.createObjectURL(new win.Blob(['\uFEFF' + content], // #7084
+        { type: type }));
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    }
+    catch (e) {
+        // Ignore
+    }
 }
 /* *
  *
  *  Default Export
  *
  * */
+/** @internal */
 const DownloadURL = {
     dataURLtoBlob,
     downloadURL,
+    getBlobFromContent,
     getScript
 };
-/* harmony default export */ const Extensions_DownloadURL = (DownloadURL);
+/** @internal */
+/* harmony default export */ const Shared_DownloadURL = ((/* unused pure expression or super */ null && (DownloadURL)));
 
 ;// ./code/es-modules/Extensions/Exporting/ExportingDefaults.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -431,7 +475,8 @@ const exporting = {
      *
      * @see [styledMode](#chart.styledMode)
      *
-     * @sample {highcharts} highcharts/exporting/apply-stylesheets/
+     * @sample    {highcharts} highcharts/exporting/apply-stylesheets/
+     *            Export with custom stylesheet
      *
      * @type      {boolean}
      * @default   false
@@ -550,12 +595,17 @@ const exporting = {
      * [svg2pdf.js](https://github.com/yWorks/svg2pdf.js), required for client
      * side export in certain browsers.
      *
+     * Note: Highcharts cannot take responsibility for the security of any
+     * external libraries (including [optional dependencies](https://www.highcharts.com/docs/getting-started/optional-dependencies))
+     * loaded through `exporting.libURL`. These libraries are not licensed or
+     * warrantied under the Highcharts license.
+     *
      * @type      {string}
      * @default   https://code.highcharts.com/{version}/lib
      * @since     5.0.0
      * @apioption exporting.libURL
      */
-    libURL: 'https://code.highcharts.com/12.3.0/lib/',
+    libURL: 'https://code.highcharts.com/12.5.0/lib/',
     /**
      * Whether the chart should be exported using the browser's built-in
      * capabilities, allowing offline exports without requiring access to the
@@ -626,7 +676,7 @@ const exporting = {
     type: 'image/png',
     /**
      * The URL for the server module converting the SVG string to an image
-     * format. By default this points to Highchart's free web service.
+     * format. By default this points to Highcharts free web service.
      *
      * @since 2.0
      */
@@ -741,15 +791,6 @@ const exporting = {
              * @apioption exporting.buttons.contextButton.onclick
              */
             /**
-             * See [navigation.buttonOptions.symbolFill](
-             * #navigation.buttonOptions.symbolFill).
-             *
-             * @type      {Highcharts.ColorString}
-             * @default   #666666
-             * @since     2.0
-             * @apioption exporting.buttons.contextButton.symbolFill
-             */
-            /**
              * The horizontal position of the button relative to the `align`
              * option.
              *
@@ -839,49 +880,48 @@ const exporting = {
      * @sample highcharts/exporting/menuitemdefinitions-webp/
      *         Adding a custom menu item for WebP export
      *
-     *
-     * @type    {Highcharts.Dictionary<Highcharts.ExportingMenuObject>}
-     * @default {"viewFullscreen": {}, "printChart": {}, "separator": {}, "downloadPNG": {}, "downloadJPEG": {}, "downloadPDF": {}, "downloadSVG": {}}
-     * @since   5.0.13
+     * @type     {Highcharts.Dictionary<Highcharts.ExportingMenuObject>}
+     * @since    5.0.13
      */
     menuItemDefinitions: {
-        /**
-         * @ignore
-         */
         viewFullscreen: {
+            /**
+             * @see [lang.viewFullscreen](#lang.viewFullscreen)
+             * @default viewFullscreen
+             */
             textKey: 'viewFullscreen',
             onclick: function () {
                 this.fullscreen?.toggle();
             }
         },
-        /**
-         * @ignore
-         */
         printChart: {
+            /**
+             * @see [lang.printChart](#lang.printChart)
+             * @default printChart
+             */
             textKey: 'printChart',
             onclick: function () {
                 this.exporting?.print();
             }
         },
-        /**
-         * @ignore
-         */
         separator: {
             separator: true
         },
-        /**
-         * @ignore
-         */
         downloadPNG: {
+            /**
+             * @see [lang.downloadPNG](#lang.downloadPNG)
+             * @default downloadPNG
+             */
             textKey: 'downloadPNG',
             onclick: async function () {
                 await this.exporting?.exportChart();
             }
         },
-        /**
-         * @ignore
-         */
         downloadJPEG: {
+            /**
+             * @see [lang.downloadJPEG](#lang.downloadJPEG)
+             * @default downloadJPEG
+             */
             textKey: 'downloadJPEG',
             onclick: async function () {
                 await this.exporting?.exportChart({
@@ -889,10 +929,11 @@ const exporting = {
                 });
             }
         },
-        /**
-         * @ignore
-         */
         downloadPDF: {
+            /**
+             * @see [lang.downloadPDF](#lang.downloadPDF)
+             * @default downloadPDF
+             */
             textKey: 'downloadPDF',
             onclick: async function () {
                 await this.exporting?.exportChart({
@@ -900,10 +941,11 @@ const exporting = {
                 });
             }
         },
-        /**
-         * @ignore
-         */
         downloadSVG: {
+            /**
+             * @see [lang.downloadSVG](#lang.downloadSVG)
+             * @default downloadSVG
+             */
             textKey: 'downloadSVG',
             onclick: async function () {
                 await this.exporting?.exportChart({
@@ -923,6 +965,7 @@ const lang = {
      * in full screen.
      *
      * @since 8.0.1
+     * @requires modules/exporting
      */
     viewFullscreen: 'View in full screen',
     /**
@@ -930,6 +973,7 @@ const lang = {
      * from full screen.
      *
      * @since 8.0.1
+     * @requires modules/exporting
      */
     exitFullscreen: 'Exit from full screen',
     /**
@@ -1263,11 +1307,13 @@ const navigation = {
  *  Default Export
  *
  * */
+/** @internal */
 const ExportingDefaults = {
     exporting,
     lang,
     navigation
 };
+/** @internal */
 /* harmony default export */ const Exporting_ExportingDefaults = (ExportingDefaults);
 
 ;// ./code/es-modules/Extensions/Exporting/ExportingSymbols.js
@@ -1275,11 +1321,12 @@ const ExportingDefaults = {
  *
  *  Exporting module
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -1288,6 +1335,7 @@ const ExportingDefaults = {
  *  Composition
  *
  * */
+/** @internal */
 var ExportingSymbols;
 (function (ExportingSymbols) {
     /* *
@@ -1303,7 +1351,7 @@ var ExportingSymbols;
      * */
     /* eslint-disable valid-jsdoc */
     /**
-     * @private
+     * @internal
      */
     function compose(SVGRendererClass) {
         if (modifiedClasses.indexOf(SVGRendererClass) === -1) {
@@ -1315,7 +1363,7 @@ var ExportingSymbols;
     }
     ExportingSymbols.compose = compose;
     /**
-     * @private
+     * @internal
      */
     function menu(x, y, width, height) {
         const arr = [
@@ -1329,7 +1377,7 @@ var ExportingSymbols;
         return arr;
     }
     /**
-     * @private
+     * @internal
      */
     function menuball(x, y, width, height) {
         const h = (height / 3) - 2;
@@ -1343,18 +1391,20 @@ var ExportingSymbols;
  *  Default Export
  *
  * */
+/** @internal */
 /* harmony default export */ const Exporting_ExportingSymbols = (ExportingSymbols);
 
 ;// ./code/es-modules/Extensions/Exporting/Fullscreen.js
 /* *
  *
- *  (c) 2009-2025 Rafal Sebestjanski
+ *  (c) 2009-2026 Highsoft AS
+ *  Author: Rafal Sebestjanski
  *
  *  Full screen for Highcharts
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 /**
@@ -1373,9 +1423,7 @@ const { addEvent, fireEvent, pushUnique } = (highcharts_commonjs_highcharts_comm
  *  Functions
  *
  * */
-/**
- * @private
- */
+/** @internal */
 function onChartBeforeRender() {
     /**
      * @name Highcharts.Chart#fullscreen
@@ -1397,6 +1445,8 @@ function onChartBeforeRender() {
  * @class
  * @name Highcharts.Fullscreen
  *
+ * @param {Highcharts.Chart} chart
+ *
  * @requires modules/exporting
  */
 class Fullscreen {
@@ -1408,6 +1458,7 @@ class Fullscreen {
     /**
      * Prepares the chart class to support fullscreen.
      *
+     * @internal
      * @param {typeof_Highcharts.Chart} ChartClass
      * The chart class to decorate with fullscreen support.
      */
@@ -1488,7 +1539,7 @@ class Fullscreen {
      */
     close() {
         const fullscreen = this, chart = fullscreen.chart, optionsChart = chart.options.chart;
-        fireEvent(chart, 'fullscreenClose', null, function () {
+        fireEvent(chart, 'fullscreenClose', void 0, function () {
             // Don't fire exitFullscreen() when user exited
             // using 'Escape' button.
             if (fullscreen.isOpen &&
@@ -1527,7 +1578,7 @@ class Fullscreen {
      */
     open() {
         const fullscreen = this, chart = fullscreen.chart, optionsChart = chart.options.chart;
-        fireEvent(chart, 'fullscreenOpen', null, function () {
+        fireEvent(chart, 'fullscreenOpen', void 0, function () {
             if (optionsChart) {
                 fullscreen.origWidthOption = optionsChart.width;
                 fullscreen.origHeightOption = optionsChart.height;
@@ -1566,10 +1617,10 @@ class Fullscreen {
         });
     }
     /**
-     * Replaces the exporting context button's text when toogling the
+     * Replaces the exporting context button's text when toggling the
      * fullscreen mode.
      *
-     * @private
+     * @internal
      *
      * @since 8.0.1
      *
@@ -1579,10 +1630,8 @@ class Fullscreen {
         const chart = this.chart, exportDivElements = chart.exporting?.divElements, exportingOptions = chart.options.exporting, menuItems = (exportingOptions &&
             exportingOptions.buttons &&
             exportingOptions.buttons.contextButton.menuItems), lang = chart.options.lang;
-        if (exportingOptions &&
-            exportingOptions.menuItemDefinitions &&
-            lang &&
-            lang.exitFullscreen &&
+        if (exportingOptions?.menuItemDefinitions &&
+            lang?.exitFullscreen &&
             lang.viewFullscreen &&
             menuItems &&
             exportDivElements) {
@@ -1590,7 +1639,7 @@ class Fullscreen {
             if (exportDivElement) {
                 highcharts_AST_commonjs_highcharts_AST_commonjs2_highcharts_AST_root_Highcharts_AST_default().setElementHTML(exportDivElement, !this.isOpen ?
                     (exportingOptions.menuItemDefinitions.viewFullscreen
-                        .text ||
+                        ?.textKey ||
                         lang.viewFullscreen) : lang.exitFullscreen);
             }
         }
@@ -1631,7 +1680,7 @@ class Fullscreen {
  *
  * */
 /**
- * Gets fired when closing the fullscreen
+ * Gets fired when closing the fullscreen.
  *
  * @callback Highcharts.FullScreenfullscreenCloseCallbackFunction
  *
@@ -1642,7 +1691,7 @@ class Fullscreen {
  *        The event that occurred.
  */
 /**
- * Gets fired when opening the fullscreen
+ * Gets fired when opening the fullscreen.
  *
  * @callback Highcharts.FullScreenfullscreenOpenCallbackFunction
  *
@@ -1690,11 +1739,12 @@ class Fullscreen {
 ;// ./code/es-modules/Core/HttpUtilities.js
 /* *
  *
- *  (c) 2010-2025 Christer Vasseng, Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Christer Vasseng, Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -1727,9 +1777,7 @@ function ajax(settings) {
     }, r = new XMLHttpRequest();
     /**
      * Private error handler.
-     *
-     * @private
-     *
+     * @internal
      * @param {XMLHttpRequest} xhr
      * Internal request object.
      * @param {string | Error} err
@@ -1810,13 +1858,15 @@ function getJSON(url, success) {
 /**
  * The post utility.
  *
- * @private
+ * @internal
  * @function Highcharts.post
  *
  * @param {string} url
  * Post URL.
+ *
  * @param {Object} data
  * Post data.
+ *
  * @param {RequestInit} [fetchOptions]
  * Additional attributes for the post request.
  */
@@ -1847,16 +1897,16 @@ async function post(url, data, fetchOptions) {
         discardElement(link);
     }
 }
-/* *
- *
- *  Default Export
- *
- * */
+/**
+ * Utility functions for Ajax.
+ * @class
+ * @name Highcharts.HttpUtilities
+ */
 const HttpUtilities = {
     ajax,
-    getJSON,
-    post
+    getJSON
 };
+HttpUtilities.post = post;
 /* harmony default export */ const Core_HttpUtilities = (HttpUtilities);
 /* *
  *
@@ -1908,11 +1958,12 @@ const HttpUtilities = {
  *
  *  Exporting module
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -1922,7 +1973,6 @@ const HttpUtilities = {
 
 const { defaultOptions, setOptions } = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default());
 
-const { downloadURL: Exporting_downloadURL, getScript: Exporting_getScript } = Extensions_DownloadURL;
 
 
 
@@ -1955,7 +2005,6 @@ const Exporting_domurl = Exporting_win.URL || Exporting_win.webkitURL || Exporti
  *
  * @param {Highcharts.Chart} chart
  * The chart instance.
- *
  */
 class Exporting {
     /* *
@@ -1964,6 +2013,7 @@ class Exporting {
      *
      * */
     constructor(chart, options) {
+        /** @internal */
         this.options = {};
         this.chart = chart;
         this.options = options;
@@ -1980,7 +2030,7 @@ class Exporting {
     /**
      * Make hyphenated property names out of camelCase.
      *
-     * @private
+     * @internal
      * @static
      * @function Highcharts.Exporting#hyphenate
      *
@@ -2000,7 +2050,7 @@ class Exporting {
     /**
      * Get data:URL from image URL.
      *
-     * @private
+     * @internal
      * @static
      * @async
      * @function Highcharts.Exporting#imageToDataURL
@@ -2028,10 +2078,93 @@ class Exporting {
             return canvas.toDataURL(imageType);
         }
     }
+    /** @internal */
+    static async fetchCSS(href) {
+        const content = await fetch(href)
+            .then((res) => res.text());
+        const newSheet = new CSSStyleSheet();
+        newSheet.replaceSync(content);
+        return newSheet;
+    }
+    /** @internal */
+    static async handleStyleSheet(sheet, resultArray) {
+        try {
+            for (const rule of Array.from(sheet.cssRules)) {
+                if (rule instanceof CSSImportRule) {
+                    const sheet = await Exporting.fetchCSS(rule.href);
+                    await Exporting.handleStyleSheet(sheet, resultArray);
+                }
+                if (rule instanceof CSSFontFaceRule) {
+                    let cssText = rule.cssText;
+                    if (sheet.href) {
+                        const baseUrl = sheet.href, regexp = /url\(\s*(['"]?)(?![a-z]+:|\/\/)([^'")]+?)\1\s*\)/gi;
+                        // Replace relative URLs
+                        cssText = cssText.replace(regexp, (_, quote, relPath) => {
+                            const absolutePath = new URL(relPath, baseUrl).href;
+                            return `url(${quote}${absolutePath}${quote})`;
+                        });
+                    }
+                    resultArray.push(cssText);
+                }
+            }
+        }
+        catch {
+            if (sheet.href) {
+                const newSheet = await Exporting.fetchCSS(sheet.href);
+                await Exporting.handleStyleSheet(newSheet, resultArray);
+            }
+        }
+    }
+    /** @internal */
+    static async fetchStyleSheets() {
+        const cssTexts = [];
+        for (const sheet of Array.from(Exporting_doc.styleSheets)) {
+            await Exporting.handleStyleSheet(sheet, cssTexts);
+        }
+        return cssTexts;
+    }
+    /** @internal */
+    static async inlineFonts(svg) {
+        const cssTexts = await Exporting.fetchStyleSheets(), urlRegex = /url\(([^)]+)\)/g, urls = [];
+        let cssText = cssTexts.join('\n'), match;
+        while ((match = urlRegex.exec(cssText))) {
+            const m = match[1].replace(/['"]/g, '');
+            if (!urls.includes(m)) {
+                urls.push(m);
+            }
+        }
+        const arrayBufferToBase64 = (buffer) => {
+            let binary = '';
+            const bytes = new Uint8Array(buffer);
+            for (let i = 0; i < bytes.byteLength; i++) {
+                binary += String.fromCharCode(bytes[i]);
+            }
+            return btoa(binary);
+        };
+        const replacements = {};
+        for (const url of urls) {
+            try {
+                const res = await fetch(url), contentType = res.headers.get('Content-Type') || '', b64 = arrayBufferToBase64(await res.arrayBuffer());
+                replacements[url] = `data:${contentType};base64,${b64}`;
+            }
+            catch {
+                // eslint-disable-next-line
+            }
+        }
+        cssText = cssText.replace(urlRegex, (_, url) => {
+            const strippedUrl = url.replace(/['"]/g, '');
+            return `url(${replacements[strippedUrl] || strippedUrl})`;
+        });
+        const styleEl = document.createElementNS('http://www.w3.org/2000/svg', 'style');
+        styleEl.textContent = cssText;
+        // Needs to be appended to pass sanitization
+        svg.append(styleEl);
+        return svg;
+    }
     /**
      * Loads an image from the provided URL.
      *
-     * @private
+     * @internal
      * @static
      * @function Highcharts.Exporting#loadImage
      *
@@ -2058,6 +2191,7 @@ class Exporting {
             };
             // Reject in case of fail
             image.onerror = (error) => {
+                // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
                 reject(error);
             };
             // Provide the image URL
@@ -2068,7 +2202,7 @@ class Exporting {
      * Prepares and returns the image export options with default values where
      * necessary.
      *
-     * @private
+     * @internal
      * @static
      * @function Highcharts.Exporting#prepareImageOptions
      *
@@ -2097,7 +2231,7 @@ class Exporting {
      * A collection of fixes on the produced SVG to account for expand
      * properties and browser bugs. Returns a cleaned SVG.
      *
-     * @private
+     * @internal
      * @static
      * @function Highcharts.Exporting#sanitizeSVG
      *
@@ -2111,7 +2245,9 @@ class Exporting {
      *
      * @requires modules/exporting
      */
-    static sanitizeSVG(svg, options) {
+    static sanitizeSVG(svg, 
+    /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
+    options) {
         const split = svg.indexOf('</svg>') + 6, useForeignObject = svg.indexOf('<foreignObject') > -1;
         let html = svg.substr(split);
         // Remove any HTML added to the container after the SVG (#894, #9087)
@@ -2149,7 +2285,7 @@ class Exporting {
     /**
      * Get blob URL from SVG code. Falls back to normal data URI.
      *
-     * @private
+     * @internal
      * @static
      * @function Highcharts.Exporting#svgToDataURL
      *
@@ -2189,7 +2325,7 @@ class Exporting {
     /**
      * Add the export button to the chart, with options.
      *
-     * @private
+     * @internal
      * @function Highcharts.Exporting#addButton
      *
      * @param {Highcharts.ExportingButtonOptions} options
@@ -2276,7 +2412,7 @@ class Exporting {
     /**
      * Clean up after printing a chart.
      *
-     * @private
+     * @internal
      * @function Highcharts.Exporting#afterPrint
      *
      * @emits Highcharts.Chart#event:afterPrint
@@ -2309,7 +2445,7 @@ class Exporting {
     /**
      * Prepare chart and document before printing a chart.
      *
-     * @private
+     * @internal
      * @function Highcharts.Exporting#beforePrint
      *
      * @emits Highcharts.Chart#event:beforePrint
@@ -2349,7 +2485,7 @@ class Exporting {
     /**
      * Display a popup menu for choosing the export type.
      *
-     * @private
+     * @internal
      * @function Highcharts.Exporting#contextMenu
      *
      * @param {string} className
@@ -2519,7 +2655,7 @@ class Exporting {
     /**
      * Destroy the export buttons.
      *
-     * @private
+     * @internal
      * @function Highcharts.Exporting#destroy
      *
      * @param {global.Event} [e]
@@ -2586,7 +2722,7 @@ class Exporting {
      * Highcharts options pointing to our server.
      *
      * @async
-     * @private
+     * @internal
      * @function Highcharts.Exporting#downloadSVG
      *
      * @param {string} svg
@@ -2629,7 +2765,7 @@ class Exporting {
                 svgURL = Exporting.svgToDataURL(svg);
             }
             // Download the chart
-            Exporting_downloadURL(svgURL, filename);
+            downloadURL(svgURL, filename);
         }
         else {
             // PNG/JPEG download - create bitmap from SVG
@@ -2638,7 +2774,7 @@ class Exporting {
                 Exporting.objectURLRevoke = true;
                 // First, try to get PNG by rendering on canvas
                 const dataURL = await Exporting.imageToDataURL(svgURL, scale, type);
-                Exporting_downloadURL(dataURL, filename);
+                downloadURL(dataURL, filename);
             }
             catch (error) {
                 // No need for the below logic to run in case no canvas is
@@ -2663,7 +2799,7 @@ class Exporting {
                     const imageWidth = +matchedImageWidth[1] * scale, imageHeight = +matchedImageHeight[1] * scale, downloadWithCanVG = () => {
                         const v = Exporting_win.canvg.Canvg.fromString(ctx, svg);
                         v.start();
-                        Exporting_downloadURL(Exporting_win.navigator.msSaveOrOpenBlob ?
+                        downloadURL(Exporting_win.navigator.msSaveOrOpenBlob ?
                             canvas.msToBlob() :
                             canvas.toDataURL(type), filename);
                     };
@@ -2674,7 +2810,7 @@ class Exporting {
                     // asynchronously
                     if (!Exporting_win.canvg) {
                         Exporting.objectURLRevoke = true;
-                        await Exporting_getScript(libURL + 'canvg.js');
+                        await getScript(libURL + 'canvg.js');
                     }
                     // Use loaded canvg
                     downloadWithCanVG();
@@ -2747,7 +2883,7 @@ class Exporting {
     /**
      * Handles the fallback to the export server when a local export fails.
      *
-     * @private
+     * @internal
      * @async
      * @function Highcharts.Exporting#fallbackToServer
      *
@@ -2980,7 +3116,7 @@ class Exporting {
      * Gets the SVG for export using the getSVG function with additional
      * options.
      *
-     * @private
+     * @internal
      * @function Highcharts.Exporting#getSVGForExport
      *
      * @param {Highcharts.ExportingOptions} [exportingOptions]
@@ -3007,7 +3143,7 @@ class Exporting {
     /**
      * Analyze inherited styles from stylesheets and add them inline.
      *
-     * @private
+     * @internal
      * @function Highcharts.Exporting#inlineStyles
      *
      * @todo What are the border styles for text about? In general, text has a
@@ -3035,7 +3171,7 @@ class Exporting {
         /**
          * Call this on all elements and recurse to children.
          *
-         * @private
+         * @internal
          * @function recurse
          *
          * @param {Highcharts.HTMLDOMElement | Highcharts.SVGSVGElement} node
@@ -3048,7 +3184,7 @@ class Exporting {
              * Check computed styles and whether they are in the allow/denylist
              * for styles or attributes.
              *
-             * @private
+             * @internal
              * @function filterStyles
              *
              * @param {string | number | Highcharts.GradientColor | Highcharts.PatternObject | undefined} val
@@ -3126,6 +3262,7 @@ class Exporting {
                     // Get the defaults into a standard object (simple merge
                     // won't do)
                     const s = Exporting_win.getComputedStyle(dummy, null), defaults = {};
+                    // eslint-disable-next-line @typescript-eslint/no-for-in-array
                     for (const key in s) {
                         if (key.length < 1000 /* RegexLimits.shortLimit */ &&
                             typeof s[key] === 'string' &&
@@ -3169,7 +3306,7 @@ class Exporting {
         /**
          * Remove the dummy objects used to get defaults.
          *
-         * @private
+         * @internal
          * @function tearDown
          */
         function tearDown() {
@@ -3186,7 +3323,7 @@ class Exporting {
      * The options and chartOptions arguments are passed to the getSVGForExport
      * function.
      *
-     * @private
+     * @internal
      * @async
      * @function Highcharts.Exporting#localExport
      *
@@ -3262,6 +3399,11 @@ class Exporting {
                     image.parentNode.removeChild(image);
                 }
             }
+            const svgElement = chartCopyContainer?.querySelector('svg');
+            if (svgElement &&
+                !exportingOptions.chartOptions?.chart?.style?.fontFamily) {
+                await Exporting.inlineFonts(svgElement);
+            }
             // Sanitize the SVG
             const sanitizedSVG = sanitize(chartCopyContainer?.innerHTML);
             // Use SVG of chart copy. If SVG contains foreignObjects PDF fails
@@ -3291,7 +3433,7 @@ class Exporting {
     /**
      * Move the chart container(s) to another div.
      *
-     * @private
+     * @internal
      * @function Highcharts.Exporting#moveContainers
      *
      * @param {Highcharts.HTMLDOMElement} moveTo
@@ -3354,7 +3496,7 @@ class Exporting {
     /**
      * Add the buttons on chart load.
      *
-     * @private
+     * @internal
      * @function Highcharts.Exporting#render
      *
      * @requires modules/exporting
@@ -3379,7 +3521,7 @@ class Exporting {
     /**
      * Resolve CSS variables into hex colors.
      *
-     * @private
+     * @internal
      * @function Highcharts.Exporting#resolveCSSVariables
      *
      * @requires modules/exporting
@@ -3402,7 +3544,7 @@ class Exporting {
     /**
      * Updates the exporting object with the provided exporting options.
      *
-     * @private
+     * @internal
      * @function Highcharts.Exporting#update
      *
      * @param {Highcharts.ExportingOptions} exportingOptions
@@ -3425,8 +3567,13 @@ class Exporting {
  *  Static Properties
  *
  * */
+/** @internal */
 Exporting.inlineAllowlist = [];
-// These CSS properties are not inlined. Remember camelCase.
+/**
+ * These CSS properties are not inlined. Remember camelCase.
+ *
+ * @internal
+ */
 Exporting.inlineDenylist = [
     /-/, // In Firefox, both hyphened and camelCased names are listed
     /^(clipPath|cssText|d|height|width)$/, // Full words
@@ -3440,7 +3587,11 @@ Exporting.inlineDenylist = [
     /^length$/, // #7700
     /^\d+$/ // #17538
 ];
-// These ones are translated to attributes rather than styles
+/**
+ * These ones are translated to attributes rather than styles.
+ *
+ * @internal
+ */
 Exporting.inlineToAttributes = [
     'fill',
     'stroke',
@@ -3451,8 +3602,13 @@ Exporting.inlineToAttributes = [
     'x',
     'y'
 ];
-// Milliseconds to defer image load event handlers to offset IE bug
+/**
+ * Milliseconds to defer image load event handlers to offset IE bug
+ *
+ * @internal
+ */
 Exporting.loadEventDeferDelay = isMS ? 150 : 0;
+/** @internal */
 Exporting.unstyledElements = [
     'clipPath',
     'defs',
@@ -3477,7 +3633,7 @@ Exporting.unstyledElements = [
     /**
      * Composition function.
      *
-     * @private
+     * @internal
      * @function Highcharts.Exporting#compose
      *
      * @param {ChartClass} ChartClass
@@ -3536,7 +3692,7 @@ Exporting.unstyledElements = [
     /**
      * Function that is added to the callbacks array that runs on chart load.
      *
-     * @private
+     * @internal
      * @function Highcharts#chartCallback
      *
      * @param {Highcharts.Chart} chart
@@ -3592,7 +3748,7 @@ Exporting.unstyledElements = [
      * than the Chart prototype in order to use the chart instance inside the
      * update function.
      *
-     * @private
+     * @internal
      * @function Highcharts#onChartAfterInit
      *
      * @requires modules/exporting
@@ -3628,7 +3784,7 @@ Exporting.unstyledElements = [
      * On layout of titles (title, subtitle and caption), adjust the `alignTo`
      * box to avoid the context menu button.
      *
-     * @private
+     * @internal
      * @function Highcharts#onChartLayOutTitle
      *
      * @requires modules/exporting

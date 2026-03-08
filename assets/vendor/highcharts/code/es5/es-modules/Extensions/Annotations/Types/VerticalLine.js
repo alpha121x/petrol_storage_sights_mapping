@@ -1,6 +1,5 @@
 /* *
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -19,13 +18,14 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+var _a;
 import Annotation from '../Annotation.js';
 import D from '../../../Core/Defaults.js';
 var defaultOptions = D.defaultOptions;
 import MockPoint from '../MockPoint.js';
 import U from '../../../Core/Utilities.js';
 var merge = U.merge, pick = U.pick;
-if (defaultOptions.annotations) {
+if ((_a = defaultOptions.annotations) === null || _a === void 0 ? void 0 : _a.types) {
     /**
      * Options for the vertical line annotation type.
      *
@@ -64,7 +64,7 @@ if (defaultOptions.annotations) {
             /**
              * Connector options.
              *
-             * @extends   annotations.types.crookedLine.shapeOptions
+             * @extends   annotations.shapeOptions
              * @excluding height, r, type, width
              */
             connector: {
@@ -85,13 +85,20 @@ if (defaultOptions.annotations) {
  *  Class
  *
  * */
+/** @internal */
 var VerticalLine = /** @class */ (function (_super) {
     __extends(VerticalLine, _super);
     function VerticalLine() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
+    /* *
+     *
+     *  Static Functions
+     *
+     * */
     VerticalLine.connectorFirstPoint = function (target) {
-        var annotation = target.annotation, chart = annotation.chart, inverted = chart.inverted, point = annotation.points[0], left = pick(point.series.yAxis && point.series.yAxis.left, 0), top = pick(point.series.yAxis && point.series.yAxis.top, 0), offset = annotation.options.typeOptions.label.offset, y = MockPoint.pointToPixels(point, true)[inverted ? 'x' : 'y'];
+        var _a, _b, _c, _d;
+        var annotation = target.annotation, chart = annotation.chart, inverted = chart.inverted, point = annotation.points[0], left = pick((_a = point.series.yAxis) === null || _a === void 0 ? void 0 : _a.left, 0), top = pick((_b = point.series.yAxis) === null || _b === void 0 ? void 0 : _b.top, 0), offset = ((_d = (_c = annotation.options.typeOptions) === null || _c === void 0 ? void 0 : _c.label) === null || _d === void 0 ? void 0 : _d.offset) || 0, y = MockPoint.pointToPixels(point, true)[inverted ? 'x' : 'y'];
         return {
             x: point.x,
             xAxis: point.series.xAxis,
@@ -100,9 +107,10 @@ var VerticalLine = /** @class */ (function (_super) {
         };
     };
     VerticalLine.connectorSecondPoint = function (target) {
+        var _a;
         var annotation = target.annotation, chart = annotation.chart, inverted = chart.inverted, typeOptions = annotation.options.typeOptions, point = annotation.points[0], left = pick(point.series.yAxis && point.series.yAxis.left, 0), top = pick(point.series.yAxis && point.series.yAxis.top, 0), y = MockPoint.pointToPixels(point, true)[inverted ? 'x' : 'y'];
-        var yOffset = typeOptions.yOffset;
-        if (typeOptions.label.offset < 0) {
+        var yOffset = (typeOptions === null || typeOptions === void 0 ? void 0 : typeOptions.yOffset) || 0;
+        if ((((_a = typeOptions === null || typeOptions === void 0 ? void 0 : typeOptions.label) === null || _a === void 0 ? void 0 : _a.offset) || 0) < 0) {
             yOffset *= -1;
         }
         return {
@@ -118,9 +126,12 @@ var VerticalLine = /** @class */ (function (_super) {
      *
      * */
     VerticalLine.prototype.getPointsOptions = function () {
-        return [this.options.typeOptions.point];
+        var _a;
+        return ((_a = this.options.typeOptions) === null || _a === void 0 ? void 0 : _a.point) ?
+            [this.options.typeOptions.point] : [];
     };
     VerticalLine.prototype.addShapes = function () {
+        var _a;
         var typeOptions = this.options.typeOptions, connector = this.initShape(merge(typeOptions.connector, {
             type: 'path',
             points: [
@@ -130,16 +141,17 @@ var VerticalLine = /** @class */ (function (_super) {
             className: 'highcharts-vertical-line'
         }), 0);
         typeOptions.connector = connector.options;
-        this.userOptions.typeOptions.point = typeOptions.point;
+        // Update to be able to save the chart after drag (#18584).
+        ((_a = this.userOptions).typeOptions || (_a.typeOptions = {})).point = typeOptions.point;
     };
     VerticalLine.prototype.addLabels = function () {
-        var typeOptions = this.options.typeOptions, labelOptions = typeOptions.label;
-        var x = 0, y = labelOptions.offset, verticalAlign = labelOptions.offset < 0 ? 'bottom' : 'top', align = 'center';
+        var typeOptions = this.options.typeOptions, labelOptions = typeOptions.label, offset = (labelOptions === null || labelOptions === void 0 ? void 0 : labelOptions.offset) || 0;
+        var x = 0, y = offset, verticalAlign = offset < 0 ? 'bottom' : 'top', align = 'center';
         if (this.chart.inverted) {
-            x = labelOptions.offset;
+            x = offset;
             y = 0;
             verticalAlign = 'middle';
-            align = labelOptions.offset < 0 ? 'right' : 'left';
+            align = offset < 0 ? 'right' : 'left';
         }
         var label = this.initLabel(merge(labelOptions, {
             verticalAlign: verticalAlign,

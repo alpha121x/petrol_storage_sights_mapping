@@ -1,8 +1,8 @@
 /* *
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -24,7 +24,7 @@ var __extends = (this && this.__extends) || (function () {
 import H from '../../../Core/Globals.js';
 var noop = H.noop;
 import SeriesRegistry from '../../../Core/Series/SeriesRegistry.js';
-var _a = SeriesRegistry.seriesTypes, ColumnSeries = _a.column, SMAIndicator = _a.sma;
+var SMAIndicator = SeriesRegistry.seriesTypes.sma;
 import U from '../../../Core/Utilities.js';
 var extend = U.extend, correctFloat = U.correctFloat, defined = U.defined, merge = U.merge;
 /* *
@@ -52,24 +52,23 @@ var MACDIndicator = /** @class */ (function (_super) {
      *
      * */
     MACDIndicator.prototype.init = function () {
+        var _a, _b, _c, _d, _e;
         SeriesRegistry.seriesTypes.sma.prototype.init.apply(this, arguments);
-        var originalColor = this.color;
+        var originalColor = this.color, originalColorIndex = this.colorIndex;
         // Check whether series is initialized. It may be not initialized,
         // when any of required indicators is missing.
         if (this.options) {
-            // If the default colour doesn't set, get the next available from
+            // If the default color doesn't set, get the next available from
             // the array and apply it #15608.
             if (defined(this.colorIndex)) {
-                if (this.options.signalLine &&
-                    this.options.signalLine.styles &&
+                if (((_a = this.options.signalLine) === null || _a === void 0 ? void 0 : _a.styles) &&
                     !this.options.signalLine.styles.lineColor) {
                     this.options.colorIndex = this.colorIndex + 1;
                     this.getCyclic('color', void 0, this.chart.options.colors);
                     this.options.signalLine.styles.lineColor =
                         this.color;
                 }
-                if (this.options.macdLine &&
-                    this.options.macdLine.styles &&
+                if (((_b = this.options.macdLine) === null || _b === void 0 ? void 0 : _b.styles) &&
                     !this.options.macdLine.styles.lineColor) {
                     this.options.colorIndex = this.colorIndex + 1;
                     this.getCyclic('color', void 0, this.chart.options.colors);
@@ -80,16 +79,17 @@ var MACDIndicator = /** @class */ (function (_super) {
             // Zones have indexes automatically calculated, we need to
             // translate them to support multiple lines within one indicator
             this.macdZones = {
-                zones: this.options.macdLine.zones,
+                zones: (_c = this.options.macdLine) === null || _c === void 0 ? void 0 : _c.zones,
                 startIndex: 0
             };
             this.signalZones = {
-                zones: this.macdZones.zones.concat(this.options.signalLine.zones),
-                startIndex: this.macdZones.zones.length
+                zones: (_d = this.macdZones.zones) === null || _d === void 0 ? void 0 : _d.concat(this.options.signalLine.zones),
+                startIndex: (_e = this.macdZones.zones) === null || _e === void 0 ? void 0 : _e.length
             };
         }
         // Reset color and index #15608.
         this.color = originalColor;
+        this.colorIndex = originalColorIndex;
     };
     MACDIndicator.prototype.toYData = function (point) {
         return [point.y, point.signal, point.MACD];

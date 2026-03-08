@@ -1,12 +1,13 @@
 /* *
  *
- *  (c) 2009-2025 Øystein Moseng
+ *  (c) 2009-2026 Highsoft AS
+ *  Author: Øystein Moseng
  *
  *  Class representing a speech synthesis voice.
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -85,7 +86,7 @@ var SonificationSpeaker = /** @class */ (function () {
     };
     /**
      * Stop speech and release any used resources
-     * @private
+     * @internal
      */
     SonificationSpeaker.prototype.destroy = function () {
         // Ran on TimelineChannel.destroy
@@ -105,7 +106,7 @@ var SonificationSpeaker = /** @class */ (function () {
     };
     /**
      * Set the active synthesis voice for the speaker.
-     * @private
+     * @internal
      */
     SonificationSpeaker.prototype.setVoice = function () {
         if (this.synthesis) {

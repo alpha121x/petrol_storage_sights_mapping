@@ -1,10 +1,13 @@
+// SPDX-License-Identifier: LicenseRef-Highcharts
 /**
  * @license Highcharts JS v@product.version@ (@product.date@)
  * @module highcharts/polyfills
  *
- * (c) 2009-2025 Torstein Honsi
+ * (c) 2009-2026 Highsoft AS
+ * Author: Torstein Honsi
  *
- * License: www.highcharts.com/license
+ * A commercial license may be required depending on use.
+ * See www.highcharts.com/license
  */
 'use strict';
 if (!Array.prototype.includes) {
@@ -94,4 +97,36 @@ if (typeof ElementPrototype.closest !== 'function') {
     }
     CustomEvent.prototype = window.Event.prototype;
     window.CustomEvent = CustomEvent;
+})();
+// Replace \p{L} with language ranges and remove 'u' flag, #23462.
+(function () {
+    var languages = 'a-zA-Z' + // ASCII
+        '\u00C0-\u017F' + // Latin Extended
+        '\u0370-\u03FF' + // Greek
+        '\u0400-\u04FF\u0500-\u052F' + // Cyrillic
+        '\u0590-\u05FF' + // Hebrew
+        '\u0600-\u06FF\u0750-\u077F' + // Arabic + Extended
+        '\u0900-\u097F' + // Devanagari
+        '\u3040-\u30FF' + // Hiragana + Katakana
+        '\u3130-\u318F\uAC00-\uD7AF' + // Hangul Jamo + Syllables
+        '\u4E00-\u9FFF'; // CJK Unified Ideographs
+    var OriginalRegExp = RegExp;
+    window.RegExp = function (pattern, flags) {
+        var source = typeof pattern === 'string' ? pattern : pattern.source, finalFlags = flags !== undefined
+            ? flags
+            : typeof pattern !== 'string'
+                ? pattern.flags
+                : '';
+        if (source.indexOf('\\p{L}') !== -1) {
+            source = source.replace(/\\p\{L\}/g, languages);
+            if (finalFlags) {
+                finalFlags = finalFlags.replace('u', '');
+            }
+        }
+        if (typeof finalFlags !== 'string') {
+            finalFlags = '';
+        }
+        return new OriginalRegExp(source, finalFlags);
+    };
+    window.RegExp.prototype = OriginalRegExp.prototype;
 })();

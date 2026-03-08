@@ -1,13 +1,16 @@
+// SPDX-License-Identifier: LicenseRef-Highcharts
 /**
- * @license Highcharts Gantt JS v12.3.0 (2025-06-21)
+ * @license Highcharts Gantt JS v12.5.0 (2026-01-12)
  * @module highcharts/modules/pathfinder
  * @requires highcharts
  *
  * Pathfinder
  *
- * (c) 2016-2025 Øystein Moseng
+ * (c) 2016-2026 Highsoft AS
+ * Author: Øystein Moseng
  *
- * License: www.highcharts.com/license
+ * A commercial license may be required depending on use.
+ * See www.highcharts.com/license
  */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
@@ -107,12 +110,12 @@ var highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default 
 ;// ./code/es5/es-modules/Gantt/Connection.js
 /* *
  *
- *  (c) 2016 Highsoft AS
+ *  (c) 2016-2026 Highsoft AS
  *  Authors: Øystein Moseng, Lars A. V. Cabrera
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -134,7 +137,7 @@ var deg2rad = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highchar
  * The Connection class. Used internally to represent a connection between two
  * points.
  *
- * @private
+ * @internal
  * @class
  * @name Highcharts.Connection
  *
@@ -148,6 +151,7 @@ var deg2rad = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highchar
  *        Connection options.
  */
 var Connection = /** @class */ (function () {
+    /** @internal */
     function Connection(from, to, options) {
         this.init(from, to, options);
     }
@@ -456,6 +460,7 @@ var Connection = /** @class */ (function () {
  *  Default Export
  *
  * */
+/** @internal */
 /* harmony default export */ var Gantt_Connection = (Connection);
 /* *
  *
@@ -489,69 +494,53 @@ var Connection = /** @class */ (function () {
 ;// ./code/es5/es-modules/Series/PathUtilities.js
 /* *
  *
- *  (c) 2010-2025 Pawel Lysy
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Pawel Lysy
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
 var getLinkPath = {
-    'default': getDefaultPath,
+    'default': getOrthogonalPath,
+    orthogonal: getOrthogonalPath,
     straight: getStraightPath,
     curved: getCurvedPath
 };
 /**
  *
  */
-function getDefaultPath(pathParams) {
+function getOrthogonalPath(pathParams) {
     var x1 = pathParams.x1,
         y1 = pathParams.y1,
         x2 = pathParams.x2,
         y2 = pathParams.y2,
+        bendAt = pathParams.bendAt,
         _a = pathParams.width,
         width = _a === void 0 ? 0 : _a,
         _b = pathParams.inverted,
         inverted = _b === void 0 ? false : _b,
         radius = pathParams.radius,
         parentVisible = pathParams.parentVisible;
-    var path = [
-            ['M',
-        x1,
-        y1],
-            ['L',
-        x1,
-        y1],
-            ['C',
-        x1,
-        y1,
-        x1,
-        y2,
-        x1,
-        y2],
-            ['L',
-        x1,
-        y2],
-            ['C',
-        x1,
-        y1,
-        x1,
-        y2,
-        x1,
-        y2],
-            ['L',
-        x1,
-        y2]
-        ];
-    return parentVisible ?
-        applyRadius([
+    if (parentVisible) {
+        var bend = bendAt !== null && bendAt !== void 0 ? bendAt : (width / 2);
+        return applyRadius([
             ['M', x1, y1],
-            ['L', x1 + width * (inverted ? -0.5 : 0.5), y1],
-            ['L', x1 + width * (inverted ? -0.5 : 0.5), y2],
+            ['L', x1 + bend * (inverted ? -1 : 1), y1],
+            ['L', x1 + bend * (inverted ? -1 : 1), y2],
             ['L', x2, y2]
-        ], radius) :
-        path;
+        ], radius);
+    }
+    return [
+        ['M', x1, y1],
+        ['L', x1, y1],
+        ['C', x1, y1, x1, y2, x1, y2],
+        ['L', x1, y2],
+        ['C', x1, y1, x1, y2, x1, y2],
+        ['L', x1, y2]
+    ];
 }
 /**
  *
@@ -679,12 +668,12 @@ var PathUtilities = {
 ;// ./code/es5/es-modules/Gantt/PathfinderAlgorithms.js
 /* *
  *
- *  (c) 2016 Highsoft AS
+ *  (c) 2016-2026 Highsoft AS
  *  Author: Øystein Moseng
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -706,7 +695,7 @@ var PathfinderAlgorithms_min = Math.min, PathfinderAlgorithms_max = Math.max, ab
  * Get index of last obstacle before xMin. Employs a type of binary search, and
  * thus requires that obstacles are sorted by xMin value.
  *
- * @private
+ * @internal
  * @function findLastObstacleBefore
  *
  * @param {Array<object>} obstacles
@@ -745,7 +734,7 @@ function findLastObstacleBefore(obstacles, xMin, startIx) {
 /**
  * Test if a point lays within an obstacle.
  *
- * @private
+ * @internal
  * @function pointWithinObstacle
  *
  * @param {Object} obstacle
@@ -767,7 +756,7 @@ function pointWithinObstacle(obstacle, point) {
  * Find the index of an obstacle that wraps around a point.
  * Returns -1 if not found.
  *
- * @private
+ * @internal
  * @function findObstacleFromPoint
  *
  * @param {Array<object>} obstacles
@@ -794,7 +783,7 @@ function findObstacleFromPoint(obstacles, point) {
 /**
  * Get SVG path array from array of line segments.
  *
- * @private
+ * @internal
  * @function pathFromSegments
  *
  * @param {Array<object>} segments
@@ -817,7 +806,7 @@ function pathFromSegments(segments) {
  * Limits obstacle max/mins in all directions to bounds. Modifies input
  * obstacle.
  *
- * @private
+ * @internal
  * @function limitObstacleToBounds
  *
  * @param {Object} obstacle
@@ -838,6 +827,7 @@ function limitObstacleToBounds(obstacle, bounds) {
  * Get an SVG path from a starting coordinate to an ending coordinate.
  * Draws a straight line.
  *
+ * @internal
  * @function Highcharts.Pathfinder.algorithms.straight
  *
  * @param {Highcharts.PositionObject} start
@@ -865,6 +855,7 @@ function straight(start, end) {
  * right angles only, and taking only starting/ending obstacle into
  * consideration.
  *
+ * @internal
  * @function Highcharts.Pathfinder.algorithms.simpleConnect
  *
  * @param {Highcharts.PositionObject} start
@@ -904,7 +895,7 @@ var simpleConnect = function (start, end, options) {
     /**
      * Return a clone of a point with a property set from a target object,
      * optionally with an offset
-     * @private
+     * @internal
      */
     function copyFromPoint(from, fromKey, to, toKey, offset) {
         var point = {
@@ -917,7 +908,7 @@ var simpleConnect = function (start, end, options) {
     // eslint-disable-next-line valid-jsdoc
     /**
      * Return waypoint outside obstacle.
-     * @private
+     * @internal
      */
     function getMeOut(obstacle, point, direction) {
         var useMax = abs(point[direction] - obstacle[direction + 'Min']) >
@@ -997,6 +988,7 @@ simpleConnect.requiresObstacles = true;
  * obstacles into consideration. Might not always find the optimal path,
  * but is fast, and usually good enough.
  *
+ * @internal
  * @function Highcharts.Pathfinder.algorithms.fastAvoid
  *
  * @param {Highcharts.PositionObject} start
@@ -1073,7 +1065,7 @@ function fastAvoid(start, end, options) {
     /**
      * How far can you go between two points before hitting an obstacle?
      * Does not work for diagonal lines (because it doesn't have to).
-     * @private
+     * @internal
      */
     function pivotPoint(fromPoint, toPoint, directionIsX) {
         var searchDirection = fromPoint.x < toPoint.x ? 1 : -1;
@@ -1145,7 +1137,7 @@ function fastAvoid(start, end, options) {
      *
      * (? Returns a string, either xMin, xMax, yMin or yMax.)
      *
-     * @private
+     * @internal
      * @function
      *
      * @param {Object} obstacle
@@ -1211,7 +1203,7 @@ function fastAvoid(start, end, options) {
     // eslint-disable-next-line valid-jsdoc
     /**
      * Find a clear path between point.
-     * @private
+     * @internal
      */
     function clearPathTo(fromPoint, toPoint, dirIsX) {
         // Don't waste time if we've hit goal
@@ -1338,7 +1330,7 @@ function fastAvoid(start, end, options) {
     /**
      * Extract point to outside of obstacle in whichever direction is
      * closest. Returns new point outside obstacle.
-     * @private
+     * @internal
      */
     function extractFromObstacle(obstacle, point, goalPoint) {
         var dirIsX = PathfinderAlgorithms_min(obstacle.xMax - point.x,
@@ -1406,25 +1398,29 @@ fastAvoid.requiresObstacles = true;
  *  Default Export
  *
  * */
-// Define the available pathfinding algorithms.
-// Algorithms take up to 3 arguments: starting point, ending point, and an
-// options object.
+/**
+ * Defines the available pathfinding algorithms. Algorithms take up to 3
+ * arguments: starting point, ending point, and an options object.
+ *
+ * @internal
+ */
 var algorithms = {
     fastAvoid: fastAvoid,
     straight: straight,
     simpleConnect: simpleConnect
 };
+/** @internal */
 /* harmony default export */ var PathfinderAlgorithms = (algorithms);
 
 ;// ./code/es5/es-modules/Gantt/ConnectorsDefaults.js
 /* *
  *
- *  (c) 2016 Highsoft AS
+ *  (c) 2016-2026 Highsoft AS
  *  Authors: Øystein Moseng, Lars A. V. Cabrera
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -1470,8 +1466,8 @@ var connectorsDefaults = {
         /**
          * Set the default dash style for this chart's connecting lines.
          *
-         * @type      {string}
-         * @default   solid
+         * @type      {Highcharts.DashStyleValue}
+         * @default   Solid
          * @since     6.2.0
          * @apioption connectors.dashStyle
          */
@@ -1705,12 +1701,12 @@ var connectorsDefaults = {
 ;// ./code/es5/es-modules/Gantt/PathfinderComposition.js
 /* *
  *
- *  (c) 2016 Highsoft AS
+ *  (c) 2016-2026 Highsoft AS
  *  Authors: Øystein Moseng, Lars A. V. Cabrera
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -1728,7 +1724,7 @@ var PathfinderComposition_defined = (highcharts_commonjs_highcharts_commonjs2_hi
  * Get point bounding box using plotX/plotY and shapeArgs. If using
  * graphic.getBBox() directly, the bbox will be affected by animation.
  *
- * @private
+ * @internal
  * @function
  *
  * @param {Highcharts.Point} point
@@ -1760,7 +1756,7 @@ function getPointBB(point) {
 /**
  * Warn if using legacy options. Copy the options over. Note that this will
  * still break if using the legacy options in chart.update, addSeries etc.
- * @private
+ * @internal
  */
 function warnLegacy(chart) {
     if (chart.options.pathfinder ||
@@ -1781,6 +1777,7 @@ function warnLegacy(chart) {
  *  Composition
  *
  * */
+/** @internal */
 var ConnectionComposition;
 (function (ConnectionComposition) {
     /* *
@@ -1788,7 +1785,6 @@ var ConnectionComposition;
      *  Functions
      *
      * */
-    /** @private */
     function compose(ChartClass, PathfinderClass, PointClass) {
         var pointProto = PointClass.prototype;
         if (!pointProto.getPathfinderAnchorPoint) {
@@ -1812,7 +1808,6 @@ var ConnectionComposition;
     /**
      * Get coordinates of anchor point for pathfinder connection.
      *
-     * @private
      * @function Highcharts.Point#getPathfinderAnchorPoint
      *
      * @param {Highcharts.ConnectorsMarkerOptions} markerOptions
@@ -1848,7 +1843,6 @@ var ConnectionComposition;
     /**
      * Utility to get the angle from one point to another.
      *
-     * @private
      * @function Highcharts.Point#getRadiansToVector
      *
      * @param {Highcharts.PositionObject} v1
@@ -1877,7 +1871,6 @@ var ConnectionComposition;
      * Utility to get the position of the marker, based on the path angle and
      * the marker's radius.
      *
-     * @private
      * @function Highcharts.Point#getMarkerVector
      *
      * @param {number} radians
@@ -1955,6 +1948,7 @@ var ConnectionComposition;
  *  Default Export
  *
  * */
+/** @internal */
 /* harmony default export */ var PathfinderComposition = (ConnectionComposition);
 
 // EXTERNAL MODULE: external {"amd":["highcharts/highcharts","Point"],"commonjs":["highcharts","Point"],"commonjs2":["highcharts","Point"],"root":["Highcharts","Point"]}
@@ -1963,12 +1957,12 @@ var highcharts_Point_commonjs_highcharts_Point_commonjs2_highcharts_Point_root_H
 ;// ./code/es5/es-modules/Gantt/Pathfinder.js
 /* *
  *
- *  (c) 2016 Highsoft AS
+ *  (c) 2016-2026 Highsoft AS
  *  Authors: Øystein Moseng, Lars A. V. Cabrera
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -1993,7 +1987,7 @@ var Pathfinder_max = Math.max, Pathfinder_min = Math.min;
  * Get point bounding box using plotX/plotY and shapeArgs. If using
  * graphic.getBBox() directly, the bbox will be affected by animation.
  *
- * @private
+ * @internal
  * @function
  *
  * @param {Highcharts.Point} point
@@ -2024,7 +2018,7 @@ function Pathfinder_getPointBB(point) {
 }
 /**
  * Compute smallest distance between two rectangles.
- * @private
+ * @internal
  */
 function calculateObstacleDistance(a, b, bbMargin) {
     // Count the distance even if we are slightly off
@@ -2048,7 +2042,7 @@ function calculateObstacleDistance(a, b, bbMargin) {
  * Calculate margin to place around obstacles for the pathfinder in pixels.
  * Returns a minimum of 1 pixel margin.
  *
- * @private
+ * @internal
  * @function
  *
  * @param {Array<object>} obstacles
@@ -2093,7 +2087,7 @@ function calculateObstacleMargin(obstacles) {
 /**
  * The Pathfinder class.
  *
- * @private
+ * @internal
  * @class
  * @name Highcharts.Pathfinder
  *
@@ -2272,15 +2266,14 @@ var Pathfinder = /** @class */ (function () {
      * @function Highcharts.Pathfinder#getChartObstacles
      *
      * @param {Object} options
-     *        Options for the calculation. Currently only
-     *        `options.algorithmMargin`.
+     * Options for the calculation. Currently only `options.algorithmMargin`.
      *
      * @param {number} options.algorithmMargin
-     *        The algorithm margin to use for the obstacles.
-
-    * @return {Array<object>}
-     *         An array of calculated obstacles. Each obstacle is defined as an
-     *         object with xMin, xMax, yMin and yMax properties.
+     * The algorithm margin to use for the obstacles.
+     *
+     * @return {Array<object>}
+     * An array of calculated obstacles. Each obstacle is defined as an object
+     * with xMin, xMax, yMin and yMax properties.
      */
     Pathfinder.prototype.getChartObstacles = function (options) {
         var series = this.chart.series,
@@ -2383,6 +2376,7 @@ var Pathfinder = /** @class */ (function () {
 /**
  * @name Highcharts.Pathfinder#algorithms
  * @type {Highcharts.Dictionary<Function>}
+ * @internal
  */
 Pathfinder.prototype.algorithms = PathfinderAlgorithms;
 /* *
@@ -2390,6 +2384,7 @@ Pathfinder.prototype.algorithms = PathfinderAlgorithms;
  *  Default Export
  *
  * */
+/** @internal */
 /* harmony default export */ var Gantt_Pathfinder = (Pathfinder);
 /* *
  *
@@ -2423,12 +2418,12 @@ Pathfinder.prototype.algorithms = PathfinderAlgorithms;
 ;// ./code/es5/es-modules/Extensions/ArrowSymbols.js
 /* *
  *
- *  (c) 2017 Highsoft AS
+ *  (c) 2017-2026 Highsoft AS
  *  Authors: Lars A. V. Cabrera
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -2449,7 +2444,7 @@ Pathfinder.prototype.algorithms = PathfinderAlgorithms;
  *                   o
  * ```
  *
- * @private
+ * @internal
  * @function
  *
  * @param {number} x
@@ -2485,7 +2480,7 @@ function arrow(x, y, w, h) {
  *       o
  * ```
  *
- * @private
+ * @internal
  * @function
  *
  * @param {number} x
@@ -2507,7 +2502,12 @@ function arrowHalf(x, y, w, h) {
     return arrow(x, y, w / 2, h);
 }
 /**
- * @private
+ * Adds the arrow symbols to the SVGRenderer.
+ *
+ * @internal
+ *
+ * @param SVGRendererClass
+ * The SVGRenderer class to extend.
  */
 function compose(SVGRendererClass) {
     var symbols = SVGRendererClass.prototype.symbols;
@@ -2528,7 +2528,7 @@ function compose(SVGRendererClass) {
  *             o
  * ```
  *
- * @private
+ * @internal
  * @function
  *
  * @param {number} x
@@ -2564,7 +2564,7 @@ function triangleLeft(x, y, w, h) {
  *       o
  * ```
  *
- * @private
+ * @internal
  * @function
  *
  * @param {number} x

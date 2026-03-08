@@ -2,11 +2,12 @@
  *
  *  X-range series module
  *
- *  (c) 2010-2025 Torstein Honsi, Lars A. V. Cabrera
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi, Lars A. V. Cabrera
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -92,7 +93,8 @@ var XRangePoint = /** @class */ (function (_super) {
             if (!series.chart.styledMode) {
                 this.color = colorByPoint.color;
             }
-            if (!this.options.colorIndex) {
+            if (typeof this.options.colorIndex === 'undefined' ||
+                this.options.colorIndex === null) {
                 this.colorIndex = colorByPoint.colorIndex;
             }
         }
@@ -110,6 +112,7 @@ var XRangePoint = /** @class */ (function (_super) {
         _super.prototype.applyOptions.call(this, options, x);
         this.x2 = this.series.chart.time.parse(this.x2);
         this.isNull = !((_a = this.isValid) === null || _a === void 0 ? void 0 : _a.call(this));
+        this.formatPrefix = this.isNull ? 'null' : 'point'; // #23605
         return this;
     };
     /**

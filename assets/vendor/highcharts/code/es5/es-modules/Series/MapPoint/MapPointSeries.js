@@ -1,10 +1,11 @@
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -66,10 +67,12 @@ var MapPointSeries = /** @class */ (function (_super) {
      * */
     /* eslint-disable valid-jsdoc */
     MapPointSeries.prototype.drawDataLabels = function () {
+        var _this = this;
+        var _a;
         _super.prototype.drawDataLabels.call(this);
-        if (this.dataLabelsGroup) {
-            this.dataLabelsGroup.clip(this.chart.clipRect);
-        }
+        (_a = this.dataLabelsGroups) === null || _a === void 0 ? void 0 : _a.forEach(function (g) {
+            g === null || g === void 0 ? void 0 : g.clip(_this.chart.clipRect);
+        });
     };
     /**
      * Resolve `lon`, `lat` or `geometry` options and project the resulted

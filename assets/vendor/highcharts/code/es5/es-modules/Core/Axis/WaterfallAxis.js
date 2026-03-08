@@ -1,10 +1,11 @@
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -18,6 +19,7 @@ var addEvent = U.addEvent, objectEach = U.objectEach, pushUnique = U.pushUnique;
  *  Namespace
  *
  * */
+/** @internal */
 var WaterfallAxis;
 (function (WaterfallAxis) {
     /* *
@@ -30,9 +32,7 @@ var WaterfallAxis;
      *  Functions
      *
      * */
-    /**
-     * @private
-     */
+    /** @internal */
     function compose(AxisClass, ChartClass) {
         if (pushUnique(composed, 'Axis.Waterfall')) {
             addEvent(AxisClass, 'init', onAxisInit);
@@ -42,9 +42,7 @@ var WaterfallAxis;
         }
     }
     WaterfallAxis.compose = compose;
-    /**
-     * @private
-     */
+    /** @internal */
     function onAxisAfterBuildStacks() {
         var _a;
         var axis = this, stacks = (_a = axis.waterfall) === null || _a === void 0 ? void 0 : _a.stacks;
@@ -53,9 +51,7 @@ var WaterfallAxis;
             delete stacks.alreadyChanged;
         }
     }
-    /**
-     * @private
-     */
+    /** @internal */
     function onAxisAfterRender() {
         var _a;
         var axis = this, stackLabelOptions = axis.options.stackLabels;
@@ -64,18 +60,14 @@ var WaterfallAxis;
             axis.waterfall.renderStackTotals();
         }
     }
-    /**
-     * @private
-     */
+    /** @internal */
     function onAxisInit() {
         var axis = this;
         if (!axis.waterfall) {
             axis.waterfall = new Composition(axis);
         }
     }
-    /**
-     * @private
-     */
+    /** @internal */
     function onChartBeforeRedraw() {
         var axes = this.axes, series = this.series;
         for (var _i = 0, series_1 = series; _i < series_1.length; _i++) {
@@ -96,6 +88,7 @@ var WaterfallAxis;
      *  Classes
      *
      * */
+    /** @internal */
     var Composition = /** @class */ (function () {
         /* *
          *
@@ -117,7 +110,7 @@ var WaterfallAxis;
          * Calls StackItem.prototype.render function that creates and renders
          * stack total label for each waterfall stack item.
          *
-         * @private
+         * @internal
          * @function Highcharts.Axis#renderWaterfallStackTotals
          */
         Composition.prototype.renderStackTotals = function () {
@@ -150,4 +143,5 @@ var WaterfallAxis;
  *  Default Export
  *
  * */
+/** @internal */
 export default WaterfallAxis;

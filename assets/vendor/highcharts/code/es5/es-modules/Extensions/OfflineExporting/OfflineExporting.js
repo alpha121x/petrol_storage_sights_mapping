@@ -2,11 +2,12 @@
  *
  *  Client side exporting module
  *
- *  (c) 2015 Torstein Honsi / Oystein Moseng
+ *  (c) 2015-2026 Highsoft AS
+ *  Author: Torstein Honsi / Oystein Moseng
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -20,8 +21,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 var __generator = (this && this.__generator) || function (thisArg, body) {
-    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
-    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g = Object.create((typeof Iterator === "function" ? Iterator : Object).prototype);
+    return g.next = verb(0), g["throw"] = verb(1), g["return"] = verb(2), typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
     function verb(n) { return function (v) { return step([n, v]); }; }
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
@@ -50,8 +51,7 @@ import AST from '../../Core/Renderer/HTML/AST.js';
 import Chart from '../../Core/Chart/Chart.js';
 import D from '../../Core/Defaults.js';
 var getOptions = D.getOptions, setOptions = D.setOptions;
-import DownloadURL from '../DownloadURL.js';
-var downloadURL = DownloadURL.downloadURL, getScript = DownloadURL.getScript;
+import { downloadURL, getScript } from '../../Shared/DownloadURL.js';
 import G from '../../Core/Globals.js';
 var composed = G.composed, doc = G.doc, win = G.win;
 import OfflineExportingDefaults from './OfflineExportingDefaults.js';
@@ -72,7 +72,7 @@ var OfflineExporting;
     /**
      * Composition function.
      *
-     * @private
+     * @internal
      * @function compose
      *
      * @param {ExportingClass} ExportingClass
@@ -202,7 +202,7 @@ var OfflineExporting;
      * function processes the SVG, applies necessary font adjustments, converts
      * it to a PDF, and initiates the file download.
      *
-     * @private
+     * @internal
      * @async
      * @function downloadPDF
      *
@@ -255,7 +255,7 @@ var OfflineExporting;
      * It fetches font files (if provided in `pdfFont`), converts them to
      * base64, and registers them with jsPDF.
      *
-     * @private
+     * @internal
      * @function loadPdfFonts
      *
      * @param {SVGElement} svgElement
@@ -297,24 +297,24 @@ var OfflineExporting;
                         }
                         variants = ['normal', 'italic', 'bold', 'bolditalic'];
                         _loop_1 = function (variant) {
-                            var url, response, blob_1, reader_1, base64, e_1;
-                            return __generator(this, function (_b) {
-                                switch (_b.label) {
+                            var url, response, blob_1, reader_1, base64, _b;
+                            return __generator(this, function (_c) {
+                                switch (_c.label) {
                                     case 0:
                                         url = pdfFont === null || pdfFont === void 0 ? void 0 : pdfFont[variant];
                                         if (!url) return [3 /*break*/, 7];
-                                        _b.label = 1;
+                                        _c.label = 1;
                                     case 1:
-                                        _b.trys.push([1, 5, , 6]);
+                                        _c.trys.push([1, 5, , 6]);
                                         return [4 /*yield*/, win.fetch(url)];
                                     case 2:
-                                        response = _b.sent();
+                                        response = _c.sent();
                                         if (!response.ok) {
                                             throw new Error("Failed to fetch font: ".concat(url));
                                         }
                                         return [4 /*yield*/, response.blob()];
                                     case 3:
-                                        blob_1 = _b.sent(), reader_1 = new FileReader();
+                                        blob_1 = _c.sent(), reader_1 = new FileReader();
                                         return [4 /*yield*/, new Promise(function (resolve, reject) {
                                                 reader_1.onloadend = function () {
                                                     if (typeof reader_1.result === 'string') {
@@ -328,14 +328,14 @@ var OfflineExporting;
                                                 reader_1.readAsDataURL(blob_1);
                                             })];
                                     case 4:
-                                        base64 = _b.sent();
+                                        base64 = _c.sent();
                                         addFont(variant, base64);
                                         if (variant === 'normal') {
                                             normalBase64 = base64;
                                         }
                                         return [3 /*break*/, 6];
                                     case 5:
-                                        e_1 = _b.sent();
+                                        _b = _c.sent();
                                         return [3 /*break*/, 6];
                                     case 6: return [3 /*break*/, 8];
                                     case 7:
@@ -343,7 +343,7 @@ var OfflineExporting;
                                         if (normalBase64) {
                                             addFont(variant, normalBase64);
                                         }
-                                        _b.label = 8;
+                                        _c.label = 8;
                                     case 8: return [2 /*return*/];
                                 }
                             });
@@ -371,7 +371,7 @@ var OfflineExporting;
      * a given SVG string, applies font styles inherited from parent elements,
      * and removes text outlines and title elements to improve PDF rendering.
      *
-     * @private
+     * @internal
      * @function preparePDF
      *
      * @param {string} svg
@@ -447,7 +447,7 @@ var OfflineExporting;
      * Transform from PDF to SVG.
      *
      * @async
-     * @private
+     * @internal
      * @function svgToPdf
      *
      * @param {Highcharts.SVGElement} svgElement

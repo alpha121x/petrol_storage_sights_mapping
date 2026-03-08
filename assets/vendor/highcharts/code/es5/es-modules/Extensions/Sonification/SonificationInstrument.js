@@ -1,12 +1,13 @@
 /* *
  *
- *  (c) 2009-2025 Øystein Moseng
+ *  (c) 2009-2026 Highsoft AS
+ *  Author: Øystein Moseng
  *
  *  Class representing an Instrument with mappable parameters for sonification.
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -139,7 +140,7 @@ var SonificationInstrument = /** @class */ (function () {
     };
     /**
      * Schedule a pan value at a given time offset.
-     * @private
+     * @internal
      */
     SonificationInstrument.prototype.setPanAtTime = function (time, pan) {
         if (this.panNode) {
@@ -148,7 +149,7 @@ var SonificationInstrument = /** @class */ (function () {
     };
     /**
      * Schedule a filter configuration at a given time offset.
-     * @private
+     * @internal
      */
     SonificationInstrument.prototype.setFilterAtTime = function (filter, time, frequency, resonance) {
         var node = this[filter + 'Node'], audioTime = this.audioContext.currentTime + time;
@@ -163,7 +164,7 @@ var SonificationInstrument = /** @class */ (function () {
     };
     /**
      * Schedule a volume value at a given time offset.
-     * @private
+     * @internal
      */
     SonificationInstrument.prototype.setVolumeAtTime = function (time, volume) {
         if (this.volumeNode) {
@@ -172,7 +173,7 @@ var SonificationInstrument = /** @class */ (function () {
     };
     /**
      * Schedule a tremolo configuration at a given time offset.
-     * @private
+     * @internal
      */
     SonificationInstrument.prototype.setTremoloAtTime = function (time, depth, speed) {
         var audioTime = this.audioContext.currentTime + time;
@@ -185,7 +186,7 @@ var SonificationInstrument = /** @class */ (function () {
     };
     /**
      * Create audio nodes according to instrument capabilities
-     * @private
+     * @internal
      */
     SonificationInstrument.prototype.createNodesFromCapabilities = function (capabilities) {
         var ctx = this.audioContext;
@@ -216,7 +217,7 @@ var SonificationInstrument = /** @class */ (function () {
     /**
      * Connect audio node chain from output down to input, depending on which
      * nodes exist.
-     * @private
+     * @internal
      */
     SonificationInstrument.prototype.connectCapabilityNodes = function (input, output) {
         [
@@ -233,7 +234,7 @@ var SonificationInstrument = /** @class */ (function () {
     /**
      * Get number of notes from C0 from a string like "F#4"
      * @static
-     * @private
+     * @internal
      */
     SonificationInstrument.noteStringToC0Distance = function (note) {
         var match = note.match(/^([a-g][#b]?)([0-8])$/i), semitone = match ? match[1] : 'a', wholetone = semitone[0].toLowerCase(), accidental = semitone[1], octave = match ? parseInt(match[2], 10) : 4, accidentalOffset = accidental === '#' ?

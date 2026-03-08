@@ -1,6 +1,5 @@
 /* *
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -19,6 +18,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+var _a;
 import Annotation from '../Annotation.js';
 import D from '../../../Core/Defaults.js';
 var defaultOptions = D.defaultOptions;
@@ -26,7 +26,7 @@ import InfinityLine from './InfinityLine.js';
 import MockPoint from '../MockPoint.js';
 import U from '../../../Core/Utilities.js';
 var merge = U.merge;
-if (defaultOptions.annotations) {
+if ((_a = defaultOptions.annotations) === null || _a === void 0 ? void 0 : _a.types) {
     defaultOptions.annotations.types.pitchfork = merge(defaultOptions.annotations.types.infinityLine, 
     /**
      * Options for the pitchfork annotation type.
@@ -39,11 +39,14 @@ if (defaultOptions.annotations) {
      * @optionparent annotations.types.pitchfork
      */
     {
+        /**
+         * @excluding line
+         */
         typeOptions: {
             /**
              * Inner background options.
              *
-             * @extends   annotations.types.crookedLine.shapeOptions
+             * @extends   annotations.shapeOptions
              * @excluding height, r, type, width
              */
             innerBackground: {
@@ -53,7 +56,7 @@ if (defaultOptions.annotations) {
             /**
              * Outer background options.
              *
-             * @extends   annotations.types.crookedLine.shapeOptions
+             * @extends   annotations.shapeOptions
              * @excluding height, r, type, width
              */
             outerBackground: {
@@ -68,6 +71,7 @@ if (defaultOptions.annotations) {
  *  Class
  *
  * */
+/** @internal */
 var Pitchfork = /** @class */ (function (_super) {
     __extends(Pitchfork, _super);
     function Pitchfork() {

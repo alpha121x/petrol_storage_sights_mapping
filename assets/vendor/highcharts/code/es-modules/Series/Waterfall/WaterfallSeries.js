@@ -1,10 +1,11 @@
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -123,12 +124,12 @@ class WaterfallSeries extends ColumnSeries {
     // Return an empty path initially, because we need to know the stroke-width
     // in order to set the final path.
     getGraphPath() {
-        return [['M', 0, 0]];
+        return this.graph?.pathArray || [['M', 0, 0]];
     }
     // Draw columns' connector lines
     getCrispPath() {
         const // Skip points where Y is not a number (#18636)
-        data = this.data.filter((d) => isNumber(d.y)), yAxis = this.yAxis, length = data.length, graphLineWidth = this.graph?.strokeWidth() || 0, reversedXAxis = this.xAxis.reversed, reversedYAxis = this.yAxis.reversed, stacking = this.options.stacking, path = [];
+        data = this.points.filter((d) => isNumber(d.y)), yAxis = this.yAxis, length = data.length, graphLineWidth = this.graph?.strokeWidth() || 0, reversedXAxis = this.xAxis.reversed, reversedYAxis = this.yAxis.reversed, stacking = this.options.stacking, path = [];
         for (let i = 1; i < length; i++) {
             if (!( // Skip lines that would pass over the null point (#18636)
             this.options.connectNulls ||
@@ -147,8 +148,7 @@ class WaterfallSeries extends ColumnSeries {
                 // value
                 let yPos;
                 if (stacking) {
-                    const connectorThreshold = prevStackX.connectorThreshold;
-                    yPos = crisp(yAxis.translate(connectorThreshold, false, true, false, true) +
+                    yPos = crisp(yAxis.translate(prevStackX.connectorThreshold || 0, false, true, false, true) +
                         (reversedYAxis ? isPos : 0), graphLineWidth);
                 }
                 else {
@@ -188,11 +188,9 @@ class WaterfallSeries extends ColumnSeries {
     // crisp rendering.
     drawGraph() {
         LineSeries.prototype.drawGraph.call(this);
-        if (this.graph) {
-            this.graph.attr({
-                d: this.getCrispPath()
-            });
-        }
+        this.graph?.animate({
+            d: this.getCrispPath()
+        });
     }
     // Waterfall has stacking along the x-values too.
     setStackedPoints(axis) {

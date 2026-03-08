@@ -1,14 +1,14 @@
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
-import Axis from '../Core/Axis/Axis.js';
 import Point from '../Core/Series/Point.js';
 var pointTooltipFormatter = Point.prototype.tooltipFormatter;
 import Series from '../Core/Series/Series.js';
@@ -121,6 +121,17 @@ var DataModifyComposition;
      * @function Highcharts.Series#init
      */
     function afterInit() {
+        // If linked series does not have compare option set, use the parent
+        // series' compare option, #21119.
+        var linkedTo = this.options.linkedTo, chart = this.chart;
+        if (linkedTo) {
+            var linkedSeries = linkedTo === ':previous' ?
+                chart.series[this.index - 1] :
+                chart.get(linkedTo);
+            if (linkedSeries instanceof Series) {
+                this.options.compare = pick(this.userOptions.compare, linkedSeries.options.compare);
+            }
+        }
         var compare = this.options.compare;
         var dataModify;
         if (compare === 'percent' ||
@@ -460,7 +471,8 @@ export default DataModifyComposition;
  * or absolute change depending on whether `compare` is set to `"percent"`
  * or `"value"`. When this is applied to multiple series, it allows
  * comparing the development of the series against each other. Adds
- * a `change` field to every point object.
+ * a `change` field to every point object. If a `compare` value is not set on a
+ * linked series, it will be inherited from the parent series.
  *
  * @see [compareBase](#plotOptions.series.compareBase)
  * @see [Axis.setCompare()](/class-reference/Highcharts.Axis#setCompare)

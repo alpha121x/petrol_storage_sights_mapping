@@ -1,13 +1,15 @@
+// SPDX-License-Identifier: LicenseRef-Highcharts
 /**
- * @license Highcharts JS v12.3.0 (2025-06-21)
+ * @license Highcharts JS v12.5.0 (2026-01-12)
  * @module highcharts/highcharts-3d
  * @requires highcharts
  *
  * 3D features for Highcharts JS
  *
- * (c) 2009-2025 Torstein Honsi
+ * (c) 2009-2026 Highsoft AS
  *
- * License: www.highcharts.com/license
+ * A commercial license may be required depending on use.
+ * See www.highcharts.com/license
  */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
@@ -152,11 +154,12 @@ var highcharts_Color_commonjs_highcharts_Color_commonjs2_highcharts_Color_root_H
 ;// ./code/es5/es-modules/Core/Math3D.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -194,13 +197,13 @@ var pick = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_
  * | - sinA * sinB |  cosA  | - sinA * cosB |  x  | y |  =  | py |
  * |  cosA * sinB  |  sinA  |  cosA * cosB  |     | z |     | pz |
  *
- * @private
+ * @internal
  * @function rotate3D
  */
 /* eslint-enable max-len */
 /**
  * Rotates the position as defined in angles.
- * @private
+ * @internal
  * @param {number} x
  *        X coordinate
  * @param {number} y
@@ -224,7 +227,7 @@ function rotate3D(x, y, z, angles) {
 /**
  * Transforms a given array of points according to the angles in chart.options.
  *
- * @private
+ * @internal
  * @function Highcharts.perspective
  *
  * @param {Array<Highcharts.Position3DObject>} points
@@ -293,7 +296,7 @@ function perspective(points, chart, insidePlotArea, useInvertedPersp) {
 /**
  * Perspective3D function is available in global Highcharts scope because is
  * needed also outside of perspective() function (#8042).
- * @private
+ * @internal
  * @function Highcharts.perspective3D
  *
  * @param {Highcharts.Position3DObject} coordinate
@@ -324,7 +327,7 @@ function perspective3D(coordinate, origin, distance) {
  * Calculate a distance from camera to points - made for calculating zIndex of
  * scatter points.
  *
- * @private
+ * @internal
  * @function Highcharts.pointCameraDistance
  *
  * @param {Highcharts.Dictionary<number>} coordinates
@@ -359,7 +362,7 @@ function pointCameraDistance(coordinates, chart) {
  * Calculate area of a 2D polygon using Shoelace algorithm
  * https://en.wikipedia.org/wiki/Shoelace_formula
  *
- * @private
+ * @internal
  * @function Highcharts.shapeArea
  *
  * @param {Array<Highcharts.PositionObject>} vertexes
@@ -383,7 +386,7 @@ function shapeArea(vertexes) {
 /**
  * Calculate area of a 3D polygon after perspective projection
  *
- * @private
+ * @internal
  * @function Highcharts.shapeArea3d
  *
  * @param {Array<Highcharts.Position3DObject>} vertexes
@@ -408,6 +411,7 @@ function shapeArea3D(vertexes, chart, insidePlotArea) {
  *  Default Export
  *
  * */
+/** @internal */
 var Math3D = {
     perspective: perspective,
     perspective3D: perspective3D,
@@ -415,18 +419,20 @@ var Math3D = {
     shapeArea: shapeArea,
     shapeArea3D: shapeArea3D
 };
+/** @internal */
 /* harmony default export */ var Core_Math3D = (Math3D);
 
 ;// ./code/es5/es-modules/Core/Chart/Chart3D.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
  *  Extension for 3D charts
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -457,7 +463,7 @@ var Chart3D;
      * */
     /**
      * @optionparent
-     * @private
+     * @internal
      */
     Chart3D.defaultOptions = {
         chart: {
@@ -626,15 +632,13 @@ var Chart3D;
      *  Functions
      *
      * */
-    /**
-     * @private
-     */
+    /** @internal */
     function compose(ChartClass, FxClass) {
         var chartProto = ChartClass.prototype;
         var fxProto = FxClass.prototype;
         /**
          * Shorthand to check the is3d flag.
-         * @private
+         * @internal
          * @return {boolean}
          * Whether it is a 3D chart.
          */
@@ -646,7 +650,7 @@ var Chart3D;
         chartProto.propsRequireUpdateSeries.push('chart.options3d');
         /**
          * Animation setter for matrix property.
-         * @private
+         * @internal
          */
         fxProto.matrixSetter = function () {
             var interpolated;
@@ -682,7 +686,7 @@ var Chart3D;
     /**
      * Legacy support for HC < 6 to make 'scatter' series in a 3D chart route to
      * the real 'scatter3d' series type. (#8407)
-     * @private
+     * @internal
      */
     function onAddSeries(e) {
         if (this.is3d()) {
@@ -691,9 +695,7 @@ var Chart3D;
             }
         }
     }
-    /**
-     * @private
-     */
+    /** @internal */
     function onAfterDrawChartBox() {
         if (this.chart3d &&
             this.is3d()) {
@@ -1509,7 +1511,7 @@ var Chart3D;
     }
     /**
      * Add the required CSS classes for column sides (#6018)
-     * @private
+     * @internal
      */
     function onAfterGetContainer() {
         if (this.styledMode) {
@@ -1555,7 +1557,7 @@ var Chart3D;
     /**
      * Legacy support for HC < 6 to make 'scatter' series in a 3D chart route to
      * the real 'scatter3d' series type. (#8407)
-     * @private
+     * @internal
      */
     function onAfterInit() {
         var options = this.options;
@@ -1570,9 +1572,7 @@ var Chart3D;
             });
         }
     }
-    /**
-     * @private
-     */
+    /** @internal */
     function onAfterSetChartSize() {
         var chart = this,
             options3d = chart.options.chart.options3d;
@@ -1602,40 +1602,32 @@ var Chart3D;
             chart.chart3d.frame3d = chart.chart3d.get3dFrame(); // #7942
         }
     }
-    /**
-     * @private
-     */
+    /** @internal */
     function onBeforeRedraw() {
         if (this.is3d()) {
             // Set to force a redraw of all elements
             this.isDirtyBox = true;
         }
     }
-    /**
-     * @private
-     */
+    /** @internal */
     function onBeforeRender() {
         if (this.chart3d && this.is3d()) {
             this.chart3d.frame3d = this.chart3d.get3dFrame();
         }
     }
-    /**
-     * @private
-     */
+    /** @internal */
     function onInit() {
         if (!this.chart3d) {
             this.chart3d = new Additions(this);
         }
     }
-    /**
-     * @private
-     */
+    /** @internal */
     function wrapIsInsidePlot(proceed) {
         return this.is3d() || proceed.apply(this, [].slice.call(arguments, 1));
     }
     /**
      * Draw the series in the reverse order (#3803, #3917)
-     * @private
+     * @internal
      */
     function wrapRenderSeries(proceed) {
         var series,
@@ -1651,9 +1643,7 @@ var Chart3D;
             proceed.call(this);
         }
     }
-    /**
-     * @private
-     */
+    /** @internal */
     function wrapSetClassName(proceed) {
         proceed.apply(this, [].slice.call(arguments, 1));
         if (this.is3d()) {
@@ -1671,6 +1661,7 @@ var Chart3D;
              *  Constructors
              *
              * */
+            /** @internal */
             function Additions(chart) {
                 this.chart = chart;
         }
@@ -1679,6 +1670,7 @@ var Chart3D;
          *  Functions
          *
          * */
+        /** @internal */
         Additions.prototype.get3dFrame = function () {
             var chart = this.chart,
                 options3d = chart.options.chart.options3d,
@@ -2019,7 +2011,7 @@ var Chart3D;
          * not practical. Possible to make both getScale and perspective more
          * logical and also immutable.
          *
-         * @private
+         * @internal
          * @function getScale
          *
          * @param {number} depth
@@ -2151,11 +2143,12 @@ var highcharts_SeriesRegistry_commonjs_highcharts_SeriesRegistry_commonjs2_highc
 ;// ./code/es5/es-modules/Series/Area3D/Area3DSeries.js
 /* *
  *
- *  (c) 2010-2025 Grzegorz Blachliński
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Grzegorz Blachliński
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -2255,13 +2248,14 @@ var Area3DSeries = {
 ;// ./code/es5/es-modules/Core/Axis/Axis3DDefaults.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
  *  Extension for 3d axes
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -2387,13 +2381,14 @@ var Axis3DDefaults = {
 ;// ./code/es5/es-modules/Core/Axis/Tick3DComposition.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
  *  Extension for 3d axes
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -2406,27 +2401,21 @@ var Tick3DComposition_addEvent = (highcharts_commonjs_highcharts_commonjs2_highc
  *  Functions
  *
  * */
-/**
- * @private
- */
+/** @internal */
 function Tick3DComposition_compose(TickClass) {
     if (Tick3DComposition_pushUnique(Tick3DComposition_composed, 'Axis.Tick3D')) {
         Tick3DComposition_addEvent(TickClass, 'afterGetLabelPosition', onTickAfterGetLabelPosition);
         Tick3DComposition_wrap(TickClass.prototype, 'getMarkPath', wrapTickGetMarkPath);
     }
 }
-/**
- * @private
- */
+/** @internal */
 function onTickAfterGetLabelPosition(e) {
     var axis3D = this.axis.axis3D;
     if (axis3D) {
         extend(e.pos, axis3D.fix3dPosition(e.pos));
     }
 }
-/**
- * @private
- */
+/** @internal */
 function wrapTickGetMarkPath(proceed) {
     var axis3D = this.axis.axis3D,
         path = proceed.apply(this,
@@ -2453,21 +2442,24 @@ function wrapTickGetMarkPath(proceed) {
  *  Default Export
  *
  * */
+/** @internal */
 var Tick3DAdditions = {
     compose: Tick3DComposition_compose
 };
+/** @internal */
 /* harmony default export */ var Tick3DComposition = (Tick3DAdditions);
 
 ;// ./code/es5/es-modules/Core/Axis/Axis3DComposition.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
  *  Extension for 3d axes
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -2486,9 +2478,7 @@ var Axis3DComposition_addEvent = (highcharts_commonjs_highcharts_commonjs2_highc
  *  Functions
  *
  * */
-/**
- * @private
- */
+/** @internal */
 function onAxisAfterSetOptions() {
     var _a;
     var axis = this,
@@ -2499,9 +2489,7 @@ function onAxisAfterSetOptions() {
         options.gridLineWidth = Axis3DComposition_pick(options.gridLineWidth, 1);
     }
 }
-/**
- * @private
- */
+/** @internal */
 function onAxisDrawCrosshair(e) {
     var axis = this;
     if (axis.chart.is3d() &&
@@ -2513,9 +2501,7 @@ function onAxisDrawCrosshair(e) {
         }
     }
 }
-/**
- * @private
- */
+/** @internal */
 function onAxisInit() {
     var axis = this;
     if (!axis.axis3D) {
@@ -2524,7 +2510,7 @@ function onAxisInit() {
 }
 /**
  * Do not draw axislines in 3D.
- * @private
+ * @internal
  */
 function wrapAxisGetLinePath(proceed) {
     var axis = this;
@@ -2534,9 +2520,7 @@ function wrapAxisGetLinePath(proceed) {
     }
     return [];
 }
-/**
- * @private
- */
+/** @internal */
 function wrapAxisGetPlotBandPath(proceed) {
     // Do not do this if the chart is not 3D
     if (!this.chart.is3d() || this.coll === 'colorAxis') {
@@ -2566,9 +2550,7 @@ function wrapAxisGetPlotBandPath(proceed) {
     }
     return path;
 }
-/**
- * @private
- */
+/** @internal */
 function wrapAxisGetPlotLinePath(proceed) {
     var axis = this,
         axis3D = axis.axis3D,
@@ -2647,7 +2629,7 @@ function wrapAxisGetPlotLinePath(proceed) {
 /**
  * Wrap getSlotWidth function to calculate individual width value for each
  * slot (#8042).
- * @private
+ * @internal
  */
 function wrapAxisGetSlotWidth(proceed, tick) {
     var _a,
@@ -2715,9 +2697,7 @@ function wrapAxisGetSlotWidth(proceed, tick) {
     }
     return proceed.apply(axis, [].slice.call(arguments, 1));
 }
-/**
- * @private
- */
+/** @internal */
 function wrapAxisGetTitlePosition(proceed) {
     var pos = proceed.apply(this,
         [].slice.call(arguments, 1));
@@ -2732,7 +2712,7 @@ function wrapAxisGetTitlePosition(proceed) {
  * */
 /**
  * Adds 3D support to axes.
- * @private
+ * @internal
  * @class
  */
 var Axis3DAdditions = /** @class */ (function () {
@@ -2741,9 +2721,7 @@ var Axis3DAdditions = /** @class */ (function () {
      *  Constructors
      *
      * */
-    /**
-     * @private
-     */
+    /** @internal */
     function Axis3DAdditions(axis) {
         this.axis = axis;
     }
@@ -2754,7 +2732,7 @@ var Axis3DAdditions = /** @class */ (function () {
      * */
     /**
      * Extends axis class with 3D support.
-     * @private
+     * @internal
      */
     Axis3DAdditions.compose = function (AxisClass, TickClass) {
         Tick3DComposition.compose(TickClass);
@@ -2778,7 +2756,7 @@ var Axis3DAdditions = /** @class */ (function () {
      *
      * */
     /**
-     * @private
+     * @internal
      * @param {Highcharts.Axis} axis
      * Related axis.
      * @param {Highcharts.Position3DObject} pos
@@ -2897,9 +2875,6 @@ var Axis3DAdditions = /** @class */ (function () {
             else { // X and Z Axis
                 var sin = Math.sin(alpha);
                 var cos = Math.cos(alpha);
-                if (axis.opposite) {
-                    sin = -sin;
-                }
                 if (reverseFlap) {
                     sin = -sin;
                 }
@@ -2994,9 +2969,7 @@ var Axis3DAdditions = /** @class */ (function () {
         }
         return projected;
     };
-    /**
-     * @private
-     */
+    /** @internal */
     Axis3DAdditions.prototype.swapZ = function (p, insidePlotArea) {
         var axis = this.axis;
         if (axis.isZAxis) {
@@ -3016,6 +2989,7 @@ var Axis3DAdditions = /** @class */ (function () {
  *  Default Export
  *
  * */
+/** @internal */
 /* harmony default export */ var Axis3DComposition = (Axis3DAdditions);
 
 // EXTERNAL MODULE: external {"amd":["highcharts/highcharts","RendererRegistry"],"commonjs":["highcharts","RendererRegistry"],"commonjs2":["highcharts","RendererRegistry"],"root":["Highcharts","RendererRegistry"]}
@@ -3027,13 +3001,14 @@ var highcharts_Series_commonjs_highcharts_Series_commonjs2_highcharts_Series_roo
 ;// ./code/es5/es-modules/Core/Series/Series3D.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
  *  Extension to the Series object in 3D charts.
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -3094,7 +3069,7 @@ var Series3D = /** @class */ (function (_super) {
      * */
     /**
      * Translate the plotX, plotY properties and add plotZ.
-     * @private
+     * @internal
      */
     Series3D.prototype.translate3dPoints = function () {
         var series = this,
@@ -3167,13 +3142,14 @@ var highcharts_StackItem_commonjs_highcharts_StackItem_commonjs2_highcharts_Stac
 ;// ./code/es5/es-modules/Core/Renderer/SVG/SVGElement3D.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
  *  Extensions to the SVGRenderer class to enable 3D shapes
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -3207,6 +3183,7 @@ var defined = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highchar
  *  Class
  *
  * */
+/** @internal */
 var SVGElement3D = /** @class */ (function (_super) {
     SVGElement3D_extends(SVGElement3D, _super);
     function SVGElement3D() {
@@ -3233,7 +3210,7 @@ var SVGElement3D = /** @class */ (function (_super) {
      * */
     /**
      * The init is used by base - renderer.Element
-     * @private
+     * @internal
      */
     SVGElement3D.prototype.initArgs = function (args) {
         var elem3d = this,
@@ -3268,7 +3245,7 @@ var SVGElement3D = /** @class */ (function (_super) {
     };
     /**
      * Single property setter that applies options to each part
-     * @private
+     * @internal
      */
     SVGElement3D.prototype.singleSetterForParts = function (prop, val, values, verb, duration, complete) {
         var elem3d = this,
@@ -3305,7 +3282,7 @@ var SVGElement3D = /** @class */ (function (_super) {
     };
     /**
      * Calls function for each part. Used for attr, animate and destroy.
-     * @private
+     * @internal
      */
     SVGElement3D.prototype.processParts = function (props, partsProps, verb, duration, complete) {
         var elem3d = this;
@@ -3324,13 +3301,14 @@ var SVGElement3D = /** @class */ (function (_super) {
     };
     /**
      * Destroy all parts
-     * @private
+     * @internal
      */
     SVGElement3D.prototype.destroy = function () {
         this.processParts(null, null, 'destroy');
         return _super.prototype.destroy.call(this);
     };
     // Following functions are SVGElement3DCuboid (= base)
+    /** @internal */
     SVGElement3D.prototype.attr = function (args, val, complete, continueAnimation) {
         // Resolve setting attributes by string name
         if (typeof args === 'string' && typeof val !== 'undefined') {
@@ -3343,6 +3321,7 @@ var SVGElement3D = /** @class */ (function (_super) {
         }
         return _super.prototype.attr.call(this, args, void 0, complete, continueAnimation);
     };
+    /** @internal */
     SVGElement3D.prototype.animate = function (args, duration, complete) {
         if (defined(args.x) && defined(args.y)) {
             var paths = this.renderer[this.pathType + 'Path'](args),
@@ -3364,6 +3343,7 @@ var SVGElement3D = /** @class */ (function (_super) {
         }
         return this;
     };
+    /** @internal */
     SVGElement3D.prototype.fillSetter = function (fill) {
         var elem3d = this;
         elem3d.forcedSides = elem3d.forcedSides || [];
@@ -3388,18 +3368,20 @@ var SVGElement3D = /** @class */ (function (_super) {
  *  Default Export
  *
  * */
+/** @internal */
 /* harmony default export */ var SVG_SVGElement3D = (SVGElement3D);
 
 ;// ./code/es5/es-modules/Core/Renderer/SVG/SVGRenderer3D.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
  *  Extensions to the SVGRenderer class to enable 3D shapes
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -3419,6 +3401,7 @@ var SVGRenderer3D_defined = (highcharts_commonjs_highcharts_commonjs2_highcharts
  *  Constants
  *
  * */
+/** @internal */
 var cos = Math.cos, sin = Math.sin, PI = Math.PI, dFactor = (4 * (Math.sqrt(2) - 1) / 3) / (PI / 2);
 /* *
  *
@@ -3428,7 +3411,7 @@ var cos = Math.cos, sin = Math.sin, PI = Math.PI, dFactor = (4 * (Math.sqrt(2) -
 /**
  * Method to construct a curved path. Can 'wrap' around more then 180
  * degrees.
- * @private
+ * @internal
  */
 function curveTo(cx, cy, rx, ry, start, end, dx, dy) {
     var arcAngle = end - start;
@@ -3462,6 +3445,7 @@ function curveTo(cx, cy, rx, ry, start, end, dx, dy) {
  *  Composition
  *
  * */
+/** @internal */
 var SVGRenderer3D;
 (function (SVGRenderer3D) {
     /* *
@@ -3474,7 +3458,7 @@ var SVGRenderer3D;
      *  Functions
      *
      * */
-    /** @private */
+    /** @internal */
     function compose(SVGRendererClass) {
         var rendererProto = SVGRendererClass.prototype;
         if (!rendererProto.element3d) {
@@ -3498,7 +3482,7 @@ var SVGRenderer3D;
      *  Functions
      *
      * */
-    /** @private */
+    /** @internal */
     function toLinePath(points, closed) {
         var result = [];
         // Put "L x y" for each point
@@ -3516,7 +3500,7 @@ var SVGRenderer3D;
         }
         return result;
     }
-    /** @private */
+    /** @internal */
     function toLineSegments(points) {
         var result = [];
         var m = true;
@@ -3531,7 +3515,7 @@ var SVGRenderer3D;
      * A 3-D Face is defined by it's 3D vertexes, and is only visible if it's
      * vertexes are counter-clockwise (Back-face culling). It is used as a
      * polyhedron Element.
-     * @private
+     * @internal
      */
     function face3d(args) {
         var renderer = this,
@@ -3597,7 +3581,7 @@ var SVGRenderer3D;
      * A Polyhedron is a handy way of defining a group of 3-D faces. It's only
      * attribute is `faces`, an array of attributes of each one of it's Face3D
      * instances.
-     * @private
+     * @internal
      */
     function polyhedron(args) {
         var renderer = this,
@@ -3654,7 +3638,7 @@ var SVGRenderer3D;
     }
     /**
      * Return result, generalization
-     * @private
+     * @internal
      * @requires highcharts-3d
      */
     function element3d(type, shapeArgs) {
@@ -3664,14 +3648,14 @@ var SVGRenderer3D;
     }
     /**
      * Generalized, so now use simply
-     * @private
+     * @internal
      */
     function cuboid(shapeArgs) {
         return this.element3d('cuboid', shapeArgs);
     }
     /**
      * Generates a cuboid path and zIndexes
-     * @private
+     * @internal
      */
     function cuboidPath(shapeArgs) {
         var x = shapeArgs.x || 0, y = shapeArgs.y || 0, z = shapeArgs.z || 0, 
@@ -3725,7 +3709,7 @@ var SVGRenderer3D;
         pArr = SVGRenderer3D_perspective(pArr, chart, shapeArgs.insidePlotArea);
         /**
          * Helper method to decide which side is visible
-         * @private
+         * @internal
          */
         var mapSidePath = function (i) {
                 // Added support for 0 value in columns, where height is 0
@@ -3770,7 +3754,7 @@ var SVGRenderer3D;
         }, 
         /**
          * Method creating the final side
-         * @private
+         * @internal
          */
         mapPath = function (i) { return (pArr[i]); }, 
         /**
@@ -3780,7 +3764,7 @@ var SVGRenderer3D;
          *                 path2 and -1 for no path chosen.
          * Third value - string containing information about current side of
          *               cuboid for forcing side rendering.
-         * @private
+         * @internal
          */
         pickShape = function (verticesIndex1, verticesIndex2, side) {
             var // An array of vertices for cuboid face
@@ -3870,7 +3854,7 @@ var SVGRenderer3D;
             isTop: isTop
         }; // #4774
     }
-    /** @private */
+    /** @internal */
     function arc3d(attribs) {
         var renderer = this, wrapper = renderer.g(), elementProto = renderer.Element.prototype, customAttribs = [
                 'alpha', 'beta',
@@ -3879,7 +3863,7 @@ var SVGRenderer3D;
         /**
          * Get custom attributes. Don't mutate the original object and return an
          * object with only custom attr.
-         * @private
+         * @internal
          */
         function extractCustom(params) {
             var ca = {};
@@ -3935,7 +3919,7 @@ var SVGRenderer3D;
         }
         /**
          * Compute the transformed paths and set them to the composite shapes
-         * @private
+         * @internal
          */
         wrapper.setPaths = function (attribs) {
             var paths = wrapper.renderer.arc3dPath(attribs),
@@ -3958,7 +3942,7 @@ var SVGRenderer3D;
         wrapper.setPaths(attribs);
         /**
          * Apply the fill to the top and a darker shade to the sides
-         * @private
+         * @internal
          */
         wrapper.fillSetter = function (value) {
             var darker = SVGRenderer3D_color(value).brighten(-0.1).get();
@@ -4078,7 +4062,7 @@ var SVGRenderer3D;
     }
     /**
      * Generate the paths required to draw a 3D arc.
-     * @private
+     * @internal
      */
     function arc3dPath(shapeArgs) {
         var cx = shapeArgs.x || 0, // X coordinate of the center
@@ -4251,7 +4235,7 @@ var SVGRenderer3D;
             angleMid = Math.abs((start + end) / 2 + angleCorr);
         /**
          * Set to 0-PI range
-         * @private
+         * @internal
          */
         function toZeroPIRange(angle) {
             angle = angle % (2 * Math.PI);
@@ -4289,6 +4273,7 @@ var SVGRenderer3D;
  *  Default Export
  *
  * */
+/** @internal */
 /* harmony default export */ var SVG_SVGRenderer3D = (SVGRenderer3D);
 
 // EXTERNAL MODULE: external {"amd":["highcharts/highcharts","Axis"],"commonjs":["highcharts","Axis"],"commonjs2":["highcharts","Axis"],"root":["Highcharts","Axis"]}
@@ -4297,11 +4282,12 @@ var highcharts_Axis_commonjs_highcharts_Axis_commonjs2_highcharts_Axis_root_High
 ;// ./code/es5/es-modules/Core/Axis/ZAxis.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -4334,15 +4320,13 @@ var ZAxis_addEvent = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_H
  *  Functions
  *
  * */
-/**
- * @private
- */
+/** @internal */
 function chartAddZAxis(options) {
     return new ZAxis(this, options);
 }
 /**
  * Get the Z axis in addition to the default X and Y.
- * @private
+ * @internal
  */
 function onChartAfterCreateAxes() {
     var _this = this;
@@ -4362,7 +4346,6 @@ function onChartAfterCreateAxes() {
  * */
 /**
  * 3D axis for z coordinates.
- * @private
  */
 var ZAxis = /** @class */ (function (_super) {
     ZAxis_extends(ZAxis, _super);
@@ -4377,6 +4360,7 @@ var ZAxis = /** @class */ (function (_super) {
         _this.isZAxis = true;
         return _this;
     }
+    /** @internal */
     ZAxis.compose = function (ChartClass) {
         var chartProto = ChartClass.prototype;
         if (!chartProto.addZAxis) {
@@ -4405,6 +4389,7 @@ var ZAxis = /** @class */ (function (_super) {
      *  Functions
      *
      * */
+    /** @internal */
     ZAxis.prototype.getSeriesExtremes = function () {
         var _this = this;
         this.hasVisibleSeries = false;
@@ -4430,9 +4415,7 @@ var ZAxis = /** @class */ (function (_super) {
             }
         });
     };
-    /**
-     * @private
-     */
+    /** @internal */
     ZAxis.prototype.setAxisSize = function () {
         var _a;
         var chart = this.chart;
@@ -4452,11 +4435,12 @@ var ZAxis = /** @class */ (function (_super) {
 ;// ./code/es5/es-modules/Series/Column3D/Column3DComposition.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -4650,7 +4634,7 @@ function onColumnSeriesAfterInit() {
         // @todo grouping === true ?
         if (!(typeof grouping !== 'undefined' && !grouping)) {
             var stacks = retrieveStacks(this.chart,
-                stacking),
+                stacking || void 0),
                 stack = seriesOptions.stack || 0;
             var i = // Position within the stack
                  void 0; // Position within the stack
@@ -4979,13 +4963,14 @@ var Column3DComposition = {
 ;// ./code/es5/es-modules/Series/Pie3D/Pie3DPoint.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
  *  3D pie series
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -5045,13 +5030,14 @@ var Pie3DPoint = /** @class */ (function (_super) {
 ;// ./code/es5/es-modules/Series/Pie3D/Pie3DSeries.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
  *  3D pie series
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -5307,13 +5293,14 @@ var highcharts_Series_types_scatter_commonjs_highcharts_Series_types_scatter_com
 ;// ./code/es5/es-modules/Series/Scatter3D/Scatter3DPoint.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
  *  Scatter 3D series.
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -5374,13 +5361,14 @@ var Scatter3DPoint = /** @class */ (function (_super) {
 ;// ./code/es5/es-modules/Series/Scatter3D/Scatter3DSeriesDefaults.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
  *  Scatter 3D series.
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -5494,13 +5482,14 @@ var Scatter3DSeriesDefaults = {
 ;// ./code/es5/es-modules/Series/Scatter3D/Scatter3DSeries.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
  *  Scatter 3D series.
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 

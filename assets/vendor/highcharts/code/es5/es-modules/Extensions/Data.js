@@ -2,11 +2,12 @@
  *
  *  Data module
  *
- *  (c) 2012-2025 Torstein Honsi
+ *  (c) 2012-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -28,9 +29,7 @@ var addEvent = U.addEvent, defined = U.defined, extend = U.extend, fireEvent = U
  *  Functions
  *
  * */
-/**
- * @private
- */
+/** @internal */
 function getFreeIndexes(numberOfColumns, seriesBuilders) {
     var freeIndexes = [], freeIndexValues = [];
     var s, i, referencedIndexes;
@@ -87,6 +86,10 @@ var Data = /** @class */ (function () {
      * */
     function Data(dataOptions, chartOptions, chart) {
         if (chartOptions === void 0) { chartOptions = {}; }
+        /**
+         * A collection of two-dimensional arrays.
+         * @internal
+         */
         this.rowsToColumns = Data.rowsToColumns; // Backwards compatibility
         /**
          * A collection of available date formats, extendable from the outside to
@@ -198,7 +201,7 @@ var Data = /** @class */ (function () {
     /**
      * Initialize the Data object with the given options
      *
-     * @private
+     * @internal
      * @function Highcharts.Data#init
      */
     Data.prototype.init = function (dataOptions, chartOptions, chart) {
@@ -341,7 +344,7 @@ var Data = /** @class */ (function () {
      * When the data is parsed into columns, either by CSV, table, GS or direct
      * input, continue with other operations.
      *
-     * @private
+     * @internal
      * @function Highcharts.Data#dataFound
      */
     Data.prototype.dataFound = function () {
@@ -412,12 +415,12 @@ var Data = /** @class */ (function () {
         */
         /**
          * Parse a single row.
-         * @private
+         * @internal
          */
         function parseRow(columnStr, rowNumber, noAdd, callbacks) {
             var i = 0, c = '', cl = '', cn = '', token = '', actualColumn = 0, column = 0;
             /**
-             * @private
+             * @internal
              */
             function read(j) {
                 c = columnStr[j];
@@ -425,7 +428,7 @@ var Data = /** @class */ (function () {
                 cn = columnStr[j + 1];
             }
             /**
-             * @private
+             * @internal
              */
             function pushType(type) {
                 if (dataTypes.length < column + 1) {
@@ -436,7 +439,7 @@ var Data = /** @class */ (function () {
                 }
             }
             /**
-             * @private
+             * @internal
              */
             function push() {
                 if (startColumn > actualColumn || actualColumn > endColumn) {
@@ -511,7 +514,7 @@ var Data = /** @class */ (function () {
          * Attempt to guess the delimiter. We do a separate parse pass here
          * because we need to count potential delimiters softly without making
          * any assumptions.
-         * @private
+         * @internal
          */
         function guessDelimiter(lines) {
             var points = 0, commas = 0, guessed = false;
@@ -606,7 +609,7 @@ var Data = /** @class */ (function () {
          *  - Check if a shortened year format is used (e.g. 1/1/99)
          *  - If no guess can be made, the user must be prompted
          * data is the data to deduce a format based on
-         * @private
+         * @internal
          */
         function deduceDateFormat(data, limit) {
             var _a;
@@ -823,12 +826,12 @@ var Data = /** @class */ (function () {
         delete options.rowsURL;
         delete options.columnsURL;
         /**
-         * @private
+         * @internal
          */
         function performFetch(initialFetch) {
             /**
              * Helper function for doing the data fetch + polling.
-             * @private
+             * @internal
              */
             function request(url, done, tp) {
                 if (!url ||
@@ -843,7 +846,7 @@ var Data = /** @class */ (function () {
                     chart.liveDataURL = url;
                 }
                 /**
-                 * @private
+                 * @internal
                  */
                 function poll() {
                     // Poll
@@ -928,7 +931,7 @@ var Data = /** @class */ (function () {
         };
         /**
          * Fetch the actual spreadsheet using XMLHttpRequest.
-         * @private
+         * @internal
          */
         function fetchSheet(fn) {
             var url = [
@@ -1372,7 +1375,7 @@ var Data = /** @class */ (function () {
     /**
      * Sets properties directly on the xAxis object.
      *
-     * @private
+     * @internal
      */
     Data.prototype.xAxisUpdateHandler = function (axis) {
         var options = this.xAxisOptions;
@@ -1503,7 +1506,7 @@ addEvent(Chart, 'init', function (e) {
  * The name of the builder is taken from the second column. In the above
  * example it would be the column with index 7.
  *
- * @private
+ * @internal
  * @class
  * @name SeriesBuilder
  */

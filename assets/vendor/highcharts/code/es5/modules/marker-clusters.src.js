@@ -1,13 +1,16 @@
+// SPDX-License-Identifier: LicenseRef-Highcharts
 /**
- * @license Highcharts JS v12.3.0 (2025-06-21)
+ * @license Highcharts JS v12.5.0 (2026-01-12)
  * @module highcharts/modules/marker-clusters
  * @requires highcharts
  *
  * Marker clusters module for Highcharts
  *
- * (c) 2010-2025 Wojciech Chmiel
+ * (c) 2010-2026 Highsoft AS
+ * Author: Wojciech Chmiel
  *
- * License: www.highcharts.com/license
+ * A commercial license may be required depending on use.
+ * See www.highcharts.com/license
  */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
@@ -102,13 +105,13 @@ var highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default 
  *
  *  Marker clusters module.
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
  *
  *  Author: Wojciech Chmiel
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -141,7 +144,7 @@ var highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default 
  * @since 8.0.0
  * @optionparent plotOptions.scatter.cluster
  *
- * @private
+ * @internal
  */
 var cluster = {
     /**
@@ -439,11 +442,11 @@ var MarkerClusterDefaults = {
 ;// ./code/es5/es-modules/Data/ColumnUtils.js
 /* *
  *
- *  (c) 2020-2025 Highsoft AS
+ *  (c) 2020-2026 Highsoft AS
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  *  Authors:
  *  - Dawid Dragula
@@ -486,7 +489,7 @@ var ColumnUtils;
      * @param {boolean} asSubarray
      * If column is a typed array, return a subarray instead of a new array. It
      * is faster `O(1)`, but the entire buffer will be kept in memory until all
-     * views to it are destroyed. Default is `false`.
+     * views of it are destroyed. Default is `false`.
      *
      * @return {DataTable.Column}
      * Modified column.
@@ -554,6 +557,33 @@ var ColumnUtils;
         };
     }
     ColumnUtils.splice = splice;
+    /**
+     * Converts a cell value to a number.
+     *
+     * @param {DataTable.CellType} value
+     * Cell value to convert to a number.
+     *
+     * @param {boolean} useNaN
+     * If `true`, returns `NaN` for non-numeric values; if `false`,
+     * returns `null` instead.
+     *
+     * @return {number | null}
+     * Number or `null` if the value is not a number.
+     *
+     * @private
+     */
+    function convertToNumber(value, useNaN) {
+        switch (typeof value) {
+            case 'boolean':
+                return (value ? 1 : 0);
+            case 'number':
+                return (isNaN(value) && !useNaN ? null : value);
+            default:
+                value = parseFloat("".concat(value !== null && value !== void 0 ? value : ''));
+                return (isNaN(value) && !useNaN ? null : value);
+        }
+    }
+    ColumnUtils.convertToNumber = convertToNumber;
 })(ColumnUtils || (ColumnUtils = {}));
 /* *
  *
@@ -565,11 +595,11 @@ var ColumnUtils;
 ;// ./code/es5/es-modules/Data/DataTableCore.js
 /* *
  *
- *  (c) 2009-2025 Highsoft AS
+ *  (c) 2009-2026 Highsoft AS
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  *  Authors:
  *  - Sophie Bremer
@@ -633,12 +663,11 @@ var DataTableCore = /** @class */ (function () {
          * @type {string}
          */
         this.id = (options.id || uniqueKey());
-        this.modified = this;
         this.rowCount = 0;
         this.versionTag = uniqueKey();
         var rowCount = 0;
-        objectEach(options.columns || {}, function (column, columnName) {
-            _this.columns[columnName] = column.slice();
+        objectEach(options.columns || {}, function (column, columnId) {
+            _this.columns[columnId] = column.slice();
             rowCount = Math.max(rowCount, column.length);
         });
         this.applyRowCount(rowCount);
@@ -658,9 +687,9 @@ var DataTableCore = /** @class */ (function () {
     DataTableCore.prototype.applyRowCount = function (rowCount) {
         var _this = this;
         this.rowCount = rowCount;
-        objectEach(this.columns, function (column, columnName) {
+        objectEach(this.columns, function (column, columnId) {
             if (column.length !== rowCount) {
-                _this.columns[columnName] = setLength(column, rowCount);
+                _this.columns[columnId] = setLength(column, rowCount);
             }
         });
     };
@@ -683,8 +712,8 @@ var DataTableCore = /** @class */ (function () {
         if (rowCount === void 0) { rowCount = 1; }
         if (rowCount > 0 && rowIndex < this.rowCount) {
             var length_1 = 0;
-            objectEach(this.columns, function (column, columnName) {
-                _this.columns[columnName] =
+            objectEach(this.columns, function (column, columnId) {
+                _this.columns[columnId] =
                     splice(column, rowIndex, rowCount).array;
                 length_1 = column.length;
             });
@@ -697,34 +726,34 @@ var DataTableCore = /** @class */ (function () {
      * Fetches the given column by the canonical column name. Simplified version
      * of the full `DataTable.getRow` method, always returning by reference.
      *
-     * @param {string} columnName
+     * @param {string} columnId
      * Name of the column to get.
      *
      * @return {Highcharts.DataTableColumn|undefined}
      * A copy of the column, or `undefined` if not found.
      */
-    DataTableCore.prototype.getColumn = function (columnName, 
+    DataTableCore.prototype.getColumn = function (columnId, 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     asReference) {
-        return this.columns[columnName];
+        return this.columns[columnId];
     };
     /**
      * Retrieves all or the given columns. Simplified version of the full
      * `DataTable.getColumns` method, always returning by reference.
      *
-     * @param {Array<string>} [columnNames]
-     * Column names to retrieve.
+     * @param {Array<string>} [columnIds]
+     * Column ids to retrieve.
      *
      * @return {Highcharts.DataTableColumnCollection}
      * Collection of columns. If a requested column was not found, it is
      * `undefined`.
      */
-    DataTableCore.prototype.getColumns = function (columnNames, 
+    DataTableCore.prototype.getColumns = function (columnIds, 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     asReference) {
         var _this = this;
-        return (columnNames || Object.keys(this.columns)).reduce(function (columns, columnName) {
-            columns[columnName] = _this.columns[columnName];
+        return (columnIds || Object.keys(this.columns)).reduce(function (columns, columnId) {
+            columns[columnId] = _this.columns[columnId];
             return columns;
         }, {});
     };
@@ -734,20 +763,20 @@ var DataTableCore = /** @class */ (function () {
      * @param {number} rowIndex
      * Row index to retrieve. First row has index 0.
      *
-     * @param {Array<string>} [columnNames]
+     * @param {Array<string>} [columnIds]
      * Column names to retrieve.
      *
      * @return {Record<string, number|string|undefined>|undefined}
      * Returns the row values, or `undefined` if not found.
      */
-    DataTableCore.prototype.getRow = function (rowIndex, columnNames) {
+    DataTableCore.prototype.getRow = function (rowIndex, columnIds) {
         var _this = this;
-        return (columnNames || Object.keys(this.columns)).map(function (key) { var _a; return (_a = _this.columns[key]) === null || _a === void 0 ? void 0 : _a[rowIndex]; });
+        return (columnIds || Object.keys(this.columns)).map(function (key) { var _a; return (_a = _this.columns[key]) === null || _a === void 0 ? void 0 : _a[rowIndex]; });
     };
     /**
      * Sets cell values for a column. Will insert a new column, if not found.
      *
-     * @param {string} columnName
+     * @param {string} columnId
      * Column name to set.
      *
      * @param {Highcharts.DataTableColumn} [column]
@@ -762,11 +791,11 @@ var DataTableCore = /** @class */ (function () {
      * @emits #setColumns
      * @emits #afterSetColumns
      */
-    DataTableCore.prototype.setColumn = function (columnName, column, rowIndex, eventDetail) {
+    DataTableCore.prototype.setColumn = function (columnId, column, rowIndex, eventDetail) {
         var _a;
         if (column === void 0) { column = []; }
         if (rowIndex === void 0) { rowIndex = 0; }
-        this.setColumns((_a = {}, _a[columnName] = column, _a), rowIndex, eventDetail);
+        this.setColumns((_a = {}, _a[columnId] = column, _a), rowIndex, eventDetail);
     };
     /**
      * Sets cell values for multiple columns. Will insert new columns, if not
@@ -789,8 +818,8 @@ var DataTableCore = /** @class */ (function () {
     DataTableCore.prototype.setColumns = function (columns, rowIndex, eventDetail) {
         var _this = this;
         var rowCount = this.rowCount;
-        objectEach(columns, function (column, columnName) {
-            _this.columns[columnName] = column.slice();
+        objectEach(columns, function (column, columnId) {
+            _this.columns[columnId] = column.slice();
             rowCount = column.length;
         });
         this.applyRowCount(rowCount);
@@ -821,18 +850,30 @@ var DataTableCore = /** @class */ (function () {
     DataTableCore.prototype.setRow = function (row, rowIndex, insert, eventDetail) {
         if (rowIndex === void 0) { rowIndex = this.rowCount; }
         var columns = this.columns,
-            indexRowCount = insert ? this.rowCount + 1 : rowIndex + 1;
-        objectEach(row, function (cellValue, columnName) {
-            var column = columns[columnName] ||
-                    (eventDetail === null || eventDetail === void 0 ? void 0 : eventDetail.addColumns) !== false && new Array(indexRowCount);
+            indexRowCount = insert ? this.rowCount + 1 : rowIndex + 1,
+            rowKeys = Object.keys(row);
+        if ((eventDetail === null || eventDetail === void 0 ? void 0 : eventDetail.addColumns) !== false) {
+            for (var i = 0, iEnd = rowKeys.length; i < iEnd; i++) {
+                var key = rowKeys[i];
+                if (!columns[key]) {
+                    columns[key] = [];
+                }
+            }
+        }
+        objectEach(columns, function (column, columnId) {
+            var _a,
+                _b;
+            if (!column && (eventDetail === null || eventDetail === void 0 ? void 0 : eventDetail.addColumns) !== false) {
+                column = new Array(indexRowCount);
+            }
             if (column) {
                 if (insert) {
-                    column = splice(column, rowIndex, 0, true, [cellValue]).array;
+                    column = splice(column, rowIndex, 0, true, [(_a = row[columnId]) !== null && _a !== void 0 ? _a : null]).array;
                 }
                 else {
-                    column[rowIndex] = cellValue;
+                    column[rowIndex] = (_b = row[columnId]) !== null && _b !== void 0 ? _b : null;
                 }
-                columns[columnName] = column;
+                columns[columnId] = column;
             }
         });
         if (indexRowCount > this.rowCount) {
@@ -842,6 +883,16 @@ var DataTableCore = /** @class */ (function () {
             fireEvent(this, 'afterSetRows');
             this.versionTag = uniqueKey();
         }
+    };
+    /**
+     * Returns the modified (clone) or the original data table if the modified
+     * one does not exist.
+     *
+     * @return {Highcharts.DataTableCore}
+     * The modified (clone) or the original data table.
+     */
+    DataTableCore.prototype.getModified = function () {
+        return this.modified || this;
     };
     return DataTableCore;
 }());
@@ -890,13 +941,13 @@ var DataTableCore = /** @class */ (function () {
  *
  *  Marker clusters module.
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
  *
  *  Author: Wojciech Chmiel
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -1143,7 +1194,7 @@ var baseGeneratePoints,
 /**
  * Points that ids are included in the oldPointsStateId array are hidden
  * before animation. Other ones are destroyed.
- * @private
+ * @internal
  */
 oldPointsStateId = [], stateIdCounter = 0;
 /* *
@@ -1151,7 +1202,7 @@ oldPointsStateId = [], stateIdCounter = 0;
  *  Functions
  *
  * */
-/** @private */
+/** @internal */
 function compose(highchartsDefaultOptions, ScatterSeriesClass) {
     var scatterProto = ScatterSeriesClass.prototype;
     if (!scatterProto.markerClusterAlgorithms) {
@@ -1179,7 +1230,7 @@ function compose(highchartsDefaultOptions, ScatterSeriesClass) {
 }
 /**
  * Util function.
- * @private
+ * @internal
  */
 function destroyOldPoints(oldState) {
     var _a,
@@ -1191,14 +1242,14 @@ function destroyOldPoints(oldState) {
 }
 /**
  * Util function.
- * @private
+ * @internal
  */
 function fadeInElement(elem, opacity, animation) {
     elem.attr({ opacity: opacity }).animate({ opacity: 1 }, animation);
 }
 /**
  * Util function.
- * @private
+ * @internal
  */
 function fadeInNewPointAndDestoryOld(newPointObj, oldPoints, animation, opacity) {
     var _a,
@@ -1213,7 +1264,7 @@ function fadeInNewPointAndDestoryOld(newPointObj, oldPoints, animation, opacity)
 }
 /**
  * Util function.
- * @private
+ * @internal
  */
 function fadeInStatePoint(stateObj, opacity, animation, fadeinGraphic, fadeinDataLabel) {
     if (stateObj.point) {
@@ -1229,7 +1280,7 @@ function fadeInStatePoint(stateObj, opacity, animation, fadeinGraphic, fadeinDat
 }
 /**
  * Util function.
- * @private
+ * @internal
  */
 function getClusterPosition(points) {
     var pointsLen = points.length;
@@ -1247,7 +1298,7 @@ function getClusterPosition(points) {
 /**
  * Util function.Prepare array with sorted data objects to be compared in
  * getPointsState method.
- * @private
+ * @internal
  */
 function getDataState(clusteredData, stateDataLen) {
     var state = [];
@@ -1264,14 +1315,14 @@ function getDataState(clusteredData, stateDataLen) {
 }
 /**
  * Util function. Generate unique stateId for a state element.
- * @private
+ * @internal
  */
 function getStateId() {
     return Math.random().toString(36).substring(2, 7) + '-' + stateIdCounter++;
 }
 /**
  * Util function.
- * @private
+ * @internal
  */
 function hideStatePoint(stateObj, hideGraphic, hideDataLabel) {
     if (stateObj.point) {
@@ -1283,7 +1334,7 @@ function hideStatePoint(stateObj, hideGraphic, hideDataLabel) {
         }
     }
 }
-/** @private */
+/** @internal */
 function onPointDrillToCluster(event) {
     var point = event.point || event.target;
     point.firePointEvent('drillToCluster', event, function (e) {
@@ -1358,7 +1409,7 @@ function onPointDrillToCluster(event) {
 }
 /**
  * Util function.
- * @private
+ * @internal
  */
 function pixelsToValues(series, pos) {
     var chart = series.chart,
@@ -1372,7 +1423,7 @@ function pixelsToValues(series, pos) {
         y: yAxis ? yAxis.toValue(pos.y) : 0
     };
 }
-/** @private */
+/** @internal */
 function seriesAnimateClusterPoint(clusterObj) {
     var _a,
         _b,
@@ -1507,7 +1558,7 @@ function seriesAnimateClusterPoint(clusterObj) {
 }
 /**
  * Destroy clustered data points.
- * @private
+ * @internal
  */
 function seriesDestroyClusteredData() {
     var _a;
@@ -1520,7 +1571,7 @@ function seriesDestroyClusteredData() {
 }
 /**
  * Override the generatePoints method by adding a reference to grouped data.
- * @private
+ * @internal
  */
 function seriesGeneratePoints() {
     var _a,
@@ -1701,7 +1752,7 @@ function seriesGeneratePoints() {
         baseGeneratePoints.apply(this);
     }
 }
-/** @private */
+/** @internal */
 function seriesGetClusterDistancesFromPoint(clusters, pointX, pointY) {
     var pointClusterDistance = [];
     for (var clusterIndex = 0; clusterIndex < clusters.length; clusterIndex++) {
@@ -1717,7 +1768,7 @@ function seriesGetClusterDistancesFromPoint(clusters, pointX, pointY) {
     }
     return pointClusterDistance.sort(function (a, b) { return a.distance - b.distance; });
 }
-/** @private */
+/** @internal */
 function seriesGetClusteredData(groupedData, options) {
     var series = this,
         data = series.options.data,
@@ -1867,7 +1918,7 @@ function seriesGetClusteredData(groupedData, options) {
         groupMap: groupMap
     };
 }
-/** @private */
+/** @internal */
 function seriesGetGridOffset() {
     var series = this,
         chart = series.chart,
@@ -1894,7 +1945,7 @@ function seriesGetGridOffset() {
 /**
  * Point state used when animation is enabled to compare and bind old points
  * with new ones.
- * @private
+ * @internal
  */
 function seriesGetPointsState(clusteredData, oldMarkerClusterInfo, dataLength) {
     var _a;
@@ -1942,7 +1993,7 @@ function seriesGetPointsState(clusteredData, oldMarkerClusterInfo, dataLength) {
     }
     return state;
 }
-/** @private */
+/** @internal */
 function seriesGetRealExtremes() {
     var chart = this.chart,
         x = chart.mapView ? 0 : chart.plotLeft,
@@ -1966,7 +2017,7 @@ function seriesGetRealExtremes() {
         maxY: Math.max(realMinY, realMaxY)
     };
 }
-/** @private */
+/** @internal */
 function seriesGetScaledGridSize(options) {
     var series = this,
         xAxis = series.xAxis,
@@ -2009,7 +2060,7 @@ function seriesGetScaledGridSize(options) {
 }
 /**
  * Hide clustered data points.
- * @private
+ * @internal
  */
 function seriesHideClusteredData() {
     var _a,
@@ -2036,7 +2087,7 @@ function seriesHideClusteredData() {
 }
 /**
  * Check if user algorithm result is valid groupedDataObject.
- * @private
+ * @internal
  */
 function seriesIsValidGroupedDataObject(groupedData) {
     var result = false;
@@ -2058,7 +2109,7 @@ function seriesIsValidGroupedDataObject(groupedData) {
     });
     return result;
 }
-/** @private */
+/** @internal */
 function seriesPreventClusterCollisions(props) {
     var _a;
     var _b,
@@ -2181,7 +2232,7 @@ function seriesPreventClusterCollisions(props) {
 }
 /**
  * Util function.
- * @private
+ * @internal
  */
 function valuesToPixels(series, pos) {
     var chart = series.chart,
@@ -2210,13 +2261,13 @@ var MarkerClusterScatter = {
  *
  *  Marker clusters module.
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
  *
  *  Author: Wojciech Chmiel
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -2241,7 +2292,7 @@ var MarkerClusters_addEvent = (highcharts_commonjs_highcharts_commonjs2_highchar
  *  Functions
  *
  * */
-/** @private */
+/** @internal */
 function MarkerClusters_compose(AxisClass, ChartClass, highchartsDefaultOptions, SeriesClass) {
     if (pushUnique(composed, 'MarkerClusters')) {
         var PointClass = SeriesClass.prototype.pointClass,
@@ -2259,7 +2310,7 @@ function MarkerClusters_compose(AxisClass, ChartClass, highchartsDefaultOptions,
 }
 /**
  * Destroy the old tooltip after zoom.
- * @private
+ * @internal
  */
 function onAxisSetExtremes() {
     var chart = this.chart;
@@ -2279,7 +2330,7 @@ function onAxisSetExtremes() {
 }
 /**
  * Handle animation.
- * @private
+ * @internal
  */
 function onChartRender() {
     var _a;
@@ -2308,7 +2359,7 @@ function onChartRender() {
         }
     }
 }
-/** @private */
+/** @internal */
 function MarkerClusters_onPointDrillToCluster(event) {
     var point = event.point || event.target,
         series = point.series,
@@ -2321,7 +2372,7 @@ function MarkerClusters_onPointDrillToCluster(event) {
 /**
  * Override point prototype to throw a warning when trying to update
  * clustered point.
- * @private
+ * @internal
  */
 function onPointUpdate() {
     var point = this;
@@ -2334,7 +2385,7 @@ function onPointUpdate() {
 }
 /**
  * Add classes, change mouse cursor.
- * @private
+ * @internal
  */
 function onSeriesAfterRender() {
     var series = this,
@@ -2396,13 +2447,13 @@ var MarkerClusters = {
  *
  *  Marker clusters module.
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
  *
  *  Author: Wojciech Chmiel
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -2419,7 +2470,7 @@ var symbols;
  * */
 /**
  * Cluster symbol.
- * @private
+ * @internal
  */
 function MarkerClusterSymbols_cluster(x, y, width, height) {
     var w = width / 2, h = height / 2, outerWidth = 1, space = 1, inner = symbols.arc(x + w, y + h, w - space * 4, h - space * 4, {
@@ -2439,9 +2490,7 @@ function MarkerClusterSymbols_cluster(x, y, width, height) {
         });
     return outer2.concat(outer1, inner);
 }
-/**
- * @private
- */
+/** @internal */
 function MarkerClusterSymbols_compose(SVGRendererClass) {
     symbols = SVGRendererClass.prototype.symbols;
     symbols.cluster = MarkerClusterSymbols_cluster;

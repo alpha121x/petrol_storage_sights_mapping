@@ -1,10 +1,10 @@
 /* *
  *
- *  (c) 2009-2025 Highsoft AS
+ *  (c) 2009-2026 Highsoft AS
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  *  Authors:
  *  - Sophie Bremer
@@ -36,8 +36,7 @@ var merge = U.merge;
  *
  * */
 /**
- * Filters out table rows with a specific value range.
- *
+ * Slices the table rows based on the specified range.
  */
 var RangeModifier = /** @class */ (function (_super) {
     __extends(RangeModifier, _super);
@@ -63,7 +62,9 @@ var RangeModifier = /** @class */ (function (_super) {
      *
      * */
     /**
-     * Replaces table rows with filtered rows.
+     * Replaces table rows with ranged rows. If the given table does not have
+     * defined a `modified` property, the filtering is applied in-place on the
+     * original table rather than on a `modified` copy.
      *
      * @param {DataTable} table
      * Table to modify.
@@ -72,66 +73,20 @@ var RangeModifier = /** @class */ (function (_super) {
      * Custom information for pending events.
      *
      * @return {DataTable}
-     * Table with `modified` property as a reference.
+     * Table with `modified` property as a reference or modified table, if
+     * `modified` property of the original table is undefined.
      */
     RangeModifier.prototype.modifyTable = function (table, eventDetail) {
         var modifier = this;
         modifier.emit({ type: 'modify', detail: eventDetail, table: table });
-        var indexes = [];
-        var _a = modifier.options, additive = _a.additive, ranges = _a.ranges, strict = _a.strict;
-        if (ranges.length) {
-            var modified = table.modified;
-            var columns = table.getColumns(), rows = [];
-            for (var i = 0, iEnd = ranges.length, range = void 0, rangeColumn = void 0; i < iEnd; ++i) {
-                range = ranges[i];
-                if (strict &&
-                    typeof range.minValue !== typeof range.maxValue) {
-                    continue;
-                }
-                if (i > 0 && !additive) {
-                    modified.deleteRows();
-                    modified.setRows(rows);
-                    modified.setOriginalRowIndexes(indexes, true);
-                    columns = modified.getColumns();
-                    rows = [];
-                    indexes = [];
-                }
-                rangeColumn = (columns[range.column] || []);
-                for (var j = 0, jEnd = rangeColumn.length, cell = void 0, row = void 0, originalRowIndex = void 0; j < jEnd; ++j) {
-                    cell = rangeColumn[j];
-                    switch (typeof cell) {
-                        default:
-                            continue;
-                        case 'boolean':
-                        case 'number':
-                        case 'string':
-                            break;
-                    }
-                    if (strict &&
-                        typeof cell !== typeof range.minValue) {
-                        continue;
-                    }
-                    if (cell >= range.minValue &&
-                        cell <= range.maxValue) {
-                        if (additive) {
-                            row = table.getRow(j);
-                            originalRowIndex = table.getOriginalRowIndex(j);
-                        }
-                        else {
-                            row = modified.getRow(j);
-                            originalRowIndex = modified.getOriginalRowIndex(j);
-                        }
-                        if (row) {
-                            rows.push(row);
-                            indexes.push(originalRowIndex);
-                        }
-                    }
-                }
-            }
-            modified.deleteRows();
-            modified.setRows(rows);
-            modified.setOriginalRowIndexes(indexes);
-        }
+        var _a = modifier.options, start = _a.start, end = _a.end;
+        start = Math.max(0, start || 0);
+        end = Math.min(end || Infinity, table.getRowCount());
+        var length = Math.max(end - start, 0);
+        var modified = table.getModified();
+        modified.deleteRows();
+        modified.setRows(table.getRows(start, length));
+        modified.setOriginalRowIndexes(Array.from({ length: length }, function (_, i) { return table.getOriginalRowIndex(start + i); }));
         modifier.emit({ type: 'afterModify', detail: eventDetail, table: table });
         return table;
     };
@@ -145,7 +100,8 @@ var RangeModifier = /** @class */ (function (_super) {
      */
     RangeModifier.defaultOptions = {
         type: 'Range',
-        ranges: []
+        start: 0,
+        end: Infinity
     };
     return RangeModifier;
 }(DataModifier));

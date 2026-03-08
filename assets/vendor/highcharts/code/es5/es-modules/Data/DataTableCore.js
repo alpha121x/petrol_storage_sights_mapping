@@ -1,10 +1,10 @@
 /* *
  *
- *  (c) 2009-2025 Highsoft AS
+ *  (c) 2009-2026 Highsoft AS
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  *  Authors:
  *  - Sophie Bremer
@@ -68,12 +68,11 @@ var DataTableCore = /** @class */ (function () {
          * @type {string}
          */
         this.id = (options.id || uniqueKey());
-        this.modified = this;
         this.rowCount = 0;
         this.versionTag = uniqueKey();
         var rowCount = 0;
-        objectEach(options.columns || {}, function (column, columnName) {
-            _this.columns[columnName] = column.slice();
+        objectEach(options.columns || {}, function (column, columnId) {
+            _this.columns[columnId] = column.slice();
             rowCount = Math.max(rowCount, column.length);
         });
         this.applyRowCount(rowCount);
@@ -93,9 +92,9 @@ var DataTableCore = /** @class */ (function () {
     DataTableCore.prototype.applyRowCount = function (rowCount) {
         var _this = this;
         this.rowCount = rowCount;
-        objectEach(this.columns, function (column, columnName) {
+        objectEach(this.columns, function (column, columnId) {
             if (column.length !== rowCount) {
-                _this.columns[columnName] = setLength(column, rowCount);
+                _this.columns[columnId] = setLength(column, rowCount);
             }
         });
     };
@@ -118,8 +117,8 @@ var DataTableCore = /** @class */ (function () {
         if (rowCount === void 0) { rowCount = 1; }
         if (rowCount > 0 && rowIndex < this.rowCount) {
             var length_1 = 0;
-            objectEach(this.columns, function (column, columnName) {
-                _this.columns[columnName] =
+            objectEach(this.columns, function (column, columnId) {
+                _this.columns[columnId] =
                     splice(column, rowIndex, rowCount).array;
                 length_1 = column.length;
             });
@@ -132,34 +131,34 @@ var DataTableCore = /** @class */ (function () {
      * Fetches the given column by the canonical column name. Simplified version
      * of the full `DataTable.getRow` method, always returning by reference.
      *
-     * @param {string} columnName
+     * @param {string} columnId
      * Name of the column to get.
      *
      * @return {Highcharts.DataTableColumn|undefined}
      * A copy of the column, or `undefined` if not found.
      */
-    DataTableCore.prototype.getColumn = function (columnName, 
+    DataTableCore.prototype.getColumn = function (columnId, 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     asReference) {
-        return this.columns[columnName];
+        return this.columns[columnId];
     };
     /**
      * Retrieves all or the given columns. Simplified version of the full
      * `DataTable.getColumns` method, always returning by reference.
      *
-     * @param {Array<string>} [columnNames]
-     * Column names to retrieve.
+     * @param {Array<string>} [columnIds]
+     * Column ids to retrieve.
      *
      * @return {Highcharts.DataTableColumnCollection}
      * Collection of columns. If a requested column was not found, it is
      * `undefined`.
      */
-    DataTableCore.prototype.getColumns = function (columnNames, 
+    DataTableCore.prototype.getColumns = function (columnIds, 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     asReference) {
         var _this = this;
-        return (columnNames || Object.keys(this.columns)).reduce(function (columns, columnName) {
-            columns[columnName] = _this.columns[columnName];
+        return (columnIds || Object.keys(this.columns)).reduce(function (columns, columnId) {
+            columns[columnId] = _this.columns[columnId];
             return columns;
         }, {});
     };
@@ -169,20 +168,20 @@ var DataTableCore = /** @class */ (function () {
      * @param {number} rowIndex
      * Row index to retrieve. First row has index 0.
      *
-     * @param {Array<string>} [columnNames]
+     * @param {Array<string>} [columnIds]
      * Column names to retrieve.
      *
      * @return {Record<string, number|string|undefined>|undefined}
      * Returns the row values, or `undefined` if not found.
      */
-    DataTableCore.prototype.getRow = function (rowIndex, columnNames) {
+    DataTableCore.prototype.getRow = function (rowIndex, columnIds) {
         var _this = this;
-        return (columnNames || Object.keys(this.columns)).map(function (key) { var _a; return (_a = _this.columns[key]) === null || _a === void 0 ? void 0 : _a[rowIndex]; });
+        return (columnIds || Object.keys(this.columns)).map(function (key) { var _a; return (_a = _this.columns[key]) === null || _a === void 0 ? void 0 : _a[rowIndex]; });
     };
     /**
      * Sets cell values for a column. Will insert a new column, if not found.
      *
-     * @param {string} columnName
+     * @param {string} columnId
      * Column name to set.
      *
      * @param {Highcharts.DataTableColumn} [column]
@@ -197,11 +196,11 @@ var DataTableCore = /** @class */ (function () {
      * @emits #setColumns
      * @emits #afterSetColumns
      */
-    DataTableCore.prototype.setColumn = function (columnName, column, rowIndex, eventDetail) {
+    DataTableCore.prototype.setColumn = function (columnId, column, rowIndex, eventDetail) {
         var _a;
         if (column === void 0) { column = []; }
         if (rowIndex === void 0) { rowIndex = 0; }
-        this.setColumns((_a = {}, _a[columnName] = column, _a), rowIndex, eventDetail);
+        this.setColumns((_a = {}, _a[columnId] = column, _a), rowIndex, eventDetail);
     };
     /**
      * Sets cell values for multiple columns. Will insert new columns, if not
@@ -224,8 +223,8 @@ var DataTableCore = /** @class */ (function () {
     DataTableCore.prototype.setColumns = function (columns, rowIndex, eventDetail) {
         var _this = this;
         var rowCount = this.rowCount;
-        objectEach(columns, function (column, columnName) {
-            _this.columns[columnName] = column.slice();
+        objectEach(columns, function (column, columnId) {
+            _this.columns[columnId] = column.slice();
             rowCount = column.length;
         });
         this.applyRowCount(rowCount);
@@ -255,18 +254,28 @@ var DataTableCore = /** @class */ (function () {
      */
     DataTableCore.prototype.setRow = function (row, rowIndex, insert, eventDetail) {
         if (rowIndex === void 0) { rowIndex = this.rowCount; }
-        var columns = this.columns, indexRowCount = insert ? this.rowCount + 1 : rowIndex + 1;
-        objectEach(row, function (cellValue, columnName) {
-            var column = columns[columnName] ||
-                (eventDetail === null || eventDetail === void 0 ? void 0 : eventDetail.addColumns) !== false && new Array(indexRowCount);
+        var columns = this.columns, indexRowCount = insert ? this.rowCount + 1 : rowIndex + 1, rowKeys = Object.keys(row);
+        if ((eventDetail === null || eventDetail === void 0 ? void 0 : eventDetail.addColumns) !== false) {
+            for (var i = 0, iEnd = rowKeys.length; i < iEnd; i++) {
+                var key = rowKeys[i];
+                if (!columns[key]) {
+                    columns[key] = [];
+                }
+            }
+        }
+        objectEach(columns, function (column, columnId) {
+            var _a, _b;
+            if (!column && (eventDetail === null || eventDetail === void 0 ? void 0 : eventDetail.addColumns) !== false) {
+                column = new Array(indexRowCount);
+            }
             if (column) {
                 if (insert) {
-                    column = splice(column, rowIndex, 0, true, [cellValue]).array;
+                    column = splice(column, rowIndex, 0, true, [(_a = row[columnId]) !== null && _a !== void 0 ? _a : null]).array;
                 }
                 else {
-                    column[rowIndex] = cellValue;
+                    column[rowIndex] = (_b = row[columnId]) !== null && _b !== void 0 ? _b : null;
                 }
-                columns[columnName] = column;
+                columns[columnId] = column;
             }
         });
         if (indexRowCount > this.rowCount) {
@@ -276,6 +285,16 @@ var DataTableCore = /** @class */ (function () {
             fireEvent(this, 'afterSetRows');
             this.versionTag = uniqueKey();
         }
+    };
+    /**
+     * Returns the modified (clone) or the original data table if the modified
+     * one does not exist.
+     *
+     * @return {Highcharts.DataTableCore}
+     * The modified (clone) or the original data table.
+     */
+    DataTableCore.prototype.getModified = function () {
+        return this.modified || this;
     };
     return DataTableCore;
 }());

@@ -1,13 +1,16 @@
+// SPDX-License-Identifier: LicenseRef-Highcharts
 /**
- * @license Highstock JS v12.3.0 (2025-06-21)
+ * @license Highstock JS v12.5.0 (2026-01-12)
  * @module highcharts/modules/datagrouping
  * @requires highcharts
  *
  * Data grouping module
  *
- * (c) 2010-2025 Torstein Hønsi
+ * (c) 2010-2026 Highsoft AS
+ * Author: Torstein Hønsi
  *
- * License: www.highcharts.com/license
+ * A commercial license may be required depending on use.
+ * See www.highcharts.com/license
  */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
@@ -114,11 +117,12 @@ var highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default 
 ;// ./code/es5/es-modules/Extensions/DataGrouping/ApproximationRegistry.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -136,7 +140,7 @@ var highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default 
  *
  * @product highstock
  *
- * @private
+ * @internal
  */
 var ApproximationRegistry = {
 // Approximations added programmatically
@@ -146,16 +150,18 @@ var ApproximationRegistry = {
  *  Default Export
  *
  * */
+/** @internal */
 /* harmony default export */ var DataGrouping_ApproximationRegistry = (ApproximationRegistry);
 
 ;// ./code/es5/es-modules/Extensions/DataGrouping/ApproximationDefaults.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -167,9 +173,6 @@ var arrayMax = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcha
  *  Functions
  *
  * */
-/**
- * @private
- */
 function average(arr) {
     var len = arr.length;
     var ret = sum(arr);
@@ -182,7 +185,6 @@ function average(arr) {
 }
 /**
  * The same as average, but for series with multiple values, like area ranges.
- * @private
  */
 function averages() {
     var ret = [];
@@ -193,17 +195,11 @@ function averages() {
     // sum method handle null (#7377)
     return typeof ret[0] === 'undefined' ? void 0 : ret;
 }
-/**
- * @private
- */
 function ApproximationDefaults_close(arr) {
     return arr.length ?
         arr[arr.length - 1] :
         (arr.hasNulls ? null : void 0);
 }
-/**
- * @private
- */
 function high(arr) {
     return arr.length ?
         arrayMax(arr) :
@@ -212,7 +208,6 @@ function high(arr) {
 /**
  * HLC, OHLC and range are special cases where a multidimensional array is input
  * and an array is output.
- * @private
  */
 function hlc(high, low, close) {
     high = DataGrouping_ApproximationRegistry.high(high);
@@ -224,17 +219,11 @@ function hlc(high, low, close) {
         return [high, low, close];
     }
 }
-/**
- * @private
- */
 function low(arr) {
     return arr.length ?
         arrayMin(arr) :
         (arr.hasNulls ? null : void 0);
 }
-/**
- * @private
- */
 function ohlc(open, high, low, close) {
     open = DataGrouping_ApproximationRegistry.open(open);
     high = DataGrouping_ApproximationRegistry.high(high);
@@ -247,15 +236,9 @@ function ohlc(open, high, low, close) {
         return [open, high, low, close];
     }
 }
-/**
- * @private
- */
 function ApproximationDefaults_open(arr) {
     return arr.length ? arr[0] : (arr.hasNulls ? null : void 0);
 }
-/**
- * @private
- */
 function range(low, high) {
     low = DataGrouping_ApproximationRegistry.low(low);
     high = DataGrouping_ApproximationRegistry.high(high);
@@ -267,9 +250,6 @@ function range(low, high) {
     }
     // Else, return is undefined
 }
-/**
- * @private
- */
 function sum(arr) {
     var len = arr.length,
         ret;
@@ -293,6 +273,7 @@ function sum(arr) {
  *  Default Export
  *
  * */
+/** @internal */
 var ApproximationDefaults = {
     average: average,
     averages: averages,
@@ -306,16 +287,18 @@ var ApproximationDefaults = {
     sum: sum
 };
 extend(DataGrouping_ApproximationRegistry, ApproximationDefaults);
+/** @internal */
 /* harmony default export */ var DataGrouping_ApproximationDefaults = (ApproximationDefaults);
 
 ;// ./code/es5/es-modules/Extensions/DataGrouping/DataGroupingDefaults.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -326,7 +309,7 @@ extend(DataGrouping_ApproximationRegistry, ApproximationDefaults);
  * */
 /**
  * Common options
- * @private
+ * @internal
  */
 var common = {
     /// enabled: null, // (true for stock charts, false for basic),
@@ -381,7 +364,7 @@ var common = {
 };
 /**
  * Extends common options
- * @private
+ * @internal
  */
 var seriesSpecific = {
     line: {},
@@ -412,7 +395,7 @@ var seriesSpecific = {
 /**
  * Units are defined in a separate array to allow complete overriding in
  * case of a user option.
- * @private
+ * @internal
  */
 var units = [
     [
@@ -446,21 +429,24 @@ var units = [
  *  Default Export
  *
  * */
+/** @internal */
 var DataGroupingDefaults = {
     common: common,
     seriesSpecific: seriesSpecific,
     units: units
 };
+/** @internal */
 /* harmony default export */ var DataGrouping_DataGroupingDefaults = (DataGroupingDefaults);
 
 ;// ./code/es5/es-modules/Extensions/DataGrouping/DataGroupingAxisComposition.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -504,9 +490,6 @@ function applyGrouping(e) {
         series.applyGrouping(!!e.hasExtremesChanged);
     });
 }
-/**
- * @private
- */
 function compose(AxisClass) {
     AxisConstructor = AxisClass;
     var axisProto = AxisClass.prototype;
@@ -525,7 +508,7 @@ function compose(AxisClass) {
 /**
  * Get the data grouping pixel width based on the greatest defined individual
  * width of the axis' series, and if whether one of the axes need grouping.
- * @private
+ * @internal
  */
 function getGroupPixelWidth() {
     var series = this.series;
@@ -543,7 +526,7 @@ function getGroupPixelWidth() {
             groupPixelWidth = Math.max(groupPixelWidth, 
             // Fallback to commonOptions (#9693)
             pick(dgOptions.groupPixelWidth, DataGrouping_DataGroupingDefaults.common.groupPixelWidth));
-            dataLength = (series[i].dataTable.modified ||
+            dataLength = (series[i].dataTable.getModified() ||
                 series[i].dataTable).rowCount;
             // Execute grouping if the amount of points is greater than the
             // limit defined in groupPixelWidth
@@ -561,7 +544,7 @@ function getGroupPixelWidth() {
  * When resetting the scale reset the hasProcessed flag to avoid taking
  * previous data grouping of neighbour series into account when determining
  * group pixel width (#2692).
- * @private
+ * @internal
  */
 function onAfterSetScale() {
     this.series.forEach(function (series) {
@@ -624,19 +607,21 @@ function setDataGrouping(dataGrouping, redraw) {
  *  Default Export
  *
  * */
+/** @internal */
 var DataGroupingAxisComposition = {
     compose: compose
 };
+/** @internal */
 /* harmony default export */ var DataGrouping_DataGroupingAxisComposition = (DataGroupingAxisComposition);
 
 ;// ./code/es5/es-modules/Data/ColumnUtils.js
 /* *
  *
- *  (c) 2020-2025 Highsoft AS
+ *  (c) 2020-2026 Highsoft AS
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  *  Authors:
  *  - Dawid Dragula
@@ -679,7 +664,7 @@ var ColumnUtils;
      * @param {boolean} asSubarray
      * If column is a typed array, return a subarray instead of a new array. It
      * is faster `O(1)`, but the entire buffer will be kept in memory until all
-     * views to it are destroyed. Default is `false`.
+     * views of it are destroyed. Default is `false`.
      *
      * @return {DataTable.Column}
      * Modified column.
@@ -747,6 +732,33 @@ var ColumnUtils;
         };
     }
     ColumnUtils.splice = splice;
+    /**
+     * Converts a cell value to a number.
+     *
+     * @param {DataTable.CellType} value
+     * Cell value to convert to a number.
+     *
+     * @param {boolean} useNaN
+     * If `true`, returns `NaN` for non-numeric values; if `false`,
+     * returns `null` instead.
+     *
+     * @return {number | null}
+     * Number or `null` if the value is not a number.
+     *
+     * @private
+     */
+    function convertToNumber(value, useNaN) {
+        switch (typeof value) {
+            case 'boolean':
+                return (value ? 1 : 0);
+            case 'number':
+                return (isNaN(value) && !useNaN ? null : value);
+            default:
+                value = parseFloat("".concat(value !== null && value !== void 0 ? value : ''));
+                return (isNaN(value) && !useNaN ? null : value);
+        }
+    }
+    ColumnUtils.convertToNumber = convertToNumber;
 })(ColumnUtils || (ColumnUtils = {}));
 /* *
  *
@@ -758,11 +770,11 @@ var ColumnUtils;
 ;// ./code/es5/es-modules/Data/DataTableCore.js
 /* *
  *
- *  (c) 2009-2025 Highsoft AS
+ *  (c) 2009-2026 Highsoft AS
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  *  Authors:
  *  - Sophie Bremer
@@ -826,12 +838,11 @@ var DataTableCore = /** @class */ (function () {
          * @type {string}
          */
         this.id = (options.id || uniqueKey());
-        this.modified = this;
         this.rowCount = 0;
         this.versionTag = uniqueKey();
         var rowCount = 0;
-        objectEach(options.columns || {}, function (column, columnName) {
-            _this.columns[columnName] = column.slice();
+        objectEach(options.columns || {}, function (column, columnId) {
+            _this.columns[columnId] = column.slice();
             rowCount = Math.max(rowCount, column.length);
         });
         this.applyRowCount(rowCount);
@@ -851,9 +862,9 @@ var DataTableCore = /** @class */ (function () {
     DataTableCore.prototype.applyRowCount = function (rowCount) {
         var _this = this;
         this.rowCount = rowCount;
-        objectEach(this.columns, function (column, columnName) {
+        objectEach(this.columns, function (column, columnId) {
             if (column.length !== rowCount) {
-                _this.columns[columnName] = setLength(column, rowCount);
+                _this.columns[columnId] = setLength(column, rowCount);
             }
         });
     };
@@ -876,8 +887,8 @@ var DataTableCore = /** @class */ (function () {
         if (rowCount === void 0) { rowCount = 1; }
         if (rowCount > 0 && rowIndex < this.rowCount) {
             var length_1 = 0;
-            objectEach(this.columns, function (column, columnName) {
-                _this.columns[columnName] =
+            objectEach(this.columns, function (column, columnId) {
+                _this.columns[columnId] =
                     splice(column, rowIndex, rowCount).array;
                 length_1 = column.length;
             });
@@ -890,34 +901,34 @@ var DataTableCore = /** @class */ (function () {
      * Fetches the given column by the canonical column name. Simplified version
      * of the full `DataTable.getRow` method, always returning by reference.
      *
-     * @param {string} columnName
+     * @param {string} columnId
      * Name of the column to get.
      *
      * @return {Highcharts.DataTableColumn|undefined}
      * A copy of the column, or `undefined` if not found.
      */
-    DataTableCore.prototype.getColumn = function (columnName, 
+    DataTableCore.prototype.getColumn = function (columnId, 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     asReference) {
-        return this.columns[columnName];
+        return this.columns[columnId];
     };
     /**
      * Retrieves all or the given columns. Simplified version of the full
      * `DataTable.getColumns` method, always returning by reference.
      *
-     * @param {Array<string>} [columnNames]
-     * Column names to retrieve.
+     * @param {Array<string>} [columnIds]
+     * Column ids to retrieve.
      *
      * @return {Highcharts.DataTableColumnCollection}
      * Collection of columns. If a requested column was not found, it is
      * `undefined`.
      */
-    DataTableCore.prototype.getColumns = function (columnNames, 
+    DataTableCore.prototype.getColumns = function (columnIds, 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     asReference) {
         var _this = this;
-        return (columnNames || Object.keys(this.columns)).reduce(function (columns, columnName) {
-            columns[columnName] = _this.columns[columnName];
+        return (columnIds || Object.keys(this.columns)).reduce(function (columns, columnId) {
+            columns[columnId] = _this.columns[columnId];
             return columns;
         }, {});
     };
@@ -927,20 +938,20 @@ var DataTableCore = /** @class */ (function () {
      * @param {number} rowIndex
      * Row index to retrieve. First row has index 0.
      *
-     * @param {Array<string>} [columnNames]
+     * @param {Array<string>} [columnIds]
      * Column names to retrieve.
      *
      * @return {Record<string, number|string|undefined>|undefined}
      * Returns the row values, or `undefined` if not found.
      */
-    DataTableCore.prototype.getRow = function (rowIndex, columnNames) {
+    DataTableCore.prototype.getRow = function (rowIndex, columnIds) {
         var _this = this;
-        return (columnNames || Object.keys(this.columns)).map(function (key) { var _a; return (_a = _this.columns[key]) === null || _a === void 0 ? void 0 : _a[rowIndex]; });
+        return (columnIds || Object.keys(this.columns)).map(function (key) { var _a; return (_a = _this.columns[key]) === null || _a === void 0 ? void 0 : _a[rowIndex]; });
     };
     /**
      * Sets cell values for a column. Will insert a new column, if not found.
      *
-     * @param {string} columnName
+     * @param {string} columnId
      * Column name to set.
      *
      * @param {Highcharts.DataTableColumn} [column]
@@ -955,11 +966,11 @@ var DataTableCore = /** @class */ (function () {
      * @emits #setColumns
      * @emits #afterSetColumns
      */
-    DataTableCore.prototype.setColumn = function (columnName, column, rowIndex, eventDetail) {
+    DataTableCore.prototype.setColumn = function (columnId, column, rowIndex, eventDetail) {
         var _a;
         if (column === void 0) { column = []; }
         if (rowIndex === void 0) { rowIndex = 0; }
-        this.setColumns((_a = {}, _a[columnName] = column, _a), rowIndex, eventDetail);
+        this.setColumns((_a = {}, _a[columnId] = column, _a), rowIndex, eventDetail);
     };
     /**
      * Sets cell values for multiple columns. Will insert new columns, if not
@@ -982,8 +993,8 @@ var DataTableCore = /** @class */ (function () {
     DataTableCore.prototype.setColumns = function (columns, rowIndex, eventDetail) {
         var _this = this;
         var rowCount = this.rowCount;
-        objectEach(columns, function (column, columnName) {
-            _this.columns[columnName] = column.slice();
+        objectEach(columns, function (column, columnId) {
+            _this.columns[columnId] = column.slice();
             rowCount = column.length;
         });
         this.applyRowCount(rowCount);
@@ -1014,18 +1025,30 @@ var DataTableCore = /** @class */ (function () {
     DataTableCore.prototype.setRow = function (row, rowIndex, insert, eventDetail) {
         if (rowIndex === void 0) { rowIndex = this.rowCount; }
         var columns = this.columns,
-            indexRowCount = insert ? this.rowCount + 1 : rowIndex + 1;
-        objectEach(row, function (cellValue, columnName) {
-            var column = columns[columnName] ||
-                    (eventDetail === null || eventDetail === void 0 ? void 0 : eventDetail.addColumns) !== false && new Array(indexRowCount);
+            indexRowCount = insert ? this.rowCount + 1 : rowIndex + 1,
+            rowKeys = Object.keys(row);
+        if ((eventDetail === null || eventDetail === void 0 ? void 0 : eventDetail.addColumns) !== false) {
+            for (var i = 0, iEnd = rowKeys.length; i < iEnd; i++) {
+                var key = rowKeys[i];
+                if (!columns[key]) {
+                    columns[key] = [];
+                }
+            }
+        }
+        objectEach(columns, function (column, columnId) {
+            var _a,
+                _b;
+            if (!column && (eventDetail === null || eventDetail === void 0 ? void 0 : eventDetail.addColumns) !== false) {
+                column = new Array(indexRowCount);
+            }
             if (column) {
                 if (insert) {
-                    column = splice(column, rowIndex, 0, true, [cellValue]).array;
+                    column = splice(column, rowIndex, 0, true, [(_a = row[columnId]) !== null && _a !== void 0 ? _a : null]).array;
                 }
                 else {
-                    column[rowIndex] = cellValue;
+                    column[rowIndex] = (_b = row[columnId]) !== null && _b !== void 0 ? _b : null;
                 }
-                columns[columnName] = column;
+                columns[columnId] = column;
             }
         });
         if (indexRowCount > this.rowCount) {
@@ -1035,6 +1058,16 @@ var DataTableCore = /** @class */ (function () {
             fireEvent(this, 'afterSetRows');
             this.versionTag = uniqueKey();
         }
+    };
+    /**
+     * Returns the modified (clone) or the original data table if the modified
+     * one does not exist.
+     *
+     * @return {Highcharts.DataTableCore}
+     * The modified (clone) or the original data table.
+     */
+    DataTableCore.prototype.getModified = function () {
+        return this.modified || this;
     };
     return DataTableCore;
 }());
@@ -1081,11 +1114,12 @@ var DataTableCore = /** @class */ (function () {
 ;// ./code/es5/es-modules/Core/Axis/DateTimeAxis.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -1111,7 +1145,7 @@ var DateTimeAxis;
      * */
     /**
      * Extends axis class with date and time support.
-     * @private
+     * @internal
      */
     function compose(AxisClass) {
         if (!AxisClass.keepProps.includes('dateTime')) {
@@ -1129,7 +1163,7 @@ var DateTimeAxis;
      * the time positions. Used in datetime axes as well as for grouping
      * data on a datetime axis.
      *
-     * @private
+     * @internal
      * @function Highcharts.Axis#getTimeTicks
      * @param {Highcharts.TimeNormalizeObject} normalizedInterval
      * The interval in axis values (ms) and the count.
@@ -1141,9 +1175,7 @@ var DateTimeAxis;
     function getTimeTicks() {
         return this.chart.time.getTimeTicks.apply(this.chart.time, arguments);
     }
-    /**
-     * @private
-     */
+    /** @internal */
     function onAfterSetType() {
         if (this.type !== 'datetime') {
             this.dateTime = void 0;
@@ -1158,6 +1190,7 @@ var DateTimeAxis;
      *  Classes
      *
      * */
+    /** @internal */
     var Additions = /** @class */ (function () {
             /* *
              *
@@ -1180,7 +1213,7 @@ var DateTimeAxis;
          * charts, the normalizing logic was extracted in order to prevent it
          * for running over again for each segment having the same interval.
          * #662, #697.
-         * @private
+         * @internal
          */
         Additions.prototype.normalizeTimeTickInterval = function (tickInterval, unitsOption) {
             var units = (unitsOption || [[
@@ -1257,7 +1290,7 @@ var DateTimeAxis;
          * Get the best date format for a specific X value based on the closest
          * point range on the axis.
          *
-         * @private
+         * @internal
          */
         Additions.prototype.getXDateFormat = function (x, dateTimeLabelFormats) {
             var axis = this.axis,
@@ -1285,11 +1318,12 @@ var highcharts_SeriesRegistry_commonjs_highcharts_SeriesRegistry_commonjs2_highc
 ;// ./code/es5/es-modules/Extensions/DataGrouping/DataGroupingSeriesComposition.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -1313,9 +1347,7 @@ var baseGeneratePoints = seriesProto.generatePoints;
  *  Functions
  *
  * */
-/**
- * @private
- */
+/** @internal */
 function adjustExtremes(xAxis, groupedXData) {
     // Make sure the X axis extends to show the first group (#2533)
     // But only for visible series (#5493, #6393)
@@ -1344,9 +1376,7 @@ function adjustExtremes(xAxis, groupedXData) {
         xAxis.dataMax = Math.max(groupedXData[groupedXData.length - 1], xAxis.dataMax);
     }
 }
-/**
- * @private
- */
+/** @internal */
 function anchorPoints(series, groupedXData, xMax) {
     var options = series.options,
         dataGroupingOptions = options.dataGrouping,
@@ -1414,7 +1444,7 @@ function anchorPoints(series, groupedXData, xMax) {
 /**
  * For the processed data, calculate the grouped data if needed.
  *
- * @private
+ * @internal
  * @function Highcharts.Series#applyGrouping
  */
 function DataGroupingSeriesComposition_applyGrouping(hasExtremesChanged) {
@@ -1448,7 +1478,7 @@ function DataGroupingSeriesComposition_applyGrouping(hasExtremesChanged) {
     series.destroyGroupedData();
     var table = dataGroupingOptions.groupAll ?
             series.dataTable :
-            series.dataTable.modified || series.dataTable,
+            series.dataTable.getModified() || series.dataTable,
         processedXData = series.getColumn('x', !dataGroupingOptions.groupAll),
         xData = processedXData,
         plotSizeX = chart.plotSizeX,
@@ -1553,9 +1583,7 @@ function DataGroupingSeriesComposition_applyGrouping(hasExtremesChanged) {
         (lastDataGrouping && lastDataGrouping.totalRange) !==
             (currentDataGrouping && currentDataGrouping.totalRange);
 }
-/**
- * @private
- */
+/** @internal */
 function DataGroupingSeriesComposition_compose(SeriesClass) {
     var seriesProto = SeriesClass.prototype;
     if (!seriesProto.applyGrouping) {
@@ -1581,7 +1609,7 @@ function DataGroupingSeriesComposition_compose(SeriesClass) {
 }
 /**
  * Destroy the grouped data points. #622, #740
- * @private
+ * @internal
  */
 function destroyGroupedData() {
     // Clear previous groups
@@ -1602,7 +1630,7 @@ function destroyGroupedData() {
 }
 /**
  * Override the generatePoints method by adding a reference to grouped data
- * @private
+ * @internal
  */
 function generatePoints() {
     baseGeneratePoints.apply(this);
@@ -1614,7 +1642,7 @@ function generatePoints() {
 /**
  * Set default approximations to the prototypes if present. Properties are
  * inherited down. Can be overridden for individual series types.
- * @private
+ * @internal
  */
 function getDGApproximation() {
     if (this.is('arearange')) {
@@ -1787,7 +1815,7 @@ function groupData(table, groupPositions, approximation) {
 /**
  * Handle default options for data grouping. This must be set at runtime because
  * some series types are defined after this.
- * @private
+ * @internal
  */
 function onAfterSetOptions(e) {
     var options = e.options,
@@ -1812,9 +1840,7 @@ function onAfterSetOptions(e) {
             rangeSelector.buttonOptions[rangeSelector.selected].dataGrouping);
     }
 }
-/**
- * @private
- */
+/** @internal */
 function skipDataGrouping(series, force) {
     return !(series.isCartesian &&
         !series.isDirty &&
@@ -1827,10 +1853,12 @@ function skipDataGrouping(series, force) {
  *  Default Export
  *
  * */
+/** @internal */
 var DataGroupingSeriesComposition = {
     compose: DataGroupingSeriesComposition_compose,
     groupData: groupData
 };
+/** @internal */
 /* harmony default export */ var DataGrouping_DataGroupingSeriesComposition = (DataGroupingSeriesComposition);
 
 // EXTERNAL MODULE: external {"amd":["highcharts/highcharts","Templating"],"commonjs":["highcharts","Templating"],"commonjs2":["highcharts","Templating"],"root":["Highcharts","Templating"]}
@@ -1839,11 +1867,12 @@ var highcharts_Templating_commonjs_highcharts_Templating_commonjs2_highcharts_Te
 ;// ./code/es5/es-modules/Extensions/DataGrouping/DataGrouping.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -1861,9 +1890,6 @@ var DataGrouping_addEvent = (highcharts_commonjs_highcharts_commonjs2_highcharts
  *  Functions
  *
  * */
-/**
- * @private
- */
 function DataGrouping_compose(AxisClass, SeriesClass, TooltipClass) {
     DataGrouping_DataGroupingAxisComposition.compose(AxisClass);
     DataGrouping_DataGroupingSeriesComposition.compose(SeriesClass);
@@ -1875,7 +1901,7 @@ function DataGrouping_compose(AxisClass, SeriesClass, TooltipClass) {
 /**
  * Extend the original method, make the tooltip's header reflect the grouped
  * range.
- * @private
+ * @internal
  */
 function onTooltipHeaderFormatter(e) {
     var _a;
@@ -1940,10 +1966,12 @@ function onTooltipHeaderFormatter(e) {
  *  Default Export
  *
  * */
+/** @internal */
 var DataGroupingComposition = {
     compose: DataGrouping_compose,
     groupData: DataGrouping_DataGroupingSeriesComposition.groupData
 };
+/** @internal */
 /* harmony default export */ var DataGrouping = (DataGroupingComposition);
 /* *
  *
@@ -1951,7 +1979,7 @@ var DataGroupingComposition = {
  *
  * */
 /**
- * @typedef {"average"|"averages"|"open"|"high"|"low"|"close"|"sum"} Highcharts.DataGroupingApproximationValue
+ * @typedef {"average"|"averages"|"close"|"high"|"hlc"|"low"|"ohlc"|"open"|"range"|"sum"} Highcharts.DataGroupingApproximationValue
  */
 /**
  * The position of the point inside the group.
@@ -1984,11 +2012,8 @@ var DataGroupingComposition = {
  * @product highstock
  * @interface Highcharts.DataGroupingResultObject
  */ /**
-* @name Highcharts.DataGroupingResultObject#groupedXData
-* @type {Array<number>}
-*/ /**
-* @name Highcharts.DataGroupingResultObject#groupedYData
-* @type {Array<(number|null|undefined)>|Array<Array<(number|null|undefined)>>}
+* @name Highcharts.DataGroupingResultObject#modified
+* @type {Highcharts.DataTableCore}
 */ /**
 * @name Highcharts.DataGroupingResultObject#groupMap
 * @type {Array<DataGroupingInfoObject>}
@@ -2179,22 +2204,6 @@ var DataGroupingComposition = {
  * @apioption plotOptions.series.dataGrouping.forced
  */
 /**
- * The approximate pixel width of each group. If for example a series
- * with 30 points is displayed over a 600 pixel wide plot area, no grouping
- * is performed. If however the series contains so many points that
- * the spacing is less than the groupPixelWidth, Highcharts will try
- * to group it into appropriate groups so that each is more or less
- * two pixels wide. If multiple series with different group pixel widths
- * are drawn on the same x axis, all series will take the greatest width.
- * For example, line series have 2px default group width, while column
- * series have 10px. If combined, both the line and the column will
- * have 10px by default.
- *
- * @type      {number}
- * @default   2
- * @apioption plotOptions.series.dataGrouping.groupPixelWidth
- */
-/**
  * By default only points within the visible range are grouped. Enabling this
  * option will force data grouping to calculate all grouped points for a given
  * dataset. That option prevents for example a column series from calculating
@@ -2209,6 +2218,22 @@ var DataGroupingComposition = {
  * @default   false
  * @since     6.1.0
  * @apioption plotOptions.series.dataGrouping.groupAll
+ */
+/**
+ * The approximate pixel width of each group. If for example a series
+ * with 30 points is displayed over a 600 pixel wide plot area, no grouping
+ * is performed. If however the series contains so many points that
+ * the spacing is less than the groupPixelWidth, Highcharts will try
+ * to group it into appropriate groups so that each is more or less
+ * two pixels wide. If multiple series with different group pixel widths
+ * are drawn on the same x axis, all series will take the greatest width.
+ * For example, line series have 2px default group width, while column
+ * series have 10px. If combined, both the line and the column will
+ * have 10px by default.
+ *
+ * @type      {number}
+ * @default   2
+ * @apioption plotOptions.series.dataGrouping.groupPixelWidth
  */
 /**
  * Specifies how the last grouped point is positioned on the xAxis.

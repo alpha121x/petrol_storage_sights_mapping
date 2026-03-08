@@ -1,12 +1,12 @@
 /* *
  *
- *  (c) 2014-2025 Highsoft AS
+ *  (c) 2014-2026 Highsoft AS
  *
  *  Authors: Jon Arild Nygard / Oystein Moseng
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -64,23 +64,31 @@ var treemapAxisDefaultValues = false;
 /** @private */
 function onSeriesAfterBindAxes() {
     var series = this, xAxis = series.xAxis, yAxis = series.yAxis;
-    var treeAxis;
     if (xAxis && yAxis) {
         if (series.is('treemap')) {
-            treeAxis = {
+            // Treemap and treegraph axes are used for the layout, but are
+            // hidden by default.
+            var treeAxisDefaults = {
                 endOnTick: false,
-                gridLineWidth: 0,
-                lineWidth: 0,
-                min: 0,
-                minPadding: 0,
-                max: axisMax,
-                maxPadding: 0,
                 startOnTick: false,
-                title: void 0,
-                tickPositions: []
+                visible: false
             };
-            extend(yAxis.options, treeAxis);
-            extend(xAxis.options, treeAxis);
+            // Treemap layout depends on specific scaling of both axes
+            if (!series.is('treegraph')) {
+                treeAxisDefaults.min = 0;
+                treeAxisDefaults.max = axisMax;
+                treeAxisDefaults.tickPositions = [];
+            }
+            merge(true, xAxis.options, treeAxisDefaults, xAxis.userOptions);
+            merge(true, yAxis.options, treeAxisDefaults, yAxis.userOptions);
+            // Set the propertys on the axis object
+            xAxis.visible = xAxis.options.visible;
+            yAxis.visible = yAxis.options.visible;
+            // Set `isCartesian` conditionally. Because non-cartesian zoom won't
+            // work if it is true, and the axis will not show if it is false.
+            if (series.is('treegraph')) {
+                this.isCartesian = xAxis.visible;
+            }
             treemapAxisDefaultValues = true;
         }
         else if (treemapAxisDefaultValues) {
@@ -611,7 +619,9 @@ var TreemapSeries = /** @class */ (function (_super) {
                 }
             }
             // Merge custom options with point options
-            point.dlOptions = merge(options, point.options.dataLabels);
+            point.dlOptions = merge(options, point.options.dataLabels, {
+                zIndex: void 0
+            });
         }
         _super.prototype.drawDataLabels.call(this, points);
     };
@@ -624,7 +634,7 @@ var TreemapSeries = /** @class */ (function (_super) {
         var series = this, chart = series.chart, renderer = chart.renderer, styledMode = chart.styledMode, options = series.options, shadow = styledMode ? {} : options.shadow, borderRadius = options.borderRadius, withinAnimationLimit = chart.pointCount < options.animationLimit, allowTraversingTree = options.allowTraversingTree;
         for (var _i = 0, points_2 = points; _i < points_2.length; _i++) {
             var point = points_2[_i];
-            var levelDynamic = point.node.levelDynamic, animatableAttribs = {}, attribs = {}, css = {}, groupKey = 'level-group-' + point.node.level, hasGraphic = !!point.graphic, shouldAnimate = withinAnimationLimit && hasGraphic, shapeArgs = point.shapeArgs;
+            var animatableAttribs = {}, attribs = {}, css = {}, groupKey = 'level-group-' + point.node.level, hasGraphic = !!point.graphic, shouldAnimate = withinAnimationLimit && hasGraphic, shapeArgs = point.shapeArgs;
             // Don't bother with calculate styling if the point is not drawn
             if (point.shouldDraw()) {
                 point.isInside = true;
@@ -650,9 +660,9 @@ var TreemapSeries = /** @class */ (function (_super) {
                 if (!series[groupKey]) {
                     series[groupKey] = renderer.g(groupKey)
                         .attr({
-                        // @todo Set the zIndex based upon the number of
-                        // levels, instead of using 1000
-                        zIndex: 1000 - (levelDynamic || 0)
+                        // Use the static level in order to retain z-index
+                        // when data is updated (#23432).
+                        zIndex: -(point.node.level || 0)
                     })
                         .add(series.group);
                     series[groupKey].survive = true;
@@ -799,6 +809,9 @@ var TreemapSeries = /** @class */ (function (_super) {
             child = series.buildTree(series.points[i].id, i, level + 1, list, id);
             height = Math.max(child.height + 1, height);
             children.push(child);
+            if (series.is('treegraph')) {
+                child.visible = true;
+            }
         }
         var node = new series.NodeClass().init(id, index, children, height, level, series, parent);
         for (var _b = 0, children_5 = children; _b < children_5.length; _b++) {
@@ -810,6 +823,10 @@ var TreemapSeries = /** @class */ (function (_super) {
         if (point) {
             point.node = node;
             node.point = point;
+            // Handle x-axis value for treegraph
+            if (!defined(point.options.x)) {
+                point.x = level;
+            }
         }
         return node;
     };
@@ -1131,7 +1148,9 @@ var TreemapSeries = /** @class */ (function (_super) {
             childrenTotal: childrenTotal,
             // Ignore this node if point is not visible
             ignore: !(pick(point === null || point === void 0 ? void 0 : point.visible, true) && (val > 0)),
-            isLeaf: tree.visible && !childrenTotal,
+            isLeaf: tree.visible && !(series.type === 'treegraph' ?
+                children.length > 0 :
+                childrenTotal),
             isGroup: point === null || point === void 0 ? void 0 : point.isGroup,
             levelDynamic: (tree.level - (levelIsConstant ? 0 : nodeRoot.level)),
             name: pick(point === null || point === void 0 ? void 0 : point.name, ''),

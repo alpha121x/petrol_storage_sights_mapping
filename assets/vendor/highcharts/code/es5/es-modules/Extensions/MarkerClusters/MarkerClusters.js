@@ -2,13 +2,13 @@
  *
  *  Marker clusters module.
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
  *
  *  Author: Wojciech Chmiel
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -33,7 +33,7 @@ var addEvent = U.addEvent, defined = U.defined, error = U.error, isFunction = U.
  *  Functions
  *
  * */
-/** @private */
+/** @internal */
 function compose(AxisClass, ChartClass, highchartsDefaultOptions, SeriesClass) {
     if (pushUnique(composed, 'MarkerClusters')) {
         var PointClass = SeriesClass.prototype.pointClass, ScatterSeries = SeriesClass.types.scatter;
@@ -50,7 +50,7 @@ function compose(AxisClass, ChartClass, highchartsDefaultOptions, SeriesClass) {
 }
 /**
  * Destroy the old tooltip after zoom.
- * @private
+ * @internal
  */
 function onAxisSetExtremes() {
     var chart = this.chart;
@@ -70,7 +70,7 @@ function onAxisSetExtremes() {
 }
 /**
  * Handle animation.
- * @private
+ * @internal
  */
 function onChartRender() {
     var _a;
@@ -97,7 +97,7 @@ function onChartRender() {
         }
     }
 }
-/** @private */
+/** @internal */
 function onPointDrillToCluster(event) {
     var point = event.point || event.target, series = point.series, clusterOptions = series.options.cluster, onDrillToCluster = ((clusterOptions || {}).events || {}).drillToCluster;
     if (isFunction(onDrillToCluster)) {
@@ -107,7 +107,7 @@ function onPointDrillToCluster(event) {
 /**
  * Override point prototype to throw a warning when trying to update
  * clustered point.
- * @private
+ * @internal
  */
 function onPointUpdate() {
     var point = this;
@@ -120,7 +120,7 @@ function onPointUpdate() {
 }
 /**
  * Add classes, change mouse cursor.
- * @private
+ * @internal
  */
 function onSeriesAfterRender() {
     var series = this, clusterZoomEnabled = (series.options.cluster || {}).drillToCluster;

@@ -2,11 +2,12 @@
  *
  *  Exporting module
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -31,8 +32,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 var __generator = (this && this.__generator) || function (thisArg, body) {
-    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
-    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g = Object.create((typeof Iterator === "function" ? Iterator : Object).prototype);
+    return g.next = verb(0), g["throw"] = verb(1), g["return"] = verb(2), typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
     function verb(n) { return function (v) { return step([n, v]); }; }
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
@@ -62,8 +63,7 @@ import Chart from '../../Core/Chart/Chart.js';
 import ChartNavigationComposition from '../../Core/Chart/ChartNavigationComposition.js';
 import D from '../../Core/Defaults.js';
 var defaultOptions = D.defaultOptions, setOptions = D.setOptions;
-import DownloadURL from '../DownloadURL.js';
-var downloadURL = DownloadURL.downloadURL, getScript = DownloadURL.getScript;
+import { downloadURL, getScript } from '../../Shared/DownloadURL.js';
 import ExportingDefaults from './ExportingDefaults.js';
 import ExportingSymbols from './ExportingSymbols.js';
 import Fullscreen from './Fullscreen.js';
@@ -79,7 +79,7 @@ AST.allowedTags.push('desc', 'clippath', 'fedropshadow', 'femorphology', 'g', 'i
  *  Constants
  *
  * */
-export var domurl = win.URL || win.webkitURL || win;
+var domurl = win.URL || win.webkitURL || win;
 /* *
  *
  *  Class
@@ -96,7 +96,6 @@ export var domurl = win.URL || win.webkitURL || win;
  *
  * @param {Highcharts.Chart} chart
  * The chart instance.
- *
  */
 var Exporting = /** @class */ (function () {
     /* *
@@ -105,6 +104,7 @@ var Exporting = /** @class */ (function () {
      *
      * */
     function Exporting(chart, options) {
+        /** @internal */
         this.options = {};
         this.chart = chart;
         this.options = options;
@@ -121,7 +121,7 @@ var Exporting = /** @class */ (function () {
     /**
      * Make hyphenated property names out of camelCase.
      *
-     * @private
+     * @internal
      * @static
      * @function Highcharts.Exporting#hyphenate
      *
@@ -141,7 +141,7 @@ var Exporting = /** @class */ (function () {
     /**
      * Get data:URL from image URL.
      *
-     * @private
+     * @internal
      * @static
      * @async
      * @function Highcharts.Exporting#imageToDataURL
@@ -178,10 +178,181 @@ var Exporting = /** @class */ (function () {
             });
         });
     };
+    /** @internal */
+    Exporting.fetchCSS = function (href) {
+        return __awaiter(this, void 0, void 0, function () {
+            var content, newSheet;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, fetch(href)
+                            .then(function (res) { return res.text(); })];
+                    case 1:
+                        content = _a.sent();
+                        newSheet = new CSSStyleSheet();
+                        newSheet.replaceSync(content);
+                        return [2 /*return*/, newSheet];
+                }
+            });
+        });
+    };
+    /** @internal */
+    Exporting.handleStyleSheet = function (sheet, resultArray) {
+        return __awaiter(this, void 0, void 0, function () {
+            var _loop_1, _i, _a, rule, _b, newSheet;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
+                    case 0:
+                        _c.trys.push([0, 5, , 9]);
+                        _loop_1 = function (rule) {
+                            var sheet_1, cssText, baseUrl_1, regexp;
+                            return __generator(this, function (_d) {
+                                switch (_d.label) {
+                                    case 0:
+                                        if (!(rule instanceof CSSImportRule)) return [3 /*break*/, 3];
+                                        return [4 /*yield*/, Exporting.fetchCSS(rule.href)];
+                                    case 1:
+                                        sheet_1 = _d.sent();
+                                        return [4 /*yield*/, Exporting.handleStyleSheet(sheet_1, resultArray)];
+                                    case 2:
+                                        _d.sent();
+                                        _d.label = 3;
+                                    case 3:
+                                        if (rule instanceof CSSFontFaceRule) {
+                                            cssText = rule.cssText;
+                                            if (sheet.href) {
+                                                baseUrl_1 = sheet.href, regexp = /url\(\s*(['"]?)(?![a-z]+:|\/\/)([^'")]+?)\1\s*\)/gi;
+                                                // Replace relative URLs
+                                                cssText = cssText.replace(regexp, function (_, quote, relPath) {
+                                                    var absolutePath = new URL(relPath, baseUrl_1).href;
+                                                    return "url(".concat(quote).concat(absolutePath).concat(quote, ")");
+                                                });
+                                            }
+                                            resultArray.push(cssText);
+                                        }
+                                        return [2 /*return*/];
+                                }
+                            });
+                        };
+                        _i = 0, _a = Array.from(sheet.cssRules);
+                        _c.label = 1;
+                    case 1:
+                        if (!(_i < _a.length)) return [3 /*break*/, 4];
+                        rule = _a[_i];
+                        return [5 /*yield**/, _loop_1(rule)];
+                    case 2:
+                        _c.sent();
+                        _c.label = 3;
+                    case 3:
+                        _i++;
+                        return [3 /*break*/, 1];
+                    case 4: return [3 /*break*/, 9];
+                    case 5:
+                        _b = _c.sent();
+                        if (!sheet.href) return [3 /*break*/, 8];
+                        return [4 /*yield*/, Exporting.fetchCSS(sheet.href)];
+                    case 6:
+                        newSheet = _c.sent();
+                        return [4 /*yield*/, Exporting.handleStyleSheet(newSheet, resultArray)];
+                    case 7:
+                        _c.sent();
+                        _c.label = 8;
+                    case 8: return [3 /*break*/, 9];
+                    case 9: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    /** @internal */
+    Exporting.fetchStyleSheets = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var cssTexts, _i, _a, sheet;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        cssTexts = [];
+                        _i = 0, _a = Array.from(doc.styleSheets);
+                        _b.label = 1;
+                    case 1:
+                        if (!(_i < _a.length)) return [3 /*break*/, 4];
+                        sheet = _a[_i];
+                        return [4 /*yield*/, Exporting.handleStyleSheet(sheet, cssTexts)];
+                    case 2:
+                        _b.sent();
+                        _b.label = 3;
+                    case 3:
+                        _i++;
+                        return [3 /*break*/, 1];
+                    case 4: return [2 /*return*/, cssTexts];
+                }
+            });
+        });
+    };
+    /** @internal */
+    Exporting.inlineFonts = function (svg) {
+        return __awaiter(this, void 0, void 0, function () {
+            var cssTexts, urlRegex, urls, cssText, match, m, arrayBufferToBase64, replacements, _i, urls_1, url, res, contentType, b64, _a, _b, styleEl;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
+                    case 0: return [4 /*yield*/, Exporting.fetchStyleSheets()];
+                    case 1:
+                        cssTexts = _c.sent(), urlRegex = /url\(([^)]+)\)/g, urls = [];
+                        cssText = cssTexts.join('\n');
+                        while ((match = urlRegex.exec(cssText))) {
+                            m = match[1].replace(/['"]/g, '');
+                            if (!urls.includes(m)) {
+                                urls.push(m);
+                            }
+                        }
+                        arrayBufferToBase64 = function (buffer) {
+                            var binary = '';
+                            var bytes = new Uint8Array(buffer);
+                            for (var i = 0; i < bytes.byteLength; i++) {
+                                binary += String.fromCharCode(bytes[i]);
+                            }
+                            return btoa(binary);
+                        };
+                        replacements = {};
+                        _i = 0, urls_1 = urls;
+                        _c.label = 2;
+                    case 2:
+                        if (!(_i < urls_1.length)) return [3 /*break*/, 8];
+                        url = urls_1[_i];
+                        _c.label = 3;
+                    case 3:
+                        _c.trys.push([3, 6, , 7]);
+                        return [4 /*yield*/, fetch(url)];
+                    case 4:
+                        res = _c.sent(), contentType = res.headers.get('Content-Type') || '';
+                        _a = arrayBufferToBase64;
+                        return [4 /*yield*/, res.arrayBuffer()];
+                    case 5:
+                        b64 = _a.apply(void 0, [_c.sent()]);
+                        replacements[url] = "data:".concat(contentType, ";base64,").concat(b64);
+                        return [3 /*break*/, 7];
+                    case 6:
+                        _b = _c.sent();
+                        return [3 /*break*/, 7];
+                    case 7:
+                        _i++;
+                        return [3 /*break*/, 2];
+                    case 8:
+                        cssText = cssText.replace(urlRegex, function (_, url) {
+                            var strippedUrl = url.replace(/['"]/g, '');
+                            return "url(".concat(replacements[strippedUrl] || strippedUrl, ")");
+                        });
+                        styleEl = document.createElementNS('http://www.w3.org/2000/svg', 'style');
+                        styleEl.textContent = cssText;
+                        // Needs to be appended to pass sanitization
+                        svg.append(styleEl);
+                        return [2 /*return*/, svg];
+                }
+            });
+        });
+    };
     /**
      * Loads an image from the provided URL.
      *
-     * @private
+     * @internal
      * @static
      * @function Highcharts.Exporting#loadImage
      *
@@ -208,6 +379,7 @@ var Exporting = /** @class */ (function () {
             };
             // Reject in case of fail
             image.onerror = function (error) {
+                // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
                 reject(error);
             };
             // Provide the image URL
@@ -218,7 +390,7 @@ var Exporting = /** @class */ (function () {
      * Prepares and returns the image export options with default values where
      * necessary.
      *
-     * @private
+     * @internal
      * @static
      * @function Highcharts.Exporting#prepareImageOptions
      *
@@ -248,7 +420,7 @@ var Exporting = /** @class */ (function () {
      * A collection of fixes on the produced SVG to account for expand
      * properties and browser bugs. Returns a cleaned SVG.
      *
-     * @private
+     * @internal
      * @static
      * @function Highcharts.Exporting#sanitizeSVG
      *
@@ -262,7 +434,9 @@ var Exporting = /** @class */ (function () {
      *
      * @requires modules/exporting
      */
-    Exporting.sanitizeSVG = function (svg, options) {
+    Exporting.sanitizeSVG = function (svg, 
+    /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
+    options) {
         var _a;
         var split = svg.indexOf('</svg>') + 6, useForeignObject = svg.indexOf('<foreignObject') > -1;
         var html = svg.substr(split);
@@ -301,7 +475,7 @@ var Exporting = /** @class */ (function () {
     /**
      * Get blob URL from SVG code. Falls back to normal data URI.
      *
-     * @private
+     * @internal
      * @static
      * @function Highcharts.Exporting#svgToDataURL
      *
@@ -341,7 +515,7 @@ var Exporting = /** @class */ (function () {
     /**
      * Add the export button to the chart, with options.
      *
-     * @private
+     * @internal
      * @function Highcharts.Exporting#addButton
      *
      * @param {Highcharts.ExportingButtonOptions} options
@@ -429,7 +603,7 @@ var Exporting = /** @class */ (function () {
     /**
      * Clean up after printing a chart.
      *
-     * @private
+     * @internal
      * @function Highcharts.Exporting#afterPrint
      *
      * @emits Highcharts.Chart#event:afterPrint
@@ -462,7 +636,7 @@ var Exporting = /** @class */ (function () {
     /**
      * Prepare chart and document before printing a chart.
      *
-     * @private
+     * @internal
      * @function Highcharts.Exporting#beforePrint
      *
      * @emits Highcharts.Chart#event:beforePrint
@@ -503,7 +677,7 @@ var Exporting = /** @class */ (function () {
     /**
      * Display a popup menu for choosing the export type.
      *
-     * @private
+     * @internal
      * @function Highcharts.Exporting#contextMenu
      *
      * @param {string} className
@@ -671,7 +845,7 @@ var Exporting = /** @class */ (function () {
     /**
      * Destroy the export buttons.
      *
-     * @private
+     * @internal
      * @function Highcharts.Exporting#destroy
      *
      * @param {global.Event} [e]
@@ -738,7 +912,7 @@ var Exporting = /** @class */ (function () {
      * Highcharts options pointing to our server.
      *
      * @async
-     * @private
+     * @internal
      * @function Highcharts.Exporting#downloadSVG
      *
      * @param {string} svg
@@ -916,7 +1090,7 @@ var Exporting = /** @class */ (function () {
     /**
      * Handles the fallback to the export server when a local export fails.
      *
-     * @private
+     * @internal
      * @async
      * @function Highcharts.Exporting#fallbackToServer
      *
@@ -1167,7 +1341,7 @@ var Exporting = /** @class */ (function () {
      * Gets the SVG for export using the getSVG function with additional
      * options.
      *
-     * @private
+     * @internal
      * @function Highcharts.Exporting#getSVGForExport
      *
      * @param {Highcharts.ExportingOptions} [exportingOptions]
@@ -1194,7 +1368,7 @@ var Exporting = /** @class */ (function () {
     /**
      * Analyze inherited styles from stylesheets and add them inline.
      *
-     * @private
+     * @internal
      * @function Highcharts.Exporting#inlineStyles
      *
      * @todo What are the border styles for text about? In general, text has a
@@ -1223,7 +1397,7 @@ var Exporting = /** @class */ (function () {
         /**
          * Call this on all elements and recurse to children.
          *
-         * @private
+         * @internal
          * @function recurse
          *
          * @param {Highcharts.HTMLDOMElement | Highcharts.SVGSVGElement} node
@@ -1236,7 +1410,7 @@ var Exporting = /** @class */ (function () {
              * Check computed styles and whether they are in the allow/denylist
              * for styles or attributes.
              *
-             * @private
+             * @internal
              * @function filterStyles
              *
              * @param {string | number | Highcharts.GradientColor | Highcharts.PatternObject | undefined} val
@@ -1314,6 +1488,7 @@ var Exporting = /** @class */ (function () {
                     // Get the defaults into a standard object (simple merge
                     // won't do)
                     var s = win.getComputedStyle(dummy, null), defaults = {};
+                    // eslint-disable-next-line @typescript-eslint/no-for-in-array
                     for (var key in s) {
                         if (key.length < 1000 /* RegexLimits.shortLimit */ &&
                             typeof s[key] === 'string' &&
@@ -1357,7 +1532,7 @@ var Exporting = /** @class */ (function () {
         /**
          * Remove the dummy objects used to get defaults.
          *
-         * @private
+         * @internal
          * @function tearDown
          */
         function tearDown() {
@@ -1374,7 +1549,7 @@ var Exporting = /** @class */ (function () {
      * The options and chartOptions arguments are passed to the getSVGForExport
      * function.
      *
-     * @private
+     * @internal
      * @async
      * @function Highcharts.Exporting#localExport
      *
@@ -1397,9 +1572,10 @@ var Exporting = /** @class */ (function () {
             // Return true if the SVG contains images with external data.
             // With the boost module there are `image` elements with encoded
             // PNGs, these are supported by svg2pdf and should pass (#10243)
-            hasExternalImages, chartCopyContainer, chartCopyOptions, href, images, unbindGetSVG, imagesArray, _i, imagesArray_1, image, dataURL, sanitizedSVG, error_2;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            hasExternalImages, chartCopyContainer, chartCopyOptions, href, images, unbindGetSVG, imagesArray, _i, imagesArray_1, image, dataURL, svgElement, sanitizedSVG, error_2;
+            var _a, _b, _c;
+            return __generator(this, function (_d) {
+                switch (_d.label) {
                     case 0:
                         chart = this.chart, exporting = this, sanitize = function (svg) { return Exporting.sanitizeSVG(svg || '', chartCopyOptions); }, hasExternalImages = function () {
                             return [].some.call(chart.container.getElementsByTagName('image'), function (image) {
@@ -1424,7 +1600,7 @@ var Exporting = /** @class */ (function () {
                             hasExternalImages()))) return [3 /*break*/, 2];
                         return [4 /*yield*/, this.fallbackToServer(exportingOptions, new Error('Image type not supported for this chart/browser.'))];
                     case 1:
-                        _a.sent();
+                        _d.sent();
                         return [2 /*return*/];
                     case 2:
                         unbindGetSVG = addEvent(chart, 'getSVG', function (e) {
@@ -1434,14 +1610,14 @@ var Exporting = /** @class */ (function () {
                             images = chartCopyContainer && chartCopyContainer
                                 .getElementsByTagName('image') || [];
                         });
-                        _a.label = 3;
+                        _d.label = 3;
                     case 3:
-                        _a.trys.push([3, 12, 14, 15]);
+                        _d.trys.push([3, 14, 16, 17]);
                         // Trigger hook to get chart copy
                         this.getSVGForExport(exportingOptions, chartOptions);
                         imagesArray = images ? Array.from(images) : [];
                         _i = 0, imagesArray_1 = imagesArray;
-                        _a.label = 4;
+                        _d.label = 4;
                     case 4:
                         if (!(_i < imagesArray_1.length)) return [3 /*break*/, 8];
                         image = imagesArray_1[_i];
@@ -1450,44 +1626,52 @@ var Exporting = /** @class */ (function () {
                         Exporting.objectURLRevoke = false;
                         return [4 /*yield*/, Exporting.imageToDataURL(href, (exportingOptions === null || exportingOptions === void 0 ? void 0 : exportingOptions.scale) || 1, (exportingOptions === null || exportingOptions === void 0 ? void 0 : exportingOptions.type) || 'image/png')];
                     case 5:
-                        dataURL = _a.sent();
+                        dataURL = _d.sent();
                         // Change image href in chart copy
                         image.setAttributeNS('http://www.w3.org/1999/xlink', 'href', dataURL);
                         return [3 /*break*/, 7];
                     case 6:
                         image.parentNode.removeChild(image);
-                        _a.label = 7;
+                        _d.label = 7;
                     case 7:
                         _i++;
                         return [3 /*break*/, 4];
                     case 8:
+                        svgElement = chartCopyContainer === null || chartCopyContainer === void 0 ? void 0 : chartCopyContainer.querySelector('svg');
+                        if (!(svgElement &&
+                            !((_c = (_b = (_a = exportingOptions.chartOptions) === null || _a === void 0 ? void 0 : _a.chart) === null || _b === void 0 ? void 0 : _b.style) === null || _c === void 0 ? void 0 : _c.fontFamily))) return [3 /*break*/, 10];
+                        return [4 /*yield*/, Exporting.inlineFonts(svgElement)];
+                    case 9:
+                        _d.sent();
+                        _d.label = 10;
+                    case 10:
                         sanitizedSVG = sanitize(chartCopyContainer === null || chartCopyContainer === void 0 ? void 0 : chartCopyContainer.innerHTML);
                         if (!(sanitizedSVG.indexOf('<foreignObject') > -1 &&
                             exportingOptions.type !== 'image/svg+xml' &&
                             (isMS ||
-                                exportingOptions.type === 'application/pdf'))) return [3 /*break*/, 9];
+                                exportingOptions.type === 'application/pdf'))) return [3 /*break*/, 11];
                         throw new Error('Image type not supported for charts with embedded HTML');
-                    case 9: 
+                    case 11: 
                     // Trigger SVG download
                     return [4 /*yield*/, exporting.downloadSVG(sanitizedSVG, extend({ filename: exporting.getFilename() }, exportingOptions))];
-                    case 10:
+                    case 12:
                         // Trigger SVG download
-                        _a.sent();
-                        _a.label = 11;
-                    case 11: 
+                        _d.sent();
+                        _d.label = 13;
+                    case 13: 
                     // Return the sanitized SVG
                     return [2 /*return*/, sanitizedSVG];
-                    case 12:
-                        error_2 = _a.sent();
-                        return [4 /*yield*/, this.fallbackToServer(exportingOptions, error_2)];
-                    case 13:
-                        _a.sent();
-                        return [3 /*break*/, 15];
                     case 14:
+                        error_2 = _d.sent();
+                        return [4 /*yield*/, this.fallbackToServer(exportingOptions, error_2)];
+                    case 15:
+                        _d.sent();
+                        return [3 /*break*/, 17];
+                    case 16:
                         // Clean up
                         unbindGetSVG();
                         return [7 /*endfinally*/];
-                    case 15: return [2 /*return*/];
+                    case 17: return [2 /*return*/];
                 }
             });
         });
@@ -1495,7 +1679,7 @@ var Exporting = /** @class */ (function () {
     /**
      * Move the chart container(s) to another div.
      *
-     * @private
+     * @internal
      * @function Highcharts.Exporting#moveContainers
      *
      * @param {Highcharts.HTMLDOMElement} moveTo
@@ -1559,7 +1743,7 @@ var Exporting = /** @class */ (function () {
     /**
      * Add the buttons on chart load.
      *
-     * @private
+     * @internal
      * @function Highcharts.Exporting#render
      *
      * @requires modules/exporting
@@ -1584,7 +1768,7 @@ var Exporting = /** @class */ (function () {
     /**
      * Resolve CSS variables into hex colors.
      *
-     * @private
+     * @internal
      * @function Highcharts.Exporting#resolveCSSVariables
      *
      * @requires modules/exporting
@@ -1608,7 +1792,7 @@ var Exporting = /** @class */ (function () {
     /**
      * Updates the exporting object with the provided exporting options.
      *
-     * @private
+     * @internal
      * @function Highcharts.Exporting#update
      *
      * @param {Highcharts.ExportingOptions} exportingOptions
@@ -1630,8 +1814,13 @@ var Exporting = /** @class */ (function () {
      *  Static Properties
      *
      * */
+    /** @internal */
     Exporting.inlineAllowlist = [];
-    // These CSS properties are not inlined. Remember camelCase.
+    /**
+     * These CSS properties are not inlined. Remember camelCase.
+     *
+     * @internal
+     */
     Exporting.inlineDenylist = [
         /-/, // In Firefox, both hyphened and camelCased names are listed
         /^(clipPath|cssText|d|height|width)$/, // Full words
@@ -1645,7 +1834,11 @@ var Exporting = /** @class */ (function () {
         /^length$/, // #7700
         /^\d+$/ // #17538
     ];
-    // These ones are translated to attributes rather than styles
+    /**
+     * These ones are translated to attributes rather than styles.
+     *
+     * @internal
+     */
     Exporting.inlineToAttributes = [
         'fill',
         'stroke',
@@ -1656,8 +1849,13 @@ var Exporting = /** @class */ (function () {
         'x',
         'y'
     ];
-    // Milliseconds to defer image load event handlers to offset IE bug
+    /**
+     * Milliseconds to defer image load event handlers to offset IE bug
+     *
+     * @internal
+     */
     Exporting.loadEventDeferDelay = isMS ? 150 : 0;
+    /** @internal */
     Exporting.unstyledElements = [
         'clipPath',
         'defs',
@@ -1684,7 +1882,7 @@ var Exporting = /** @class */ (function () {
     /**
      * Composition function.
      *
-     * @private
+     * @internal
      * @function Highcharts.Exporting#compose
      *
      * @param {ChartClass} ChartClass
@@ -1757,7 +1955,7 @@ var Exporting = /** @class */ (function () {
     /**
      * Function that is added to the callbacks array that runs on chart load.
      *
-     * @private
+     * @internal
      * @function Highcharts#chartCallback
      *
      * @param {Highcharts.Chart} chart
@@ -1815,7 +2013,7 @@ var Exporting = /** @class */ (function () {
      * than the Chart prototype in order to use the chart instance inside the
      * update function.
      *
-     * @private
+     * @internal
      * @function Highcharts#onChartAfterInit
      *
      * @requires modules/exporting
@@ -1851,7 +2049,7 @@ var Exporting = /** @class */ (function () {
      * On layout of titles (title, subtitle and caption), adjust the `alignTo`
      * box to avoid the context menu button.
      *
-     * @private
+     * @internal
      * @function Highcharts#onChartLayOutTitle
      *
      * @requires modules/exporting

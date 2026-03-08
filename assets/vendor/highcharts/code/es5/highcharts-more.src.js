@@ -1,11 +1,13 @@
+// SPDX-License-Identifier: LicenseRef-Highcharts
 /**
- * @license Highcharts JS v12.3.0 (2025-06-21)
+ * @license Highcharts JS v12.5.0 (2026-01-12)
  * @module highcharts/highcharts-more
  * @requires highcharts
  *
- * (c) 2009-2025 Torstein Honsi
+ * (c) 2009-2026 Highsoft AS
  *
- * License: www.highcharts.com/license
+ * A commercial license may be required depending on use.
+ * See www.highcharts.com/license
  */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
@@ -167,11 +169,12 @@ var highcharts_Series_commonjs_highcharts_Series_commonjs2_highcharts_Series_roo
 ;// ./code/es5/es-modules/Series/CenteredUtilities.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -326,7 +329,7 @@ var addEvent = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcha
  *  Functions
  *
  * */
-/** @private */
+/** @internal */
 function chartGetHoverPane(eventArgs) {
     var chart = this;
     var hoverPane;
@@ -341,8 +344,35 @@ function chartGetHoverPane(eventArgs) {
     }
     return hoverPane;
 }
-/** @private */
-function compose(ChartClass, PointerClass) {
+/**
+ * Adjusts the clipBox based on the position of panes.
+ * @internal
+ */
+function onSetClip(_a) {
+    var clipBox = _a.clipBox;
+    if (!this.xAxis ||
+        !this.yAxis ||
+        (!this.chart.angular && !this.chart.polar)) {
+        return;
+    }
+    var _b = this.chart,
+        plotWidth = _b.plotWidth,
+        plotHeight = _b.plotHeight,
+        smallestSize = Math.min(plotWidth,
+        plotHeight),
+        xPane = this.xAxis.pane,
+        yPane = this.yAxis.pane;
+    if (xPane && xPane.axis) {
+        clipBox.x += xPane.center[0] -
+            (xPane.center[2] / smallestSize) * plotWidth / 2;
+    }
+    if (yPane && yPane.axis) {
+        clipBox.y += yPane.center[1] -
+            (yPane.center[2] / smallestSize) * plotHeight / 2;
+    }
+}
+/** @internal */
+function compose(ChartClass, PointerClass, SeriesClass) {
     var chartProto = ChartClass.prototype;
     if (!chartProto.getHoverPane) {
         chartProto.collectionsWithUpdate.push('pane');
@@ -350,11 +380,12 @@ function compose(ChartClass, PointerClass) {
         addEvent(ChartClass, 'afterIsInsidePlot', onChartAfterIsInsiderPlot);
         addEvent(PointerClass, 'afterGetHoverData', onPointerAfterGetHoverData);
         addEvent(PointerClass, 'beforeGetHoverData', onPointerBeforeGetHoverData);
+        addEvent(SeriesClass, 'setClip', onSetClip);
     }
 }
 /**
  * Check whether element is inside or outside pane.
- * @private
+ * @internal
  * @param  {number} x
  * Element's x coordinate
  * @param  {number} y
@@ -369,36 +400,44 @@ function compose(ChartClass, PointerClass) {
 function isInsidePane(x, y, center, startAngle, endAngle) {
     var insideSlice = true;
     var cx = center[0],
-        cy = center[1];
+        cy = center[1],
+        twoPi = 2 * Math.PI;
     var distance = Math.sqrt(Math.pow(x - cx, 2) + Math.pow(y - cy, 2));
     if (defined(startAngle) && defined(endAngle)) {
         // Round angle to N-decimals to avoid numeric errors
         var angle = Math.atan2(correctFloat(y - cy, 8),
             correctFloat(x - cx, 8));
+        // Normalize angle to [0, 2π)
+        angle = (angle + twoPi) % (twoPi);
+        startAngle = (startAngle + twoPi) % (twoPi);
+        endAngle = (endAngle + twoPi) % (twoPi);
         // Ignore full circle panes:
-        if (endAngle !== startAngle) {
-            // If normalized start angle is bigger than normalized end,
-            // it means angles have different signs. In such situation we
-            // check the <-PI, startAngle> and <endAngle, PI> ranges.
+        if (Math.abs(endAngle - startAngle) > 1e-6) {
+            // If the normalized start angle is greater than the end angle,
+            // it means the arc wraps around 0°. In this case, we check
+            // if the angle falls into either [startAngle, 2π) or [0, endAngle].
             if (startAngle > endAngle) {
-                insideSlice = (angle >= startAngle &&
-                    angle <= Math.PI) || (angle <= endAngle &&
-                    angle >= -Math.PI);
+                insideSlice = (angle >= startAngle ||
+                    angle <= endAngle);
             }
             else {
-                // In this case, we simple check if angle is within the
-                // <startAngle, endAngle> range
+                // In this case, we simply check if angle is within the
+                // [startAngle, endAngle] range
                 insideSlice = angle >= startAngle &&
-                    angle <= correctFloat(endAngle, 8);
+                    angle <= endAngle;
             }
         }
+    }
+    else {
+        // If no start/end angles are defined, treat it as a full circle
+        insideSlice = true;
     }
     // Round up radius because x and y values are rounded
     return distance <= Math.ceil(center[2] / 2) && insideSlice;
 }
 /**
  * Check if (x, y) position is within pane for polar.
- * @private
+ * @internal
  */
 function onChartAfterIsInsiderPlot(e) {
     var _a;
@@ -423,7 +462,7 @@ function onPointerAfterGetHoverData(eventArgs) {
         eventArgs.hoverPoint = void 0;
     }
 }
-/** @private */
+/** @internal */
 function onPointerBeforeGetHoverData(eventArgs) {
     var chart = this.chart;
     if (chart.polar) {
@@ -454,11 +493,12 @@ var PaneComposition = {
 ;// ./code/es5/es-modules/Extensions/Pane/PaneDefaults.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -663,11 +703,12 @@ var PaneDefaults = {
 ;// ./code/es5/es-modules/Extensions/Pane/Pane.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -686,7 +727,7 @@ var extend = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highchart
  *
  * In the future, this can be extended to basic Highcharts and Highcharts Stock.
  *
- * @private
+ * @internal
  * @class
  * @name Highcharts.Pane
  * @param {Highcharts.PaneOptions} options
@@ -710,7 +751,7 @@ var Pane = /** @class */ (function () {
     /**
      * Initialize the Pane object
      *
-     * @private
+     * @internal
      * @function Highcharts.Pane#init
      *
      * @param {Highcharts.PaneOptions} options
@@ -724,7 +765,7 @@ var Pane = /** @class */ (function () {
         this.setOptions(options);
     };
     /**
-     * @private
+     * @internal
      * @function Highcharts.Pane#setOptions
      *
      * @param {Highcharts.PaneOptions} options
@@ -736,7 +777,7 @@ var Pane = /** @class */ (function () {
     /**
      * Render the pane with its backgrounds.
      *
-     * @private
+     * @internal
      * @function Highcharts.Pane#render
      */
     Pane.prototype.render = function () {
@@ -770,7 +811,7 @@ var Pane = /** @class */ (function () {
     /**
      * Render an individual pane background.
      *
-     * @private
+     * @internal
      * @function Highcharts.Pane#renderBackground
      *
      * @param {Highcharts.PaneBackgroundOptions} backgroundOptions
@@ -804,7 +845,7 @@ var Pane = /** @class */ (function () {
     /**
      * Gets the center for the pane and its axis.
      *
-     * @private
+     * @internal
      * @function Highcharts.Pane#updateCenter
      * @param {Highcharts.Axis} [axis]
      */
@@ -817,7 +858,7 @@ var Pane = /** @class */ (function () {
      * Destroy the pane item
      *
      * @ignore
-     * @private
+     * @internal
      * @function Highcharts.Pane#destroy
      * /
     destroy: function () {
@@ -832,7 +873,7 @@ var Pane = /** @class */ (function () {
     /**
      * Update the pane item with new options
      *
-     * @private
+     * @internal
      * @function Highcharts.Pane#update
      * @param {Highcharts.PaneOptions} options
      *        New pane options
@@ -876,11 +917,12 @@ var Pane = /** @class */ (function () {
 ;// ./code/es5/es-modules/Series/AreaRange/AreaRangePoint.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -914,16 +956,6 @@ var AreaRangePoint = /** @class */ (function (_super) {
     function AreaRangePoint() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
-    /**
-     * Range series only. The high or maximum value for each data point.
-     * @name Highcharts.Point#high
-     * @type {number|undefined}
-     */
-    /**
-     * Range series only. The low or minimum value for each data point.
-     * @name Highcharts.Point#low
-     * @type {number|undefined}
-     */
     /* *
      *
      *  Functions
@@ -1004,15 +1036,34 @@ var AreaRangePoint = /** @class */ (function (_super) {
  *
  * */
 /* harmony default export */ var AreaRange_AreaRangePoint = (AreaRangePoint);
+/* *
+ *
+ *  API Options
+ *
+ * */
+/**
+ * Range series only. The high or maximum value for each data point.
+ *
+ * @name Highcharts.Point#high
+ * @type {number|undefined}
+ */
+/**
+ * Range series only. The low or minimum value for each data point.
+ *
+ * @name Highcharts.Point#low
+ * @type {number|undefined}
+ */
+''; // Keeps doclets above in JS file.
 
 ;// ./code/es5/es-modules/Series/AreaRange/AreaRangeSeries.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -1510,16 +1561,6 @@ var AreaRangeSeries = /** @class */ (function (_super) {
         i = 0;
         while (i < pointLength) {
             point = series.points[i];
-            /**
-             * Array for multiple SVG graphics representing the point in the
-             * chart. Only used in cases where the point can not be represented
-             * by a single graphic.
-             *
-             * @see Highcharts.Point#graphic
-             *
-             * @name Highcharts.Point#graphics
-             * @type {Array<Highcharts.SVGElement>|undefined}
-             */
             point.graphics = point.graphics || [];
             // Save original props to be overridden by temporary props for top
             // points
@@ -1656,11 +1697,12 @@ highcharts_SeriesRegistry_commonjs_highcharts_SeriesRegistry_commonjs2_highchart
 ;// ./code/es5/es-modules/Series/AreaSplineRange/AreaSplineRangeSeries.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -1852,11 +1894,12 @@ highcharts_SeriesRegistry_commonjs_highcharts_SeriesRegistry_commonjs2_highchart
 ;// ./code/es5/es-modules/Series/BoxPlot/BoxPlotSeriesDefaults.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -2306,11 +2349,12 @@ var highcharts_Series_types_column_commonjs_highcharts_Series_types_column_commo
 ;// ./code/es5/es-modules/Series/BoxPlot/BoxPlotSeries.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -2608,13 +2652,13 @@ highcharts_SeriesRegistry_commonjs_highcharts_SeriesRegistry_commonjs2_highchart
 ;// ./code/es5/es-modules/Series/Bubble/BubbleLegendDefaults.js
 /* *
  *
- *  (c) 2010-2025 Highsoft AS
+ *  (c) 2010-2026 Highsoft AS
  *
  *  Author: Paweł Potaczek
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -2879,13 +2923,13 @@ var highcharts_Templating_commonjs_highcharts_Templating_commonjs2_highcharts_Te
 ;// ./code/es5/es-modules/Series/Bubble/BubbleLegendItem.js
 /* *
  *
- *  (c) 2010-2025 Highsoft AS
+ *  (c) 2010-2026 Highsoft AS
  *
  *  Author: Paweł Potaczek
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -3375,13 +3419,13 @@ var BubbleLegendItem = /** @class */ (function () {
 ;// ./code/es5/es-modules/Series/Bubble/BubbleLegendComposition.js
 /* *
  *
- *  (c) 2010-2025 Highsoft AS
+ *  (c) 2010-2026 Highsoft AS
  *
  *  Author: Paweł Potaczek
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -3666,11 +3710,12 @@ var highcharts_Point_commonjs_highcharts_Point_commonjs2_highcharts_Point_root_H
 ;// ./code/es5/es-modules/Series/Bubble/BubblePoint.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -3755,11 +3800,12 @@ BubblePoint_extend(BubblePoint.prototype, {
 ;// ./code/es5/es-modules/Series/Bubble/BubbleSeries.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -4554,11 +4600,12 @@ highcharts_SeriesRegistry_commonjs_highcharts_SeriesRegistry_commonjs2_highchart
 ;// ./code/es5/es-modules/Series/ColumnRange/ColumnRangePoint.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -4618,11 +4665,12 @@ ColumnRangePoint_extend(ColumnRangePoint.prototype, {
 ;// ./code/es5/es-modules/Series/ColumnRange/ColumnRangeSeries.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -4961,11 +5009,12 @@ highcharts_SeriesRegistry_commonjs_highcharts_SeriesRegistry_commonjs2_highchart
 ;// ./code/es5/es-modules/Series/ColumnPyramid/ColumnPyramidSeriesDefaults.js
 /* *
  *
- *  (c) 2010-2025 Sebastian Bochan
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Sebastian Bochan
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -5088,11 +5137,12 @@ var ColumnPyramidSeriesDefaults = {};
 ;// ./code/es5/es-modules/Series/ColumnPyramid/ColumnPyramidSeries.js
 /* *
  *
- *  (c) 2010-2025 Sebastian Bochan
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Sebastian Bochan
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -5325,11 +5375,12 @@ highcharts_SeriesRegistry_commonjs_highcharts_SeriesRegistry_commonjs2_highchart
 ;// ./code/es5/es-modules/Series/ErrorBar/ErrorBarSeriesDefaults.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -5474,11 +5525,12 @@ var ErrorBarSeriesDefaults = {
 ;// ./code/es5/es-modules/Series/ErrorBar/ErrorBarSeries.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -5586,11 +5638,12 @@ highcharts_SeriesRegistry_commonjs_highcharts_SeriesRegistry_commonjs2_highchart
 ;// ./code/es5/es-modules/Series/Gauge/GaugePoint.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -5650,11 +5703,12 @@ var GaugePoint = /** @class */ (function (_super) {
 ;// ./code/es5/es-modules/Series/Gauge/GaugeSeries.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -6264,11 +6318,12 @@ var highcharts_Color_commonjs_highcharts_Color_commonjs2_highcharts_Color_root_H
  *
  *  Networkgraph series
  *
- *  (c) 2010-2025 Paweł Fus
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Paweł Fus
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -6448,11 +6503,12 @@ var DragNodesComposition = {
  *
  *  Networkgraph series
  *
- *  (c) 2010-2025 Paweł Fus
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Paweł Fus
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -6584,11 +6640,12 @@ var highcharts_Chart_commonjs_highcharts_Chart_commonjs2_highcharts_Chart_root_H
 ;// ./code/es5/es-modules/Series/PackedBubble/PackedBubblePoint.js
 /* *
  *
- *  (c) 2010-2025 Grzegorz Blachlinski, Sebastian Bochan
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Grzegorz Blachlinski, Sebastian Bochan
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -7086,11 +7143,12 @@ var PackedBubbleSeriesDefaults = {
  *
  *  Networkgraph series
  *
- *  (c) 2010-2025 Paweł Fus
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Paweł Fus
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -7279,11 +7337,12 @@ var VerletIntegration = {
 ;// ./code/es5/es-modules/Series/PackedBubble/PackedBubbleIntegration.js
 /* *
  *
- *  (c) 2010-2025 Grzegorz Blachlinski, Sebastian Bochan
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Grzegorz Blachlinski, Sebastian Bochan
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -7380,11 +7439,12 @@ var PackedBubbleIntegration = {
  *
  *  Networkgraph series
  *
- *  (c) 2010-2025 Paweł Fus
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Paweł Fus
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -7583,11 +7643,12 @@ var EulerIntegration = {
  *
  *  Networkgraph series
  *
- *  (c) 2010-2025 Paweł Fus
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Paweł Fus
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -7858,11 +7919,12 @@ var QuadTreeNode = /** @class */ (function () {
  *
  *  Networkgraph series
  *
- *  (c) 2010-2025 Paweł Fus
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Paweł Fus
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -8006,11 +8068,12 @@ var QuadTree = /** @class */ (function () {
  *
  *  Networkgraph series
  *
- *  (c) 2010-2025 Paweł Fus
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Paweł Fus
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -8563,11 +8626,12 @@ var ReingoldFruchtermanLayout = /** @class */ (function () {
 ;// ./code/es5/es-modules/Series/PackedBubble/PackedBubbleLayout.js
 /* *
  *
- *  (c) 2010-2025 Grzegorz Blachlinski, Sebastian Bochan
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Grzegorz Blachlinski, Sebastian Bochan
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -8829,12 +8893,22 @@ Series_GraphLayoutComposition.layouts.packedbubble = PackedBubbleLayout;
 ;// ./code/es5/es-modules/Series/SimulationSeriesUtilities.js
 /* *
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
+var __assign = (undefined && undefined.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 
-var SimulationSeriesUtilities_merge = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).merge, syncTimeout = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).syncTimeout;
+var syncTimeout = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).syncTimeout;
 
 var animObject = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).animObject;
 /**
@@ -8871,7 +8945,9 @@ function initDataLabels() {
     var series = this,
         dlOptions = series.options.dataLabels;
     if (!series.dataLabelsGroup) {
-        var dataLabelsGroup = this.initDataLabelsGroup();
+        // Those series support only one group of data labels (index 0)
+        var dataLabelsGroup = this.initDataLabelsGroup(0,
+            dlOptions);
         // Apply the dataLabels.style not only to the
         // individual dataLabels but also to the entire group
         if (!series.chart.styledMode && (dlOptions === null || dlOptions === void 0 ? void 0 : dlOptions.style)) {
@@ -8880,12 +8956,19 @@ function initDataLabels() {
         // Initialize the opacity of the group to 0 (start of animation)
         dataLabelsGroup.attr({ opacity: 0 });
         if (series.visible) { // #2597, #3023, #3024
+            // #19663, initial data labels animation
+            if (series.options.animation && (dlOptions === null || dlOptions === void 0 ? void 0 : dlOptions.animation)) {
+                dataLabelsGroup.animate({ opacity: 1 }, dlOptions.animation);
+            }
+            else {
+                dataLabelsGroup.attr({ opacity: 1 });
+            }
             dataLabelsGroup.show();
         }
         return dataLabelsGroup;
     }
     // Place it on first and subsequent (redraw) calls
-    series.dataLabelsGroup.attr(SimulationSeriesUtilities_merge({ opacity: 1 }, this.getPlotBox('data-labels')));
+    series.dataLabelsGroup.attr(__assign({ opacity: 1 }, this.getPlotBox('data-labels')));
     return series.dataLabelsGroup;
 }
 var DataLabelsDeferUtils = {
@@ -8902,11 +8985,12 @@ var highcharts_SVGElement_commonjs_highcharts_SVGElement_commonjs2_highcharts_SV
  *
  *  Highcharts module with textPath functionality.
  *
- *  (c) 2009-2025 Torstein Honsi
+ *  (c) 2009-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -9083,7 +9167,7 @@ function setPolygon(event) {
                         }
                     }
                 }
-                catch (e) {
+                catch (_d) {
                     // Safari fails on getStartPositionOfChar even if the
                     // character is within the `textContent.length`
                     break;
@@ -9093,14 +9177,14 @@ function setPolygon(event) {
             try {
                 var srcCharIndex = i + lineIndex,
                     charPos = tp.getEndPositionOfChar(srcCharIndex),
-                    _d = appendTopAndBottom(srcCharIndex,
+                    _e = appendTopAndBottom(srcCharIndex,
                     charPos),
-                    lower = _d[0],
-                    upper = _d[1];
+                    lower = _e[0],
+                    upper = _e[1];
                 polygon.unshift(upper);
                 polygon.unshift(lower);
             }
-            catch (e) {
+            catch (_f) {
                 // Safari fails on getStartPositionOfChar even if the character
                 // is within the `textContent.length`
                 break;
@@ -9155,11 +9239,12 @@ var TextPath = {
 ;// ./code/es5/es-modules/Series/PackedBubble/PackedBubbleSeries.js
 /* *
  *
- *  (c) 2010-2025 Grzegorz Blachlinski, Sebastian Bochan
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Grzegorz Blachlinski, Sebastian Bochan
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -10103,11 +10188,12 @@ highcharts_SeriesRegistry_commonjs_highcharts_SeriesRegistry_commonjs2_highchart
 ;// ./code/es5/es-modules/Series/Polygon/PolygonSeriesDefaults.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -10231,11 +10317,12 @@ var PolygonSeriesDefaults = {
 ;// ./code/es5/es-modules/Series/Polygon/PolygonSeries.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -10318,23 +10405,490 @@ highcharts_SeriesRegistry_commonjs_highcharts_SeriesRegistry_commonjs2_highchart
  * */
 /* harmony default export */ var Polygon_PolygonSeries = ((/* unused pure expression or super */ null && (PolygonSeries)));
 
+;// ./code/es5/es-modules/Extensions/BorderRadius.js
+/* *
+ *
+ *  Highcharts Border Radius module
+ *
+ *  Author: Torstein Honsi
+ *
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
+ *
+ *
+ * */
+
+var BorderRadius_spreadArray = (undefined && undefined.__spreadArray) || function (to, from, pack) {
+    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
+        if (ar || !(i in from)) {
+            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
+            ar[i] = from[i];
+        }
+    }
+    return to.concat(ar || Array.prototype.slice.call(from));
+};
+
+var BorderRadius_defaultOptions = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).defaultOptions;
+
+var BorderRadius_noop = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).noop;
+
+var BorderRadius_addEvent = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).addEvent, BorderRadius_extend = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).extend, isObject = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).isObject, BorderRadius_merge = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).merge, BorderRadius_relativeLength = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).relativeLength;
+/* *
+ *
+ *  Constants
+ *
+ * */
+var defaultBorderRadiusOptions = {
+    radius: 0,
+    scope: 'stack',
+    where: void 0
+};
+/* *
+ *
+ *  Variables
+ *
+ * */
+var oldArc = BorderRadius_noop;
+var oldRoundedRect = BorderRadius_noop;
+/* *
+ *
+ *  Functions
+ *
+ * */
+/** @internal */
+function applyBorderRadius(path, i, r) {
+    var a = path[i];
+    var b = path[i + 1];
+    if (b[0] === 'Z') {
+        b = path[0];
+    }
+    var line,
+        arc,
+        fromLineToArc;
+    // From straight line to arc
+    if ((a[0] === 'M' || a[0] === 'L') && b[0] === 'A') {
+        line = a;
+        arc = b;
+        fromLineToArc = true;
+        // From arc to straight line
+    }
+    else if (a[0] === 'A' && (b[0] === 'M' || b[0] === 'L')) {
+        line = b;
+        arc = a;
+    }
+    if (line && arc && arc.params) {
+        var bigR = arc[1], 
+            // In our use cases, outer pie slice arcs are clockwise and inner
+            // arcs (donut/sunburst etc) are anti-clockwise
+            clockwise = arc[5], params = arc.params, start = params.start, end = params.end, cx = params.cx, cy = params.cy;
+        // Some geometric constants
+        var relativeR = clockwise ? (bigR - r) : (bigR + r), 
+            // The angle, on the big arc, that the border radius arc takes up
+            angleOfBorderRadius = relativeR ? Math.asin(r / relativeR) : 0,
+            angleOffset = clockwise ?
+                angleOfBorderRadius :
+                -angleOfBorderRadius, 
+            // The distance along the radius of the big arc to the starting
+            // point of the small border radius arc
+            distanceBigCenterToStartArc = (Math.cos(angleOfBorderRadius) *
+                relativeR);
+        // From line to arc
+        if (fromLineToArc) {
+            // Update the cache
+            params.start = start + angleOffset;
+            // First move to the start position at the radial line. We want to
+            // start one borderRadius closer to the center.
+            line[1] = cx + distanceBigCenterToStartArc * Math.cos(start);
+            line[2] = cy + distanceBigCenterToStartArc * Math.sin(start);
+            // Now draw an arc towards the point where the small circle touches
+            // the great circle.
+            path.splice(i + 1, 0, [
+                'A',
+                r,
+                r,
+                0, // Slanting,
+                0, // Long arc
+                1, // Clockwise
+                cx + bigR * Math.cos(params.start),
+                cy + bigR * Math.sin(params.start)
+            ]);
+            // From arc to line
+        }
+        else {
+            // Update the cache
+            params.end = end - angleOffset;
+            // End the big arc a bit earlier
+            arc[6] = cx + bigR * Math.cos(params.end);
+            arc[7] = cy + bigR * Math.sin(params.end);
+            // Draw a small arc towards a point on the end angle, but one
+            // borderRadius closer to the center relative to the perimeter.
+            path.splice(i + 1, 0, [
+                'A',
+                r,
+                r,
+                0,
+                0,
+                1,
+                cx + distanceBigCenterToStartArc * Math.cos(end),
+                cy + distanceBigCenterToStartArc * Math.sin(end)
+            ]);
+        }
+        // Long or short arc must be reconsidered because we have modified the
+        // start and end points
+        arc[4] = Math.abs(params.end - params.start) < Math.PI ? 0 : 1;
+    }
+}
+/**
+ * Extend arc with borderRadius.
+ * @internal
+ */
+function arc(x, y, w, h, options) {
+    if (options === void 0) { options = {}; }
+    var path = oldArc(x,
+        y,
+        w,
+        h,
+        options),
+        _a = options.brStart,
+        brStart = _a === void 0 ? true : _a,
+        _b = options.brEnd,
+        brEnd = _b === void 0 ? true : _b,
+        _c = options.innerR,
+        innerR = _c === void 0 ? 0 : _c,
+        _d = options.r,
+        r = _d === void 0 ? w : _d,
+        _e = options.start,
+        start = _e === void 0 ? 0 : _e,
+        _f = options.end,
+        end = _f === void 0 ? 0 : _f;
+    if (options.open || !options.borderRadius) {
+        return path;
+    }
+    var alpha = end - start,
+        sinHalfAlpha = Math.sin(alpha / 2),
+        borderRadius = Math.max(Math.min(BorderRadius_relativeLength(options.borderRadius || 0,
+        r - innerR), 
+        // Cap to half the sector radius
+        (r - innerR) / 2, 
+        // For smaller pie slices, cap to the largest small circle that
+        // can be fitted within the sector
+        (r * sinHalfAlpha) / (1 + sinHalfAlpha)), 0), 
+        // For the inner radius, we need an extra cap because the inner arc
+        // is shorter than the outer arc
+        innerBorderRadius = Math.min(borderRadius, 2 * (alpha / Math.PI) * innerR);
+    // Apply turn-by-turn border radius. Start at the end since we're
+    // splicing in arc segments.
+    var i = path.length - 1;
+    while (i--) {
+        if ((!brStart && (i === 0 || i === 3)) ||
+            (!brEnd && (i === 1 || i === 2))) {
+            continue;
+        }
+        applyBorderRadius(path, i, i > 1 ? innerBorderRadius : borderRadius);
+    }
+    return path;
+}
+/** @internal */
+function seriesOnAfterColumnTranslate() {
+    var _a,
+        _b;
+    if (this.options.borderRadius &&
+        !(this.chart.is3d && this.chart.is3d())) {
+        var _c = this,
+            options = _c.options,
+            yAxis = _c.yAxis,
+            percent = options.stacking === 'percent',
+            seriesDefault = (_b = (_a = BorderRadius_defaultOptions.plotOptions) === null || _a === void 0 ? void 0 : _a[this.type]) === null || _b === void 0 ? void 0 : _b.borderRadius,
+            borderRadius = optionsToObject(options.borderRadius,
+            isObject(seriesDefault) ? seriesDefault : {}),
+            reversed = yAxis.options.reversed;
+        for (var _i = 0, _d = this.points; _i < _d.length; _i++) {
+            var point = _d[_i];
+            var shapeArgs = point.shapeArgs;
+            if (point.shapeType === 'roundedRect' && shapeArgs) {
+                var _e = shapeArgs.width,
+                    width = _e === void 0 ? 0 : _e,
+                    _f = shapeArgs.height,
+                    height = _f === void 0 ? 0 : _f,
+                    _g = shapeArgs.y,
+                    y = _g === void 0 ? 0 : _g;
+                var brBoxY = y,
+                    brBoxHeight = height;
+                // It would be nice to refactor StackItem.getStackBox/
+                // setOffset so that we could get a reliable box out of
+                // it. Currently it is close if we remove the label
+                // offset, but we still need to run crispCol and also
+                // flip it if inverted, so atm it is simpler to do it
+                // like the below.
+                if (borderRadius.scope === 'stack' &&
+                    point.stackTotal) {
+                    var stackEnd = yAxis.translate(percent ? 100 : point.stackTotal,
+                        false,
+                        true,
+                        false,
+                        true),
+                        stackThreshold = yAxis.translate(options.threshold || 0,
+                        false,
+                        true,
+                        false,
+                        true),
+                        box = this.crispCol(0,
+                        Math.min(stackEnd,
+                        stackThreshold), 0,
+                        Math.abs(stackEnd - stackThreshold));
+                    brBoxY = box.y;
+                    brBoxHeight = box.height;
+                }
+                var flip = (point.negative ? -1 : 1) *
+                        (reversed ? -1 : 1) === -1;
+                // Handle the where option
+                var where = borderRadius.where;
+                // Waterfall, hanging columns should have rounding on
+                // all sides
+                if (!where &&
+                    this.is('waterfall') &&
+                    Math.abs((point.yBottom || 0) -
+                        (this.translatedThreshold || 0)) > this.borderWidth) {
+                    where = 'all';
+                }
+                if (!where) {
+                    where = 'end';
+                }
+                // Get the radius
+                var r = Math.min(BorderRadius_relativeLength(borderRadius.radius,
+                    width),
+                    width / 2, 
+                    // Cap to the height, but not if where is `end`
+                    where === 'all' ? height / 2 : Infinity) || 0;
+                // If the `where` option is 'end', cut off the
+                // rectangles by making the border-radius box one r
+                // greater, so that the imaginary radius falls outside
+                // the rectangle.
+                if (where === 'end') {
+                    if (flip) {
+                        brBoxY -= r;
+                        brBoxHeight += r;
+                    }
+                    else {
+                        brBoxHeight += r;
+                    }
+                }
+                BorderRadius_extend(shapeArgs, { brBoxHeight: brBoxHeight, brBoxY: brBoxY, r: r });
+            }
+        }
+    }
+}
+/** @internal */
+function BorderRadius_compose(SeriesClass, SVGElementClass, SVGRendererClass) {
+    var PieSeriesClass = SeriesClass.types.pie;
+    if (!SVGElementClass.symbolCustomAttribs.includes('borderRadius')) {
+        var symbols = SVGRendererClass.prototype.symbols;
+        BorderRadius_addEvent(SeriesClass, 'afterColumnTranslate', seriesOnAfterColumnTranslate, {
+            // After columnrange and polar column modifications
+            order: 9
+        });
+        BorderRadius_addEvent(PieSeriesClass, 'afterTranslate', pieSeriesOnAfterTranslate);
+        SVGElementClass.symbolCustomAttribs.push('borderRadius', 'brBoxHeight', 'brBoxY', 'brEnd', 'brStart');
+        oldArc = symbols.arc;
+        oldRoundedRect = symbols.roundedRect;
+        symbols.arc = arc;
+        symbols.roundedRect = roundedRect;
+    }
+}
+/** @internal */
+function optionsToObject(options, seriesBROptions) {
+    if (!isObject(options)) {
+        options = { radius: options || 0 };
+    }
+    return BorderRadius_merge(defaultBorderRadiusOptions, seriesBROptions, options);
+}
+/** @internal */
+function pieSeriesOnAfterTranslate() {
+    var borderRadius = optionsToObject(this.options.borderRadius);
+    for (var _i = 0, _a = this.points; _i < _a.length; _i++) {
+        var point = _a[_i];
+        var shapeArgs = point.shapeArgs;
+        if (shapeArgs) {
+            shapeArgs.borderRadius = BorderRadius_relativeLength(borderRadius.radius, (shapeArgs.r || 0) - ((shapeArgs.innerR) || 0));
+        }
+    }
+}
+/**
+ * Extend roundedRect with individual cutting through rOffset.
+ * @internal
+ */
+function roundedRect(x, y, width, height, options) {
+    if (options === void 0) { options = {}; }
+    var path = oldRoundedRect(x,
+        y,
+        width,
+        height,
+        options),
+        _a = options.r,
+        r = _a === void 0 ? 0 : _a,
+        _b = options.brBoxHeight,
+        brBoxHeight = _b === void 0 ? height : _b,
+        _c = options.brBoxY,
+        brBoxY = _c === void 0 ? y : _c,
+        brOffsetTop = y - brBoxY,
+        brOffsetBtm = (brBoxY + brBoxHeight) - (y + height), 
+        // When the distance to the border-radius box is greater than the r
+        // itself, it means no border radius. The -0.1 accounts for float
+        // rounding errors.
+        rTop = (brOffsetTop - r) > -0.1 ? 0 : r,
+        rBtm = (brOffsetBtm - r) > -0.1 ? 0 : r,
+        cutTop = Math.max(rTop && brOffsetTop, 0),
+        cutBtm = Math.max(rBtm && brOffsetBtm, 0);
+    /*
+
+    The naming of control points:
+
+      / a -------- b \
+     /                \
+    h                  c
+    |                  |
+    |                  |
+    |                  |
+    g                  d
+     \                /
+      \ f -------- e /
+
+    */
+    var a = [x + rTop,
+        y],
+        b = [x + width - rTop,
+        y],
+        c = [x + width,
+        y + rTop],
+        d = [
+            x + width,
+        y + height - rBtm
+        ],
+        e = [
+            x + width - rBtm,
+            y + height
+        ],
+        f = [x + rBtm,
+        y + height],
+        g = [x,
+        y + height - rBtm],
+        h = [x,
+        y + rTop];
+    var applyPythagoras = function (r,
+        altitude) { return Math.sqrt(Math.pow(r, 2) - Math.pow(altitude, 2)); };
+    // Inside stacks, cut off part of the top
+    if (cutTop) {
+        var base = applyPythagoras(rTop,
+            rTop - cutTop);
+        a[0] -= base;
+        b[0] += base;
+        c[1] = h[1] = y + rTop - cutTop;
+    }
+    // Column is lower than the radius. Cut off bottom inside the top
+    // radius.
+    if (height < rTop - cutTop) {
+        var base = applyPythagoras(rTop,
+            rTop - cutTop - height);
+        c[0] = d[0] = x + width - rTop + base;
+        e[0] = Math.min(c[0], e[0]);
+        f[0] = Math.max(d[0], f[0]);
+        g[0] = h[0] = x + rTop - base;
+        c[1] = h[1] = y + height;
+    }
+    // Inside stacks, cut off part of the bottom
+    if (cutBtm) {
+        var base = applyPythagoras(rBtm,
+            rBtm - cutBtm);
+        e[0] += base;
+        f[0] -= base;
+        d[1] = g[1] = y + height - rBtm + cutBtm;
+    }
+    // Cut off top inside the bottom radius
+    if (height < rBtm - cutBtm) {
+        var base = applyPythagoras(rBtm,
+            rBtm - cutBtm - height);
+        c[0] = d[0] = x + width - rBtm + base;
+        b[0] = Math.min(c[0], b[0]);
+        a[0] = Math.max(d[0], a[0]);
+        g[0] = h[0] = x + rBtm - base;
+        d[1] = g[1] = y;
+    }
+    // Preserve the box for data labels
+    path.length = 0;
+    path.push(BorderRadius_spreadArray(['M'], a, true), BorderRadius_spreadArray(['L'], b, true), BorderRadius_spreadArray(['A', rTop, rTop, 0, 0, 1], c, true), BorderRadius_spreadArray(['L'], d, true), BorderRadius_spreadArray(['A', rBtm, rBtm, 0, 0, 1], e, true), BorderRadius_spreadArray(['L'], f, true), BorderRadius_spreadArray(['A', rBtm, rBtm, 0, 0, 1], g, true), BorderRadius_spreadArray(['L'], h, true), BorderRadius_spreadArray(['A', rTop, rTop, 0, 0, 1], a, true), ['Z']);
+    return path;
+}
+/* *
+ *
+ *  Default Export
+ *
+ * */
+var BorderRadius = {
+    compose: BorderRadius_compose,
+    optionsToObject: optionsToObject
+};
+/* harmony default export */ var Extensions_BorderRadius = (BorderRadius);
+/* *
+ *
+ *  API Declarations
+ *
+ * */
+/**
+ * Detailed options for border radius.
+ *
+ * @sample  {highcharts} highcharts/plotoptions/column-borderradius/
+ *          Rounded columns
+ * @sample  highcharts/plotoptions/series-border-radius
+ *          Column and pie with rounded border
+ *
+ * @interface Highcharts.BorderRadiusOptionsObject
+ */ /**
+* The border radius. A number signifies pixels. A percentage string, like for
+* example `50%`, signifies a relative size. For columns this is relative to the
+* column width, for pies it is relative to the radius and the inner radius.
+*
+* @name Highcharts.BorderRadiusOptionsObject#radius
+* @type {string|number}
+*/ /**
+* The scope of the rounding for column charts. In a stacked column chart, the
+* value `point` means each single point will get rounded corners. The value
+* `stack` means the rounding will apply to the full stack, so that only points
+* close to the top or bottom will receive rounding.
+*
+* @name Highcharts.BorderRadiusOptionsObject#scope
+* @validvalue ["point", "stack"]
+* @type {string}
+*/ /**
+* For column charts, where in the point or stack to apply rounding. The `end`
+* value means only those corners at the point value will be rounded, leaving
+* the corners at the base or threshold unrounded. This is the most intuitive
+* behaviour. The `all` value means also the base will be rounded.
+*
+* @name Highcharts.BorderRadiusOptionsObject#where
+* @validvalue ["all", "end"]
+* @type {string}
+* @default end
+*/
+(''); // Keeps doclets above in JS file
+
 ;// ./code/es5/es-modules/Core/Axis/RadialAxisDefaults.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
  *  Extension for radial axes
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
 /**
-     * Circular axis around the perimeter of a polar chart.
-     * @private
-     */
+ * Circular axis around the perimeter of a polar chart.
+ * @internal
+ */
 var defaultCircularOptions = {
     gridLineWidth: 1, // Spokes
     labels: {
@@ -10349,7 +10903,7 @@ var defaultCircularOptions = {
 };
 /**
  * The default options extend defaultYAxisOptions.
- * @private
+ * @internal
  */
 var defaultRadialGaugeOptions = {
     endOnTick: false,
@@ -10379,7 +10933,7 @@ var defaultRadialGaugeOptions = {
 };
 /**
  * Radial axis, like a spoke in a polar chart.
- * @private
+ * @internal
  */
 var defaultRadialOptions = {
     /**
@@ -10399,6 +10953,51 @@ var defaultRadialOptions = {
      * @since     4.2.7
      * @product   highcharts
      * @apioption xAxis.angle
+     */
+    /**
+     * In a gauge chart, this option determines the inner radius of the
+     * plot band that stretches along the perimeter. It can be given as
+     * a percentage string, like `"100%"`, or as a pixel number, like `100`.
+     * By default, the inner radius is controlled by the [thickness](
+     * #yAxis.plotBands.thickness) option.
+     *
+     * @sample {highcharts} highcharts/xaxis/plotbands-gauge
+     *         Gauge plot band
+     *
+     * @type      {number|string}
+     * @since     2.3
+     * @product   highcharts
+     * @apioption yAxis.plotBands.innerRadius
+     */
+    /**
+     * In a gauge chart, this option determines the outer radius of the
+     * plot band that stretches along the perimeter. It can be given as
+     * a percentage string, like `"100%"`, or as a pixel number, like `100`.
+     *
+     * @sample {highcharts} highcharts/xaxis/plotbands-gauge
+     *         Gauge plot band
+     *
+     * @type      {number|string}
+     * @default   100%
+     * @since     2.3
+     * @product   highcharts
+     * @apioption yAxis.plotBands.outerRadius
+     */
+    /**
+     * In a gauge chart, this option sets the width of the plot band
+     * stretching along the perimeter. It can be given as a percentage
+     * string, like `"10%"`, or as a pixel number, like `10`. The default
+     * value 10 is the same as the default [tickLength](#yAxis.tickLength),
+     * thus making the plot band act as a background for the tick markers.
+     *
+     * @sample {highcharts} highcharts/xaxis/plotbands-gauge
+     *         Gauge plot band
+     *
+     * @type      {number|string}
+     * @default   10
+     * @since     2.3
+     * @product   highcharts
+     * @apioption yAxis.plotBands.thickness
      */
     /**
      * Polar charts only. Whether the grid lines should draw as a polygon
@@ -10439,8 +11038,10 @@ var defaultRadialOptions = {
  *
  * */
 var RadialAxisDefaults = {
+    /** @internal */
     circular: defaultCircularOptions,
     radial: defaultRadialOptions,
+    /** @internal */
     radialGauge: defaultRadialGaugeOptions
 };
 /* harmony default export */ var Axis_RadialAxisDefaults = (RadialAxisDefaults);
@@ -10448,11 +11049,12 @@ var RadialAxisDefaults = {
 ;// ./code/es5/es-modules/Core/Axis/RadialAxis.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -10462,12 +11064,13 @@ var RadialAxis_defaultOptions = (highcharts_commonjs_highcharts_commonjs2_highch
 
 var RadialAxis_composed = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).composed, RadialAxis_noop = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).noop;
 
-var RadialAxis_addEvent = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).addEvent, RadialAxis_correctFloat = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).correctFloat, RadialAxis_defined = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).defined, RadialAxis_extend = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).extend, RadialAxis_fireEvent = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).fireEvent, isObject = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).isObject, RadialAxis_merge = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).merge, RadialAxis_pick = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).pick, RadialAxis_pushUnique = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).pushUnique, RadialAxis_relativeLength = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).relativeLength, RadialAxis_splat = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).splat, RadialAxis_wrap = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).wrap;
+var RadialAxis_addEvent = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).addEvent, RadialAxis_correctFloat = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).correctFloat, RadialAxis_defined = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).defined, RadialAxis_extend = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).extend, RadialAxis_fireEvent = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).fireEvent, RadialAxis_isObject = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).isObject, RadialAxis_merge = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).merge, RadialAxis_pick = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).pick, RadialAxis_pushUnique = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).pushUnique, RadialAxis_relativeLength = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).relativeLength, RadialAxis_splat = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).splat, RadialAxis_wrap = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).wrap;
 /* *
  *
  *  Composition
  *
  * */
+/** @internal */
 var RadialAxis;
 (function (RadialAxis) {
     /* *
@@ -10486,7 +11089,7 @@ var RadialAxis;
      * In case of auto connect, add one closestPointRange to the max value
      * right before tickPositions are computed, so that ticks will extend
      * passed the real max.
-     * @private
+     * @internal
      */
     function beforeSetTickPositions() {
         // If autoConnect is true, polygonal grid lines are connected, and
@@ -10511,7 +11114,7 @@ var RadialAxis;
     /**
      * Augments methods for the value axis.
      *
-     * @private
+     * @internal
      *
      * @param {Highcharts.Axis} AxisClass
      * Axis class to extend.
@@ -10541,7 +11144,7 @@ var RadialAxis;
      * Attach and return collecting function for labels in radial axis for
      * anti-collision.
      *
-     * @private
+     * @internal
      */
     function createLabelCollector() {
         var _this = this;
@@ -10561,14 +11164,14 @@ var RadialAxis;
     }
     /**
      * Creates an empty collector function.
-     * @private
+     * @internal
      */
     function createLabelCollectorHidden() {
         return RadialAxis_noop;
     }
     /**
      * Find the correct end values of crosshair in polar.
-     * @private
+     * @internal
      */
     function getCrosshairPosition(options, x1, y1) {
         var center = this.pane.center;
@@ -10616,7 +11219,7 @@ var RadialAxis;
      * Get the path for the axis line. This method is also referenced in the
      * getPlotLinePath method.
      *
-     * @private
+     * @internal
      * @param {number} _lineWidth
      * Line width is not used.
      * @param {number} [radius]
@@ -10680,7 +11283,7 @@ var RadialAxis;
     /**
      * Find the path for plot bands along the radial axis.
      *
-     * @private
+     * @internal
      */
     function getPlotBandPath(from, to, options) {
         var chart = this.chart,
@@ -10693,7 +11296,8 @@ var RadialAxis;
                 return r;
             }
             return radius;
-        }, center = this.center, startAngleRad = this.startAngleRad, fullRadius = center[2] / 2, offset = Math.min(this.offset, 0), left = this.left || 0, top = this.top || 0, percentRegex = /%$/, isCircular = this.isCircular; // X axis in a polar chart
+        }, center = this.center, startAngleRad = this.startAngleRad, borderRadius = options.borderRadius, fullRadius = center[2] / 2, offset = Math.min(this.offset, 0), left = this.left || 0, top = this.top || 0, percentRegex = /%$/, isCircular = this.isCircular, // X axis in a polar chart
+        trueBands = this.options.plotBands || [], index = trueBands.indexOf(options);
         var start,
             end,
             angle,
@@ -10703,7 +11307,18 @@ var RadialAxis;
             outerRadius = RadialAxis_pick(radiusToPixels(options.outerRadius),
             fullRadius),
             innerRadius = radiusToPixels(options.innerRadius),
-            thickness = RadialAxis_pick(radiusToPixels(options.thickness), 10);
+            thickness = RadialAxis_pick(radiusToPixels(options.thickness), 10),
+            brStart = true,
+            brEnd = true;
+        // Apply conditional border radius, only for ends of band stacks
+        if (borderRadius && index > -1) {
+            if (trueBands[index - 1] && trueBands[index - 1].to === from) {
+                brStart = false;
+            }
+            if (trueBands[index + 1] && trueBands[index + 1].from === to) {
+                brEnd = false;
+            }
+        }
         // Polygonal plot bands
         if (this.options.gridLineInterpolation === 'polygon') {
             path = this.getPlotLinePath({ value: from }).concat(this.getPlotLinePath({ value: to, reverse: true }));
@@ -10739,7 +11354,9 @@ var RadialAxis;
                 end: Math.max(start, end),
                 innerR: RadialAxis_pick(innerRadius, outerRadius - thickness),
                 open: open,
-                borderRadius: options.borderRadius
+                borderRadius: borderRadius,
+                brStart: brStart,
+                brEnd: brEnd
             });
             // Provide positioning boxes for the label (#6406)
             if (isCircular) {
@@ -10874,7 +11491,7 @@ var RadialAxis;
      * Returns the x, y coordinate of a point given by a value and a pixel
      * distance from center.
      *
-     * @private
+     * @internal
      * @param {number} value
      * Point value.
      * @param {number} [length]
@@ -10912,7 +11529,7 @@ var RadialAxis;
     }
     /**
      * Modify radial axis.
-     * @private
+     * @internal
      *
      * @param {Highcharts.Axis} radialAxis
      * Radial axis to modify.
@@ -10934,7 +11551,7 @@ var RadialAxis;
     }
     /**
      * Modify radial axis as hidden.
-     * @private
+     * @internal
      *
      * @param {Highcharts.Axis} radialAxis
      * Radial axis to modify.
@@ -11218,7 +11835,7 @@ var RadialAxis;
      * Translate from intermediate plotX (angle), plotY (axis.len - radius)
      * to final chart coordinates.
      *
-     * @private
+     * @internal
      * @param {number} angle
      * Translation angle.
      * @param {number} radius
@@ -11243,7 +11860,7 @@ var RadialAxis;
      * Override the setAxisSize method to use the arc's circumference as
      * length. This allows tickPixelInterval to apply to pixel lengths along
      * the perimeter.
-     * @private
+     * @internal
      */
     function setAxisSize() {
         var axisProto = this.constructor.prototype;
@@ -11279,7 +11896,7 @@ var RadialAxis;
      * difference in rotation. This allows the translate method to return
      * angle for any given value.
      *
-     * @private
+     * @internal
      */
     function setAxisTranslation() {
         var axisProto = this.constructor.prototype;
@@ -11330,7 +11947,7 @@ var RadialAxis;
                     RadialAxis_defaultOptions.yAxis, RadialAxis.radialDefaultOptions.radial);
         }
         if (inverted && coll === 'yAxis') {
-            defaultPolarOptions.stackLabels = isObject(RadialAxis_defaultOptions.yAxis, true) ? RadialAxis_defaultOptions.yAxis.stackLabels : {};
+            defaultPolarOptions.stackLabels = RadialAxis_isObject(RadialAxis_defaultOptions.yAxis, true) ? RadialAxis_defaultOptions.yAxis.stackLabels : {};
             defaultPolarOptions.reversedStacks = true;
         }
         var options = this.options = RadialAxis_merge(defaultPolarOptions,
@@ -11372,16 +11989,18 @@ var RadialAxis;
  *  Default Export
  *
  * */
+/** @internal */
 /* harmony default export */ var Axis_RadialAxis = (RadialAxis);
 
 ;// ./code/es5/es-modules/Series/PolarComposition.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -11397,12 +12016,16 @@ var PolarComposition_spreadArray = (undefined && undefined.__spreadArray) || fun
 
 var PolarComposition_animObject = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).animObject;
 
+var PolarComposition_optionsToObject = Extensions_BorderRadius.optionsToObject;
+
+var PolarComposition_defaultOptions = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).defaultOptions;
+
 var PolarComposition_composed = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).composed;
 
 
 
 
-var PolarComposition_addEvent = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).addEvent, PolarComposition_defined = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).defined, find = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).find, PolarComposition_isNumber = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).isNumber, PolarComposition_merge = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).merge, PolarComposition_pick = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).pick, PolarComposition_pushUnique = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).pushUnique, PolarComposition_relativeLength = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).relativeLength, PolarComposition_splat = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).splat, PolarComposition_uniqueKey = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).uniqueKey, PolarComposition_wrap = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).wrap;
+var PolarComposition_addEvent = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).addEvent, PolarComposition_defined = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).defined, find = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).find, PolarComposition_isNumber = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).isNumber, PolarComposition_isObject = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).isObject, PolarComposition_merge = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).merge, PolarComposition_pick = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).pick, PolarComposition_pushUnique = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).pushUnique, PolarComposition_relativeLength = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).relativeLength, PolarComposition_splat = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).splat, PolarComposition_uniqueKey = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).uniqueKey, PolarComposition_wrap = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).wrap;
 /* *
  *
  *  Functions
@@ -11777,6 +12400,45 @@ function onSeriesAfterInit() {
             this.isRadialSeries = true;
             if (this.is('column')) {
                 this.isRadialBar = true;
+            }
+        }
+    }
+}
+/**
+ * Apply conditional rounding to polar bars
+ */
+function onSeriesAfterColumnTranslate() {
+    var _a;
+    var _b,
+        _c;
+    var _d = this,
+        chart = _d.chart,
+        options = _d.options,
+        yAxis = _d.yAxis;
+    if (options.borderRadius &&
+        chart.polar &&
+        chart.inverted) {
+        var seriesDefault = (_c = (_b = PolarComposition_defaultOptions.plotOptions) === null || _b === void 0 ? void 0 : _b[this.type]) === null || _c === void 0 ? void 0 : _c.borderRadius,
+            _e = PolarComposition_optionsToObject(options.borderRadius,
+            PolarComposition_isObject(seriesDefault) ? seriesDefault : {}),
+            scope = _e.scope,
+            _f = _e.where,
+            where = _f === void 0 ? 'end' : _f;
+        for (var _i = 0, _g = this.points; _i < _g.length; _i++) {
+            var point = _g[_i];
+            var shapeArgs = point.shapeArgs;
+            if (point.shapeType === 'arc' && shapeArgs) {
+                var brStart = where === 'all',
+                    brEnd = true;
+                if (options.stacking && scope === 'stack') {
+                    brStart = point.stackY === point.y && where === 'all',
+                        brEnd = point.stackY === point.stackTotal;
+                }
+                if (yAxis.reversed) {
+                    _a = [brEnd, brStart], brStart = _a[0], brEnd = _a[1];
+                }
+                shapeArgs.brStart = brStart;
+                shapeArgs.brEnd = brEnd;
             }
         }
     }
@@ -12438,7 +13100,7 @@ var PolarAdditions = /** @class */ (function () {
      *
      * */
     PolarAdditions.compose = function (AxisClass, ChartClass, PointerClass, SeriesClass, TickClass, PointClass, AreaSplineRangeSeriesClass, ColumnSeriesClass, LineSeriesClass, SplineSeriesClass) {
-        Pane_Pane.compose(ChartClass, PointerClass);
+        Pane_Pane.compose(ChartClass, PointerClass, SeriesClass);
         Axis_RadialAxis.compose(AxisClass, TickClass);
         if (PolarComposition_pushUnique(PolarComposition_composed, 'Polar')) {
             var chartProto = ChartClass.prototype,
@@ -12454,6 +13116,10 @@ var PolarAdditions = /** @class */ (function () {
             PolarComposition_addEvent(PointerClass, 'getSelectionMarkerAttrs', onPointerGetSelectionMarkerAttrs);
             PolarComposition_addEvent(PointerClass, 'getSelectionBox', onPointerGetSelectionBox);
             PolarComposition_addEvent(SeriesClass, 'afterInit', onSeriesAfterInit);
+            PolarComposition_addEvent(SeriesClass, 'afterColumnTranslate', onSeriesAfterColumnTranslate, {
+                // After columnrange and polar column modifications
+                order: 9
+            });
             PolarComposition_addEvent(SeriesClass, 'afterTranslate', onSeriesAfterTranslate, { order: 2 } // Run after translation of ||-coords
             );
             PolarComposition_addEvent(SeriesClass, 'afterColumnTranslate', onAfterColumnTranslate, { order: 4 });
@@ -12579,11 +13245,12 @@ var highcharts_StackItem_commonjs_highcharts_StackItem_commonjs2_highcharts_Stac
 ;// ./code/es5/es-modules/Core/Axis/WaterfallAxis.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -12597,6 +13264,7 @@ var WaterfallAxis_addEvent = (highcharts_commonjs_highcharts_commonjs2_highchart
  *  Namespace
  *
  * */
+/** @internal */
 var WaterfallAxis;
 (function (WaterfallAxis) {
     /* *
@@ -12609,9 +13277,7 @@ var WaterfallAxis;
      *  Functions
      *
      * */
-    /**
-     * @private
-     */
+    /** @internal */
     function compose(AxisClass, ChartClass) {
         if (WaterfallAxis_pushUnique(WaterfallAxis_composed, 'Axis.Waterfall')) {
             WaterfallAxis_addEvent(AxisClass, 'init', onAxisInit);
@@ -12621,9 +13287,7 @@ var WaterfallAxis;
         }
     }
     WaterfallAxis.compose = compose;
-    /**
-     * @private
-     */
+    /** @internal */
     function onAxisAfterBuildStacks() {
         var _a;
         var axis = this,
@@ -12633,9 +13297,7 @@ var WaterfallAxis;
             delete stacks.alreadyChanged;
         }
     }
-    /**
-     * @private
-     */
+    /** @internal */
     function onAxisAfterRender() {
         var _a;
         var axis = this,
@@ -12645,18 +13307,14 @@ var WaterfallAxis;
             axis.waterfall.renderStackTotals();
         }
     }
-    /**
-     * @private
-     */
+    /** @internal */
     function onAxisInit() {
         var axis = this;
         if (!axis.waterfall) {
             axis.waterfall = new Composition(axis);
         }
     }
-    /**
-     * @private
-     */
+    /** @internal */
     function onChartBeforeRedraw() {
         var axes = this.axes,
             series = this.series;
@@ -12678,6 +13336,7 @@ var WaterfallAxis;
      *  Classes
      *
      * */
+    /** @internal */
     var Composition = /** @class */ (function () {
             /* *
              *
@@ -12699,7 +13358,7 @@ var WaterfallAxis;
          * Calls StackItem.prototype.render function that creates and renders
          * stack total label for each waterfall stack item.
          *
-         * @private
+         * @internal
          * @function Highcharts.Axis#renderWaterfallStackTotals
          */
         Composition.prototype.renderStackTotals = function () {
@@ -12739,16 +13398,18 @@ var WaterfallAxis;
  *  Default Export
  *
  * */
+/** @internal */
 /* harmony default export */ var Axis_WaterfallAxis = (WaterfallAxis);
 
 ;// ./code/es5/es-modules/Series/Waterfall/WaterfallPoint.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 var WaterfallPoint_extends = (undefined && undefined.__extends) || (function () {
@@ -12817,11 +13478,12 @@ var WaterfallPoint = /** @class */ (function (_super) {
 ;// ./code/es5/es-modules/Series/Waterfall/WaterfallSeriesDefaults.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -13024,11 +13686,12 @@ var WaterfallSeriesDefaults = {
 ;// ./code/es5/es-modules/Series/Waterfall/WaterfallSeries.js
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -13183,14 +13846,15 @@ var WaterfallSeries = /** @class */ (function (_super) {
     // Return an empty path initially, because we need to know the stroke-width
     // in order to set the final path.
     WaterfallSeries.prototype.getGraphPath = function () {
-        return [['M', 0, 0]];
+        var _a;
+        return ((_a = this.graph) === null || _a === void 0 ? void 0 : _a.pathArray) || [['M', 0, 0]];
     };
     // Draw columns' connector lines
     WaterfallSeries.prototype.getCrispPath = function () {
         var _a,
             _b;
         var // Skip points where Y is not a number (#18636)
-            data = this.data.filter(function (d) { return WaterfallSeries_isNumber(d.y); }),
+            data = this.points.filter(function (d) { return WaterfallSeries_isNumber(d.y); }),
             yAxis = this.yAxis,
             length = data.length,
             graphLineWidth = ((_a = this.graph) === null || _a === void 0 ? void 0 : _a.strokeWidth()) || 0,
@@ -13220,8 +13884,7 @@ var WaterfallSeries = /** @class */ (function (_super) {
                 // value
                 var yPos = void 0;
                 if (stacking) {
-                    var connectorThreshold = prevStackX.connectorThreshold;
-                    yPos = WaterfallSeries_crisp(yAxis.translate(connectorThreshold, false, true, false, true) +
+                    yPos = WaterfallSeries_crisp(yAxis.translate(prevStackX.connectorThreshold || 0, false, true, false, true) +
                         (reversedYAxis ? isPos : 0), graphLineWidth);
                 }
                 else {
@@ -13260,12 +13923,11 @@ var WaterfallSeries = /** @class */ (function (_super) {
     // The graph is initially drawn with an empty definition, then updated with
     // crisp rendering.
     WaterfallSeries.prototype.drawGraph = function () {
+        var _a;
         WaterfallSeries_LineSeries.prototype.drawGraph.call(this);
-        if (this.graph) {
-            this.graph.attr({
-                d: this.getCrispPath()
-            });
-        }
+        (_a = this.graph) === null || _a === void 0 ? void 0 : _a.animate({
+            d: this.getCrispPath()
+        });
     };
     // Waterfall has stacking along the x-values too.
     WaterfallSeries.prototype.setStackedPoints = function (axis) {
@@ -13675,7 +14337,7 @@ var G = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_def
 G.RadialAxis = Axis_RadialAxis;
 Bubble_BubbleSeries.compose(G.Axis, G.Chart, G.Legend);
 PackedBubble_PackedBubbleSeries.compose(G.Axis, G.Chart, G.Legend);
-Pane_Pane.compose(G.Chart, G.Pointer);
+Pane_Pane.compose(G.Chart, G.Pointer, G.Series);
 PolarComposition.compose(G.Axis, G.Chart, G.Pointer, G.Series, G.Tick, G.Point, (highcharts_SeriesRegistry_commonjs_highcharts_SeriesRegistry_commonjs2_highcharts_SeriesRegistry_root_Highcharts_SeriesRegistry_default()).seriesTypes.areasplinerange, (highcharts_SeriesRegistry_commonjs_highcharts_SeriesRegistry_commonjs2_highcharts_SeriesRegistry_root_Highcharts_SeriesRegistry_default()).seriesTypes.column, (highcharts_SeriesRegistry_commonjs_highcharts_SeriesRegistry_commonjs2_highcharts_SeriesRegistry_root_Highcharts_SeriesRegistry_default()).seriesTypes.line, (highcharts_SeriesRegistry_commonjs_highcharts_SeriesRegistry_commonjs2_highcharts_SeriesRegistry_root_Highcharts_SeriesRegistry_default()).seriesTypes.spline);
 Waterfall_WaterfallSeries.compose(G.Axis, G.Chart);
 /* harmony default export */ var highcharts_more_src = (G);

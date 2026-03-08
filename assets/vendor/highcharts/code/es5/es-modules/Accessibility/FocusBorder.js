@@ -1,12 +1,13 @@
 /* *
  *
- *  (c) 2009-2025 Øystein Moseng
+ *  (c) 2009-2026 Highsoft AS
+ *  Author: Øystein Moseng
  *
  *  Extend SVG and Chart classes with focus border capabilities.
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -107,6 +108,10 @@ var FocusBorderComposition;
             this.focusElement.removeFocusBorder();
         }
         this.focusElement = svgElement;
+        // #22122, focus border should re-render after window is resized
+        addEvent(this, 'endResize', function () {
+            this.renderFocusBorder();
+        });
         this.renderFocusBorder();
     }
     /**

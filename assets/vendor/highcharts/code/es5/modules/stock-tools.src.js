@@ -1,15 +1,17 @@
+// SPDX-License-Identifier: LicenseRef-Highcharts
 /**
- * @license Highstock JS v12.3.0 (2025-06-21)
+ * @license Highstock JS v12.5.0 (2026-01-12)
  * @module highcharts/modules/stock-tools
  * @requires highcharts
  * @requires highcharts/modules/stock
  *
  * Advanced Highcharts Stock tools
  *
- * (c) 2010-2025 Highsoft AS
+ * (c) 2010-2026 Highsoft AS
  * Author: Torstein Honsi
  *
- * License: www.highcharts.com/license
+ * A commercial license may be required depending on use.
+ * See www.highcharts.com/license
  */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
@@ -121,13 +123,13 @@ __webpack_require__.d(__webpack_exports__, {
 var highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_ = __webpack_require__(944);
 var highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default = /*#__PURE__*/__webpack_require__.n(highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_);
 ;// ./code/es5/es-modules/Core/Chart/ChartNavigationComposition.js
-/**
+/* *
  *
- *  (c) 2010-2025 Paweł Fus
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Paweł Fus
  *
- *  License: www.highcharts.com/license
- *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
  * */
 
@@ -136,6 +138,7 @@ var highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default 
  *  Composition
  *
  * */
+/** @internal */
 var ChartNavigationComposition;
 (function (ChartNavigationComposition) {
     /* *
@@ -149,9 +152,7 @@ var ChartNavigationComposition;
      *
      * */
     /* eslint-disable valid-jsdoc */
-    /**
-     * @private
-     */
+    /** @internal */
     function compose(chart) {
         if (!chart.navigation) {
             chart.navigation = new Additions(chart);
@@ -167,7 +168,7 @@ var ChartNavigationComposition;
     /**
      * Initializes `chart.navigation` object which delegates `update()` methods
      * to all other common classes (used in exporting and navigationBindings).
-     * @private
+     * @internal
      */
     var Additions = /** @class */ (function () {
             /* *
@@ -175,7 +176,9 @@ var ChartNavigationComposition;
              *  Constructor
              *
              * */
+            /** @internal */
             function Additions(chart) {
+                /** @internal */
                 this.updates = [];
             this.chart = chart;
         }
@@ -187,16 +190,14 @@ var ChartNavigationComposition;
         /**
          * Registers an `update()` method in the `chart.navigation` object.
          *
-         * @private
+         * @internal
          * @param {UpdateFunction} updateFn
          * The `update()` method that will be called in `chart.update()`.
          */
         Additions.prototype.addUpdate = function (updateFn) {
             this.chart.navigation.updates.push(updateFn);
         };
-        /**
-         * @private
-         */
+        /** @internal */
         Additions.prototype.update = function (options, redraw) {
             var _this = this;
             this.updates.forEach(function (updateFn) {
@@ -212,6 +213,7 @@ var ChartNavigationComposition;
  *  Default Export
  *
  * */
+/** @internal */
 /* harmony default export */ var Chart_ChartNavigationComposition = (ChartNavigationComposition);
 
 // EXTERNAL MODULE: external {"amd":["highcharts/highcharts","Templating"],"commonjs":["highcharts","Templating"],"commonjs2":["highcharts","Templating"],"root":["Highcharts","Templating"]}
@@ -220,11 +222,12 @@ var highcharts_Templating_commonjs_highcharts_Templating_commonjs2_highcharts_Te
 ;// ./code/es5/es-modules/Extensions/Annotations/NavigationBindingsUtilities.js
 /* *
  *
- *  (c) 2009-2025 Highsoft, Black Label
+ *  (c) 2009-2026 Highsoft AS
+ *  Author: Highsoft, Black Label
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -238,7 +241,7 @@ var defined = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highchar
 /**
  * Define types for editable fields per annotation. There is no need to define
  * numbers, because they won't change their type to string.
- * @private
+ * @internal
  */
 var annotationsFieldsTypes = {
     backgroundColor: 'string',
@@ -260,7 +263,7 @@ var annotationsFieldsTypes = {
 /**
  * Returns the first xAxis or yAxis that was clicked with its value.
  *
- * @private
+ * @internal
  *
  * @param {Array<Highcharts.PointerAxisCoordinateObject>} coords
  *        All the chart's x or y axes with a current pointer's axis value.
@@ -287,7 +290,7 @@ function getAssignedAxis(coords) {
 /**
  * Get field type according to value
  *
- * @private
+ * @internal
  *
  * @param {'boolean'|'number'|'string'} value
  * Atomic type (one of: string, number, boolean)
@@ -312,21 +315,24 @@ function getFieldType(key, value) {
  *  Default Export
  *
  * */
+/** @internal */
 var NavigationBindingUtilities = {
     annotationsFieldsTypes: annotationsFieldsTypes,
     getAssignedAxis: getAssignedAxis,
     getFieldType: getFieldType
 };
+/** @internal */
 /* harmony default export */ var NavigationBindingsUtilities = (NavigationBindingUtilities);
 
 ;// ./code/es5/es-modules/Extensions/Annotations/NavigationBindingsDefaults.js
 /* *
  *
- *  (c) 2009-2025 Highsoft, Black Label
+ *  (c) 2009-2026 Highsoft AS
+ *  Author: Highsoft, Black Label
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -442,6 +448,12 @@ var navigation = {
         circleAnnotation: {
             /** @ignore-option */
             className: 'highcharts-circle-annotation',
+            /**
+             * Options to customize the bindings' annotation shapes and labels.
+             * @type      {Highcharts.AnnotationsOptions}
+             * @extends   navigation.annotationsOptions
+             * @apioption navigation.bindings.circleAnnotation.annotationsOptions
+             */
             /** @ignore-option */
             start: function (e) {
                 var _a;
@@ -495,7 +507,7 @@ var navigation = {
             ]
         },
         /**
-         * A ellipse annotation bindings. Includes `start` and two events in
+         * An ellipse annotation bindings. Includes `start` and two events in
          * `steps` array. First updates the second point, responsible for a
          * rx width, and second updates the ry width.
          *
@@ -504,6 +516,12 @@ var navigation = {
          */
         ellipseAnnotation: {
             className: 'highcharts-ellipse-annotation',
+            /**
+             * Options to customize the bindings' annotation shapes and labels.
+             * @type      {Highcharts.AnnotationsOptions}
+             * @extends   navigation.annotationsOptions
+             * @apioption navigation.bindings.ellipseAnnotation.annotationsOptions
+             */
             start: function (e) {
                 var _a;
                 var coords = (_a = this.chart.pointer) === null || _a === void 0 ? void 0 : _a.getCoordinates(e),
@@ -566,6 +584,12 @@ var navigation = {
         rectangleAnnotation: {
             /** @ignore-option */
             className: 'highcharts-rectangle-annotation',
+            /**
+             * Options to customize the bindings' annotation shapes and labels.
+             * @type      {Highcharts.AnnotationsOptions}
+             * @extends   navigation.annotationsOptions
+             * @apioption navigation.bindings.rectangleAnnotation.annotationsOptions
+             */
             /** @ignore-option */
             start: function (e) {
                 var _a;
@@ -638,6 +662,12 @@ var navigation = {
         labelAnnotation: {
             /** @ignore-option */
             className: 'highcharts-label-annotation',
+            /**
+             * Options to customize the bindings' annotation shapes and labels.
+             * @type      {Highcharts.AnnotationsOptions}
+             * @extends   navigation.annotationsOptions
+             * @apioption navigation.bindings.labelAnnotation.annotationsOptions
+             */
             /** @ignore-option */
             start: function (e) {
                 var _a;
@@ -678,7 +708,7 @@ var navigation = {
      * from a different server.
      *
      * @type      {string}
-     * @default   https://code.highcharts.com/12.3.0/gfx/stock-icons/
+     * @default   https://code.highcharts.com/12.5.0/gfx/stock-icons/
      * @since     7.1.3
      * @apioption navigation.iconsURL
      */
@@ -748,20 +778,23 @@ var navigation = {
  *  Default Export
  *
  * */
+/** @internal */
 var NavigationBindingDefaults = {
     lang: lang,
     navigation: navigation
 };
+/** @internal */
 /* harmony default export */ var NavigationBindingsDefaults = (NavigationBindingDefaults);
 
 ;// ./code/es5/es-modules/Extensions/Annotations/NavigationBindings.js
 /* *
  *
- *  (c) 2009-2025 Highsoft, Black Label
+ *  (c) 2009-2026 Highsoft AS
+ *  Author: Highsoft, Black Label
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -784,7 +817,7 @@ var addEvent = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcha
  * */
 /**
  * IE 9-11 polyfill for Element.closest():
- * @private
+ * @internal
  */
 function closestPolyfill(el, s) {
     var ElementProto = win.Element.prototype,
@@ -805,25 +838,19 @@ function closestPolyfill(el, s) {
     }
     return ret;
 }
-/**
- * @private
- */
+/** @internal */
 function onAnnotationRemove() {
     if (this.chart.navigationBindings) {
         this.chart.navigationBindings.deselectAnnotation();
     }
 }
-/**
- * @private
- */
+/** @internal */
 function onChartDestroy() {
     if (this.navigationBindings) {
         this.navigationBindings.destroy();
     }
 }
-/**
- * @private
- */
+/** @internal */
 function onChartLoad() {
     var options = this.options;
     if (options && options.navigation && options.navigation.bindings) {
@@ -832,9 +859,7 @@ function onChartLoad() {
         this.navigationBindings.initUpdate();
     }
 }
-/**
- * @private
- */
+/** @internal */
 function onChartRender() {
     var navigationBindings = this.navigationBindings,
         disabledClassName = 'highcharts-disabled-btn';
@@ -883,28 +908,24 @@ function onChartRender() {
         }
     }
 }
-/**
- * @private
- */
+/** @internal */
 function onNavigationBindingsClosePopup() {
     this.deselectAnnotation();
 }
-/**
- * @private
- */
+/** @internal */
 function onNavigationBindingsDeselectButton() {
     this.selectedButtonElement = null;
 }
 /**
  * Show edit-annotation form:
- * @private
+ * @internal
  */
 function selectableAnnotation(annotationType) {
     var originalClick = annotationType.prototype.defaultOptions.events &&
             annotationType.prototype.defaultOptions.events.click;
     /**
-     * Select and show popup
-     * @private
+     * Select and show popup.
+     * @internal
      */
     function selectAndShowPopup(eventArguments) {
         var annotation = this,
@@ -983,9 +1004,7 @@ function selectableAnnotation(annotationType) {
  *  Class
  *
  * */
-/**
- * @private
- */
+/** @internal */
 var NavigationBindings = /** @class */ (function () {
     /* *
      *
@@ -1041,7 +1060,7 @@ var NavigationBindings = /** @class */ (function () {
     /**
      * Init all events connected to NavigationBindings.
      *
-     * @private
+     * @internal
      * @function Highcharts.NavigationBindings#initEvents
      */
     NavigationBindings.prototype.initEvents = function () {
@@ -1086,7 +1105,7 @@ var NavigationBindings = /** @class */ (function () {
     /**
      * Common chart.update() delegation, shared between bindings and exporting.
      *
-     * @private
+     * @internal
      * @function Highcharts.NavigationBindings#initUpdate
      */
     NavigationBindings.prototype.initUpdate = function () {
@@ -1101,7 +1120,7 @@ var NavigationBindings = /** @class */ (function () {
      * Hook for click on a button, method selects/unselects buttons,
      * then calls `bindings.init` callback.
      *
-     * @private
+     * @internal
      * @function Highcharts.NavigationBindings#bindingsButtonClick
      *
      * @param {Highcharts.HTMLDOMElement} [button]
@@ -1157,7 +1176,7 @@ var NavigationBindings = /** @class */ (function () {
      * then on all subsequent clicks iterate over `steps` array.
      * When finished, calls `end` event.
      *
-     * @private
+     * @internal
      * @function Highcharts.NavigationBindings#bindingsChartClick
      *
      * @param {Highcharts.Chart} chart
@@ -1239,7 +1258,7 @@ var NavigationBindings = /** @class */ (function () {
     /**
      * Hook for mouse move on a chart's container. It calls current step.
      *
-     * @private
+     * @internal
      * @function Highcharts.NavigationBindings#bindingsContainerMouseMove
      *
      * @param {Highcharts.HTMLDOMElement} container
@@ -1257,7 +1276,7 @@ var NavigationBindings = /** @class */ (function () {
      * Translate fields (e.g. `params.period` or `marker.styles.color`) to
      * Highcharts options object (e.g. `{ params: { period } }`).
      *
-     * @private
+     * @internal
      * @function Highcharts.NavigationBindings#fieldsToOptions<T>
      *
      * @param {Highcharts.Dictionary<string>} fields
@@ -1331,14 +1350,14 @@ var NavigationBindings = /** @class */ (function () {
      *         Annotation options to be displayed in popup box
      */
     NavigationBindings.prototype.annotationToFields = function (annotation) {
+        var _a,
+            _b,
+            _c,
+            _d;
         var options = annotation.options,
             editables = NavigationBindings.annotationsEditable,
             nestedEditables = editables.nestedOptions,
-            type = NavigationBindings_pick(options.type,
-            options.shapes && options.shapes[0] &&
-                options.shapes[0].type,
-            options.labels && options.labels[0] &&
-                options.labels[0].type, 'label'),
+            type = NavigationBindings_pick(options.type, (_b = (_a = options.shapes) === null || _a === void 0 ? void 0 : _a[0]) === null || _b === void 0 ? void 0 : _b.type, (_d = (_c = options.labels) === null || _c === void 0 ? void 0 : _c[0]) === null || _d === void 0 ? void 0 : _d.type, 'label'),
             nonEditables = NavigationBindings.annotationsNonEditable[options.langKey] || [],
             visualOptions = {
                 langKey: options.langKey,
@@ -1349,7 +1368,7 @@ var NavigationBindings = /** @class */ (function () {
          * allowed options (with values) to new object, which is last parameter:
          * "parent".
          *
-         * @private
+         * @internal
          *
          * @param {*} option
          *        Atomic type or object/array
@@ -1424,7 +1443,9 @@ var NavigationBindings = /** @class */ (function () {
             }
         }
         objectEach(options, function (option, key) {
-            if (key === 'typeOptions') {
+            if (key === 'typeOptions' &&
+                visualOptions['type'] !== 'basicAnnotation' // #23575
+            ) {
                 visualOptions[key] = {};
                 objectEach(options[key], function (typeOption, typeKey) {
                     traverse(typeOption, typeKey, nestedEditables, visualOptions[key], typeKey);
@@ -1440,7 +1461,7 @@ var NavigationBindings = /** @class */ (function () {
      * Get all class names for all parents in the element. Iterates until finds
      * main container.
      *
-     * @private
+     * @internal
      * @function Highcharts.NavigationBindings#getClickedClassNames
      *
      * @param {Highcharts.HTMLDOMElement} container
@@ -1475,7 +1496,7 @@ var NavigationBindings = /** @class */ (function () {
      * Get events bound to a button. It's a custom event delegation to find all
      * events connected to the element.
      *
-     * @private
+     * @internal
      * @function Highcharts.NavigationBindings#getButtonEvents
      *
      * @param {Highcharts.HTMLDOMElement} container
@@ -1506,7 +1527,7 @@ var NavigationBindings = /** @class */ (function () {
      * Bindings are just events, so the whole update process is simply
      * removing old events and adding new ones.
      *
-     * @private
+     * @internal
      * @function Highcharts.NavigationBindings#update
      */
     NavigationBindings.prototype.update = function (options) {
@@ -1517,14 +1538,14 @@ var NavigationBindings = /** @class */ (function () {
     /**
      * Remove all events created in the navigation.
      *
-     * @private
+     * @internal
      * @function Highcharts.NavigationBindings#removeEvents
      */
     NavigationBindings.prototype.removeEvents = function () {
         this.eventsToUnbind.forEach(function (unbinder) { return unbinder(); });
     };
     /**
-     * @private
+     * @internal
      * @function Highcharts.NavigationBindings#destroy
      */
     NavigationBindings.prototype.destroy = function () {
@@ -1585,6 +1606,7 @@ var NavigationBindings = /** @class */ (function () {
  *  Default Export
  *
  * */
+/** @internal */
 /* harmony default export */ var Annotations_NavigationBindings = (NavigationBindings);
 /* *
  *
@@ -1623,15 +1645,17 @@ var NavigationBindings = /** @class */ (function () {
 var highcharts_Series_commonjs_highcharts_Series_commonjs2_highcharts_Series_root_Highcharts_Series_ = __webpack_require__(820);
 var highcharts_Series_commonjs_highcharts_Series_commonjs2_highcharts_Series_root_Highcharts_Series_default = /*#__PURE__*/__webpack_require__.n(highcharts_Series_commonjs_highcharts_Series_commonjs2_highcharts_Series_root_Highcharts_Series_);
 ;// ./code/es5/es-modules/Stock/StockTools/StockToolsUtilities.js
+// SPDX-License-Identifier: LicenseRef-Highcharts
 /**
  *
  *  Events generator for Stock tools
  *
- *  (c) 2009-2025 Paweł Fus
+ *  (c) 2009-2026 Highsoft AS
+ *  Author: Paweł Fus
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -2093,15 +2117,17 @@ var StockToolsUtilities = {
 /* harmony default export */ var StockTools_StockToolsUtilities = (StockToolsUtilities);
 
 ;// ./code/es5/es-modules/Stock/StockTools/StockToolsBindings.js
+// SPDX-License-Identifier: LicenseRef-Highcharts
 /**
  *
  *  Events generator for Stock tools
  *
- *  (c) 2009-2025 Paweł Fus
+ *  (c) 2009-2026 Highsoft AS
+ *  Author: Paweł Fus
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -2136,6 +2162,12 @@ var StockToolsBindings = {
     segment: {
         /** @ignore-option */
         className: 'highcharts-segment',
+        /**
+         * Options to customize the bindings' annotation shapes and labels.
+         * @type      {Highcharts.AnnotationsOptions}
+         * @extends   navigation.annotationsOptions
+         * @apioption navigation.bindings.segment.annotationsOptions
+         */
         // eslint-disable-next-line valid-jsdoc
         /** @ignore-option */
         start: function (e) {
@@ -2182,6 +2214,12 @@ var StockToolsBindings = {
     arrowSegment: {
         /** @ignore-option */
         className: 'highcharts-arrow-segment',
+        /**
+         * Options to customize the bindings' annotation shapes and labels.
+         * @type      {Highcharts.AnnotationsOptions}
+         * @extends   navigation.annotationsOptions
+         * @apioption navigation.bindings.arrowSegment.annotationsOptions
+         */
         // eslint-disable-next-line valid-jsdoc
         /** @ignore-option */
         start: function (e) {
@@ -2231,6 +2269,12 @@ var StockToolsBindings = {
     ray: {
         /** @ignore-option */
         className: 'highcharts-ray',
+        /**
+         * Options to customize the bindings' annotation shapes and labels.
+         * @type      {Highcharts.AnnotationsOptions}
+         * @extends   navigation.annotationsOptions
+         * @apioption navigation.bindings.ray.annotationsOptions
+         */
         // eslint-disable-next-line valid-jsdoc
         /** @ignore-option */
         start: function (e) {
@@ -2278,6 +2322,12 @@ var StockToolsBindings = {
     arrowRay: {
         /** @ignore-option */
         className: 'highcharts-arrow-ray',
+        /**
+         * Options to customize the bindings' annotation shapes and labels.
+         * @type      {Highcharts.AnnotationsOptions}
+         * @extends   navigation.annotationsOptions
+         * @apioption navigation.bindings.arrowRay.annotationsOptions
+         */
         // eslint-disable-next-line valid-jsdoc
         /** @ignore-option */
         start: function (e) {
@@ -2327,6 +2377,12 @@ var StockToolsBindings = {
     infinityLine: {
         /** @ignore-option */
         className: 'highcharts-infinity-line',
+        /**
+         * Options to customize the bindings' annotation shapes and labels.
+         * @type      {Highcharts.AnnotationsOptions}
+         * @extends   navigation.annotationsOptions
+         * @apioption navigation.bindings.infinityLine.annotationsOptions
+         */
         // eslint-disable-next-line valid-jsdoc
         /** @ignore-option */
         start: function (e) {
@@ -2374,6 +2430,12 @@ var StockToolsBindings = {
     arrowInfinityLine: {
         /** @ignore-option */
         className: 'highcharts-arrow-infinity-line',
+        /**
+         * Options to customize the bindings' annotation shapes and labels.
+         * @type      {Highcharts.AnnotationsOptions}
+         * @extends   navigation.annotationsOptions
+         * @apioption navigation.bindings.arrowInfinityLine.annotationsOptions
+         */
         // eslint-disable-next-line valid-jsdoc
         /** @ignore-option */
         start: function (e) {
@@ -2423,6 +2485,12 @@ var StockToolsBindings = {
     horizontalLine: {
         /** @ignore-option */
         className: 'highcharts-horizontal-line',
+        /**
+         * Options to customize the bindings' annotation shapes and labels.
+         * @type      {Highcharts.AnnotationsOptions}
+         * @extends   navigation.annotationsOptions
+         * @apioption navigation.bindings.horizontalLine.annotationsOptions
+         */
         // eslint-disable-next-line valid-jsdoc
         /** @ignore-option */
         start: function (e) {
@@ -2463,6 +2531,12 @@ var StockToolsBindings = {
     verticalLine: {
         /** @ignore-option */
         className: 'highcharts-vertical-line',
+        /**
+         * Options to customize the bindings' annotation shapes and labels.
+         * @type      {Highcharts.AnnotationsOptions}
+         * @extends   navigation.annotationsOptions
+         * @apioption navigation.bindings.verticalLine.annotationsOptions
+         */
         // eslint-disable-next-line valid-jsdoc
         /** @ignore-option */
         start: function (e) {
@@ -2505,6 +2579,12 @@ var StockToolsBindings = {
     crooked3: {
         /** @ignore-option */
         className: 'highcharts-crooked3',
+        /**
+         * Options to customize the bindings' annotation shapes and labels.
+         * @type      {Highcharts.AnnotationsOptions}
+         * @extends   navigation.annotationsOptions
+         * @apioption navigation.bindings.crooked3.annotationsOptions
+         */
         // eslint-disable-next-line valid-jsdoc
         /** @ignore-option */
         start: function (e) {
@@ -2555,6 +2635,12 @@ var StockToolsBindings = {
     crooked5: {
         /** @ignore-option */
         className: 'highcharts-crooked5',
+        /**
+         * Options to customize the bindings' annotation shapes and labels.
+         * @type      {Highcharts.AnnotationsOptions}
+         * @extends   navigation.annotationsOptions
+         * @apioption navigation.bindings.crooked5.annotationsOptions
+         */
         // eslint-disable-next-line valid-jsdoc
         /** @ignore-option */
         start: function (e) {
@@ -2611,6 +2697,12 @@ var StockToolsBindings = {
     elliott3: {
         /** @ignore-option */
         className: 'highcharts-elliott3',
+        /**
+         * Options to customize the bindings' annotation shapes and labels.
+         * @type      {Highcharts.AnnotationsOptions}
+         * @extends   navigation.annotationsOptions
+         * @apioption navigation.bindings.elliott3.annotationsOptions
+         */
         // eslint-disable-next-line valid-jsdoc
         /** @ignore-option */
         start: function (e) {
@@ -2664,6 +2756,12 @@ var StockToolsBindings = {
     elliott5: {
         /** @ignore-option */
         className: 'highcharts-elliott5',
+        /**
+         * Options to customize the bindings' annotation shapes and labels.
+         * @type      {Highcharts.AnnotationsOptions}
+         * @extends   navigation.annotationsOptions
+         * @apioption navigation.bindings.elliott5.annotationsOptions
+         */
         // eslint-disable-next-line valid-jsdoc
         /** @ignore-option */
         start: function (e) {
@@ -2723,6 +2821,12 @@ var StockToolsBindings = {
     measureX: {
         /** @ignore-option */
         className: 'highcharts-measure-x',
+        /**
+         * Options to customize the bindings' annotation shapes and labels.
+         * @type      {Highcharts.AnnotationsOptions}
+         * @extends   navigation.annotationsOptions
+         * @apioption navigation.bindings.measureX.annotationsOptions
+         */
         // eslint-disable-next-line valid-jsdoc
         /** @ignore-option */
         start: function (e) {
@@ -2778,6 +2882,12 @@ var StockToolsBindings = {
     measureY: {
         /** @ignore-option */
         className: 'highcharts-measure-y',
+        /**
+         * Options to customize the bindings' annotation shapes and labels.
+         * @type      {Highcharts.AnnotationsOptions}
+         * @extends   navigation.annotationsOptions
+         * @apioption navigation.bindings.measureY.annotationsOptions
+         */
         // eslint-disable-next-line valid-jsdoc
         /** @ignore-option */
         start: function (e) {
@@ -2834,6 +2944,12 @@ var StockToolsBindings = {
     measureXY: {
         /** @ignore-option */
         className: 'highcharts-measure-xy',
+        /**
+         * Options to customize the bindings' annotation shapes and labels.
+         * @type      {Highcharts.AnnotationsOptions}
+         * @extends   navigation.annotationsOptions
+         * @apioption navigation.bindings.measureXY.annotationsOptions
+         */
         // eslint-disable-next-line valid-jsdoc
         /** @ignore-option */
         start: function (e) {
@@ -2892,6 +3008,12 @@ var StockToolsBindings = {
      */
     fibonacci: {
         className: 'highcharts-fibonacci',
+        /**
+         * Options to customize the bindings' annotation shapes and labels.
+         * @type      {Highcharts.AnnotationsOptions}
+         * @extends   navigation.annotationsOptions
+         * @apioption navigation.bindings.fibonacci.annotationsOptions
+         */
         // eslint-disable-next-line valid-jsdoc
         /** @ignore-option */
         start: function (e) {
@@ -2940,6 +3062,12 @@ var StockToolsBindings = {
     parallelChannel: {
         /** @ignore-option */
         className: 'highcharts-parallel-channel',
+        /**
+         * Options to customize the bindings' annotation shapes and labels.
+         * @type      {Highcharts.AnnotationsOptions}
+         * @extends   navigation.annotationsOptions
+         * @apioption navigation.bindings.parallelChannel.annotationsOptions
+         */
         // eslint-disable-next-line valid-jsdoc
         /** @ignore-option */
         start: function (e) {
@@ -2988,6 +3116,12 @@ var StockToolsBindings = {
     pitchfork: {
         /** @ignore-option */
         className: 'highcharts-pitchfork',
+        /**
+         * Options to customize the bindings' annotation shapes and labels.
+         * @type      {Highcharts.AnnotationsOptions}
+         * @extends   navigation.annotationsOptions
+         * @apioption navigation.bindings.pitchfork.annotationsOptions
+         */
         // eslint-disable-next-line valid-jsdoc
         /** @ignore-option */
         start: function (e) {
@@ -3040,10 +3174,17 @@ var StockToolsBindings = {
     verticalCounter: {
         /** @ignore-option */
         className: 'highcharts-vertical-counter',
+        /**
+         * Options to customize the bindings' annotation shapes and labels.
+         * @type      {Highcharts.AnnotationsOptions}
+         * @extends   navigation.annotationsOptions
+         * @apioption navigation.bindings.verticalCounter.annotationsOptions
+         */
         // eslint-disable-next-line valid-jsdoc
         /** @ignore-option */
         start: function (e) {
-            var _a;
+            var _a,
+                _b;
             var closestPoint = StockToolsBindings_attractToPoint(e,
                 this.chart);
             // Exit if clicked out of axes area
@@ -3071,7 +3212,7 @@ var StockToolsBindings = {
                 navigation.annotationsOptions, (_a = navigation.bindings) === null || _a === void 0 ? void 0 : _a.verticalCounter.annotationsOptions),
                 annotation = this.chart.addAnnotation(options);
             this.verticalCounter++;
-            annotation.options.events.click.call(annotation, {});
+            ((_b = annotation.options.events) === null || _b === void 0 ? void 0 : _b.click).call(annotation, {});
         }
     },
     /**
@@ -3085,8 +3226,15 @@ var StockToolsBindings = {
      */
     timeCycles: {
         className: 'highcharts-time-cycles',
+        /**
+         * Options to customize the bindings' annotation shapes and labels.
+         * @type      {Highcharts.AnnotationsOptions}
+         * @extends   navigation.annotationsOptions
+         * @apioption navigation.bindings.timeCycles.annotationsOptions
+         */
         start: function (e) {
-            var _a;
+            var _a,
+                _b;
             var closestPoint = StockToolsBindings_attractToPoint(e,
                 this.chart);
             // Exit if clicked out of axes area
@@ -3109,7 +3257,7 @@ var StockToolsBindings = {
                 },
                 navigation.annotationsOptions, (_a = navigation.bindings) === null || _a === void 0 ? void 0 : _a.timeCycles.annotationsOptions),
                 annotation = this.chart.addAnnotation(options);
-            annotation.options.events.click.call(annotation, {});
+            ((_b = annotation.options.events) === null || _b === void 0 ? void 0 : _b.click).call(annotation, {});
             return annotation;
         },
         steps: [
@@ -3119,10 +3267,17 @@ var StockToolsBindings = {
     verticalLabel: {
         /** @ignore-option */
         className: 'highcharts-vertical-label',
+        /**
+         * Options to customize the bindings' annotation shapes and labels.
+         * @type      {Highcharts.AnnotationsOptions}
+         * @extends   navigation.annotationsOptions
+         * @apioption navigation.bindings.verticalLabel.annotationsOptions
+         */
         // eslint-disable-next-line valid-jsdoc
         /** @ignore-option */
         start: function (e) {
-            var _a;
+            var _a,
+                _b;
             var closestPoint = StockToolsBindings_attractToPoint(e,
                 this.chart);
             // Exit if clicked out of axes area
@@ -3147,7 +3302,7 @@ var StockToolsBindings = {
                 },
                 navigation.annotationsOptions, (_a = navigation.bindings) === null || _a === void 0 ? void 0 : _a.verticalLabel.annotationsOptions),
                 annotation = this.chart.addAnnotation(options);
-            annotation.options.events.click.call(annotation, {});
+            ((_b = annotation.options.events) === null || _b === void 0 ? void 0 : _b.click).call(annotation, {});
         }
     },
     /**
@@ -3164,10 +3319,17 @@ var StockToolsBindings = {
     verticalArrow: {
         /** @ignore-option */
         className: 'highcharts-vertical-arrow',
+        /**
+         * Options to customize the bindings' annotation shapes and labels.
+         * @type      {Highcharts.AnnotationsOptions}
+         * @extends   navigation.annotationsOptions
+         * @apioption navigation.bindings.verticalArrow.annotationsOptions
+         */
         // eslint-disable-next-line valid-jsdoc
         /** @ignore-option */
         start: function (e) {
-            var _a;
+            var _a,
+                _b;
             var closestPoint = StockToolsBindings_attractToPoint(e,
                 this.chart);
             // Exit if clicked out of axes area
@@ -3196,7 +3358,7 @@ var StockToolsBindings = {
                         }
                     }
                 }, navigation.annotationsOptions, (_a = navigation.bindings) === null || _a === void 0 ? void 0 : _a.verticalArrow.annotationsOptions), annotation = this.chart.addAnnotation(options);
-            annotation.options.events.click.call(annotation, {});
+            ((_b = annotation.options.events) === null || _b === void 0 ? void 0 : _b.click).call(annotation, {});
         }
     },
     /**
@@ -3210,6 +3372,12 @@ var StockToolsBindings = {
     fibonacciTimeZones: {
         /** @ignore-option */
         className: 'highcharts-fibonacci-time-zones',
+        /**
+         * Options to customize the bindings' annotation shapes and labels.
+         * @type      {Highcharts.AnnotationsOptions}
+         * @extends   navigation.annotationsOptions
+         * @apioption navigation.bindings.fibonacciTimeZones.annotationsOptions
+         */
         // eslint-disable-next-line valid-jsdoc
         /** @ignore-option */
         start: function (e) {
@@ -3240,11 +3408,12 @@ var StockToolsBindings = {
         // eslint-disable-next-line valid-jsdoc
         steps: [
             function (e, annotation) {
-                var mockPointOpts = annotation.options.typeOptions.points,
-                    x = mockPointOpts && mockPointOpts[0].x,
-                    _a = this.getCoords(e),
-                    coordsX = _a[0],
-                    coordsY = _a[1];
+                var _a;
+                var mockPointOpts = (_a = annotation.options.typeOptions) === null || _a === void 0 ? void 0 : _a.points,
+                    x = (mockPointOpts === null || mockPointOpts === void 0 ? void 0 : mockPointOpts[0]).x,
+                    _b = this.getCoords(e),
+                    coordsX = _b[0],
+                    coordsY = _b[1];
                 if (coordsX && coordsY) {
                     annotation.update({
                         typeOptions: {
@@ -3687,11 +3856,12 @@ var StockToolsBindings = {
  *
  *  GUI generator for Stock tools
  *
- *  (c) 2009-2025 Sebastian Bochan
+ *  (c) 2009-2026 Highsoft AS
+ *  Author: Sebastian Bochan
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -4882,22 +5052,22 @@ var StockToolsDefaults = {
 /* harmony default export */ var StockTools_StockToolsDefaults = (StockToolsDefaults);
 
 ;// ./code/es5/es-modules/Stock/StockTools/StockTools.js
+// SPDX-License-Identifier: LicenseRef-Highcharts
 /**
  *
  *  Events generator for Stock tools
  *
- *  (c) 2009-2025 Paweł Fus
+ *  (c) 2009-2026 Highsoft AS
+ *  Author: Paweł Fus
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
 
 var StockTools_setOptions = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).setOptions;
-
-var StockTools_getAssignedAxis = NavigationBindingsUtilities.getAssignedAxis;
 
 
 
@@ -4925,7 +5095,7 @@ function compose(NavigationBindingsClass) {
         navigationProto.utils = navigationProto.utils || {};
         navigationProto.utils.indicatorsWithAxes = StockTools_StockToolsUtilities.indicatorsWithAxes;
         navigationProto.utils.indicatorsWithVolume = StockTools_StockToolsUtilities.indicatorsWithVolume;
-        navigationProto.utils.getAssignedAxis = StockTools_getAssignedAxis;
+        navigationProto.utils.getAssignedAxis = StockTools_StockToolsUtilities.getAssignedAxis;
         navigationProto.utils.isPriceIndicatorEnabled = StockTools_isPriceIndicatorEnabled;
         navigationProto.utils.manageIndicators = StockTools_StockToolsUtilities.manageIndicators;
         StockTools_setOptions(StockTools_StockToolsDefaults);
@@ -5149,11 +5319,12 @@ var highcharts_AST_commonjs_highcharts_AST_commonjs2_highcharts_AST_root_Highcha
  *
  *  GUI generator for Stock tools
  *
- *  (c) 2009-2025 Sebastian Bochan
+ *  (c) 2009-2026 Highsoft AS
+ *  Author: Sebastian Bochan
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -5760,7 +5931,7 @@ var Toolbar = /** @class */ (function () {
     Toolbar.prototype.getIconsURL = function () {
         return this.chart.options.navigation.iconsURL ||
             this.options.iconsURL ||
-            'https://code.highcharts.com/12.3.0/gfx/stock-icons/';
+            'https://code.highcharts.com/12.5.0/gfx/stock-icons/';
     };
     return Toolbar;
 }());
@@ -5824,11 +5995,12 @@ Toolbar.prototype.classMapping = {
  *
  *  GUI generator for Stock tools
  *
- *  (c) 2009-2025 Sebastian Bochan
+ *  (c) 2009-2026 Highsoft AS
+ *  Author: Sebastian Bochan
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 

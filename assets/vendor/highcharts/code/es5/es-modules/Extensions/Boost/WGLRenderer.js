@@ -1,15 +1,16 @@
 /* *
  *
- *  (c) 2019-2025 Highsoft AS
+ *  (c) 2019-2026 Highsoft AS
  *
  *  Boost module: stripped-down renderer for higher performance
  *
  *  License: highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
+import BoostChart from './BoostChart.js';
+var getBoostClipRect = BoostChart.getBoostClipRect;
 import Color from '../../Core/Color/Color.js';
 var color = Color.parse;
 import H from '../../Core/Globals.js';
@@ -57,7 +58,7 @@ var contexts = [
  *   encoding values in the color data.
  * - Need to figure out a way to transform the data quicker
  *
- * @private
+ * @internal
  *
  * @param {Function} postRenderCallback
  */
@@ -109,8 +110,9 @@ var WGLRenderer = /** @class */ (function () {
      *
      * */
     /**
-     * Returns an orthographic perspective matrix
-     * @private
+     * Returns an orthographic perspective matrix.
+     *
+     * @internal
      * @param {number} width
      * the width of the viewport in pixels
      * @param {number} height
@@ -125,9 +127,7 @@ var WGLRenderer = /** @class */ (function () {
             -1, 1, -(far + near) / (far - near), 1
         ];
     };
-    /**
-     * @private
-     */
+    /** @internal */
     WGLRenderer.seriesPointCount = function (series) {
         var isStacked, xData, s;
         if (series.boosted) {
@@ -157,15 +157,11 @@ var WGLRenderer = /** @class */ (function () {
      *  Functions
      *
      * */
-    /**
-     * @private
-     */
+    /** @internal */
     WGLRenderer.prototype.getPixelRatio = function () {
         return this.settings.pixelRatio || win.devicePixelRatio || 1;
     };
-    /**
-     * @private
-     */
+    /** @internal */
     WGLRenderer.prototype.setOptions = function (options) {
         // The pixelRatio defaults to 1. This is an antipattern, we should
         // refactor the Boost options to include an object of default options as
@@ -177,7 +173,7 @@ var WGLRenderer = /** @class */ (function () {
     };
     /**
      * Allocate a float buffer to fit all series
-     * @private
+     * @internal
      */
     WGLRenderer.prototype.allocateBuffer = function (chart) {
         var vbuffer = this.vbuffer;
@@ -192,9 +188,7 @@ var WGLRenderer = /** @class */ (function () {
         });
         vbuffer && vbuffer.allocate(s);
     };
-    /**
-     * @private
-     */
+    /** @internal */
     WGLRenderer.prototype.allocateBufferForSingleSeries = function (series) {
         var vbuffer = this.vbuffer;
         var s = 0;
@@ -208,21 +202,21 @@ var WGLRenderer = /** @class */ (function () {
     };
     /**
      * Clear the depth and color buffer
-     * @private
+     * @internal
      */
     WGLRenderer.prototype.clear = function () {
         var gl = this.gl;
         gl && gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     };
     /**
-     * Push data for a single series
+     * Push data for a single series.
      * This calculates additional vertices and transforms the data to be
-     * aligned correctly in memory
-     * @private
+     * aligned correctly in memory.
+     * @internal
      */
     WGLRenderer.prototype.pushSeriesData = function (series, inst) {
         var _this = this;
-        var _a, _b;
+        var _a, _b, _c;
         var data = this.data, settings = this.settings, vbuffer = this.vbuffer, isRange = (series.pointArrayMap &&
             series.pointArrayMap.join(',') === 'low,high'), chart = series.chart, options = series.options, sorted = series.sorted, xAxis = series.xAxis, yAxis = series.yAxis, isStacked = !!options.stacking, rawData = options.data, xExtremes = series.xAxis.getExtremes(), 
         // Taking into account the offset of the min point #19497
@@ -230,10 +224,9 @@ var WGLRenderer = /** @class */ (function () {
         /// threshold = options.threshold,
         // yBottom = chart.yAxis[0].getThreshold(threshold),
         // hasThreshold = isNumber(threshold),
-        // colorByPoint = series.options.colorByPoint,
+        colorByPoint = series.options.colorByPoint, 
         // This is required for color by point, so make sure this is
         // uncommented if enabling that
-        // colorIndex = 0,
         // Required for color axis support
         // caxis,
         connectNulls = options.connectNulls, 
@@ -245,7 +238,7 @@ var WGLRenderer = /** @class */ (function () {
         //
         skipped = 0, hadPoints = false, 
         // The following are used in the builder while loop
-        x, y, d, z, i = -1, px = false, nx = false, low, nextInside = false, prevInside = false, pcolor = false, isXInside = false, isYInside = true, firstPoint = true, zoneColors, zoneDefColor = false, gapSize = false, vlen = 0;
+        x, y, d, z, i = -1, px = false, nx = false, low, nextInside = false, prevInside = false, pcolor = void 0, isXInside = false, isYInside = true, firstPoint = true, zoneColors = [], zoneDefColor = false, gapSize = false, vlen = 0, colorIndex = 0;
         if (options.boostData && options.boostData.length > 0) {
             return;
         }
@@ -254,7 +247,7 @@ var WGLRenderer = /** @class */ (function () {
                 options.gapSize * series.closestPointRange :
                 options.gapSize;
         }
-        if (zones) {
+        if (zones && zones.length) { // #23571
             zoneColors = [];
             zones.forEach(function (zone, i) {
                 if (zone.color) {
@@ -283,7 +276,7 @@ var WGLRenderer = /** @class */ (function () {
         series.closestPointRangePx = Number.MAX_VALUE;
         /**
          * Push color to color buffer - need to do this per vertex.
-         * @private
+         * @internal
          */
         var pushColor = function (color) {
             if (color) {
@@ -295,7 +288,7 @@ var WGLRenderer = /** @class */ (function () {
         };
         /**
          * Push a vertice to the data buffer.
-         * @private
+         * @internal
          */
         var vertice = function (x, y, checkTreshold, pointSize, color) {
             if (pointSize === void 0) { pointSize = 1; }
@@ -318,9 +311,7 @@ var WGLRenderer = /** @class */ (function () {
                 data.push(pointSize);
             }
         };
-        /**
-         * @private
-         */
+        /** @internal */
         var closeSegment = function () {
             if (inst.segments.length) {
                 inst.segments[inst.segments.length - 1].to = data.length || vlen;
@@ -328,7 +319,7 @@ var WGLRenderer = /** @class */ (function () {
         };
         /**
          * Create a new segment for the current set.
-         * @private
+         * @internal
          */
         var beginSegment = function () {
             // Insert a segment on the series.
@@ -346,7 +337,7 @@ var WGLRenderer = /** @class */ (function () {
         };
         /**
          * Push a rectangle to the data buffer.
-         * @private
+         * @internal
          */
         var pushRect = function (x, y, w, h, color) {
             pushColor(color);
@@ -453,27 +444,32 @@ var WGLRenderer = /** @class */ (function () {
             if (chartDestroyed) {
                 return "break";
             }
-            // Uncomment this to enable color by point.
-            // This currently left disabled as the charts look really ugly
-            // when enabled and there's a lot of points.
-            // Leaving in for the future (tm).
-            // if (colorByPoint) {
-            //     colorIndex = ++colorIndex %
-            //         series.chart.options.colors.length;
-            //     pcolor = toRGBAFast(series.chart.options.colors[colorIndex]);
-            //     pcolor[0] /= 255.0;
-            //     pcolor[1] /= 255.0;
-            //     pcolor[2] /= 255.0;
-            // }
             // Handle the point.color option (#5999)
             var pointOptions = rawData && rawData[i];
-            if (!useRaw && isObject(pointOptions, true)) {
-                if (pointOptions.color) {
-                    pcolor = color(pointOptions.color).rgba;
-                    pcolor[0] /= 255.0;
-                    pcolor[1] /= 255.0;
-                    pcolor[2] /= 255.0;
+            if (!useRaw) {
+                var rgba = void 0;
+                if (isObject(pointOptions, true) && pointOptions.color) {
+                    rgba = color(pointOptions.color).rgba;
                 }
+                var colorKeyIndex = (_a = series.options.keys) === null || _a === void 0 ? void 0 : _a.indexOf('color');
+                if (Array.isArray(pointOptions) &&
+                    colorKeyIndex &&
+                    typeof pointOptions[colorKeyIndex] === 'string') {
+                    rgba = color(pointOptions[colorKeyIndex]).rgba;
+                }
+                else if (colorByPoint && chart.options.colors) {
+                    colorIndex = colorIndex %
+                        chart.options.colors.length;
+                    rgba = color(chart.options.colors[colorIndex]).rgba;
+                }
+                if (rgba) {
+                    pcolor = rgba;
+                    pcolor[0] = rgba[0] / 255.0;
+                    pcolor[1] = rgba[1] / 255.0;
+                    pcolor[2] = rgba[2] / 255.0;
+                    pcolor[3] = rgba[3];
+                }
+                colorIndex++;
             }
             if (useRaw) {
                 x = d[0];
@@ -527,8 +523,8 @@ var WGLRenderer = /** @class */ (function () {
                 if (useRaw) {
                     y = d.slice(1, 3);
                 }
-                low = (_a = series.getColumn('low', true)) === null || _a === void 0 ? void 0 : _a[i];
-                y = ((_b = series.getColumn('high', true)) === null || _b === void 0 ? void 0 : _b[i]) || 0;
+                low = (_b = series.getColumn('low', true)) === null || _b === void 0 ? void 0 : _b[i];
+                y = ((_c = series.getColumn('high', true)) === null || _c === void 0 ? void 0 : _c[i]) || 0;
             }
             else if (isStacked) {
                 x = d.x;
@@ -579,32 +575,25 @@ var WGLRenderer = /** @class */ (function () {
                 beginSegment();
             }
             // Note: Boost requires that zones are sorted!
-            if (zones) {
-                var zoneColor_1;
+            if (zones && zones.length) { // #23571
+                var zoneColor = void 0;
+                var pointValue_1 = zoneAxis === 'x' ? x : y;
+                // Match getZone() logic: find zone where value > point value
+                var zoneIndex_1;
                 zones.some(function (// eslint-disable-line no-loop-func
                 zone, i) {
-                    var last = zones[i - 1];
-                    if (zoneAxis === 'x') {
-                        if (typeof zone.value !== 'undefined' &&
-                            x <= zone.value) {
-                            if (zoneColors[i] &&
-                                (!last || x >= last.value)) {
-                                zoneColor_1 = zoneColors[i];
-                            }
-                            return true;
-                        }
-                        return false;
-                    }
-                    if (typeof zone.value !== 'undefined' && y <= zone.value) {
-                        if (zoneColors[i] &&
-                            (!last || y >= last.value)) {
-                            zoneColor_1 = zoneColors[i];
-                        }
+                    if (typeof zone.value !== 'undefined' &&
+                        pointValue_1 < zone.value) {
+                        zoneIndex_1 = i;
                         return true;
                     }
                     return false;
                 });
-                pcolor = zoneColor_1 || zoneDefColor || pcolor;
+                if (typeof zoneIndex_1 !== 'undefined' &&
+                    zoneColors[zoneIndex_1]) {
+                    zoneColor = zoneColors[zoneIndex_1];
+                }
+                pcolor = zoneColor || zoneDefColor || pcolor;
             }
             // Skip translations - temporary floating point fix
             if (!settings.useGPUTranslations) {
@@ -680,15 +669,15 @@ var WGLRenderer = /** @class */ (function () {
                     minVal = yAxis.toPixels(minVal, true);
                 }
                 // Need to add an extra point here
-                vertice(x, minVal, 0, 0, pcolor);
+                vertice(x, minVal, false, 0, pcolor);
             }
             // Do step line if enabled.
             // Draws an additional point at the old Y at the new X.
             // See #6976.
             if (options.step && !firstPoint) {
-                vertice(x, lastY, 0, 2, pcolor);
+                vertice(x, lastY, false, 2, pcolor);
             }
-            vertice(x, y, 0, series.type === 'bubble' ? (z || 1) : 2, pcolor);
+            vertice(x, y, false, series.type === 'bubble' ? (z || 1) : 2, pcolor);
             // Uncomment this to support color axis.
             // if (caxis) {
             //     pcolor = color(caxis.toColor(y)).rgba;
@@ -744,9 +733,10 @@ var WGLRenderer = /** @class */ (function () {
         closeSegment();
     };
     /**
-     * Push a series to the renderer
-     * If we render the series immediately, we don't have to loop later
-     * @private
+     * Push a series to the renderer.
+     * If we render the series immediately, we don't have to loop later.
+     *
+     * @internal
      * @param {Highchart.Series} s
      * The series to push.
      */
@@ -791,8 +781,8 @@ var WGLRenderer = /** @class */ (function () {
     /**
      * Flush the renderer.
      * This removes pushed series and vertices.
-     * Should be called after clearing and before rendering
-     * @private
+     * Should be called after clearing and before rendering.
+     * @internal
      */
     WGLRenderer.prototype.flush = function () {
         var vbuffer = this.vbuffer;
@@ -804,8 +794,9 @@ var WGLRenderer = /** @class */ (function () {
         }
     };
     /**
-     * Pass x-axis to shader
-     * @private
+     * Pass x-axis to shader.
+     *
+     * @internal
      * @param {Highcharts.Axis} axis
      * The x-axis.
      */
@@ -817,6 +808,7 @@ var WGLRenderer = /** @class */ (function () {
         var pixelRatio = this.getPixelRatio();
         shader.setUniform('xAxisTrans', axis.transA * pixelRatio);
         shader.setUniform('xAxisMin', axis.min);
+        shader.setUniform('xAxisMax', axis.max);
         shader.setUniform('xAxisMinPad', axis.minPixelPadding * pixelRatio);
         shader.setUniform('xAxisPointRange', axis.pointRange);
         shader.setUniform('xAxisLen', axis.len * pixelRatio);
@@ -826,8 +818,9 @@ var WGLRenderer = /** @class */ (function () {
         shader.setUniform('xAxisReversed', (!!axis.reversed));
     };
     /**
-     * Pass y-axis to shader
-     * @private
+     * Pass y-axis to shader.
+     *
+     * @internal
      * @param {Highcharts.Axis} axis
      * The y-axis.
      */
@@ -839,6 +832,7 @@ var WGLRenderer = /** @class */ (function () {
         var pixelRatio = this.getPixelRatio();
         shader.setUniform('yAxisTrans', axis.transA * pixelRatio);
         shader.setUniform('yAxisMin', axis.min);
+        shader.setUniform('yAxisMax', axis.max);
         shader.setUniform('yAxisMinPad', axis.minPixelPadding * pixelRatio);
         shader.setUniform('yAxisPointRange', axis.pointRange);
         shader.setUniform('yAxisLen', axis.len * pixelRatio);
@@ -848,8 +842,9 @@ var WGLRenderer = /** @class */ (function () {
         shader.setUniform('yAxisReversed', (!!axis.reversed));
     };
     /**
-     * Set the translation threshold
-     * @private
+     * Set the translation threshold.
+     *
+     * @internal
      * @param {boolean} has
      * Has threshold flag.
      * @param {numbe} translation
@@ -864,9 +859,9 @@ var WGLRenderer = /** @class */ (function () {
         shader.setUniform('translatedThreshold', translation);
     };
     /**
-     * Render the data
+     * Render the data.
      * This renders all pushed series.
-     * @private
+     * @internal
      */
     WGLRenderer.prototype.renderChart = function (chart) {
         var _this = this;
@@ -1007,9 +1002,13 @@ var WGLRenderer = /** @class */ (function () {
             // Do the actual rendering
             // If the line width is < 0, skip rendering of the lines. See #7833.
             if (lineWidth > 0 || s.drawMode !== 'LINE_STRIP') {
+                var _d = getBoostClipRect(chart, s.series), cx = _d.x, cy = _d.y, cw = _d.width, ch = _d.height;
+                gl.enable(gl.SCISSOR_TEST);
+                gl.scissor(cx, height - cy - ch, cw, ch);
                 for (sindex = 0; sindex < s.segments.length; sindex++) {
                     vbuffer.render(s.segments[sindex].from, s.segments[sindex].to, s.drawMode);
                 }
+                gl.disable(gl.SCISSOR_TEST);
             }
             if (s.hasMarkers && showMarkers) {
                 shader.setPointSize(pick(options.marker && options.marker.radius, 5) * 2 * pixelRatio);
@@ -1028,8 +1027,8 @@ var WGLRenderer = /** @class */ (function () {
         this.flush();
     };
     /**
-     * Render the data when ready
-     * @private
+     * Render the data when ready.
+     * @internal
      */
     WGLRenderer.prototype.render = function (chart) {
         var _this = this;
@@ -1047,9 +1046,9 @@ var WGLRenderer = /** @class */ (function () {
         }
     };
     /**
-     * Set the viewport size in pixels
+     * Set the viewport size in pixels.
      * Creates an orthographic perspective matrix and applies it.
-     * @private
+     * @internal
      */
     WGLRenderer.prototype.setSize = function (width, height) {
         var shader = this.shader;
@@ -1063,8 +1062,8 @@ var WGLRenderer = /** @class */ (function () {
         shader.setPMatrix(WGLRenderer.orthoMatrix(width, height));
     };
     /**
-     * Init OpenGL
-     * @private
+     * Init OpenGL.
+     * @internal
      */
     WGLRenderer.prototype.init = function (canvas, noFlush) {
         var _this = this;
@@ -1134,7 +1133,7 @@ var WGLRenderer = /** @class */ (function () {
                 gl.bindTexture(gl.TEXTURE_2D, null);
                 props.isReady = true;
             }
-            catch (e) {
+            catch (_a) {
                 // Silent error
             }
         };
@@ -1184,7 +1183,7 @@ var WGLRenderer = /** @class */ (function () {
         return true;
     };
     /**
-     * @private
+     * @internal
      * @todo use it
      */
     WGLRenderer.prototype.destroy = function () {
@@ -1213,4 +1212,5 @@ var WGLRenderer = /** @class */ (function () {
  *  Default Export
  *
  * */
+/** @internal */
 export default WGLRenderer;

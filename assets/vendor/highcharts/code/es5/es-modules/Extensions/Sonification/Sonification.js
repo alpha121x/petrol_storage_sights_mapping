@@ -1,12 +1,13 @@
 /* *
  *
- *  (c) 2009-2025 Øystein Moseng
+ *  (c) 2009-2026 Highsoft AS
+ *  Author: Øystein Moseng
  *
  *  Sonification module.
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -61,7 +62,7 @@ var Sonification = /** @class */ (function () {
             this.audioContext.suspend();
             this.audioDestination = this.audioContext.destination;
         }
-        catch (e) { /* Ignore */ }
+        catch ( /* Ignore */_a) { /* Ignore */ }
     }
     /**
      * Set the audio destination node to something other than the default
@@ -276,7 +277,7 @@ var Sonification = /** @class */ (function () {
     };
     /**
      * Implementation of chart.sonify
-     * @private
+     * @internal
      */
     Sonification.prototype.sonifyChart = function (resetAfter, onEnd) {
         if (!this.ready(this.sonifyChart.bind(this, resetAfter, onEnd))) {
@@ -290,7 +291,7 @@ var Sonification = /** @class */ (function () {
     };
     /**
      * Implementation of series.sonify
-     * @private
+     * @internal
      */
     Sonification.prototype.sonifySeries = function (series, resetAfter, onEnd) {
         if (!this.ready(this.sonifySeries.bind(this, series, resetAfter, onEnd))) {
@@ -306,7 +307,7 @@ var Sonification = /** @class */ (function () {
     };
     /**
      * Implementation of point.sonify
-     * @private
+     * @internal
      */
     Sonification.prototype.sonifyPoint = function (point, onEnd) {
         if (!this.ready(this.sonifyPoint.bind(this, point, onEnd))) {
@@ -321,7 +322,7 @@ var Sonification = /** @class */ (function () {
     /**
      * Set the overall/master volume for the sonification.
      * Usually handled through chart update.
-     * @private
+     * @internal
      */
     Sonification.prototype.setMasterVolume = function (vol) {
         if (this.timeline) {
@@ -330,7 +331,7 @@ var Sonification = /** @class */ (function () {
     };
     /**
      * Destroy the sonification capabilities
-     * @private
+     * @internal
      */
     Sonification.prototype.destroy = function () {
         this.unbindKeydown();
@@ -352,7 +353,7 @@ var Sonification = /** @class */ (function () {
      * automatically. Note that the [sonification.updateInterval](https://api.highcharts.com/highcharts/sonification.updateInterval)
      * option can stop updates from happening in rapid succession, including
      * manual calls to this function.
-     * @private
+     * @internal
      */
     Sonification.prototype.update = function () {
         var sOpts = this.chart.options && this.chart.options.sonification;
@@ -386,7 +387,7 @@ var Sonification = /** @class */ (function () {
     /**
      * Only continue if sonification enabled. If audioContext is
      * suspended, retry up to 20 times with a small delay.
-     * @private
+     * @internal
      */
     Sonification.prototype.ready = function (whenReady) {
         var _this = this;
@@ -417,7 +418,7 @@ var Sonification = /** @class */ (function () {
     };
     /**
      * Call beforePlay event handler if exists
-     * @private
+     * @internal
      */
     Sonification.prototype.beforePlay = function () {
         var opts = this.chart.options.sonification, beforePlay = opts && opts.events && opts.events.beforePlay;
@@ -427,7 +428,7 @@ var Sonification = /** @class */ (function () {
     };
     /**
      * Initialize the builtin boundary hit instrument
-     * @private
+     * @internal
      */
     Sonification.prototype.initBoundaryInstrument = function () {
         if (!this.boundaryInstrument) {
@@ -438,7 +439,7 @@ var Sonification = /** @class */ (function () {
     };
     /**
      * The default boundary hit sound
-     * @private
+     * @internal
      */
     Sonification.prototype.defaultBoundaryHit = function () {
         if (this.boundaryInstrument) {
@@ -452,7 +453,7 @@ var Sonification = /** @class */ (function () {
     var composedClasses = [];
     /**
      * Update sonification object on chart.
-     * @private
+     * @internal
      */
     function updateSonificationEnabled() {
         var sonification = this.sonification, sOptions = this.options && this.options.sonification;
@@ -472,7 +473,7 @@ var Sonification = /** @class */ (function () {
     }
     /**
      * Destroy with chart.
-     * @private
+     * @internal
      */
     function chartOnDestroy() {
         if (this && this.sonification) {
@@ -481,7 +482,7 @@ var Sonification = /** @class */ (function () {
     }
     /**
      * Update on render
-     * @private
+     * @internal
      */
     function chartOnRender() {
         if (this.updateSonificationEnabled) {
@@ -490,7 +491,7 @@ var Sonification = /** @class */ (function () {
     }
     /**
      * Update
-     * @private
+     * @internal
      */
     function chartOnUpdate(e) {
         var newOptions = e.options.sonification;
@@ -501,7 +502,7 @@ var Sonification = /** @class */ (function () {
     }
     /**
      * Compose
-     * @private
+     * @internal
      */
     function compose(ChartClass, SeriesClass, PointClass) {
         // Extend chart

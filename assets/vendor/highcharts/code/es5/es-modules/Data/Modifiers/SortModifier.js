@@ -1,10 +1,10 @@
 /* *
  *
- *  (c) 2009-2025 Highsoft AS
+ *  (c) 2009-2026 Highsoft AS
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  *  Authors:
  *  - Sophie Bremer
@@ -28,7 +28,6 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 import DataModifier from './DataModifier.js';
-import DataTable from '../DataTable.js';
 import U from '../../Core/Utilities.js';
 var merge = U.merge;
 /* *
@@ -48,10 +47,10 @@ var SortModifier = /** @class */ (function (_super) {
      *
      * */
     /**
-     * Constructs an instance of the range modifier.
+     * Constructs an instance of the sort modifier.
      *
-     * @param {Partial<RangeDataModifier.Options>} [options]
-     * Options to configure the range modifier.
+     * @param {Partial<SortDataModifier.Options>} [options]
+     * Options to configure the sort modifier.
      */
     function SortModifier(options) {
         var _this = _super.call(this) || this;
@@ -72,6 +71,17 @@ var SortModifier = /** @class */ (function (_super) {
         return ((b || 0) < (a || 0) ? -1 :
             (b || 0) > (a || 0) ? 1 :
                 0);
+    };
+    SortModifier.compareFactory = function (direction, customCompare) {
+        if (customCompare) {
+            if (direction === 'desc') {
+                return function (a, b) { return -customCompare(a, b); };
+            }
+            return customCompare;
+        }
+        return (direction === 'asc' ?
+            SortModifier.ascending :
+            SortModifier.descending);
     };
     /* *
      *
@@ -99,144 +109,39 @@ var SortModifier = /** @class */ (function (_super) {
         }
         return rowReferences;
     };
-    /**
-     * Applies partial modifications of a cell change to the property `modified`
-     * of the given modified table.
-     *
-     * @param {Highcharts.DataTable} table
-     * Modified table.
-     *
-     * @param {string} columnName
-     * Column name of changed cell.
-     *
-     * @param {number|undefined} rowIndex
-     * Row index of changed cell.
-     *
-     * @param {Highcharts.DataTableCellType} cellValue
-     * Changed cell value.
-     *
-     * @param {Highcharts.DataTableEventDetail} [eventDetail]
-     * Custom information for pending events.
-     *
-     * @return {Highcharts.DataTable}
-     * Table with `modified` property as a reference.
-     */
-    SortModifier.prototype.modifyCell = function (table, columnName, rowIndex, cellValue, eventDetail) {
-        var modifier = this, _a = modifier.options, orderByColumn = _a.orderByColumn, orderInColumn = _a.orderInColumn;
-        if (columnName === orderByColumn) {
-            if (orderInColumn) {
-                table.modified.setCell(columnName, rowIndex, cellValue);
-                table.modified.setColumn(orderInColumn, modifier
-                    .modifyTable(new DataTable({
-                    columns: table
-                        .getColumns([orderByColumn, orderInColumn])
-                }))
-                    .modified
-                    .getColumn(orderInColumn));
-            }
-            else {
-                modifier.modifyTable(table, eventDetail);
-            }
-        }
-        return table;
-    };
-    /**
-     * Applies partial modifications of column changes to the property
-     * `modified` of the given table.
-     *
-     * @param {Highcharts.DataTable} table
-     * Modified table.
-     *
-     * @param {Highcharts.DataTableColumnCollection} columns
-     * Changed columns as a collection, where the keys are the column names.
-     *
-     * @param {number} [rowIndex=0]
-     * Index of the first changed row.
-     *
-     * @param {Highcharts.DataTableEventDetail} [eventDetail]
-     * Custom information for pending events.
-     *
-     * @return {Highcharts.DataTable}
-     * Table with `modified` property as a reference.
-     */
-    SortModifier.prototype.modifyColumns = function (table, columns, rowIndex, eventDetail) {
-        var modifier = this, _a = modifier.options, orderByColumn = _a.orderByColumn, orderInColumn = _a.orderInColumn, columnNames = Object.keys(columns);
-        if (columnNames.indexOf(orderByColumn) > -1) {
-            if (orderInColumn &&
-                columns[columnNames[0]].length) {
-                table.modified.setColumns(columns, rowIndex);
-                table.modified.setColumn(orderInColumn, modifier
-                    .modifyTable(new DataTable({
-                    columns: table
-                        .getColumns([orderByColumn, orderInColumn])
-                }))
-                    .modified
-                    .getColumn(orderInColumn));
-            }
-            else {
-                modifier.modifyTable(table, eventDetail);
-            }
-        }
-        return table;
-    };
-    /**
-     * Applies partial modifications of row changes to the property `modified`
-     * of the given table.
-     *
-     * @param {Highcharts.DataTable} table
-     * Modified table.
-     *
-     * @param {Array<(Highcharts.DataTableRow|Highcharts.DataTableRowObject)>} rows
-     * Changed rows.
-     *
-     * @param {number} [rowIndex]
-     * Index of the first changed row.
-     *
-     * @param {Highcharts.DataTableEventDetail} [eventDetail]
-     * Custom information for pending events.
-     *
-     * @return {Highcharts.DataTable}
-     * Table with `modified` property as a reference.
-     */
-    SortModifier.prototype.modifyRows = function (table, rows, rowIndex, eventDetail) {
-        var modifier = this, _a = modifier.options, orderByColumn = _a.orderByColumn, orderInColumn = _a.orderInColumn;
-        if (orderInColumn &&
-            rows.length) {
-            table.modified.setRows(rows, rowIndex);
-            table.modified.setColumn(orderInColumn, modifier
-                .modifyTable(new DataTable({
-                columns: table
-                    .getColumns([orderByColumn, orderInColumn])
-            }))
-                .modified
-                .getColumn(orderInColumn));
-        }
-        else {
-            modifier.modifyTable(table, eventDetail);
-        }
-        return table;
-    };
-    /**
-     * Sorts rows in the table.
-     *
-     * @param {DataTable} table
-     * Table to sort in.
-     *
-     * @param {DataEvent.Detail} [eventDetail]
-     * Custom information for pending events.
-     *
-     * @return {DataTable}
-     * Table with `modified` property as a reference.
-     */
     SortModifier.prototype.modifyTable = function (table, eventDetail) {
         var _a;
         var modifier = this;
         modifier.emit({ type: 'modify', detail: eventDetail, table: table });
-        var columnNames = table.getColumnNames(), rowCount = table.getRowCount(), rowReferences = this.getRowReferences(table), _b = modifier.options, direction = _b.direction, orderByColumn = _b.orderByColumn, orderInColumn = _b.orderInColumn, compare = (direction === 'asc' ?
-            SortModifier.ascending :
-            SortModifier.descending), orderByColumnIndex = columnNames.indexOf(orderByColumn), modified = table.modified;
-        if (orderByColumnIndex !== -1) {
-            rowReferences.sort(function (a, b) { return compare(a.row[orderByColumnIndex], b.row[orderByColumnIndex]); });
+        var columnIds = table.getColumnIds(), rowCount = table.getRowCount(), rowReferences = this.getRowReferences(table), _b = modifier.options, direction = _b.direction, orderInColumn = _b.orderInColumn, customCompare = _b.compare, modified = table.getModified();
+        var orderBy = ('columns' in modifier.options ?
+            modifier.options.columns :
+            [modifier.options.orderByColumn]);
+        var orderByIndexes = [];
+        for (var i = 0, iEnd = orderBy.length; i < iEnd; ++i) {
+            var sort = orderBy[i];
+            var isString = typeof sort === 'string';
+            var column = isString ? sort : sort.column;
+            var columnIndex = columnIds.indexOf(column);
+            if (columnIndex === -1) {
+                continue;
+            }
+            orderByIndexes.push({
+                columnIndex: columnIndex,
+                compare: SortModifier.compareFactory(isString ? direction : (sort.direction || direction), isString ? customCompare : (sort.compare || customCompare))
+            });
+        }
+        if (orderByIndexes.length) {
+            rowReferences.sort(function (a, b) {
+                for (var i = 0, iEnd = orderByIndexes.length; i < iEnd; ++i) {
+                    var _a = orderByIndexes[i], columnIndex = _a.columnIndex, compare = _a.compare;
+                    var result = compare(a.row[columnIndex], b.row[columnIndex]);
+                    if (result) {
+                        return result;
+                    }
+                }
+                return a.index - b.index;
+            });
         }
         if (orderInColumn) {
             var column = [];
@@ -251,7 +156,7 @@ var SortModifier = /** @class */ (function (_super) {
             var rowReference = void 0;
             for (var i = 0; i < rowCount; ++i) {
                 rowReference = rowReferences[i];
-                originalIndexes.push(modified.getOriginalRowIndex(rowReference.index));
+                originalIndexes.push(table.getOriginalRowIndex(rowReference.index));
                 rows.push(rowReference.row);
             }
             modified.setRows(rows, 0);

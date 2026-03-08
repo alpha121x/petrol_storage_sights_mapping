@@ -1,10 +1,11 @@
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -19,6 +20,7 @@ var defined = U.defined, extend = U.extend, fireEvent = U.fireEvent, getAlignFac
  *  Composition
  *
  * */
+/** @internal */
 var DataLabel;
 (function (DataLabel) {
     /* *
@@ -35,7 +37,7 @@ var DataLabel;
      * Check if this series has data labels, either a series-level setting, or
      * individual. In case of individual point labels, this method is overridden
      * to always return true.
-     * @private
+     * @internal
      */
     function hasDataLabels() {
         return mergedDataLabelOptions(this)
@@ -45,7 +47,7 @@ var DataLabel;
     }
     /**
      * Align each individual data label.
-     * @private
+     * @internal
      */
     function alignDataLabel(point, dataLabel, options, alignTo, isNew) {
         var _a;
@@ -183,7 +185,7 @@ var DataLabel;
     }
     /**
      * Handle the dataLabels.filter option.
-     * @private
+     * @internal
      */
     function applyFilter(point, options) {
         var filter = options.filter;
@@ -204,7 +206,15 @@ var DataLabel;
         return true;
     }
     /**
-     * @private
+     * Compose the data label composition onto a series class.
+     *
+     * @internal
+     * @function compose
+     *
+     * @param {Highcharts.Series} SeriesClass
+     * The series class to compose onto.
+     *
+     * @return {void}
      */
     function compose(SeriesClass) {
         var seriesProto = SeriesClass.prototype;
@@ -221,21 +231,55 @@ var DataLabel;
     }
     DataLabel.compose = compose;
     /**
-     * Create the SVGElement group for dataLabels
-     * @private
+     * Create the SVGElement group for dataLabels.
+     *
+     * @internal
+     * @function initDataLabelsGroup
+     *
+     * @param {number} index
+     * The index of the data labels group.
+     * @param {Highcharts.DataLabelOptions} [dataLabelsOptions]
+     * Data label options for the group.
+     *
+     * @return {Highcharts.SVGElement}
+     * The SVGElement group.
      */
-    function initDataLabelsGroup() {
-        return this.plotGroup('dataLabelsGroup', 'data-labels', this.hasRendered ? 'inherit' : 'hidden', // #5133, #10220
-        this.options.dataLabels.zIndex || 6, this.chart.dataLabelsGroup);
+    function initDataLabelsGroup(index, dataLabelsOptions) {
+        var _a, _b, _c, _d;
+        fireEvent(this, 'initDataLabelsGroup', {
+            index: index,
+            zIndex: (_a = dataLabelsOptions === null || dataLabelsOptions === void 0 ? void 0 : dataLabelsOptions.zIndex) !== null && _a !== void 0 ? _a : 6
+        });
+        // Existing group or first time
+        this.dataLabelsGroup = (_b = this.dataLabelsGroups) === null || _b === void 0 ? void 0 : _b[index];
+        var group = this.plotGroup('dataLabelsGroup', 'data-labels', this.hasRendered ? 'inherit' : 'hidden', // #5133, #10220
+        (_c = dataLabelsOptions === null || dataLabelsOptions === void 0 ? void 0 : dataLabelsOptions.zIndex) !== null && _c !== void 0 ? _c : 6, (_d = this.dataLabelsParentGroups) === null || _d === void 0 ? void 0 : _d[index]);
+        this.dataLabelsGroups || (this.dataLabelsGroups = []);
+        this.dataLabelsGroups[index] = group;
+        // Keep reference to the 1st group
+        this.dataLabelsGroup = this.dataLabelsGroups[0];
+        return group;
     }
     /**
-     * Init the data labels with the correct animation
-     * @private
+     * Init the data labels with the correct animation.
+     *
+     * @internal
+     * @function initDataLabels
+     *
+     * @param {number} index
+     * The index of the data labels group.
+     * @param {Highcharts.AnimationOptions} animationConfig
+     * The animation options.
+     * @param {Highcharts.DataLabelOptions} [dataLabelsOptions]
+     * Data label options for the group.
+     *
+     * @return {Highcharts.SVGElement}
+     * The SVGElement group.
      */
-    function initDataLabels(animationConfig) {
-        var series = this, hasRendered = series.hasRendered || 0;
+    function initDataLabels(index, animationConfig, dataLabelsOptions) {
+        var series = this, hasRendered = !!series.hasRendered;
         // Create a separate group for the data labels to avoid rotation
-        var dataLabelsGroup = this.initDataLabelsGroup()
+        var dataLabelsGroup = this.initDataLabelsGroup(index, dataLabelsOptions)
             .attr({ opacity: +hasRendered }); // #3300
         if (!hasRendered && dataLabelsGroup) {
             if (series.visible) { // #2597, #3023, #3024
@@ -251,10 +295,11 @@ var DataLabel;
         return dataLabelsGroup;
     }
     /**
-     * Draw the data labels
-     * @private
+     * Draw the data labels.
+     * @internal
      */
     function drawDataLabels(points) {
+        var _this = this;
         var _a;
         points = points || this.points;
         var series = this, chart = series.chart, seriesOptions = series.options, renderer = chart.renderer, _b = chart.options.chart, backgroundColor = _b.backgroundColor, plotBackgroundColor = _b.plotBackgroundColor, contrastColor = renderer.getContrast((isString(plotBackgroundColor) && plotBackgroundColor) ||
@@ -267,7 +312,6 @@ var DataLabel;
             { defer: 0, duration: 0 };
         fireEvent(this, 'drawDataLabels');
         if ((_a = series.hasDataLabels) === null || _a === void 0 ? void 0 : _a.call(series)) {
-            dataLabelsGroup = this.initDataLabels(animationConfig);
             // Make the labels for each point
             points.forEach(function (point) {
                 var _a, _b, _c;
@@ -281,6 +325,10 @@ var DataLabel;
                 // Handle each individual data label for this point
                 pointOptions.forEach(function (labelOptions, i) {
                     var _a;
+                    // Create dataLabelsGroup for each data labels config
+                    // (can be multiple)
+                    dataLabelsGroup =
+                        _this.initDataLabels(i, animationConfig, labelOptions);
                     // Options for one datalabel
                     var labelEnabled = (labelOptions.enabled &&
                         (point.visible || point.dataLabelOnHidden) &&
@@ -444,7 +492,7 @@ var DataLabel;
     /**
      * If data labels fall partly outside the plot area, align them back in, in
      * a way that doesn't hide the point.
-     * @private
+     * @internal
      */
     function justifyDataLabel(dataLabel, options, alignAttr, bBox, alignTo, isNew) {
         var chart = this.chart, align = options.align, verticalAlign = options.verticalAlign, padding = dataLabel.box ? 0 : (dataLabel.padding || 0), horizontalAxis = chart.inverted ? this.yAxis : this.xAxis, horizontalAxisShift = horizontalAxis ?
@@ -511,7 +559,7 @@ var DataLabel;
      * Merge two objects that can be arrays. If one of them is an array, the
      * other is merged into each element. If both are arrays, each element is
      * merged by index. If neither are arrays, we use normal merge.
-     * @private
+     * @internal
      */
     function mergeArrays(one, two) {
         var res = [], i;
@@ -538,7 +586,7 @@ var DataLabel;
     }
     /**
      * Merge plotOptions and series options for dataLabels.
-     * @private
+     * @internal
      */
     function mergedDataLabelOptions(series) {
         var _a, _b;
@@ -547,7 +595,7 @@ var DataLabel;
     }
     /**
      * Set starting position for data label sorting animation.
-     * @private
+     * @internal
      */
     function setDataLabelStartPos(point, dataLabel, isNew, isInside, alignOptions) {
         var chart = this.chart, inverted = chart.inverted, xAxis = this.xAxis, reversed = xAxis.reversed, labelCenter = ((inverted ? dataLabel.height : dataLabel.width) || 0) / 2, pointWidth = point.pointWidth, halfWidth = pointWidth ? pointWidth / 2 : 0;
@@ -589,6 +637,7 @@ var DataLabel;
  *  Default Export
  *
  * */
+/** @internal */
 export default DataLabel;
 /* *
  *

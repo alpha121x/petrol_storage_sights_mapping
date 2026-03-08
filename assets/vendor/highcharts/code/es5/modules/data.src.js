@@ -1,13 +1,16 @@
+// SPDX-License-Identifier: LicenseRef-Highcharts
 /**
- * @license Highcharts JS v12.3.0 (2025-06-21)
+ * @license Highcharts JS v12.5.0 (2026-01-12)
  * @module highcharts/modules/data
  * @requires highcharts
  *
  * Data module
  *
- * (c) 2012-2025 Torstein Honsi
+ * (c) 2012-2026 Highsoft AS
+ * Author: Torstein Honsi
  *
- * License: www.highcharts.com/license
+ * A commercial license may be required depending on use.
+ * See www.highcharts.com/license
  */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
@@ -128,11 +131,12 @@ var highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default 
 ;// ./code/es5/es-modules/Core/HttpUtilities.js
 /* *
  *
- *  (c) 2010-2025 Christer Vasseng, Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Christer Vasseng, Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -164,8 +168,8 @@ var __generator = (undefined && undefined.__generator) || function (thisArg, bod
         f,
         y,
         t,
-        g;
-    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+        g = Object.create((typeof Iterator === "function" ? Iterator : Object).prototype);
+    return g.next = verb(0), g["throw"] = verb(1), g["return"] = verb(2), typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
     function verb(n) { return function (v) { return step([n, v]); }; }
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
@@ -221,9 +225,7 @@ function ajax(settings) {
         r = new XMLHttpRequest();
     /**
      * Private error handler.
-     *
-     * @private
-     *
+     * @internal
      * @param {XMLHttpRequest} xhr
      * Internal request object.
      * @param {string | Error} err
@@ -305,13 +307,15 @@ function getJSON(url, success) {
 /**
  * The post utility.
  *
- * @private
+ * @internal
  * @function Highcharts.post
  *
  * @param {string} url
  * Post URL.
+ *
  * @param {Object} data
  * Post data.
+ *
  * @param {RequestInit} [fetchOptions]
  * Additional attributes for the post request.
  */
@@ -349,16 +353,16 @@ function post(url, data, fetchOptions) {
         });
     });
 }
-/* *
- *
- *  Default Export
- *
- * */
+/**
+ * Utility functions for Ajax.
+ * @class
+ * @name Highcharts.HttpUtilities
+ */
 var HttpUtilities = {
     ajax: ajax,
-    getJSON: getJSON,
-    post: post
+    getJSON: getJSON
 };
+HttpUtilities.post = post;
 /* harmony default export */ var Core_HttpUtilities = (HttpUtilities);
 /* *
  *
@@ -422,11 +426,12 @@ var highcharts_SeriesRegistry_commonjs_highcharts_SeriesRegistry_commonjs2_highc
  *
  *  Data module
  *
- *  (c) 2012-2025 Torstein Honsi
+ *  (c) 2012-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -448,9 +453,7 @@ var addEvent = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcha
  *  Functions
  *
  * */
-/**
- * @private
- */
+/** @internal */
 function getFreeIndexes(numberOfColumns, seriesBuilders) {
     var freeIndexes = [],
         freeIndexValues = [];
@@ -510,6 +513,10 @@ var Data = /** @class */ (function () {
      * */
     function Data(dataOptions, chartOptions, chart) {
         if (chartOptions === void 0) { chartOptions = {}; }
+        /**
+         * A collection of two-dimensional arrays.
+         * @internal
+         */
         this.rowsToColumns = Data.rowsToColumns; // Backwards compatibility
         /**
          * A collection of available date formats, extendable from the outside to
@@ -625,7 +632,7 @@ var Data = /** @class */ (function () {
     /**
      * Initialize the Data object with the given options
      *
-     * @private
+     * @internal
      * @function Highcharts.Data#init
      */
     Data.prototype.init = function (dataOptions, chartOptions, chart) {
@@ -779,7 +786,7 @@ var Data = /** @class */ (function () {
      * When the data is parsed into columns, either by CSV, table, GS or direct
      * input, continue with other operations.
      *
-     * @private
+     * @internal
      * @function Highcharts.Data#dataFound
      */
     Data.prototype.dataFound = function () {
@@ -855,12 +862,12 @@ var Data = /** @class */ (function () {
         */
         /**
          * Parse a single row.
-         * @private
+         * @internal
          */
         function parseRow(columnStr, rowNumber, noAdd, callbacks) {
             var i = 0, c = '', cl = '', cn = '', token = '', actualColumn = 0, column = 0;
             /**
-             * @private
+             * @internal
              */
             function read(j) {
                 c = columnStr[j];
@@ -868,7 +875,7 @@ var Data = /** @class */ (function () {
                 cn = columnStr[j + 1];
             }
             /**
-             * @private
+             * @internal
              */
             function pushType(type) {
                 if (dataTypes.length < column + 1) {
@@ -879,7 +886,7 @@ var Data = /** @class */ (function () {
                 }
             }
             /**
-             * @private
+             * @internal
              */
             function push() {
                 if (startColumn > actualColumn || actualColumn > endColumn) {
@@ -954,7 +961,7 @@ var Data = /** @class */ (function () {
          * Attempt to guess the delimiter. We do a separate parse pass here
          * because we need to count potential delimiters softly without making
          * any assumptions.
-         * @private
+         * @internal
          */
         function guessDelimiter(lines) {
             var points = 0,
@@ -1055,7 +1062,7 @@ var Data = /** @class */ (function () {
          *  - Check if a shortened year format is used (e.g. 1/1/99)
          *  - If no guess can be made, the user must be prompted
          * data is the data to deduce a format based on
-         * @private
+         * @internal
          */
         function deduceDateFormat(data, limit) {
             var _a;
@@ -1288,12 +1295,12 @@ var Data = /** @class */ (function () {
         delete options.rowsURL;
         delete options.columnsURL;
         /**
-         * @private
+         * @internal
          */
         function performFetch(initialFetch) {
             /**
              * Helper function for doing the data fetch + polling.
-             * @private
+             * @internal
              */
             function request(url, done, tp) {
                 if (!url ||
@@ -1308,7 +1315,7 @@ var Data = /** @class */ (function () {
                     chart.liveDataURL = url;
                 }
                 /**
-                 * @private
+                 * @internal
                  */
                 function poll() {
                     // Poll
@@ -1397,7 +1404,7 @@ var Data = /** @class */ (function () {
         };
         /**
          * Fetch the actual spreadsheet using XMLHttpRequest.
-         * @private
+         * @internal
          */
         function fetchSheet(fn) {
             var url = [
@@ -1881,7 +1888,7 @@ var Data = /** @class */ (function () {
     /**
      * Sets properties directly on the xAxis object.
      *
-     * @private
+     * @internal
      */
     Data.prototype.xAxisUpdateHandler = function (axis) {
         var options = this.xAxisOptions;
@@ -2021,7 +2028,7 @@ addEvent((highcharts_Chart_commonjs_highcharts_Chart_commonjs2_highcharts_Chart_
  * The name of the builder is taken from the second column. In the above
  * example it would be the column with index 7.
  *
- * @private
+ * @internal
  * @class
  * @name SeriesBuilder
  */

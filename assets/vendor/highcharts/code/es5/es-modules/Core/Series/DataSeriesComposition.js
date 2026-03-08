@@ -1,10 +1,10 @@
 /* *
  *
- *  (c) 2020-2025 Highsoft AS
+ *  (c) 2020-2026 Highsoft AS
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  *  Authors:
  *  - Sophie Bremer
@@ -21,9 +21,7 @@ var addEvent = U.addEvent, fireEvent = U.fireEvent, isNumber = U.isNumber, merge
  *  Functions
  *
  * */
-/**
- * @private
- */
+/** @internal */
 function wrapSeriesGeneratePoints(proceed) {
     if (this.hasGroupedData) {
         return proceed.call(this);
@@ -43,9 +41,7 @@ function wrapSeriesGeneratePoints(proceed) {
     this.points = points;
     fireEvent(this, 'afterGeneratePoints');
 }
-/**
- * @private
- */
+/** @internal */
 function wrapSeriesSetData(proceed, data, redraw, animation) {
     if (data === void 0) { data = []; }
     if (redraw === void 0) { redraw = true; }
@@ -86,6 +82,7 @@ function wrapSeriesSetData(proceed, data, redraw, animation) {
  *  Class
  *
  * */
+/** @internal */
 var DataSeriesAdditions = /** @class */ (function () {
     /* *
      *
@@ -107,7 +104,7 @@ var DataSeriesAdditions = /** @class */ (function () {
      *
      * */
     /**
-     * @private
+     * @internal
      */
     DataSeriesAdditions.compose = function (SeriesClass) {
         if (pushUnique(composed, 'Core.DataSeries')) {
@@ -126,7 +123,7 @@ var DataSeriesAdditions = /** @class */ (function () {
      * */
     /**
      * Triggers processing and redrawing
-     * @private
+     * @internal
      */
     DataSeriesAdditions.prototype.processTable = function (redraw, animation) {
         var series = this.series;
@@ -143,7 +140,7 @@ var DataSeriesAdditions = /** @class */ (function () {
     };
     /**
      * Experimental integration of the data layer
-     * @private
+     * @internal
      */
     DataSeriesAdditions.prototype.setTable = function (table, redraw, animation) {
         if (redraw === void 0) { redraw = true; }
@@ -188,16 +185,16 @@ var DataSeriesAdditions = /** @class */ (function () {
         }
         if (failure) {
             // Fallback to index
-            var columnNames = table.getColumnNames(), emptyColumn = [];
+            var columnIds = table.getColumnIds(), emptyColumn = [];
             emptyColumn.length = rowCount;
             var columnOffset = 0;
-            if (columnNames.length === keys.length - 1) {
+            if (columnIds.length === keys.length - 1) {
                 // Table index becomes x
                 columnOffset = 1;
                 indexAsX = true;
             }
             for (var i = columnOffset, iEnd = keys.length; i < iEnd; ++i) {
-                column = table.getColumn(columnNames[i], true);
+                column = table.getColumn(columnIds[i], true);
                 key = keys[i];
                 anySeries["".concat(key, "Data")] = column || emptyColumn.slice();
             }
@@ -218,8 +215,8 @@ var DataSeriesAdditions = /** @class */ (function () {
         this.processTable(redraw, oldData && animation);
     };
     /**
-     * Stops synchronisation of table changes with series.
-     * @private
+     * Stops synchronization of table changes with series.
+     * @internal
      */
     DataSeriesAdditions.prototype.syncOff = function () {
         var unlisteners = this.unlisteners;
@@ -230,7 +227,7 @@ var DataSeriesAdditions = /** @class */ (function () {
     };
     /**
      * Activates synchronization of table changes with series.
-     * @private
+     * @internal
      */
     DataSeriesAdditions.prototype.syncOn = function () {
         var _this = this;
@@ -238,27 +235,31 @@ var DataSeriesAdditions = /** @class */ (function () {
             return;
         }
         var series = this.series, table = this.table, anySeries = series, onChange = function (e) {
-            if (e.type === 'afterDeleteColumns') {
+            var type = e.type;
+            if (type === 'afterDeleteColumns') {
                 // Deletion affects all points
                 _this.setTable(table, true);
                 return;
             }
-            if (e.type === 'afterDeleteRows') {
-                if (e.rowIndex > 0 &&
-                    e.rowIndex + e.rowCount < series.points.length) {
+            if (type === 'afterDeleteRows') {
+                var rowIndex = e.rowIndex, rowCount = e.rowCount;
+                if (Array.isArray(rowIndex) ||
+                    (rowIndex > 0 &&
+                        rowIndex + rowCount < series.points.length)) {
                     // Deletion affects trailing points
                     _this.setTable(table, true);
                     return;
                 }
-                for (var i = e.rowIndex, iEnd = i + e.rowCount; i < iEnd; ++i) {
+                for (var i = rowIndex, iEnd = i + rowCount; i < iEnd; ++i) {
                     series.removePoint(i, false);
                 }
             }
             if (_this.indexAsX) {
-                if (e.type === 'afterSetCell') {
+                if (type === 'afterSetCell') {
                     anySeries.xData[e.rowIndex] = e.rowIndex;
                 }
-                else if (e.type === 'afterSetRows') {
+                else if (type === 'afterSetRows' &&
+                    isNumber(e.rowIndex)) {
                     for (var i = e.rowIndex, iEnd = i + e.rowCount; i < iEnd; ++i) {
                         anySeries.xData[i] = series.autoIncrement();
                     }
@@ -275,6 +276,7 @@ var DataSeriesAdditions = /** @class */ (function () {
  *  Default Export
  *
  * */
+/** @internal */
 export default DataSeriesAdditions;
 /* *
  *

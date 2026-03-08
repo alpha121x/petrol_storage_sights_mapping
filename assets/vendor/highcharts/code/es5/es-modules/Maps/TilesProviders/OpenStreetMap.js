@@ -7,6 +7,7 @@
  *  Class
  *
  * */
+/** @internal */
 var OpenStreetMap = /** @class */ (function () {
     function OpenStreetMap() {
         /* *
@@ -44,4 +45,5 @@ var OpenStreetMap = /** @class */ (function () {
  *  Default Export
  *
  * */
+/** @internal */
 export default OpenStreetMap;

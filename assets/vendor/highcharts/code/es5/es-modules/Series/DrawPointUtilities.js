@@ -1,6 +1,5 @@
 /* *
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -39,7 +38,7 @@ function draw(point, params) {
         (point.series &&
             point.series.options.animation);
     var graphic = point.graphic;
-    params.attribs = __assign(__assign({}, params.attribs), { 'class': point.getClassName() }) || {};
+    params.attribs = __assign(__assign({}, params.attribs), { 'class': point.getClassName() });
     if ((point.shouldDraw())) {
         if (!graphic) {
             if (params.shapeType === 'text') {

@@ -1,10 +1,11 @@
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -49,7 +50,7 @@ var Pointer = /** @class */ (function () {
     /**
      * Initialize the Pointer.
      *
-     * @private
+     * @internal
      * @function Highcharts.Pointer#init
      *
      * @param {Highcharts.Chart} chart
@@ -61,8 +62,21 @@ var Pointer = /** @class */ (function () {
      */
     function Pointer(chart, options) {
         var _a;
+        /**
+         * The distance by which the mouse has been dragged since the last
+         * `mousedown` event.
+         * @internal
+         */
         this.hasDragged = 0;
+        /**
+         * A list of events to unbind when the pointer is destroyed.
+         * @internal
+         */
         this.pointerCaptureEventsToUnbind = [];
+        /**
+         * A list of events to unbind when the pointer is destroyed.
+         * @internal
+         */
         this.eventsToUnbind = [];
         // Store references
         this.options = options;
@@ -83,7 +97,7 @@ var Pointer = /** @class */ (function () {
      * or, if `inactiveOtherPoints` is set to true, set inactive state to
      * all points within that series.
      *
-     * @private
+     * @internal
      * @function Highcharts.Pointer#applyInactiveState
      *
      * @param {Array<Highcharts.Point>} points
@@ -91,6 +105,7 @@ var Pointer = /** @class */ (function () {
      */
     Pointer.prototype.applyInactiveState = function (points) {
         var _this = this;
+        var _a, _b;
         if (points === void 0) { points = []; }
         var activeSeries = [];
         // Get all active series from the hovered points
@@ -117,17 +132,21 @@ var Pointer = /** @class */ (function () {
                 }));
             }
         });
-        // Now loop over all series, filtering out active series
-        this.chart.series.forEach(function (series) {
+        for (var _i = 0, _c = this.chart.series; _i < _c.length; _i++) {
+            var series = _c[_i];
+            var seriesOptions = series.options;
+            if (((_b = (_a = seriesOptions.states) === null || _a === void 0 ? void 0 : _a.inactive) === null || _b === void 0 ? void 0 : _b.enabled) === false) {
+                continue;
+            }
             if (activeSeries.indexOf(series) === -1) {
                 // Inactive series
                 series.setState('inactive', true);
             }
-            else if (series.options.inactiveOtherPoints) {
+            else if (seriesOptions.inactiveOtherPoints) {
                 // Active series, but other points should be inactivated
                 series.setAllPointsToState('inactive');
             }
-        });
+        }
     };
     /**
      * Destroys the Pointer object and disconnects DOM events.
@@ -145,15 +164,13 @@ var Pointer = /** @class */ (function () {
                 Pointer.unbindDocumentTouchEnd = (Pointer.unbindDocumentTouchEnd());
             }
         }
-        // Memory and CPU leak
-        clearInterval(pointer.tooltipTimeout);
         objectEach(pointer, function (_val, prop) {
             pointer[prop] = void 0;
         });
     };
     /**
      * Calculate attrs for selection marker.
-     * @private
+     * @internal
      * @function Highcharts.Pointer#getSelectionMarkerAttrs
      * @emits getSelectionMarkerAttrs
      */
@@ -191,7 +208,7 @@ var Pointer = /** @class */ (function () {
     /**
      * Perform a drag operation in response to a mousemove event while the mouse
      * is down.
-     * @private
+     * @internal
      * @function Highcharts.Pointer#drag
      */
     Pointer.prototype.drag = function (e) {
@@ -260,7 +277,7 @@ var Pointer = /** @class */ (function () {
     };
     /**
      * Start a drag operation.
-     * @private
+     * @internal
      * @function Highcharts.Pointer#dragStart
      */
     Pointer.prototype.dragStart = function (e) {
@@ -273,7 +290,7 @@ var Pointer = /** @class */ (function () {
     };
     /**
      * Get selection box to calculate extremes
-     * @private
+     * @internal
      * @function Highcharts.Pointer#getSelectionBox
      * @emits getSelectionBox
      */
@@ -287,7 +304,7 @@ var Pointer = /** @class */ (function () {
     };
     /**
      * On mouse up or touch end across the entire document, drop the selection.
-     * @private
+     * @internal
      * @function Highcharts.Pointer#drop
      */
     Pointer.prototype.drop = function (e) {
@@ -340,6 +357,7 @@ var Pointer = /** @class */ (function () {
             chart.mouseIsDown = false;
             this.hasDragged = 0;
             this.pinchDown = [];
+            this.hasPinchMoved = false;
         }
     };
     /**
@@ -362,7 +380,7 @@ var Pointer = /** @class */ (function () {
      */
     Pointer.prototype.findNearestKDPoint = function (series, shared, e) {
         var closest;
-        /** @private */
+        /** @internal */
         function sort(p1, p2) {
             var _a, _b;
             var isCloserX = p1.distX - p2.distX, isCloser = p1.dist - p2.dist, isAbove = (((_a = p2.series.group) === null || _a === void 0 ? void 0 : _a.zIndex) -
@@ -403,10 +421,7 @@ var Pointer = /** @class */ (function () {
         });
         return closest;
     };
-    /**
-     * @private
-     * @function Highcharts.Pointer#getChartCoordinatesFromPoint
-     */
+    /** @internal */
     Pointer.prototype.getChartCoordinatesFromPoint = function (point, inverted) {
         var _a, _b;
         var _c = point.series, xAxis = _c.xAxis, yAxis = _c.yAxis, shapeArgs = point.shapeArgs;
@@ -496,7 +511,7 @@ var Pointer = /** @class */ (function () {
     /**
      * Calculates what is the current hovered point/points and series.
      *
-     * @private
+     * @internal
      * @function Highcharts.Pointer#getHoverData
      *
      * @param {Highcharts.Point|undefined} existingHoverPoint
@@ -592,10 +607,7 @@ var Pointer = /** @class */ (function () {
             hoverPoints: hoverPoints
         };
     };
-    /**
-     * @private
-     * @function Highcharts.Pointer#getPointFromEvent
-     */
+    /** @internal */
     Pointer.prototype.getPointFromEvent = function (e) {
         var target = e.target, point;
         while (target && !point) {
@@ -604,10 +616,7 @@ var Pointer = /** @class */ (function () {
         }
         return point;
     };
-    /**
-     * @private
-     * @function Highcharts.Pointer#onTrackerMouseOut
-     */
+    /** @internal */
     Pointer.prototype.onTrackerMouseOut = function (e) {
         var chart = this.chart;
         var relatedTarget = e.relatedTarget;
@@ -696,10 +705,7 @@ var Pointer = /** @class */ (function () {
             chartY: Math.round(chartY)
         });
     };
-    /**
-     * @private
-     * @function Highcharts.Pointer#onContainerClick
-     */
+    /** @internal */
     Pointer.prototype.onContainerClick = function (e) {
         var chart = this.chart;
         var hoverPoint = chart.hoverPoint;
@@ -731,10 +737,7 @@ var Pointer = /** @class */ (function () {
             }
         }
     };
-    /**
-     * @private
-     * @function Highcharts.Pointer#onContainerMouseDown
-     */
+    /** @internal */
     Pointer.prototype.onContainerMouseDown = function (e) {
         var _a;
         var isPrimaryButton = ((e.buttons || e.button) & 1) === 1;
@@ -757,7 +760,7 @@ var Pointer = /** @class */ (function () {
     };
     /**
      * When mouse leaves the container, hide the tooltip.
-     * @private
+     * @internal
      * @function Highcharts.Pointer#onContainerMouseLeave
      */
     Pointer.prototype.onContainerMouseLeave = function (e) {
@@ -774,7 +777,7 @@ var Pointer = /** @class */ (function () {
     };
     /**
      * When mouse enters the container, delete pointer's chartPosition.
-     * @private
+     * @internal
      * @function Highcharts.Pointer#onContainerMouseEnter
      */
     Pointer.prototype.onContainerMouseEnter = function () {
@@ -782,7 +785,7 @@ var Pointer = /** @class */ (function () {
     };
     /**
      * The mousemove, touchmove and touchstart event handler
-     * @private
+     * @internal
      * @function Highcharts.Pointer#onContainerMouseMove
      */
     Pointer.prototype.onContainerMouseMove = function (e) {
@@ -810,17 +813,11 @@ var Pointer = /** @class */ (function () {
             }
         }
     };
-    /**
-     * @private
-     * @function Highcharts.Pointer#onDocumentTouchEnd
-     */
+    /** @internal */
     Pointer.prototype.onDocumentTouchEnd = function (e) {
         this.onDocumentMouseUp(e);
     };
-    /**
-     * @private
-     * @function Highcharts.Pointer#onContainerTouchMove
-     */
+    /** @internal */
     Pointer.prototype.onContainerTouchMove = function (e) {
         if (this.touchSelect(e)) {
             this.onContainerMouseMove(e);
@@ -829,10 +826,7 @@ var Pointer = /** @class */ (function () {
             this.touch(e);
         }
     };
-    /**
-     * @private
-     * @function Highcharts.Pointer#onContainerTouchStart
-     */
+    /** @internal */
     Pointer.prototype.onContainerTouchStart = function (e) {
         if (this.touchSelect(e)) {
             this.onContainerMouseDown(e);
@@ -846,7 +840,7 @@ var Pointer = /** @class */ (function () {
      * Special handler for mouse move that will hide the tooltip when the mouse
      * leaves the plotarea. Issue #149 workaround. The mouseleave event does not
      * always fire.
-     * @private
+     * @internal
      * @function Highcharts.Pointer#onDocumentMouseMove
      */
     Pointer.prototype.onDocumentMouseMove = function (e) {
@@ -864,17 +858,19 @@ var Pointer = /** @class */ (function () {
             this.reset();
         }
     };
-    /**
-     * @private
-     * @function Highcharts.Pointer#onDocumentMouseUp
-     */
+    /** @internal */
     Pointer.prototype.onDocumentMouseUp = function (e) {
-        var _a, _b;
-        (_b = (_a = charts[pick(Pointer.hoverChartIndex, -1)]) === null || _a === void 0 ? void 0 : _a.pointer) === null || _b === void 0 ? void 0 : _b.drop(e);
+        var _a, _b, _c;
+        // #17852, IOS devices sometimes reverts back to previous point when
+        // dragging between points
+        if ((e === null || e === void 0 ? void 0 : e.touches) && this.hasPinchMoved) {
+            (_a = e === null || e === void 0 ? void 0 : e.preventDefault) === null || _a === void 0 ? void 0 : _a.call(e);
+        }
+        (_c = (_b = charts[pick(Pointer.hoverChartIndex, -1)]) === null || _b === void 0 ? void 0 : _b.pointer) === null || _c === void 0 ? void 0 : _c.drop(e);
     };
     /**
      * Handle touch events with two touches
-     * @private
+     * @internal
      * @function Highcharts.Pointer#pinch
      */
     Pointer.prototype.pinch = function (e) {
@@ -951,7 +947,7 @@ var Pointer = /** @class */ (function () {
     };
     /**
      * Run translation operations
-     * @private
+     * @internal
      * @function Highcharts.Pointer#pinchTranslate
      * /
     public pinchTranslate(
@@ -989,7 +985,7 @@ var Pointer = /** @class */ (function () {
     /**
      * Run translation operations for each direction (horizontal and vertical)
      * independently.
-     * @private
+     * @internal
      * @function Highcharts.Pointer#pinchTranslateDirection
      * /
     public pinchTranslateDirection(
@@ -1178,7 +1174,7 @@ var Pointer = /** @class */ (function () {
      * With line type charts with a single tracker, get the point closest to the
      * mouse. Run Point.onMouseOver and display tooltip for the point or points.
      *
-     * @private
+     * @internal
      * @function Highcharts.Pointer#runPointActions
      *
      * @emits Highcharts.Point#event:mouseOut
@@ -1303,12 +1299,17 @@ var Pointer = /** @class */ (function () {
      * contain a one-to-one assignment between methods and their handlers. Any
      * advanced logic should be moved to the handler reflecting the event's
      * name.
-     * @private
+     * @internal
      * @function Highcharts.Pointer#setDOMEvents
      */
     Pointer.prototype.setDOMEvents = function () {
         var _this = this;
-        var container = this.chart.container, ownerDoc = container.ownerDocument;
+        var container = this.chart.container, ownerDoc = container.ownerDocument, 
+        // Get the parent element, including handling Shadow DOM (#23450)
+        getParent = function (el) {
+            var _a, _b;
+            return el.parentElement || ((_b = (_a = el.getRootNode()) === null || _a === void 0 ? void 0 : _a.host) === null || _b === void 0 ? void 0 : _b.parentElement);
+        };
         container.onmousedown = this.onContainerMouseDown.bind(this);
         container.onmousemove = this.onContainerMouseMove.bind(this);
         container.onclick = this.onContainerClick.bind(this);
@@ -1321,12 +1322,12 @@ var Pointer = /** @class */ (function () {
         }
         // In case we are dealing with overflow, reset the chart position when
         // scrolling parent elements
-        var parent = this.chart.renderTo.parentElement;
+        var parent = getParent(this.chart.renderTo);
         while (parent && parent.tagName !== 'BODY') {
             this.eventsToUnbind.push(addEvent(parent, 'scroll', function () {
                 delete _this.chartPosition;
             }));
-            parent = parent.parentElement;
+            parent = getParent(parent);
         }
         this.eventsToUnbind.push(addEvent(container, 'touchstart', this.onContainerTouchStart.bind(this), { passive: false }), addEvent(container, 'touchmove', this.onContainerTouchMove.bind(this), { passive: false }));
         if (!Pointer.unbindDocumentTouchEnd) {
@@ -1339,7 +1340,7 @@ var Pointer = /** @class */ (function () {
      * Sets, or removes on update, pointer events using pointer capture for
      * tooltip.followTouchMove if any series has findNearestPointBy that
      * includes the y dimension.
-     * @private
+     * @internal
      * @function Highcharts.Pointer#setPointerCapture
     */
     Pointer.prototype.setPointerCapture = function () {
@@ -1387,7 +1388,7 @@ var Pointer = /** @class */ (function () {
     /**
      * Sets the index of the hovered chart and leaves the previous hovered
      * chart, to reset states like tooltip.
-     * @private
+     * @internal
      * @function Highcharts.Pointer#setHoverChartIndex
      */
     Pointer.prototype.setHoverChartIndex = function (e) {
@@ -1410,7 +1411,7 @@ var Pointer = /** @class */ (function () {
     };
     /**
      * General touch handler shared by touchstart and touchmove.
-     * @private
+     * @internal
      * @function Highcharts.Pointer#touch
      */
     Pointer.prototype.touch = function (e, start) {
@@ -1435,7 +1436,7 @@ var Pointer = /** @class */ (function () {
                 // checking how much it moved, and cancelling on small
                 // distances. #3450. Tested and still relevant as of 2024.
                 if (e.type === 'touchmove') {
-                    hasMoved = pinchDown[0] ? // #5266
+                    this.hasPinchMoved = hasMoved = pinchDown[0] ? // #5266
                         (Math.pow(pinchDown[0].chartX - e.chartX, 2) +
                             Math.pow(pinchDown[0].chartY - e.chartY, 2)) >= 16 :
                         false;
@@ -1456,7 +1457,7 @@ var Pointer = /** @class */ (function () {
     /**
      * Returns true if the chart is set up for zooming by single touch and the
      * event is capable
-     * @private
+     * @internal
      * @function Highcharts.Pointer#touchSelect
      */
     Pointer.prototype.touchSelect = function (e) {
@@ -1467,7 +1468,7 @@ var Pointer = /** @class */ (function () {
     /**
      * Resolve the zoomType option, this is reset on all touch start and mouse
      * down events.
-     * @private
+     * @internal
      * @function Highcharts.Pointer#zoomOption
      */
     Pointer.prototype.zoomOption = function (e) {
@@ -1483,6 +1484,7 @@ var Pointer = /** @class */ (function () {
         this.zoomVert = (zoomY && !inverted) || (zoomX && inverted);
         this.hasZoom = zoomX || zoomY;
     };
+    /** @internal */
     Pointer.unbindDocumentMouseUp = [];
     return Pointer;
 }());
@@ -1502,9 +1504,7 @@ var Pointer = /** @class */ (function () {
      *  Functions
      *
      * */
-    /**
-     * @private
-     */
+    /** @internal */
     function compose(ChartClass) {
         if (pushUnique(composed, 'Core.Pointer')) {
             addEvent(ChartClass, 'beforeRender', function () {

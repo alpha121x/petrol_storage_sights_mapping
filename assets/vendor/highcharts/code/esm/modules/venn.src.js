@@ -1,12 +1,14 @@
+// SPDX-License-Identifier: LicenseRef-Highcharts
 /**
- * @license Highcharts JS v12.3.0 (2025-06-21)
+ * @license Highcharts JS v12.5.0 (2026-01-12)
  * @module highcharts/modules/venn
  * @requires highcharts
  *
- * (c) 2017-2025 Highsoft AS
+ * (c) 2017-2026 Highsoft AS
  * Authors: Jon Arild Nygard
  *
- * License: www.highcharts.com/license
+ * A commercial license may be required depending on use.
+ * See www.highcharts.com/license
  */
 import * as __WEBPACK_EXTERNAL_MODULE__highcharts_src_js_8202131d__ from "../highcharts.src.js";
 /******/ // The require scope
@@ -43,6 +45,7 @@ import * as __WEBPACK_EXTERNAL_MODULE__highcharts_src_js_8202131d__ from "../hig
 /******/ })();
 /******/ 
 /************************************************************************/
+var __webpack_exports__ = {};
 
 ;// external ["../highcharts.src.js","default"]
 const external_highcharts_src_js_default_namespaceObject = __WEBPACK_EXTERNAL_MODULE__highcharts_src_js_8202131d__["default"];
@@ -53,11 +56,11 @@ var external_highcharts_src_js_default_Color_default = /*#__PURE__*/__webpack_re
 ;// ./code/es-modules/Core/Geometry/GeometryUtilities.js
 /* *
  *
- *  (c) 2010-2025 Highsoft AS
+ *  (c) 2010-2026 Highsoft AS
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -66,6 +69,7 @@ var external_highcharts_src_js_default_Color_default = /*#__PURE__*/__webpack_re
  *  Namespace
  *
  * */
+/** @internal */
 var GeometryUtilities;
 (function (GeometryUtilities) {
     /* *
@@ -76,7 +80,7 @@ var GeometryUtilities;
     /**
      * Calculates the center between a list of points.
      *
-     * @private
+     * @internal
      *
      * @param {Array<Highcharts.PositionObject>} points
      * A list of points to calculate the center of.
@@ -100,7 +104,7 @@ var GeometryUtilities;
      * Calculates the distance between two points based on their x and y
      * coordinates.
      *
-     * @private
+     * @internal
      *
      * @param {Highcharts.PositionObject} p1
      * The x and y coordinates of the first point.
@@ -118,7 +122,7 @@ var GeometryUtilities;
     /**
      * Calculates the angle between two points.
      * @todo add unit tests.
-     * @private
+     * @internal
      * @param {Highcharts.PositionObject} p1 The first point.
      * @param {Highcharts.PositionObject} p2 The second point.
      * @return {number} Returns the angle in radians.
@@ -129,7 +133,7 @@ var GeometryUtilities;
     GeometryUtilities.getAngleBetweenPoints = getAngleBetweenPoints;
     /**
      * Test for point in polygon. Polygon defined as array of [x,y] points.
-     * @private
+     * @internal
      * @param {PositionObject} point The point potentially within a polygon.
      * @param {Array<Array<number>>} polygon The polygon potentially containing the point.
      */
@@ -155,26 +159,30 @@ var GeometryUtilities;
  *  Default Export
  *
  * */
+/** @internal */
 /* harmony default export */ const Geometry_GeometryUtilities = (GeometryUtilities);
 
 ;// ./code/es-modules/Core/Geometry/CircleUtilities.js
 /* *
  *
- *  (c) 2010-2025 Highsoft AS
+ *  (c) 2010-2026 Highsoft AS
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
 
+
 const { getAngleBetweenPoints, getCenterOfPoints, getDistanceBetweenPoints } = Geometry_GeometryUtilities;
+const { correctFloat } = (external_highcharts_src_js_default_default());
 /* *
  *
  *  Namespace
  *
  * */
+/** @internal */
 var CircleUtilities;
 (function (CircleUtilities) {
     /* *
@@ -183,7 +191,7 @@ var CircleUtilities;
      *
      * */
     /**
-     * @private
+     * @internal
      *
      * @param {number} x
      * Number to round
@@ -202,7 +210,7 @@ var CircleUtilities;
     /**
      * Calculates the area of a circle based on its radius.
      *
-     * @private
+     * @internal
      *
      * @param {number} r
      * The radius of the circle.
@@ -214,7 +222,7 @@ var CircleUtilities;
         if (r <= 0) {
             throw new Error('radius of circle must be a positive number.');
         }
-        return Math.PI * r * r;
+        return correctFloat(Math.PI * r * r);
     }
     CircleUtilities.getAreaOfCircle = getAreaOfCircle;
     /**
@@ -223,7 +231,7 @@ var CircleUtilities;
      *
      * @see http://mathworld.wolfram.com/CircularSegment.html
      *
-     * @private
+     * @internal
      *
      * @param {number} r
      * The radius of the circle.
@@ -245,7 +253,7 @@ var CircleUtilities;
      *
      * @see http://mathworld.wolfram.com/Circle-CircleIntersection.html
      *
-     * @private
+     * @internal
      *
      * @param {number} r1
      * Radius of the first circle.
@@ -288,7 +296,7 @@ var CircleUtilities;
      *
      * NOTE: does not handle floating errors well.
      *
-     * @private
+     * @internal
      *
      * @param {Highcharts.CircleObject} c1
      * The first circle.
@@ -321,7 +329,7 @@ var CircleUtilities;
     /**
      * Calculates all the intersection points for between a list of circles.
      *
-     * @private
+     * @internal
      *
      * @param {Array<Highcharts.CircleObject>} circles
      * The circles to calculate the points from.
@@ -348,7 +356,7 @@ var CircleUtilities;
      * Tests whether the first circle is completely overlapping the second
      * circle.
      *
-     * @private
+     * @internal
      *
      * @param {Highcharts.CircleObject} circle1
      * The first circle.
@@ -365,7 +373,7 @@ var CircleUtilities;
     CircleUtilities.isCircle1CompletelyOverlappingCircle2 = isCircle1CompletelyOverlappingCircle2;
     /**
      * Tests whether a point lies within a given circle.
-     * @private
+     * @internal
      * @param {Highcharts.PositionObject} point
      * The point to test for.
      *
@@ -382,7 +390,7 @@ var CircleUtilities;
     /**
      * Tests whether a point lies within a set of circles.
      *
-     * @private
+     * @internal
      *
      * @param {Highcharts.PositionObject} point
      * The point to test.
@@ -404,7 +412,7 @@ var CircleUtilities;
      *
      * TODO: add unit tests.
      *
-     * @private
+     * @internal
      *
      * @param {Highcharts.PositionObject} point
      * The point to test.
@@ -425,7 +433,7 @@ var CircleUtilities;
      * Calculates the points for the polygon of the intersection area between
      * a set of circles.
      *
-     * @private
+     * @internal
      *
      * @param {Array<Highcharts.CircleObject>} circles
      * List of circles to calculate polygon of.
@@ -445,7 +453,7 @@ var CircleUtilities;
      *
      * @todo handle cases with only 1 or 0 arcs.
      *
-     * @private
+     * @internal
      *
      * @param {Array<Highcharts.CircleObject>} circles
      * List of circles to calculate area of.
@@ -543,12 +551,12 @@ var CircleUtilities;
  *  Default Export
  *
  * */
+/** @internal */
 /* harmony default export */ const Geometry_CircleUtilities = (CircleUtilities);
 
 ;// ./code/es-modules/Series/DrawPointUtilities.js
 /* *
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -579,7 +587,7 @@ function draw(point, params) {
     params.attribs = {
         ...params.attribs,
         'class': point.getClassName()
-    } || {};
+    };
     if ((point.shouldDraw())) {
         if (!graphic) {
             if (params.shapeType === 'text') {
@@ -637,15 +645,15 @@ var external_highcharts_src_js_default_SeriesRegistry_default = /*#__PURE__*/__w
  *  Experimental Highcharts module which enables visualization of a Venn
  *  diagram.
  *
- *  (c) 2016-2025 Highsoft AS
+ *  (c) 2016-2026 Highsoft AS
  *  Authors: Jon Arild Nygard
  *
  *  Layout algorithm by Ben Frederickson:
  *  https://www.benfrederickson.com/better-venn-diagrams/
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -685,15 +693,15 @@ class VennPoint extends ScatterPoint {
  *  Experimental Highcharts module which enables visualization of a Venn
  *  diagram.
  *
- *  (c) 2016-2025 Highsoft AS
+ *  (c) 2016-2026 Highsoft AS
  *  Authors: Jon Arild Nygard
  *
  *  Layout algorithm by Ben Frederickson:
  *  https://www.benfrederickson.com/better-venn-diagrams/
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -874,15 +882,15 @@ const VennSeriesDefaults = {
  *  Experimental Highcharts module which enables visualization of a Venn
  *  diagram.
  *
- *  (c) 2016-2025 Highsoft AS
+ *  (c) 2016-2026 Highsoft AS
  *  Authors: Jon Arild Nygard
  *
  *  Layout algorithm by Ben Frederickson:
  *  https://www.benfrederickson.com/better-venn-diagrams/
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -1511,18 +1519,18 @@ const VennUtils = {
 ;// ./code/es-modules/Series/Venn/VennSeries.js
 /* *
  *
- *  Experimental Highcharts module which enables visualization of a Venn
+ *  Highcharts module which enables visualization of a Venn
  *  diagram.
  *
- *  (c) 2016-2025 Highsoft AS
+ *  (c) 2016-2026 Highsoft AS
  *  Authors: Jon Arild Nygard
  *
  *  Layout algorithm by Ben Frederickson:
  *  https://www.benfrederickson.com/better-venn-diagrams/
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 
@@ -1928,7 +1936,7 @@ class VennSeries extends ScatterSeries {
                     style: {
                         width: dataLabelWidth
                     }
-                }, VennSeries_isObject(dlOptions, true) ? dlOptions : void 0);
+                }, VennSeries_isObject(dlOptions, true) ? dlOptions : void 0, { zIndex: void 0 });
             }
             // Set name for usage in tooltip and in data label.
             point.name = point.options.name || sets.join('∩');

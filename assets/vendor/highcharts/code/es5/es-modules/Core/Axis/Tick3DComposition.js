@@ -1,12 +1,13 @@
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
  *  Extension for 3d axes
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -19,27 +20,21 @@ var addEvent = U.addEvent, extend = U.extend, pushUnique = U.pushUnique, wrap = 
  *  Functions
  *
  * */
-/**
- * @private
- */
+/** @internal */
 function compose(TickClass) {
     if (pushUnique(composed, 'Axis.Tick3D')) {
         addEvent(TickClass, 'afterGetLabelPosition', onTickAfterGetLabelPosition);
         wrap(TickClass.prototype, 'getMarkPath', wrapTickGetMarkPath);
     }
 }
-/**
- * @private
- */
+/** @internal */
 function onTickAfterGetLabelPosition(e) {
     var axis3D = this.axis.axis3D;
     if (axis3D) {
         extend(e.pos, axis3D.fix3dPosition(e.pos));
     }
 }
-/**
- * @private
- */
+/** @internal */
 function wrapTickGetMarkPath(proceed) {
     var axis3D = this.axis.axis3D, path = proceed.apply(this, [].slice.call(arguments, 1));
     if (axis3D) {
@@ -60,7 +55,9 @@ function wrapTickGetMarkPath(proceed) {
  *  Default Export
  *
  * */
+/** @internal */
 var Tick3DAdditions = {
     compose: compose
 };
+/** @internal */
 export default Tick3DAdditions;

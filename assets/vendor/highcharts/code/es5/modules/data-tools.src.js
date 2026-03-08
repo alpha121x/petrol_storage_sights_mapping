@@ -1,13 +1,15 @@
+// SPDX-License-Identifier: LicenseRef-Highcharts
 /**
- * @license Highcharts JS v12.3.0 (2025-06-21)
+ * @license Highcharts JS v12.5.0 (2026-01-12)
  * @module highcharts/modules/data-tools
  * @requires highcharts
  *
  * Highcharts
  *
- * (c) 2010-2025 Highsoft AS
+ * (c) 2010-2026 Highsoft AS
  *
- * License: www.highcharts.com/license
+ * A commercial license may be required depending on use.
+ * See www.highcharts.com/license
  */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
@@ -100,15 +102,16 @@ var highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default 
 ;// ./code/es5/es-modules/Data/Modifiers/DataModifier.js
 /* *
  *
- *  (c) 2009-2025 Highsoft AS
+ *  (c) 2009-2026 Highsoft AS
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  *  Authors:
  *  - Sophie Bremer
  *  - Gøran Slettemark
+ *  - Dawid Dragula
  *
  * */
 
@@ -121,7 +124,6 @@ var addEvent = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcha
  * */
 /**
  * Abstract class to provide an interface for modifying a table.
- *
  */
 var DataModifier = /** @class */ (function () {
     function DataModifier() {
@@ -196,7 +198,9 @@ var DataModifier = /** @class */ (function () {
         fireEvent(this, e.type, e);
     };
     /**
-     * Returns a modified copy of the given table.
+     * Modifies the given table and sets its `modified` property as a reference
+     * to the modified table. If `modified` property does not exist on the
+     * original table, it's always created.
      *
      * @param {Highcharts.DataTable} table
      * Table to modify.
@@ -210,7 +214,7 @@ var DataModifier = /** @class */ (function () {
     DataModifier.prototype.modify = function (table, eventDetail) {
         var modifier = this;
         return new Promise(function (resolve, reject) {
-            if (table.modified === table) {
+            if (!table.modified) {
                 table.modified = table.clone(false, eventDetail);
             }
             try {
@@ -222,90 +226,9 @@ var DataModifier = /** @class */ (function () {
                     detail: eventDetail,
                     table: table
                 });
-                reject(e);
+                reject(e instanceof Error ? e : new Error('' + e));
             }
         });
-    };
-    /**
-     * Applies partial modifications of a cell change to the property `modified`
-     * of the given modified table.
-     *
-     * @param {Highcharts.DataTable} table
-     * Modified table.
-     *
-     * @param {string} columnName
-     * Column name of changed cell.
-     *
-     * @param {number|undefined} rowIndex
-     * Row index of changed cell.
-     *
-     * @param {Highcharts.DataTableCellType} cellValue
-     * Changed cell value.
-     *
-     * @param {Highcharts.DataTableEventDetail} [eventDetail]
-     * Custom information for pending events.
-     *
-     * @return {Highcharts.DataTable}
-     * Table with `modified` property as a reference.
-     */
-    DataModifier.prototype.modifyCell = function (table, 
-    /* eslint-disable @typescript-eslint/no-unused-vars */
-    columnName, rowIndex, cellValue, eventDetail
-    /* eslint-enable @typescript-eslint/no-unused-vars */
-    ) {
-        return this.modifyTable(table);
-    };
-    /**
-     * Applies partial modifications of column changes to the property
-     * `modified` of the given table.
-     *
-     * @param {Highcharts.DataTable} table
-     * Modified table.
-     *
-     * @param {Highcharts.DataTableColumnCollection} columns
-     * Changed columns as a collection, where the keys are the column names.
-     *
-     * @param {number} [rowIndex=0]
-     * Index of the first changed row.
-     *
-     * @param {Highcharts.DataTableEventDetail} [eventDetail]
-     * Custom information for pending events.
-     *
-     * @return {Highcharts.DataTable}
-     * Table with `modified` property as a reference.
-     */
-    DataModifier.prototype.modifyColumns = function (table, 
-    /* eslint-disable @typescript-eslint/no-unused-vars */
-    columns, rowIndex, eventDetail
-    /* eslint-enable @typescript-eslint/no-unused-vars */
-    ) {
-        return this.modifyTable(table);
-    };
-    /**
-     * Applies partial modifications of row changes to the property `modified`
-     * of the given table.
-     *
-     * @param {Highcharts.DataTable} table
-     * Modified table.
-     *
-     * @param {Array<(Highcharts.DataTableRow|Highcharts.DataTableRowObject)>} rows
-     * Changed rows.
-     *
-     * @param {number} [rowIndex]
-     * Index of the first changed row.
-     *
-     * @param {Highcharts.DataTableEventDetail} [eventDetail]
-     * Custom information for pending events.
-     *
-     * @return {Highcharts.DataTable}
-     * Table with `modified` property as a reference.
-     */
-    DataModifier.prototype.modifyRows = function (table, 
-    /* eslint-disable @typescript-eslint/no-unused-vars */
-    rows, rowIndex, eventDetail
-    /* eslint-enable @typescript-eslint/no-unused-vars */
-    ) {
-        return this.modifyTable(table);
     };
     /**
      * Registers a callback for a specific modifier event.
@@ -387,11 +310,11 @@ var DataModifier = /** @class */ (function () {
 ;// ./code/es5/es-modules/Data/ColumnUtils.js
 /* *
  *
- *  (c) 2020-2025 Highsoft AS
+ *  (c) 2020-2026 Highsoft AS
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  *  Authors:
  *  - Dawid Dragula
@@ -434,7 +357,7 @@ var ColumnUtils;
      * @param {boolean} asSubarray
      * If column is a typed array, return a subarray instead of a new array. It
      * is faster `O(1)`, but the entire buffer will be kept in memory until all
-     * views to it are destroyed. Default is `false`.
+     * views of it are destroyed. Default is `false`.
      *
      * @return {DataTable.Column}
      * Modified column.
@@ -502,6 +425,33 @@ var ColumnUtils;
         };
     }
     ColumnUtils.splice = splice;
+    /**
+     * Converts a cell value to a number.
+     *
+     * @param {DataTable.CellType} value
+     * Cell value to convert to a number.
+     *
+     * @param {boolean} useNaN
+     * If `true`, returns `NaN` for non-numeric values; if `false`,
+     * returns `null` instead.
+     *
+     * @return {number | null}
+     * Number or `null` if the value is not a number.
+     *
+     * @private
+     */
+    function convertToNumber(value, useNaN) {
+        switch (typeof value) {
+            case 'boolean':
+                return (value ? 1 : 0);
+            case 'number':
+                return (isNaN(value) && !useNaN ? null : value);
+            default:
+                value = parseFloat("".concat(value !== null && value !== void 0 ? value : ''));
+                return (isNaN(value) && !useNaN ? null : value);
+        }
+    }
+    ColumnUtils.convertToNumber = convertToNumber;
 })(ColumnUtils || (ColumnUtils = {}));
 /* *
  *
@@ -513,11 +463,11 @@ var ColumnUtils;
 ;// ./code/es5/es-modules/Data/DataTableCore.js
 /* *
  *
- *  (c) 2009-2025 Highsoft AS
+ *  (c) 2009-2026 Highsoft AS
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  *  Authors:
  *  - Sophie Bremer
@@ -581,12 +531,11 @@ var DataTableCore = /** @class */ (function () {
          * @type {string}
          */
         this.id = (options.id || uniqueKey());
-        this.modified = this;
         this.rowCount = 0;
         this.versionTag = uniqueKey();
         var rowCount = 0;
-        objectEach(options.columns || {}, function (column, columnName) {
-            _this.columns[columnName] = column.slice();
+        objectEach(options.columns || {}, function (column, columnId) {
+            _this.columns[columnId] = column.slice();
             rowCount = Math.max(rowCount, column.length);
         });
         this.applyRowCount(rowCount);
@@ -606,9 +555,9 @@ var DataTableCore = /** @class */ (function () {
     DataTableCore.prototype.applyRowCount = function (rowCount) {
         var _this = this;
         this.rowCount = rowCount;
-        objectEach(this.columns, function (column, columnName) {
+        objectEach(this.columns, function (column, columnId) {
             if (column.length !== rowCount) {
-                _this.columns[columnName] = setLength(column, rowCount);
+                _this.columns[columnId] = setLength(column, rowCount);
             }
         });
     };
@@ -631,8 +580,8 @@ var DataTableCore = /** @class */ (function () {
         if (rowCount === void 0) { rowCount = 1; }
         if (rowCount > 0 && rowIndex < this.rowCount) {
             var length_1 = 0;
-            objectEach(this.columns, function (column, columnName) {
-                _this.columns[columnName] =
+            objectEach(this.columns, function (column, columnId) {
+                _this.columns[columnId] =
                     splice(column, rowIndex, rowCount).array;
                 length_1 = column.length;
             });
@@ -645,34 +594,34 @@ var DataTableCore = /** @class */ (function () {
      * Fetches the given column by the canonical column name. Simplified version
      * of the full `DataTable.getRow` method, always returning by reference.
      *
-     * @param {string} columnName
+     * @param {string} columnId
      * Name of the column to get.
      *
      * @return {Highcharts.DataTableColumn|undefined}
      * A copy of the column, or `undefined` if not found.
      */
-    DataTableCore.prototype.getColumn = function (columnName, 
+    DataTableCore.prototype.getColumn = function (columnId, 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     asReference) {
-        return this.columns[columnName];
+        return this.columns[columnId];
     };
     /**
      * Retrieves all or the given columns. Simplified version of the full
      * `DataTable.getColumns` method, always returning by reference.
      *
-     * @param {Array<string>} [columnNames]
-     * Column names to retrieve.
+     * @param {Array<string>} [columnIds]
+     * Column ids to retrieve.
      *
      * @return {Highcharts.DataTableColumnCollection}
      * Collection of columns. If a requested column was not found, it is
      * `undefined`.
      */
-    DataTableCore.prototype.getColumns = function (columnNames, 
+    DataTableCore.prototype.getColumns = function (columnIds, 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     asReference) {
         var _this = this;
-        return (columnNames || Object.keys(this.columns)).reduce(function (columns, columnName) {
-            columns[columnName] = _this.columns[columnName];
+        return (columnIds || Object.keys(this.columns)).reduce(function (columns, columnId) {
+            columns[columnId] = _this.columns[columnId];
             return columns;
         }, {});
     };
@@ -682,20 +631,20 @@ var DataTableCore = /** @class */ (function () {
      * @param {number} rowIndex
      * Row index to retrieve. First row has index 0.
      *
-     * @param {Array<string>} [columnNames]
+     * @param {Array<string>} [columnIds]
      * Column names to retrieve.
      *
      * @return {Record<string, number|string|undefined>|undefined}
      * Returns the row values, or `undefined` if not found.
      */
-    DataTableCore.prototype.getRow = function (rowIndex, columnNames) {
+    DataTableCore.prototype.getRow = function (rowIndex, columnIds) {
         var _this = this;
-        return (columnNames || Object.keys(this.columns)).map(function (key) { var _a; return (_a = _this.columns[key]) === null || _a === void 0 ? void 0 : _a[rowIndex]; });
+        return (columnIds || Object.keys(this.columns)).map(function (key) { var _a; return (_a = _this.columns[key]) === null || _a === void 0 ? void 0 : _a[rowIndex]; });
     };
     /**
      * Sets cell values for a column. Will insert a new column, if not found.
      *
-     * @param {string} columnName
+     * @param {string} columnId
      * Column name to set.
      *
      * @param {Highcharts.DataTableColumn} [column]
@@ -710,11 +659,11 @@ var DataTableCore = /** @class */ (function () {
      * @emits #setColumns
      * @emits #afterSetColumns
      */
-    DataTableCore.prototype.setColumn = function (columnName, column, rowIndex, eventDetail) {
+    DataTableCore.prototype.setColumn = function (columnId, column, rowIndex, eventDetail) {
         var _a;
         if (column === void 0) { column = []; }
         if (rowIndex === void 0) { rowIndex = 0; }
-        this.setColumns((_a = {}, _a[columnName] = column, _a), rowIndex, eventDetail);
+        this.setColumns((_a = {}, _a[columnId] = column, _a), rowIndex, eventDetail);
     };
     /**
      * Sets cell values for multiple columns. Will insert new columns, if not
@@ -737,8 +686,8 @@ var DataTableCore = /** @class */ (function () {
     DataTableCore.prototype.setColumns = function (columns, rowIndex, eventDetail) {
         var _this = this;
         var rowCount = this.rowCount;
-        objectEach(columns, function (column, columnName) {
-            _this.columns[columnName] = column.slice();
+        objectEach(columns, function (column, columnId) {
+            _this.columns[columnId] = column.slice();
             rowCount = column.length;
         });
         this.applyRowCount(rowCount);
@@ -769,18 +718,30 @@ var DataTableCore = /** @class */ (function () {
     DataTableCore.prototype.setRow = function (row, rowIndex, insert, eventDetail) {
         if (rowIndex === void 0) { rowIndex = this.rowCount; }
         var columns = this.columns,
-            indexRowCount = insert ? this.rowCount + 1 : rowIndex + 1;
-        objectEach(row, function (cellValue, columnName) {
-            var column = columns[columnName] ||
-                    (eventDetail === null || eventDetail === void 0 ? void 0 : eventDetail.addColumns) !== false && new Array(indexRowCount);
+            indexRowCount = insert ? this.rowCount + 1 : rowIndex + 1,
+            rowKeys = Object.keys(row);
+        if ((eventDetail === null || eventDetail === void 0 ? void 0 : eventDetail.addColumns) !== false) {
+            for (var i = 0, iEnd = rowKeys.length; i < iEnd; i++) {
+                var key = rowKeys[i];
+                if (!columns[key]) {
+                    columns[key] = [];
+                }
+            }
+        }
+        objectEach(columns, function (column, columnId) {
+            var _a,
+                _b;
+            if (!column && (eventDetail === null || eventDetail === void 0 ? void 0 : eventDetail.addColumns) !== false) {
+                column = new Array(indexRowCount);
+            }
             if (column) {
                 if (insert) {
-                    column = splice(column, rowIndex, 0, true, [cellValue]).array;
+                    column = splice(column, rowIndex, 0, true, [(_a = row[columnId]) !== null && _a !== void 0 ? _a : null]).array;
                 }
                 else {
-                    column[rowIndex] = cellValue;
+                    column[rowIndex] = (_b = row[columnId]) !== null && _b !== void 0 ? _b : null;
                 }
-                columns[columnName] = column;
+                columns[columnId] = column;
             }
         });
         if (indexRowCount > this.rowCount) {
@@ -790,6 +751,16 @@ var DataTableCore = /** @class */ (function () {
             DataTableCore_fireEvent(this, 'afterSetRows');
             this.versionTag = uniqueKey();
         }
+    };
+    /**
+     * Returns the modified (clone) or the original data table if the modified
+     * one does not exist.
+     *
+     * @return {Highcharts.DataTableCore}
+     * The modified (clone) or the original data table.
+     */
+    DataTableCore.prototype.getModified = function () {
+        return this.modified || this;
     };
     return DataTableCore;
 }());
@@ -836,11 +807,11 @@ var DataTableCore = /** @class */ (function () {
 ;// ./code/es5/es-modules/Data/DataTable.js
 /* *
  *
- *  (c) 2009-2025 Highsoft AS
+ *  (c) 2009-2026 Highsoft AS
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  *  Authors:
  *  - Sophie Bremer
@@ -866,8 +837,20 @@ var __extends = (undefined && undefined.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+var __assign = (undefined && undefined.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 
 
+var DataTable_splice = Data_ColumnUtils.splice, DataTable_setLength = Data_ColumnUtils.setLength;
 
 var DataTable_addEvent = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).addEvent, defined = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).defined, extend = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).extend, DataTable_fireEvent = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).fireEvent, isNumber = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).isNumber, DataTable_uniqueKey = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).uniqueKey;
 /* *
@@ -897,60 +880,9 @@ var DataTable = /** @class */ (function (_super) {
         if (options === void 0) { options = {}; }
         var _this = _super.call(this,
             options) || this;
-        _this.modified = _this;
+        _this.metadata = options.metadata;
         return _this;
     }
-    /* *
-     *
-     *  Static Functions
-     *
-     * */
-    /**
-     * Tests whether a row contains only `null` values or is equal to
-     * DataTable.NULL. If all columns have `null` values, the function returns
-     * `true`. Otherwise, it returns `false` to indicate that the row contains
-     * at least one non-null value.
-     *
-     * @function Highcharts.DataTable.isNull
-     *
-     * @param {Highcharts.DataTableRow|Highcharts.DataTableRowObject} row
-     * Row to test.
-     *
-     * @return {boolean}
-     * Returns `true`, if the row contains only null, otherwise `false`.
-     *
-     * @example
-     * if (DataTable.isNull(row)) {
-     *   // handle null row
-     * }
-     */
-    DataTable.isNull = function (row) {
-        if (row === DataTable.NULL) {
-            return true;
-        }
-        if (row instanceof Array) {
-            if (!row.length) {
-                return false;
-            }
-            for (var i = 0, iEnd = row.length; i < iEnd; ++i) {
-                if (row[i] !== null) {
-                    return false;
-                }
-            }
-        }
-        else {
-            var columnNames = Object.keys(row);
-            if (!columnNames.length) {
-                return false;
-            }
-            for (var i = 0, iEnd = columnNames.length; i < iEnd; ++i) {
-                if (row[columnNames[i]] !== null) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    };
     /* *
      *
      *  Functions
@@ -991,6 +923,7 @@ var DataTable = /** @class */ (function (_super) {
             tableClone.originalRowIndexes = table.originalRowIndexes;
             tableClone.localRowIndexes = table.localRowIndexes;
         }
+        tableClone.metadata = __assign({}, table.metadata);
         table.emit({
             type: 'afterCloneTable',
             detail: eventDetail,
@@ -1003,7 +936,7 @@ var DataTable = /** @class */ (function (_super) {
      *
      * @function Highcharts.DataTable#deleteColumns
      *
-     * @param {Array<string>} [columnNames]
+     * @param {Array<string>} [columnIds]
      * Names of columns to delete. If no array is provided, all
      * columns will be deleted.
      *
@@ -1016,40 +949,40 @@ var DataTable = /** @class */ (function (_super) {
      * @emits #deleteColumns
      * @emits #afterDeleteColumns
      */
-    DataTable.prototype.deleteColumns = function (columnNames, eventDetail) {
+    DataTable.prototype.deleteColumns = function (columnIds, eventDetail) {
         var table = this,
             columns = table.columns,
             deletedColumns = {},
             modifiedColumns = {},
             modifier = table.modifier,
             rowCount = table.rowCount;
-        columnNames = (columnNames || Object.keys(columns));
-        if (columnNames.length) {
+        columnIds = (columnIds || Object.keys(columns));
+        if (columnIds.length) {
             table.emit({
                 type: 'deleteColumns',
-                columnNames: columnNames,
+                columnIds: columnIds,
                 detail: eventDetail
             });
-            for (var i = 0, iEnd = columnNames.length, column = void 0, columnName = void 0; i < iEnd; ++i) {
-                columnName = columnNames[i];
-                column = columns[columnName];
+            for (var i = 0, iEnd = columnIds.length, column = void 0, columnId = void 0; i < iEnd; ++i) {
+                columnId = columnIds[i];
+                column = columns[columnId];
                 if (column) {
-                    deletedColumns[columnName] = column;
-                    modifiedColumns[columnName] = new Array(rowCount);
+                    deletedColumns[columnId] = column;
+                    modifiedColumns[columnId] = new Array(rowCount);
                 }
-                delete columns[columnName];
+                delete columns[columnId];
             }
             if (!Object.keys(columns).length) {
                 table.rowCount = 0;
                 this.deleteRowIndexReferences();
             }
             if (modifier) {
-                modifier.modifyColumns(table, modifiedColumns, 0, eventDetail);
+                modifier.modifyTable(table);
             }
             table.emit({
                 type: 'afterDeleteColumns',
                 columns: deletedColumns,
-                columnNames: columnNames,
+                columnIds: columnIds,
                 detail: eventDetail
             });
             return deletedColumns;
@@ -1058,25 +991,23 @@ var DataTable = /** @class */ (function (_super) {
     /**
      * Deletes the row index references. This is useful when the original table
      * is deleted, and the references are no longer needed. This table is
-     * then considered an original table or a table that has the same row's
+     * then considered an original table or a table that has the same rows
      * order as the original table.
      */
     DataTable.prototype.deleteRowIndexReferences = function () {
         delete this.originalRowIndexes;
         delete this.localRowIndexes;
-        // Here, in case of future need, can be implemented updating of the
-        // modified tables' row indexes references.
     };
     /**
      * Deletes rows in this table.
      *
      * @function Highcharts.DataTable#deleteRows
      *
-     * @param {number} [rowIndex]
-     * Index to start delete of rows. If not specified, all rows will be
-     * deleted.
+     * @param {number | number[]} [rowIndex]
+     * Index of the row where deletion should start, or an array of indices for
+     * deleting multiple rows. If not specified, all rows will be deleted.
      *
-     * @param {number} [rowCount=1]
+     * @param {number} [rowCount]
      * Number of rows to delete.
      *
      * @param {Highcharts.DataTableEventDetail} [eventDetail]
@@ -1089,50 +1020,84 @@ var DataTable = /** @class */ (function (_super) {
      * @emits #afterDeleteRows
      */
     DataTable.prototype.deleteRows = function (rowIndex, rowCount, eventDetail) {
+        var _this = this;
         if (rowCount === void 0) { rowCount = 1; }
-        var table = this,
-            deletedRows = [],
-            modifiedRows = [],
-            modifier = table.modifier;
-        table.emit({
+        var _a = this,
+            columns = _a.columns,
+            modifier = _a.modifier;
+        var deletedRows = [];
+        var indices;
+        var actualRowCount;
+        if (!defined(rowIndex)) {
+            // No index provided - delete all rows.
+            indices = [0];
+            actualRowCount = this.rowCount;
+        }
+        else if (Array.isArray(rowIndex)) {
+            // Array of indices provided - delete the specified rows.
+            indices = rowIndex
+                // Remove negative indices, and indices beyond the row count,
+                // and remove duplicates.
+                .filter(function (index, i, arr) { return (index >= 0 &&
+                index < _this.rowCount &&
+                arr.indexOf(index) === i); })
+                // Sort indices in descending order.
+                .sort(function (a, b) { return b - a; });
+            actualRowCount = indices.length;
+        }
+        else {
+            // Single index provided - delete the specified range of rows.
+            indices = [rowIndex];
+            actualRowCount = rowCount;
+        }
+        this.emit({
             type: 'deleteRows',
             detail: eventDetail,
-            rowCount: rowCount,
-            rowIndex: (rowIndex || 0)
+            rowCount: actualRowCount,
+            rowIndex: rowIndex !== null && rowIndex !== void 0 ? rowIndex : 0
         });
-        if (typeof rowIndex === 'undefined') {
-            rowIndex = 0;
-            rowCount = table.rowCount;
-        }
-        if (rowCount > 0 && rowIndex < table.rowCount) {
-            var columns = table.columns,
-                columnNames = Object.keys(columns);
-            for (var i = 0, iEnd = columnNames.length, column = void 0, deletedCells = void 0, columnName = void 0; i < iEnd; ++i) {
-                columnName = columnNames[i];
-                column = columns[columnName];
-                var result = Data_ColumnUtils.splice(column,
-                    rowIndex,
-                    rowCount);
-                deletedCells = result.removed;
-                columns[columnName] = column = result.array;
+        if (actualRowCount > 0) {
+            var columnIds = Object.keys(columns);
+            for (var i = 0; i < columnIds.length; ++i) {
+                var columnId = columnIds[i];
+                var column = columns[columnId];
+                var deletedCells = void 0;
+                // Perform a range splice.
+                if (indices.length === 1 && actualRowCount > 1) {
+                    var result = DataTable_splice(column,
+                        indices[0],
+                        actualRowCount);
+                    deletedCells = result.removed;
+                    columns[columnId] = result.array;
+                }
+                else {
+                    // Perform a index splice for each index in the array.
+                    deletedCells = [];
+                    for (var _i = 0, indices_1 = indices; _i < indices_1.length; _i++) {
+                        var index = indices_1[_i];
+                        deletedCells.push(column[index]);
+                        DataTable_splice(column, index, 1);
+                    }
+                    // Reverse the deleted cells to maintain the correct order.
+                    deletedCells.reverse();
+                }
                 if (!i) {
-                    table.rowCount = column.length;
+                    this.rowCount = column.length;
                 }
                 for (var j = 0, jEnd = deletedCells.length; j < jEnd; ++j) {
-                    deletedRows[j] = (deletedRows[j] || []);
+                    deletedRows[j] = deletedRows[j] || [];
                     deletedRows[j][i] = deletedCells[j];
                 }
-                modifiedRows.push(new Array(iEnd));
             }
         }
         if (modifier) {
-            modifier.modifyRows(table, modifiedRows, (rowIndex || 0), eventDetail);
+            modifier.modifyTable(this);
         }
-        table.emit({
+        this.emit({
             type: 'afterDeleteRows',
             detail: eventDetail,
-            rowCount: rowCount,
-            rowIndex: (rowIndex || 0),
+            rowCount: actualRowCount,
+            rowIndex: rowIndex !== null && rowIndex !== void 0 ? rowIndex : 0,
             rows: deletedRows
         });
         return deletedRows;
@@ -1162,7 +1127,7 @@ var DataTable = /** @class */ (function (_super) {
      *
      * @function Highcharts.DataTable#getCell
      *
-     * @param {string} columnName
+     * @param {string} columnId
      * Column name of the cell to retrieve.
      *
      * @param {number} rowIndex
@@ -1171,81 +1136,12 @@ var DataTable = /** @class */ (function (_super) {
      * @return {Highcharts.DataTableCellType|undefined}
      * Returns the cell value or `undefined`.
      */
-    DataTable.prototype.getCell = function (columnName, rowIndex) {
+    DataTable.prototype.getCell = function (columnId, rowIndex) {
         var table = this;
-        var column = table.columns[columnName];
+        var column = table.columns[columnId];
         if (column) {
             return column[rowIndex];
         }
-    };
-    /**
-     * Fetches a cell value for the given row as a boolean.
-     *
-     * @function Highcharts.DataTable#getCellAsBoolean
-     *
-     * @param {string} columnName
-     * Column name to fetch.
-     *
-     * @param {number} rowIndex
-     * Row index to fetch.
-     *
-     * @return {boolean}
-     * Returns the cell value of the row as a boolean.
-     */
-    DataTable.prototype.getCellAsBoolean = function (columnName, rowIndex) {
-        var table = this;
-        var column = table.columns[columnName];
-        return !!(column && column[rowIndex]);
-    };
-    /**
-     * Fetches a cell value for the given row as a number.
-     *
-     * @function Highcharts.DataTable#getCellAsNumber
-     *
-     * @param {string} columnName
-     * Column name or to fetch.
-     *
-     * @param {number} rowIndex
-     * Row index to fetch.
-     *
-     * @param {boolean} [useNaN]
-     * Whether to return NaN instead of `null` and `undefined`.
-     *
-     * @return {number|null}
-     * Returns the cell value of the row as a number.
-     */
-    DataTable.prototype.getCellAsNumber = function (columnName, rowIndex, useNaN) {
-        var table = this;
-        var column = table.columns[columnName];
-        var cellValue = (column && column[rowIndex]);
-        switch (typeof cellValue) {
-            case 'boolean':
-                return (cellValue ? 1 : 0);
-            case 'number':
-                return (isNaN(cellValue) && !useNaN ? null : cellValue);
-        }
-        cellValue = parseFloat("".concat(cellValue !== null && cellValue !== void 0 ? cellValue : ''));
-        return (isNaN(cellValue) && !useNaN ? null : cellValue);
-    };
-    /**
-     * Fetches a cell value for the given row as a string.
-     *
-     * @function Highcharts.DataTable#getCellAsString
-     *
-     * @param {string} columnName
-     * Column name to fetch.
-     *
-     * @param {number} rowIndex
-     * Row index to fetch.
-     *
-     * @return {string}
-     * Returns the cell value of the row as a string.
-     */
-    DataTable.prototype.getCellAsString = function (columnName, rowIndex) {
-        var table = this;
-        var column = table.columns[columnName];
-        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-        return "".concat((column && column[rowIndex]));
     };
     /**
      * Fetches the given column by the canonical column name.
@@ -1253,7 +1149,7 @@ var DataTable = /** @class */ (function (_super) {
      *
      * @function Highcharts.DataTable#getColumn
      *
-     * @param {string} columnName
+     * @param {string} columnId
      * Name of the column to get.
      *
      * @param {boolean} [asReference]
@@ -1262,79 +1158,26 @@ var DataTable = /** @class */ (function (_super) {
      * @return {Highcharts.DataTableColumn|undefined}
      * A copy of the column, or `undefined` if not found.
      */
-    DataTable.prototype.getColumn = function (columnName, asReference) {
-        return this.getColumns([columnName], asReference)[columnName];
+    DataTable.prototype.getColumn = function (columnId, asReference) {
+        return this.getColumns([columnId], asReference)[columnId];
     };
     /**
-     * Fetches the given column by the canonical column name, and
-     * validates the type of the first few cells. If the first defined cell is
-     * of type number, it assumes for performance reasons, that all cells are of
-     * type number or `null`. Otherwise it will convert all cells to number
-     * type, except `null`.
+     * Fetches all column IDs.
      *
-     * @deprecated
-     *
-     * @function Highcharts.DataTable#getColumnAsNumbers
-     *
-     * @param {string} columnName
-     * Name of the column to get.
-     *
-     * @param {boolean} [useNaN]
-     * Whether to use NaN instead of `null` and `undefined`.
-     *
-     * @return {Array<(number|null)>}
-     * A copy of the column, or an empty array if not found.
-     */
-    DataTable.prototype.getColumnAsNumbers = function (columnName, useNaN) {
-        var table = this,
-            columns = table.columns;
-        var column = columns[columnName],
-            columnAsNumber = [];
-        if (column) {
-            var columnLength = column.length;
-            if (useNaN) {
-                for (var i = 0; i < columnLength; ++i) {
-                    columnAsNumber.push(table.getCellAsNumber(columnName, i, true));
-                }
-            }
-            else {
-                for (var i = 0, cellValue = void 0; i < columnLength; ++i) {
-                    cellValue = column[i];
-                    if (typeof cellValue === 'number') {
-                        // Assume unmixed data for performance reasons
-                        return column.slice();
-                    }
-                    if (cellValue !== null &&
-                        typeof cellValue !== 'undefined') {
-                        break;
-                    }
-                }
-                for (var i = 0; i < columnLength; ++i) {
-                    columnAsNumber.push(table.getCellAsNumber(columnName, i));
-                }
-            }
-        }
-        return columnAsNumber;
-    };
-    /**
-     * Fetches all column names.
-     *
-     * @function Highcharts.DataTable#getColumnNames
+     * @function Highcharts.DataTable#getColumnIds
      *
      * @return {Array<string>}
-     * Returns all column names.
+     * Returns all column IDs.
      */
-    DataTable.prototype.getColumnNames = function () {
-        var table = this,
-            columnNames = Object.keys(table.columns);
-        return columnNames;
+    DataTable.prototype.getColumnIds = function () {
+        return Object.keys(this.columns);
     };
     /**
      * Retrieves all or the given columns.
      *
      * @function Highcharts.DataTable#getColumns
      *
-     * @param {Array<string>} [columnNames]
+     * @param {Array<string>} [columnIds]
      * Column names to retrieve.
      *
      * @param {boolean} [asReference]
@@ -1347,23 +1190,23 @@ var DataTable = /** @class */ (function (_super) {
      * Collection of columns. If a requested column was not found, it is
      * `undefined`.
      */
-    DataTable.prototype.getColumns = function (columnNames, asReference, asBasicColumns) {
+    DataTable.prototype.getColumns = function (columnIds, asReference, asBasicColumns) {
         var table = this,
             tableColumns = table.columns,
             columns = {};
-        columnNames = (columnNames || Object.keys(tableColumns));
-        for (var i = 0, iEnd = columnNames.length, column = void 0, columnName = void 0; i < iEnd; ++i) {
-            columnName = columnNames[i];
-            column = tableColumns[columnName];
+        columnIds = (columnIds || Object.keys(tableColumns));
+        for (var i = 0, iEnd = columnIds.length, column = void 0, columnId = void 0; i < iEnd; ++i) {
+            columnId = columnIds[i];
+            column = tableColumns[columnId];
             if (column) {
                 if (asReference) {
-                    columns[columnName] = column;
+                    columns[columnId] = column;
                 }
                 else if (asBasicColumns && !Array.isArray(column)) {
-                    columns[columnName] = Array.from(column);
+                    columns[columnId] = Array.from(column);
                 }
                 else {
-                    columns[columnName] = column.slice();
+                    columns[columnId] = column.slice();
                 }
             }
         }
@@ -1387,11 +1230,12 @@ var DataTable = /** @class */ (function (_super) {
         return originalRowIndex;
     };
     /**
-     * Retrieves the modifier for the table.
-     * @private
+     * Returns the modifier associated with this table, if any.
      *
      * @return {Highcharts.DataModifier|undefined}
      * Returns the modifier or `undefined`.
+     *
+     * @private
      */
     DataTable.prototype.getModifier = function () {
         return this.modifier;
@@ -1422,14 +1266,14 @@ var DataTable = /** @class */ (function (_super) {
      * @param {number} rowIndex
      * Row index to retrieve. First row has index 0.
      *
-     * @param {Array<string>} [columnNames]
+     * @param {Array<string>} [columnIds]
      * Column names in order to retrieve.
      *
      * @return {Highcharts.DataTableRow}
      * Returns the row values, or `undefined` if not found.
      */
-    DataTable.prototype.getRow = function (rowIndex, columnNames) {
-        return this.getRows(rowIndex, 1, columnNames)[0];
+    DataTable.prototype.getRow = function (rowIndex, columnIds) {
+        return this.getRows(rowIndex, 1, columnIds)[0];
     };
     /**
      * Returns the number of rows in this table.
@@ -1448,7 +1292,7 @@ var DataTable = /** @class */ (function (_super) {
      *
      * @function Highcharts.DataTable#getRowIndexBy
      *
-     * @param {string} columnName
+     * @param {string} columnId
      * Column to search in.
      *
      * @param {Highcharts.DataTableCellType} cellValue
@@ -1460,9 +1304,9 @@ var DataTable = /** @class */ (function (_super) {
      * @return {number|undefined}
      * Index of the first row matching the cell value.
      */
-    DataTable.prototype.getRowIndexBy = function (columnName, cellValue, rowIndexOffset) {
+    DataTable.prototype.getRowIndexBy = function (columnId, cellValue, rowIndexOffset) {
         var table = this;
-        var column = table.columns[columnName];
+        var column = table.columns[columnId];
         if (column) {
             var rowIndex = -1;
             if (Array.isArray(column)) {
@@ -1487,17 +1331,17 @@ var DataTable = /** @class */ (function (_super) {
      * @param {number} rowIndex
      * Row index.
      *
-     * @param {Array<string>} [columnNames]
+     * @param {Array<string>} [columnIds]
      * Column names and their order to retrieve.
      *
      * @return {Highcharts.DataTableRowObject}
      * Returns the row values, or `undefined` if not found.
      */
-    DataTable.prototype.getRowObject = function (rowIndex, columnNames) {
-        return this.getRowObjects(rowIndex, 1, columnNames)[0];
+    DataTable.prototype.getRowObject = function (rowIndex, columnIds) {
+        return this.getRowObjects(rowIndex, 1, columnIds)[0];
     };
     /**
-     * Fetches all or a number of rows.
+     * Fetches all or a number of rows as an object.
      *
      * @function Highcharts.DataTable#getRowObjects
      *
@@ -1507,31 +1351,31 @@ var DataTable = /** @class */ (function (_super) {
      * @param {number} [rowCount]
      * Number of rows to fetch. Defaults to maximal number of rows.
      *
-     * @param {Array<string>} [columnNames]
+     * @param {Array<string>} [columnIds]
      * Column names and their order to retrieve.
      *
      * @return {Highcharts.DataTableRowObject}
      * Returns retrieved rows.
      */
-    DataTable.prototype.getRowObjects = function (rowIndex, rowCount, columnNames) {
+    DataTable.prototype.getRowObjects = function (rowIndex, rowCount, columnIds) {
         if (rowIndex === void 0) { rowIndex = 0; }
         if (rowCount === void 0) { rowCount = (this.rowCount - rowIndex); }
         var table = this,
             columns = table.columns,
             rows = new Array(rowCount);
-        columnNames = (columnNames || Object.keys(columns));
+        columnIds = (columnIds || Object.keys(columns));
         for (var i = rowIndex, i2 = 0, iEnd = Math.min(table.rowCount, (rowIndex + rowCount)), column = void 0, row = void 0; i < iEnd; ++i, ++i2) {
             row = rows[i2] = {};
-            for (var _i = 0, columnNames_1 = columnNames; _i < columnNames_1.length; _i++) {
-                var columnName = columnNames_1[_i];
-                column = columns[columnName];
-                row[columnName] = (column ? column[i] : void 0);
+            for (var _i = 0, columnIds_1 = columnIds; _i < columnIds_1.length; _i++) {
+                var columnId = columnIds_1[_i];
+                column = columns[columnId];
+                row[columnId] = (column ? column[i] : void 0);
             }
         }
         return rows;
     };
     /**
-     * Fetches all or a number of rows.
+     * Fetches all or a number of rows as an array.
      *
      * @function Highcharts.DataTable#getRows
      *
@@ -1541,24 +1385,24 @@ var DataTable = /** @class */ (function (_super) {
      * @param {number} [rowCount]
      * Number of rows to fetch. Defaults to maximal number of rows.
      *
-     * @param {Array<string>} [columnNames]
+     * @param {Array<string>} [columnIds]
      * Column names and their order to retrieve.
      *
      * @return {Highcharts.DataTableRow}
      * Returns retrieved rows.
      */
-    DataTable.prototype.getRows = function (rowIndex, rowCount, columnNames) {
+    DataTable.prototype.getRows = function (rowIndex, rowCount, columnIds) {
         if (rowIndex === void 0) { rowIndex = 0; }
         if (rowCount === void 0) { rowCount = (this.rowCount - rowIndex); }
         var table = this,
             columns = table.columns,
             rows = new Array(rowCount);
-        columnNames = (columnNames || Object.keys(columns));
+        columnIds = (columnIds || Object.keys(columns));
         for (var i = rowIndex, i2 = 0, iEnd = Math.min(table.rowCount, (rowIndex + rowCount)), column = void 0, row = void 0; i < iEnd; ++i, ++i2) {
             row = rows[i2] = [];
-            for (var _i = 0, columnNames_2 = columnNames; _i < columnNames_2.length; _i++) {
-                var columnName = columnNames_2[_i];
-                column = columns[columnName];
+            for (var _i = 0, columnIds_2 = columnIds; _i < columnIds_2.length; _i++) {
+                var columnId = columnIds_2[_i];
+                column = columns[columnId];
                 row.push(column ? column[i] : void 0);
             }
         }
@@ -1576,33 +1420,33 @@ var DataTable = /** @class */ (function (_super) {
         return this.versionTag;
     };
     /**
-     * Checks for given column names.
+     * Determines whether all specified column names exist in the table.
      *
      * @function Highcharts.DataTable#hasColumns
      *
-     * @param {Array<string>} columnNames
+     * @param {Array<string>} columnIds
      * Column names to check.
      *
      * @return {boolean}
      * Returns `true` if all columns have been found, otherwise `false`.
      */
-    DataTable.prototype.hasColumns = function (columnNames) {
+    DataTable.prototype.hasColumns = function (columnIds) {
         var table = this,
             columns = table.columns;
-        for (var i = 0, iEnd = columnNames.length, columnName = void 0; i < iEnd; ++i) {
-            columnName = columnNames[i];
-            if (!columns[columnName]) {
+        for (var i = 0, iEnd = columnIds.length, columnId = void 0; i < iEnd; ++i) {
+            columnId = columnIds[i];
+            if (!columns[columnId]) {
                 return false;
             }
         }
         return true;
     };
     /**
-     * Searches for a specific cell value.
+     * Checks if any row in the specified column contains the given cell value.
      *
      * @function Highcharts.DataTable#hasRowWith
      *
-     * @param {string} columnName
+     * @param {string} columnId
      * Column to search in.
      *
      * @param {Highcharts.DataTableCellType} cellValue
@@ -1611,9 +1455,9 @@ var DataTable = /** @class */ (function (_super) {
      * @return {boolean}
      * True, if a row has been found, otherwise false.
      */
-    DataTable.prototype.hasRowWith = function (columnName, cellValue) {
+    DataTable.prototype.hasRowWith = function (columnId, cellValue) {
         var table = this;
-        var column = table.columns[columnName];
+        var column = table.columns[columnId];
         // Normal array
         if (Array.isArray(column)) {
             return (column.indexOf(cellValue) !== -1);
@@ -1625,7 +1469,9 @@ var DataTable = /** @class */ (function (_super) {
         return false;
     };
     /**
-     * Registers a callback for a specific event.
+     * Registers a callback function to be executed when a specific event is
+     * emitted. To stop listening to the event, call the function returned by
+     * this method.
      *
      * @function Highcharts.DataTable#on
      *
@@ -1642,39 +1488,41 @@ var DataTable = /** @class */ (function (_super) {
         return DataTable_addEvent(this, type, callback);
     };
     /**
-     * Renames a column of cell values.
+     * Changes the ID of an existing column to a new ID, effectively renaming
+     * the column.
      *
-     * @function Highcharts.DataTable#renameColumn
+     * @function Highcharts.DataTable#changeColumnId
      *
-     * @param {string} columnName
-     * Name of the column to be renamed.
+     * @param {string} columnId
+     * Id of the column to be changed.
      *
-     * @param {string} newColumnName
-     * New name of the column. An existing column with the same name will be
-     * replaced.
+     * @param {string} newColumnId
+     * New id of the column.
      *
      * @return {boolean}
      * Returns `true` if successful, `false` if the column was not found.
      */
-    DataTable.prototype.renameColumn = function (columnName, newColumnName) {
+    DataTable.prototype.changeColumnId = function (columnId, newColumnId) {
         var table = this,
             columns = table.columns;
-        if (columns[columnName]) {
-            if (columnName !== newColumnName) {
-                columns[newColumnName] = columns[columnName];
-                delete columns[columnName];
+        if (columns[columnId]) {
+            if (columnId !== newColumnId) {
+                columns[newColumnId] = columns[columnId];
+                delete columns[columnId];
             }
             return true;
         }
         return false;
     };
     /**
-     * Sets a cell value based on the row index and column.  Will
-     * insert a new column, if not found.
+     * Sets the value of a specific cell identified by column ID and row index.
+     * If the column does not exist, it will be created. If the row index is
+     * beyond the current row count, the table will be expanded to accommodate
+     * the new cell.
      *
      * @function Highcharts.DataTable#setCell
      *
-     * @param {string} columnName
+     * @param {string} columnId
      * Column name to set.
      *
      * @param {number|undefined} rowIndex
@@ -1689,42 +1537,42 @@ var DataTable = /** @class */ (function (_super) {
      * @emits #setCell
      * @emits #afterSetCell
      */
-    DataTable.prototype.setCell = function (columnName, rowIndex, cellValue, eventDetail) {
+    DataTable.prototype.setCell = function (columnId, rowIndex, cellValue, eventDetail) {
         var table = this,
             columns = table.columns,
             modifier = table.modifier;
-        var column = columns[columnName];
+        var column = columns[columnId];
         if (column && column[rowIndex] === cellValue) {
             return;
         }
         table.emit({
             type: 'setCell',
             cellValue: cellValue,
-            columnName: columnName,
+            columnId: columnId,
             detail: eventDetail,
             rowIndex: rowIndex
         });
         if (!column) {
-            column = columns[columnName] = new Array(table.rowCount);
+            column = columns[columnId] = new Array(table.rowCount);
         }
         if (rowIndex >= table.rowCount) {
             table.rowCount = (rowIndex + 1);
         }
         column[rowIndex] = cellValue;
         if (modifier) {
-            modifier.modifyCell(table, columnName, rowIndex, cellValue);
+            modifier.modifyTable(table);
         }
         table.emit({
             type: 'afterSetCell',
             cellValue: cellValue,
-            columnName: columnName,
+            columnId: columnId,
             detail: eventDetail,
             rowIndex: rowIndex
         });
     };
     /**
-     * Sets cell values for multiple columns. Will insert new columns, if not
-     * found.
+     * Replaces or updates multiple columns in the table with new data. If a
+     * column does not exist, it will be created and added to the table.
      *
      * @function Highcharts.DataTable#setColumns
      *
@@ -1750,12 +1598,12 @@ var DataTable = /** @class */ (function (_super) {
         var table = this,
             tableColumns = table.columns,
             tableModifier = table.modifier,
-            columnNames = Object.keys(columns);
+            columnIds = Object.keys(columns);
         var rowCount = table.rowCount;
         table.emit({
             type: 'setColumns',
             columns: columns,
-            columnNames: columnNames,
+            columnIds: columnIds,
             detail: eventDetail,
             rowIndex: rowIndex
         });
@@ -1763,10 +1611,10 @@ var DataTable = /** @class */ (function (_super) {
             _super.prototype.setColumns.call(this, columns, rowIndex, extend(eventDetail, { silent: true }));
         }
         else {
-            for (var i = 0, iEnd = columnNames.length, column = void 0, tableColumn = void 0, columnName = void 0, ArrayConstructor = void 0; i < iEnd; ++i) {
-                columnName = columnNames[i];
-                column = columns[columnName];
-                tableColumn = tableColumns[columnName];
+            for (var i = 0, iEnd = columnIds.length, column = void 0, tableColumn = void 0, columnId = void 0, ArrayConstructor = void 0; i < iEnd; ++i) {
+                columnId = columnIds[i];
+                column = columns[columnId];
+                tableColumn = tableColumns[columnId];
                 ArrayConstructor = Object.getPrototypeOf((tableColumn && typeAsOriginal) ? tableColumn : column).constructor;
                 if (!tableColumn) {
                     tableColumn = new ArrayConstructor(rowCount);
@@ -1779,9 +1627,9 @@ var DataTable = /** @class */ (function (_super) {
                 else if (tableColumn.length < rowCount) {
                     tableColumn =
                         new ArrayConstructor(rowCount);
-                    tableColumn.set(tableColumns[columnName]);
+                    tableColumn.set(tableColumns[columnId]);
                 }
-                tableColumns[columnName] = tableColumn;
+                tableColumns[columnId] = tableColumn;
                 for (var i_1 = (rowIndex || 0), iEnd_1 = column.length; i_1 < iEnd_1; ++i_1) {
                     tableColumn[i_1] = column[i_1];
                 }
@@ -1790,18 +1638,22 @@ var DataTable = /** @class */ (function (_super) {
             this.applyRowCount(rowCount);
         }
         if (tableModifier) {
-            tableModifier.modifyColumns(table, columns, rowIndex || 0);
+            tableModifier.modifyTable(table);
         }
         table.emit({
             type: 'afterSetColumns',
             columns: columns,
-            columnNames: columnNames,
+            columnIds: columnIds,
             detail: eventDetail,
             rowIndex: rowIndex
         });
     };
     /**
-     * Sets or unsets the modifier for the table.
+     * Assigns a new data modifier to the table.
+     *
+     * This method does not modify the table directly. Instead, it sets the
+     * `.modified` property of the table with a modified copy of this table,
+     * as produced by the modifier.
      *
      * @param {Highcharts.DataModifier} [modifier]
      * Modifier to set, or `undefined` to unset.
@@ -1822,9 +1674,8 @@ var DataTable = /** @class */ (function (_super) {
             type: 'setModifier',
             detail: eventDetail,
             modifier: modifier,
-            modified: table.modified
+            modified: table.getModified()
         });
-        table.modified = table;
         table.modifier = modifier;
         if (modifier) {
             promise = modifier.modify(table);
@@ -1838,7 +1689,7 @@ var DataTable = /** @class */ (function (_super) {
                 type: 'afterSetModifier',
                 detail: eventDetail,
                 modifier: modifier,
-                modified: table.modified
+                modified: table.getModified()
             });
             return table;
         })['catch'](function (error) {
@@ -1846,7 +1697,7 @@ var DataTable = /** @class */ (function (_super) {
                 type: 'setModifierError',
                 error: error,
                 modifier: modifier,
-                modified: table.modified
+                modified: table.getModified()
             });
             throw error;
         });
@@ -1888,7 +1739,7 @@ var DataTable = /** @class */ (function (_super) {
      * Cell values to set.
      *
      * @param {number} [rowIndex]
-     * Index of the row to set. Leave `undefind` to add as a new row.
+     * Index of the row to set. Leave `undefined` to add as a new row.
      *
      * @param {boolean} [insert]
      * Whether to insert the row at the given index, or to overwrite the row.
@@ -1928,7 +1779,7 @@ var DataTable = /** @class */ (function (_super) {
         if (rowIndex === void 0) { rowIndex = this.rowCount; }
         var table = this,
             columns = table.columns,
-            columnNames = Object.keys(columns),
+            columnIds = Object.keys(columns),
             modifier = table.modifier,
             rowCount = rows.length;
         table.emit({
@@ -1940,24 +1791,24 @@ var DataTable = /** @class */ (function (_super) {
         });
         for (var i = 0, i2 = rowIndex, row = void 0; i < rowCount; ++i, ++i2) {
             row = rows[i];
-            if (row === DataTable.NULL) {
-                for (var j = 0, jEnd = columnNames.length; j < jEnd; ++j) {
-                    var column = columns[columnNames[j]];
+            if (Object.keys(row).length === 0) { // Is empty Object
+                for (var j = 0, jEnd = columnIds.length; j < jEnd; ++j) {
+                    var column = columns[columnIds[j]];
                     if (insert) {
-                        columns[columnNames[j]] = Data_ColumnUtils.splice(column, i2, 0, true, [null]).array;
+                        columns[columnIds[j]] = DataTable_splice(column, i2, 0, true, [null]).array;
                     }
                     else {
                         column[i2] = null;
                     }
                 }
             }
-            else if (row instanceof Array) {
-                for (var j = 0, jEnd = columnNames.length; j < jEnd; ++j) {
-                    columns[columnNames[j]][i2] = row[j];
+            else if (Array.isArray(row)) {
+                for (var j = 0, jEnd = columnIds.length; j < jEnd; ++j) {
+                    columns[columnIds[j]][i2] = row[j];
                 }
             }
             else {
-                _super.prototype.setRow.call(this, row, i2, void 0, { silent: true });
+                _super.prototype.setRow.call(this, row, i2, insert, { silent: true });
             }
         }
         var indexRowCount = insert ?
@@ -1965,13 +1816,13 @@ var DataTable = /** @class */ (function (_super) {
                 rowIndex + rowCount;
         if (indexRowCount > table.rowCount) {
             table.rowCount = indexRowCount;
-            for (var i = 0, iEnd = columnNames.length; i < iEnd; ++i) {
-                var columnName = columnNames[i];
-                columns[columnName] = Data_ColumnUtils.setLength(columns[columnName], indexRowCount);
+            for (var i = 0, iEnd = columnIds.length; i < iEnd; ++i) {
+                var columnId = columnIds[i];
+                columns[columnId] = DataTable_setLength(columns[columnId], indexRowCount);
             }
         }
         if (modifier) {
-            modifier.modifyRows(table, rows, rowIndex);
+            modifier.modifyTable(table);
         }
         table.emit({
             type: 'afterSetRows',
@@ -1981,30 +1832,6 @@ var DataTable = /** @class */ (function (_super) {
             rows: rows
         });
     };
-    /* *
-     *
-     *  Static Properties
-     *
-     * */
-    /**
-     * Null state for a row record. In some cases, a row in a table may not
-     * contain any data or may be invalid. In these cases, a null state can be
-     * used to indicate that the row record is empty or invalid.
-     *
-     * @name Highcharts.DataTable.NULL
-     * @type {Highcharts.DataTableRowObject}
-     *
-     * @see {@link Highcharts.DataTable.isNull} for a null test.
-     *
-     * @example
-     * table.setRows([DataTable.NULL, DataTable.NULL], 10);
-     */
-    DataTable.NULL = {};
-    /**
-     * Semantic version string of the DataTable class.
-     * @internal
-     */
-    DataTable.version = '1.0.0';
     return DataTable;
 }(Data_DataTableCore));
 /* *
@@ -2017,16 +1844,18 @@ var DataTable = /** @class */ (function (_super) {
 ;// ./code/es5/es-modules/Data/Connectors/DataConnector.js
 /* *
  *
- *  (c) 2009-2025 Highsoft AS
+ *  (c) 2009-2026 Highsoft AS
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  *  Authors:
  *  - Sophie Bremer
  *  - Wojciech Chmiel
  *  - Gøran Slettemark
+ *  - Dawid Dragula
+ *  - Kamil Kubik
  *
  * */
 
@@ -2047,8 +1876,8 @@ var __generator = (undefined && undefined.__generator) || function (thisArg, bod
         f,
         y,
         t,
-        g;
-    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+        g = Object.create((typeof Iterator === "function" ? Iterator : Object).prototype);
+    return g.next = verb(0), g["throw"] = verb(1), g["return"] = verb(2), typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
     function verb(n) { return function (v) { return step([n, v]); }; }
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
@@ -2084,8 +1913,6 @@ var DataConnector_addEvent = (highcharts_commonjs_highcharts_commonjs2_highchart
  * */
 /**
  * Abstract class providing an interface for managing a DataConnector.
- *
- * @private
  */
 var DataConnector = /** @class */ (function () {
     /* *
@@ -2096,15 +1923,10 @@ var DataConnector = /** @class */ (function () {
     /**
      * Constructor for the connector class.
      *
-     * @param {DataConnector.UserOptions} [options]
+     * @param {DataConnectorOptions} [options]
      * Options to use in the connector.
-     *
-     * @param {Array<DataTableOptions>} [dataTables]
-     * Multiple connector data tables options.
      */
-    function DataConnector(options, dataTables) {
-        if (options === void 0) { options = {}; }
-        if (dataTables === void 0) { dataTables = []; }
+    function DataConnector(options) {
         /**
          * Tables managed by this DataConnector instance.
          */
@@ -2115,9 +1937,15 @@ var DataConnector = /** @class */ (function () {
          */
         this.loaded = false;
         this.metadata = options.metadata || { columns: {} };
+        this.options = options;
         // Create a data table for each defined in the dataTables user options.
+        var dataTables = options === null || options === void 0 ? void 0 : options.dataTables;
         var dataTableIndex = 0;
-        if ((dataTables === null || dataTables === void 0 ? void 0 : dataTables.length) > 0) {
+        if (options.options) {
+            // eslint-disable-next-line no-console
+            console.error('The `DataConnectorOptions.options` property was removed in Dashboards v4.0.0. Check how to upgrade your connector to use the new options structure here: https://api.highcharts.com/dashboards/#interfaces/Data_DataTableOptions.DataTableOptions');
+        }
+        if (dataTables && (dataTables === null || dataTables === void 0 ? void 0 : dataTables.length) > 0) {
             for (var i = 0, iEnd = dataTables.length; i < iEnd; ++i) {
                 var dataTable = dataTables[i];
                 var key = dataTable === null || dataTable === void 0 ? void 0 : dataTable.key;
@@ -2127,15 +1955,18 @@ var DataConnector = /** @class */ (function () {
                     dataTableIndex++;
                 }
             }
-            // If user options dataTables is not defined, generate a default table.
         }
         else {
-            this.dataTables[0] = new Data_DataTable(options.dataTable);
+            // If user options dataTables is not defined, generate a default
+            // table.
+            this.dataTables[0] = new Data_DataTable({
+                id: options.id // Required by DataTableCore
+            });
         }
     }
     Object.defineProperty(DataConnector.prototype, "polling", {
         /**
-         * Poll timer ID, if active.
+         * Whether the connector is currently polling for new data.
          */
         get: function () {
             return !!this._polling;
@@ -2143,81 +1974,11 @@ var DataConnector = /** @class */ (function () {
         enumerable: false,
         configurable: true
     });
-    Object.defineProperty(DataConnector.prototype, "table", {
-        /**
-         * Gets the first data table.
-         *
-         * @return {DataTable}
-         * The data table instance.
-         */
-        get: function () {
-            return this.getTable();
-        },
-        enumerable: false,
-        configurable: true
-    });
     /* *
      *
-     *  Functions
+     *  Methods
      *
      * */
-    /**
-     * Method for adding metadata for a single column.
-     *
-     * @param {string} name
-     * The name of the column to be described.
-     *
-     * @param {DataConnector.MetaColumn} columnMeta
-     * The metadata to apply to the column.
-     */
-    DataConnector.prototype.describeColumn = function (name, columnMeta) {
-        var connector = this,
-            columns = connector.metadata.columns;
-        columns[name] = DataConnector_merge(columns[name] || {}, columnMeta);
-    };
-    /**
-     * Method for applying columns meta information to the whole DataConnector.
-     *
-     * @param {Highcharts.Dictionary<DataConnector.MetaColumn>} columns
-     * Pairs of column names and MetaColumn objects.
-     */
-    DataConnector.prototype.describeColumns = function (columns) {
-        var connector = this,
-            columnNames = Object.keys(columns);
-        var columnName;
-        while (typeof (columnName = columnNames.pop()) === 'string') {
-            connector.describeColumn(columnName, columns[columnName]);
-        }
-    };
-    /**
-     * Emits an event on the connector to all registered callbacks of this
-     * event.
-     *
-     * @param {DataConnector.Event} [e]
-     * Event object containing additional event information.
-     */
-    DataConnector.prototype.emit = function (e) {
-        DataConnector_fireEvent(this, e.type, e);
-    };
-    /**
-     * Returns the order of columns.
-     *
-     * @param {boolean} [usePresentationState]
-     * Whether to use the column order of the presentation state of the table.
-     *
-     * @return {Array<string>|undefined}
-     * Order of columns.
-     */
-    DataConnector.prototype.getColumnOrder = function (
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    usePresentationState) {
-        var connector = this,
-            columns = connector.metadata.columns,
-            names = Object.keys(columns || {});
-        if (names.length) {
-            return names.sort(function (a, b) { return (pick(columns[a].index, 0) - pick(columns[b].index, 0)); });
-        }
-    };
     /**
      * Returns a single data table instance based on the provided key.
      * Otherwise, returns the first data table.
@@ -2235,17 +1996,109 @@ var DataConnector = /** @class */ (function () {
         return Object.values(this.dataTables)[0];
     };
     /**
+     * Method for adding metadata for a single column.
+     *
+     * @param {string} name
+     * The name of the column to be described.
+     *
+     * @param {DataConnector.MetaColumn} columnMeta
+     * The metadata to apply to the column.
+     */
+    DataConnector.prototype.describeColumn = function (name, columnMeta) {
+        var connector = this;
+        var columns = connector.metadata.columns;
+        columns[name] = DataConnector_merge(columns[name] || {}, columnMeta);
+    };
+    /**
+     * Method for applying columns meta information to the whole DataConnector.
+     *
+     * @param {Highcharts.Dictionary<DataConnector.MetaColumn>} columns
+     * Pairs of column names and MetaColumn objects.
+     */
+    DataConnector.prototype.describeColumns = function (columns) {
+        var connector = this;
+        var columnIds = Object.keys(columns);
+        var columnId;
+        while (typeof (columnId = columnIds.pop()) === 'string') {
+            connector.describeColumn(columnId, columns[columnId]);
+        }
+    };
+    /**
+     * Returns the order of columns.
+     *
+     * @return {string[] | undefined}
+     * Order of columns.
+     */
+    DataConnector.prototype.getColumnOrder = function () {
+        var connector = this,
+            columns = connector.metadata.columns,
+            names = Object.keys(columns || {});
+        if (names.length) {
+            return names.sort(function (a, b) { return (pick(columns[a].index, 0) - pick(columns[b].index, 0)); });
+        }
+    };
+    /**
      * Retrieves the columns of the dataTable,
      * applies column order from meta.
      *
-     * @param {boolean} [usePresentationOrder]
-     * Whether to use the column order of the presentation state of the table.
-     *
      * @return {Highcharts.DataTableColumnCollection}
-     * An object with the properties `columnNames` and `columnValues`
+     * An object with the properties `columnIds` and `columnValues`
      */
-    DataConnector.prototype.getSortedColumns = function (usePresentationOrder) {
-        return this.table.getColumns(this.getColumnOrder(usePresentationOrder));
+    DataConnector.prototype.getSortedColumns = function () {
+        return this.getTable().getColumns(this.getColumnOrder());
+    };
+    /**
+     * Sets the index and order of columns.
+     *
+     * @param {Array<string>} columnIds
+     * Order of columns.
+     */
+    DataConnector.prototype.setColumnOrder = function (columnIds) {
+        var connector = this;
+        for (var i = 0, iEnd = columnIds.length; i < iEnd; ++i) {
+            connector.describeColumn(columnIds[i], { index: i });
+        }
+    };
+    /**
+     * Updates the connector with new options.
+     *
+     * @param newOptions
+     * The new options to be applied to the connector.
+     *
+     * @param reload
+     * Whether to reload the connector after applying the new options.
+     */
+    DataConnector.prototype.update = function (newOptions_1) {
+        return __awaiter(this, arguments, void 0, function (newOptions, reload) {
+            var options;
+            if (reload === void 0) { reload = true; }
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.emit({ type: 'beforeUpdate' });
+                        DataConnector_merge(true, this.options, newOptions);
+                        options = this.options;
+                        if ('enablePolling' in newOptions || 'dataRefreshRate' in newOptions) {
+                            if ('enablePolling' in options && options.enablePolling) {
+                                this.stopPolling();
+                                this.startPolling(('dataRefreshRate' in options &&
+                                    typeof options.dataRefreshRate === 'number') ? Math.max(options.dataRefreshRate, 1) * 1000 : 1000);
+                            }
+                            else {
+                                this.stopPolling();
+                            }
+                        }
+                        if (!reload) return [3 /*break*/, 2];
+                        return [4 /*yield*/, this.load()];
+                    case 1:
+                        _a.sent();
+                        _a.label = 2;
+                    case 2:
+                        this.emit({ type: 'afterUpdate' });
+                        return [2 /*return*/];
+                }
+            });
+        });
     };
     /**
      * The default load method, which fires the `afterLoad` event
@@ -2256,89 +2109,59 @@ var DataConnector = /** @class */ (function () {
      * @emits DataConnector#afterLoad
      */
     DataConnector.prototype.load = function () {
-        DataConnector_fireEvent(this, 'afterLoad', { table: this.table });
+        this.emit({ type: 'afterLoad' });
         return Promise.resolve(this);
     };
     /**
-     * Registers a callback for a specific connector event.
-     *
-     * @param {string} type
-     * Event type as a string.
-     *
-     * @param {DataEventEmitter.Callback} callback
-     * Function to register for the connector callback.
-     *
-     * @return {Function}
-     * Function to unregister callback from the connector event.
+     * Applies the data modifiers to the data tables according to the
+     * connector data tables options.
      */
-    DataConnector.prototype.on = function (type, callback) {
-        return DataConnector_addEvent(this, type, callback);
-    };
-    /**
-     * The default save method, which fires the `afterSave` event.
-     *
-     * @return {Promise<DataConnector>}
-     * The saved connector.
-     *
-     * @emits DataConnector#afterSave
-     * @emits DataConnector#saveError
-     */
-    DataConnector.prototype.save = function () {
-        DataConnector_fireEvent(this, 'saveError', { table: this.table });
-        return Promise.reject(new Error('Not implemented'));
-    };
-    /**
-     * Sets the index and order of columns.
-     *
-     * @param {Array<string>} columnNames
-     * Order of columns.
-     */
-    DataConnector.prototype.setColumnOrder = function (columnNames) {
-        var connector = this;
-        for (var i = 0, iEnd = columnNames.length; i < iEnd; ++i) {
-            connector.describeColumn(columnNames[i], { index: i });
-        }
-    };
-    DataConnector.prototype.setModifierOptions = function (modifierOptions, tablesOptions) {
+    DataConnector.prototype.applyTableModifiers = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var _loop_1,
+            var tableOptionsArray,
+                _loop_1,
+                this_1,
                 _i,
                 _a,
                 _b,
                 key,
                 table;
-            return __generator(this, function (_c) {
-                switch (_c.label) {
+            var _c,
+                _d,
+                _e,
+                _f;
+            return __generator(this, function (_g) {
+                switch (_g.label) {
                     case 0:
+                        tableOptionsArray = (_c = this.options) === null || _c === void 0 ? void 0 : _c.dataTables;
                         _loop_1 = function (key, table) {
-                            var tableOptions,
-                                mergedModifierOptions,
+                            var dataModifierOptions,
                                 ModifierClass;
-                            return __generator(this, function (_d) {
-                                switch (_d.label) {
+                            return __generator(this, function (_h) {
+                                switch (_h.label) {
                                     case 0:
-                                        tableOptions = tablesOptions === null || tablesOptions === void 0 ? void 0 : tablesOptions.find(function (dataTable) { return dataTable.key === key; });
-                                        mergedModifierOptions = DataConnector_merge(tableOptions === null || tableOptions === void 0 ? void 0 : tableOptions.dataModifier, modifierOptions);
-                                        ModifierClass = (mergedModifierOptions &&
-                                            Modifiers_DataModifier.types[mergedModifierOptions.type]);
+                                        dataModifierOptions = (_e = (_d = tableOptionsArray === null || tableOptionsArray === void 0 ? void 0 : tableOptionsArray.find(function (dataTable) { return dataTable.key === key; })) === null || _d === void 0 ? void 0 : _d.dataModifier) !== null && _e !== void 0 ? _e : (_f = this_1.options) === null || _f === void 0 ? void 0 : _f.dataModifier;
+                                        ModifierClass = (dataModifierOptions &&
+                                            Modifiers_DataModifier.types[dataModifierOptions.type]);
                                         return [4 /*yield*/, table.setModifier(ModifierClass ?
-                                                new ModifierClass(mergedModifierOptions) :
+                                                new ModifierClass(dataModifierOptions) :
                                                 void 0)];
                                     case 1:
-                                        _d.sent();
+                                        _h.sent();
                                         return [2 /*return*/];
                                 }
                             });
                         };
+                        this_1 = this;
                         _i = 0, _a = Object.entries(this.dataTables);
-                        _c.label = 1;
+                        _g.label = 1;
                     case 1:
                         if (!(_i < _a.length)) return [3 /*break*/, 4];
                         _b = _a[_i], key = _b[0], table = _b[1];
                         return [5 /*yield**/, _loop_1(key, table)];
                     case 2:
-                        _c.sent();
-                        _c.label = 3;
+                        _g.sent();
+                        _g.label = 3;
                     case 3:
                         _i++;
                         return [3 /*break*/, 1];
@@ -2356,16 +2179,16 @@ var DataConnector = /** @class */ (function () {
     DataConnector.prototype.startPolling = function (refreshTime) {
         if (refreshTime === void 0) { refreshTime = 1000; }
         var connector = this;
-        var tables = connector.dataTables;
         // Assign a new abort controller.
         this.pollingController = new AbortController();
         // Clear the polling timeout.
         window.clearTimeout(connector._polling);
-        connector._polling = window.setTimeout(function () { return connector
+        connector._polling = window.setTimeout(
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
+        function () { return connector
             .load()['catch'](function (error) { return connector.emit({
             type: 'loadError',
-            error: error,
-            tables: tables
+            error: error
         }); })
             .then(function () {
             if (connector._polling) {
@@ -2389,16 +2212,29 @@ var DataConnector = /** @class */ (function () {
         delete connector._polling;
     };
     /**
-     * Retrieves metadata from a single column.
+     * Emits an event on the connector to all registered callbacks of this
+     * event.
      *
-     * @param {string} name
-     * The identifier for the column that should be described
-     *
-     * @return {DataConnector.MetaColumn|undefined}
-     * Returns a MetaColumn object if found.
+     * @param {DataConnector.Event} e
+     * Event object containing additional event information.
      */
-    DataConnector.prototype.whatIs = function (name) {
-        return this.metadata.columns[name];
+    DataConnector.prototype.emit = function (e) {
+        DataConnector_fireEvent(this, e.type, e);
+    };
+    /**
+     * Registers a callback for a specific connector event.
+     *
+     * @param type
+     * Event type.
+     *
+     * @param callback
+     * Function to register for the connector callback.
+     *
+     * @return {Function}
+     * Function to unregister callback from the connector event.
+     */
+    DataConnector.prototype.on = function (type, callback) {
+        return DataConnector_addEvent(this, type, callback);
     };
     /**
      * Iterates over the dataTables and initiates the corresponding converters.
@@ -2420,12 +2256,12 @@ var DataConnector = /** @class */ (function () {
                 key = _b[0],
                 table = _b[1];
             // Create a proper converter and parse its data.
-            var converter = createConverter(key,
-                table);
-            parseData(converter, data);
+            var converter = createConverter(key);
+            var columns = parseData(converter,
+                data);
             // Update the dataTable.
             table.deleteColumns();
-            table.setColumns(converter.getTable().getColumns());
+            table.setColumns(columns);
             // Assign the first converter.
             if (index === 0) {
                 this.converter = converter;
@@ -2491,14 +2327,235 @@ var DataConnector = /** @class */ (function () {
  * */
 /* harmony default export */ var Connectors_DataConnector = (DataConnector);
 
+;// ./code/es5/es-modules/Data/Converters/DataConverterUtils.js
+/* *
+ *
+ *  (c) 2009-2026 Highsoft AS
+ *
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
+ *
+ *
+ *  Authors:
+ *  - Kamil Kubik
+ *
+ * */
+
+var DataConverterUtils_isNumber = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).isNumber;
+/* *
+ *
+ *  Namespace
+ *
+ * */
+var DataConverterUtils;
+(function (DataConverterUtils) {
+    /* *
+    *
+    *  Properties
+    *
+    * */
+    /* *
+    *
+    * Functions
+    *
+    * */
+    /**
+     * Converts a value to a Date.
+     *
+     * @param {DataConverter.Type} value
+     * Value to convert.
+     *
+     * @return {globalThis.Date}
+     * Converted value as a Date.
+     */
+    function asDate(value, converter) {
+        var timestamp;
+        if (typeof value === 'string') {
+            timestamp = converter.parseDate(value);
+        }
+        else if (typeof value === 'number') {
+            timestamp = value;
+        }
+        else if (value instanceof Date) {
+            return value;
+        }
+        else {
+            timestamp = converter.parseDate(asString(value));
+        }
+        return new Date(timestamp);
+    }
+    DataConverterUtils.asDate = asDate;
+    /**
+     * Converts a value to a number.
+     *
+     * @param {DataConverter.Type} value
+     * Value to convert.
+     *
+     * @return {number}
+     * Converted value as a number.
+     */
+    function asNumber(value, decimalRegExp) {
+        if (typeof value === 'number') {
+            return value;
+        }
+        if (typeof value === 'boolean') {
+            return value ? 1 : 0;
+        }
+        if (typeof value === 'string') {
+            var decimalRegex = decimalRegExp;
+            if (value.indexOf(' ') > -1) {
+                value = value.replace(/\s+/g, '');
+            }
+            if (decimalRegex) {
+                if (!decimalRegex.test(value)) {
+                    return NaN;
+                }
+                value = value.replace(decimalRegex, '$1.$2');
+            }
+            return parseFloat(value);
+        }
+        if (value instanceof Date) {
+            return value.getDate();
+        }
+        if (value) {
+            return value.getRowCount();
+        }
+        return NaN;
+    }
+    DataConverterUtils.asNumber = asNumber;
+    /**
+     * Converts a value to a string.
+     *
+     * @param {DataConverter.Type} value
+     * Value to convert.
+     *
+     * @return {string}
+     * Converted value as a string.
+     */
+    function asString(value) {
+        return '' + value;
+    }
+    DataConverterUtils.asString = asString;
+    /**
+     * Converts a value to a boolean.
+     *
+     * @param {DataConverter.Type} value
+     * Value to convert.
+     *
+     * @return {boolean}
+     * Converted value as a boolean.
+     */
+    function asBoolean(value) {
+        if (typeof value === 'boolean') {
+            return value;
+        }
+        if (typeof value === 'string') {
+            return value !== '' && value !== '0' && value !== 'false';
+        }
+        return !!asNumber(value);
+    }
+    DataConverterUtils.asBoolean = asBoolean;
+    /**
+     * Guesses the potential type of a string value for parsing CSV etc.
+     *
+     * @param {*} value
+     * The value to examine.
+     *
+     * @return {'number' | 'string' | 'Date'}
+     * Type string, either `string`, `Date`, or `number`.
+     */
+    function guessType(value, converter) {
+        var result = 'string';
+        if (typeof value === 'string') {
+            var trimedValue = DataConverterUtils.trim("".concat(value)),
+                decimalRegExp = converter.decimalRegExp;
+            var innerTrimedValue = DataConverterUtils.trim(trimedValue,
+                true);
+            if (decimalRegExp) {
+                innerTrimedValue = (decimalRegExp.test(innerTrimedValue) ?
+                    innerTrimedValue.replace(decimalRegExp, '$1.$2') :
+                    '');
+            }
+            var floatValue = parseFloat(innerTrimedValue);
+            if (+innerTrimedValue === floatValue) {
+                // String is numeric
+                value = floatValue;
+            }
+            else {
+                // Determine if a date string
+                var dateValue = converter.parseDate(value);
+                result = DataConverterUtils_isNumber(dateValue) ? 'Date' : 'string';
+            }
+        }
+        if (typeof value === 'number') {
+            // Greater than milliseconds in a year assumed timestamp
+            result = value > 365 * 24 * 3600 * 1000 ? 'Date' : 'number';
+        }
+        return result;
+    }
+    DataConverterUtils.guessType = guessType;
+    /**
+     * Trim a string from whitespaces.
+     *
+     * @param {string} str
+     * String to trim.
+     *
+     * @param {boolean} [inside=false]
+     * Remove all spaces between numbers.
+     *
+     * @return {string}
+     * Trimed string
+     */
+    function trim(str, inside) {
+        if (typeof str === 'string') {
+            str = str.replace(/^\s+|\s+$/g, '');
+            // Clear white space insdie the string, like thousands separators
+            if (inside && /^[\d\s]+$/.test(str)) {
+                str = str.replace(/\s/g, '');
+            }
+        }
+        return str;
+    }
+    DataConverterUtils.trim = trim;
+    /**
+     * Parses an array of columns to a column collection. If more headers are
+     * provided, the corresponding, empty columns are added.
+     *
+     * @param {DataTable.Column[]} [columnsArray]
+     * Array of columns.
+     *
+     * @param {string[]} [headers]
+     * Column ids to use.
+     *
+     * @return {DataTable.ColumnCollection}
+     * Parsed columns.
+     */
+    function getColumnsCollection(columnsArray, headers) {
+        if (columnsArray === void 0) { columnsArray = []; }
+        var columns = {};
+        for (var i = 0, iEnd = Math.max(headers.length, columnsArray.length); i < iEnd; ++i) {
+            var columnId = headers[i] || "".concat(i);
+            columns[columnId] = columnsArray[i] ? columnsArray[i].slice() : [];
+        }
+        return columns;
+    }
+    DataConverterUtils.getColumnsCollection = getColumnsCollection;
+})(DataConverterUtils || (DataConverterUtils = {}));
+/* *
+ *
+ *  Default Export
+ *
+ * */
+/* harmony default export */ var Converters_DataConverterUtils = (DataConverterUtils);
+
 ;// ./code/es5/es-modules/Data/Converters/DataConverter.js
 /* *
  *
- *  (c) 2009-2025 Highsoft AS
+ *  (c) 2009-2026 Highsoft AS
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  *  Authors:
  *  - Sophie Bremer
@@ -2507,12 +2564,13 @@ var DataConnector = /** @class */ (function () {
  *  - Torstein Hønsi
  *  - Wojciech Chmiel
  *  - Jomar Hønsi
+ *  - Kamil Kubik
  *
  * */
 
 
 
-var DataConverter_addEvent = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).addEvent, DataConverter_fireEvent = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).fireEvent, DataConverter_isNumber = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).isNumber, DataConverter_merge = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).merge;
+var DataConverter_addEvent = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).addEvent, DataConverter_fireEvent = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).fireEvent, DataConverter_merge = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).merge;
 /* *
  *
  *  Class
@@ -2549,16 +2607,14 @@ var DataConverter = /** @class */ (function () {
                 regex: /^(\d{4})([\-\.\/])(\d{1,2})\2(\d{1,2})$/,
                 parser: function (match) {
                     return (match ?
-                        Date.UTC(+match[1], match[3] - 1, +match[4]) :
-                        NaN);
+                        Date.UTC(+match[1], +match[3] - 1, +match[4]) : NaN);
                 }
             },
             'dd/mm/YYYY': {
                 regex: /^(\d{1,2})([\-\.\/])(\d{1,2})\2(\d{4})$/,
                 parser: function (match) {
                     return (match ?
-                        Date.UTC(+match[4], match[3] - 1, +match[1]) :
-                        NaN);
+                        Date.UTC(+match[4], +match[3] - 1, +match[1]) : NaN);
                 },
                 alternative: 'mm/dd/YYYY' // Different format with the same regex
             },
@@ -2566,8 +2622,7 @@ var DataConverter = /** @class */ (function () {
                 regex: /^(\d{1,2})([\-\.\/])(\d{1,2})\2(\d{4})$/,
                 parser: function (match) {
                     return (match ?
-                        Date.UTC(+match[4], match[1] - 1, +match[3]) :
-                        NaN);
+                        Date.UTC(+match[4], +match[1] - 1, +match[3]) : NaN);
                 }
             },
             'dd/mm/YY': {
@@ -2584,7 +2639,7 @@ var DataConverter = /** @class */ (function () {
                     else {
                         year += 2000;
                     }
-                    return Date.UTC(year, match[3] - 1, +match[1]);
+                    return Date.UTC(year, +match[3] - 1, +match[1]);
                 },
                 alternative: 'mm/dd/YY' // Different format with the same regex
             },
@@ -2592,7 +2647,7 @@ var DataConverter = /** @class */ (function () {
                 regex: /^(\d{1,2})([\-\.\/])(\d{1,2})\2(\d{2})$/,
                 parser: function (match) {
                     return (match ?
-                        Date.UTC(+match[4] + 2000, match[1] - 1, +match[3]) :
+                        Date.UTC(+match[4] + 2000, +match[1] - 1, +match[3]) :
                         NaN);
                 }
             }
@@ -2613,114 +2668,28 @@ var DataConverter = /** @class */ (function () {
      *
      * */
     /**
-     * Converts a value to a boolean.
-     *
-     * @param {DataConverter.Type} value
-     * Value to convert.
-     *
-     * @return {boolean}
-     * Converted value as a boolean.
-     */
-    DataConverter.prototype.asBoolean = function (value) {
-        if (typeof value === 'boolean') {
-            return value;
-        }
-        if (typeof value === 'string') {
-            return value !== '' && value !== '0' && value !== 'false';
-        }
-        return !!this.asNumber(value);
-    };
-    /**
-     * Converts a value to a Date.
-     *
-     * @param {DataConverter.Type} value
-     * Value to convert.
-     *
-     * @return {globalThis.Date}
-     * Converted value as a Date.
-     */
-    DataConverter.prototype.asDate = function (value) {
-        var timestamp;
-        if (typeof value === 'string') {
-            timestamp = this.parseDate(value);
-        }
-        else if (typeof value === 'number') {
-            timestamp = value;
-        }
-        else if (value instanceof Date) {
-            return value;
-        }
-        else {
-            timestamp = this.parseDate(this.asString(value));
-        }
-        return new Date(timestamp);
-    };
-    /**
-     * Casts a string value to it's guessed type
+     * Converts a string value based on its guessed type.
      *
      * @param {*} value
      * The value to examine.
      *
-     * @return {number|string|Date}
+     * @return {number | string | Date}
      * The converted value.
      */
-    DataConverter.prototype.asGuessedType = function (value) {
+    DataConverter.prototype.convertByType = function (value) {
         var converter = this,
             typeMap = {
-                'number': converter.asNumber,
-                'Date': converter.asDate,
-                'string': converter.asString
-            };
-        return typeMap[converter.guessType(value)].call(converter, value);
-    };
-    /**
-     * Converts a value to a number.
-     *
-     * @param {DataConverter.Type} value
-     * Value to convert.
-     *
-     * @return {number}
-     * Converted value as a number.
-     */
-    DataConverter.prototype.asNumber = function (value) {
-        if (typeof value === 'number') {
-            return value;
-        }
-        if (typeof value === 'boolean') {
-            return value ? 1 : 0;
-        }
-        if (typeof value === 'string') {
-            var decimalRegex = this.decimalRegExp;
-            if (value.indexOf(' ') > -1) {
-                value = value.replace(/\s+/g, '');
-            }
-            if (decimalRegex) {
-                if (!decimalRegex.test(value)) {
-                    return NaN;
-                }
-                value = value.replace(decimalRegex, '$1.$2');
-            }
-            return parseFloat(value);
-        }
-        if (value instanceof Date) {
-            return value.getDate();
-        }
-        if (value) {
-            return value.getRowCount();
-        }
-        return NaN;
-    };
-    /**
-     * Converts a value to a string.
-     *
-     * @param {DataConverter.Type} value
-     * Value to convert.
-     *
-     * @return {string}
-     * Converted value as a string.
-     */
-    DataConverter.prototype.asString = function (value) {
-        return '' + value;
+                'number': function (value) {
+                    return Converters_DataConverterUtils.asNumber(value,
+            converter.decimalRegExp);
+            },
+            'Date': function (value) {
+                return Converters_DataConverterUtils.asDate(value, converter);
+            },
+            'string': Converters_DataConverterUtils.asString
+        };
+        return typeMap[Converters_DataConverterUtils.guessType(value, converter)]
+            .call(converter, value);
     };
     /**
      * Tries to guess the date format
@@ -2731,7 +2700,7 @@ var DataConverter = /** @class */ (function () {
      * data is the data to deduce a format based on
      * @private
      *
-     * @param {Array<string>} data
+     * @param {string[]} data
      * Data to check the format.
      *
      * @param {number} limit
@@ -2744,9 +2713,7 @@ var DataConverter = /** @class */ (function () {
         var parser = this,
             stable = [],
             max = [];
-        var format = 'YYYY/mm/dd', thing, guessedFormat = [], i = 0, madeDeduction = false, 
-            /// candidates = {},
-            elem, j;
+        var format = 'YYYY/mm/dd', thing, guessedFormat = [], i = 0, madeDeduction = false, elem, j;
         if (!limit || limit > data.length) {
             limit = data.length;
         }
@@ -2782,7 +2749,6 @@ var DataConverter = /** @class */ (function () {
                                 else {
                                     guessedFormat[j] = 'YYYY';
                                 }
-                                /// madeDeduction = true;
                             }
                             else if (elem > 12 &&
                                 elem <= 31) {
@@ -2838,75 +2804,6 @@ var DataConverter = /** @class */ (function () {
         DataConverter_fireEvent(this, e.type, e);
     };
     /**
-     * Initiates the data exporting. Should emit `exportError` on failure.
-     *
-     * @param {DataConnector} connector
-     * Connector to export from.
-     *
-     * @param {DataConverter.Options} [options]
-     * Options for the export.
-     */
-    DataConverter.prototype.export = function (
-    /* eslint-disable @typescript-eslint/no-unused-vars */
-    connector, options
-    /* eslint-enable @typescript-eslint/no-unused-vars */
-    ) {
-        this.emit({
-            type: 'exportError',
-            columns: [],
-            headers: []
-        });
-        throw new Error('Not implemented');
-    };
-    /**
-     * Getter for the data table.
-     *
-     * @return {DataTable}
-     * Table of parsed data.
-     */
-    DataConverter.prototype.getTable = function () {
-        throw new Error('Not implemented');
-    };
-    /**
-     * Guesses the potential type of a string value for parsing CSV etc.
-     *
-     * @param {*} value
-     * The value to examine.
-     *
-     * @return {'number'|'string'|'Date'}
-     * Type string, either `string`, `Date`, or `number`.
-     */
-    DataConverter.prototype.guessType = function (value) {
-        var converter = this;
-        var result = 'string';
-        if (typeof value === 'string') {
-            var trimedValue = converter.trim("".concat(value)),
-                decimalRegExp = converter.decimalRegExp;
-            var innerTrimedValue = converter.trim(trimedValue,
-                true);
-            if (decimalRegExp) {
-                innerTrimedValue = (decimalRegExp.test(innerTrimedValue) ?
-                    innerTrimedValue.replace(decimalRegExp, '$1.$2') :
-                    '');
-            }
-            var floatValue = parseFloat(innerTrimedValue);
-            if (+innerTrimedValue === floatValue) {
-                // String is numeric
-                value = floatValue;
-            }
-            else {
-                // Determine if a date string
-                var dateValue = converter.parseDate(value);
-                result = DataConverter_isNumber(dateValue) ? 'Date' : 'string';
-            }
-        }
-        if (typeof value === 'number') {
-            // Greater than milliseconds in a year assumed timestamp
-            result = value > 365 * 24 * 3600 * 1000 ? 'Date' : 'number';
-        }
-        return result;
-    };
-    /**
      * Registers a callback for a specific event.
      *
      * @param {string} type
@@ -2920,22 +2817,6 @@ var DataConverter = /** @class */ (function () {
      */
     DataConverter.prototype.on = function (type, callback) {
         return DataConverter_addEvent(this, type, callback);
-    };
-    /**
-     * Initiates the data parsing. Should emit `parseError` on failure.
-     *
-     * @param {DataConverter.UserOptions} options
-     * Options of the DataConverter.
-     */
-    DataConverter.prototype.parse = function (
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    options) {
-        this.emit({
-            type: 'parseError',
-            columns: [],
-            headers: []
-        });
-        throw new Error('Not implemented');
     };
     /**
      * Parse a date and return it as a number.
@@ -2953,22 +2834,19 @@ var DataConverter = /** @class */ (function () {
         var dateFormat = dateFormatProp || options.dateFormat,
             result = NaN,
             key,
-            format,
-            match;
+            match = null;
         if (options.parseDate) {
             result = options.parseDate(value);
         }
         else {
+            var dateFormats = converter.dateFormats;
             // Auto-detect the date format the first time
             if (!dateFormat) {
-                for (key in converter.dateFormats) { // eslint-disable-line guard-for-in
-                    format = converter.dateFormats[key];
+                for (key in dateFormats) { // eslint-disable-line guard-for-in
+                    var format = dateFormats[key];
                     match = value.match(format.regex);
                     if (match) {
-                        // `converter.options.dateFormat` = dateFormat = key;
                         dateFormat = key;
-                        // `converter.options.alternativeFormat` =
-                        // format.alternative || '';
                         result = format.parser(match);
                         break;
                     }
@@ -2976,10 +2854,10 @@ var DataConverter = /** @class */ (function () {
                 // Next time, use the one previously found
             }
             else {
-                format = converter.dateFormats[dateFormat];
+                var format = dateFormats[dateFormat];
                 if (!format) {
                     // The selected format is invalid
-                    format = converter.dateFormats['YYYY/mm/dd'];
+                    format = dateFormats['YYYY/mm/dd'];
                 }
                 match = value.match(format.regex);
                 if (match) {
@@ -2988,50 +2866,19 @@ var DataConverter = /** @class */ (function () {
             }
             // Fall back to Date.parse
             if (!match) {
-                match = Date.parse(value);
-                // External tools like Date.js and MooTools extend Date object
-                // and returns a date.
-                if (typeof match === 'object' &&
-                    match !== null &&
-                    match.getTime) {
-                    result = (match.getTime() -
-                        match.getTimezoneOffset() *
-                            60000);
-                    // Timestamp
-                }
-                else if (DataConverter_isNumber(match)) {
-                    result = match - (new Date(match)).getTimezoneOffset() * 60000;
-                    if ( // Reset dates without year in Chrome
-                    value.indexOf('2001') === -1 &&
-                        (new Date(result)).getFullYear() === 2001) {
+                var parsed = Date.parse(value);
+                if (!isNaN(parsed)) {
+                    result =
+                        parsed - new Date(parsed).getTimezoneOffset() * 60000;
+                    // Reset dates without year in Chrome
+                    if (!value.includes('2001') &&
+                        new Date(result).getFullYear() === 2001) {
                         result = NaN;
                     }
                 }
             }
         }
         return result;
-    };
-    /**
-     * Trim a string from whitespaces.
-     *
-     * @param {string} str
-     * String to trim.
-     *
-     * @param {boolean} [inside=false]
-     * Remove all spaces between numbers.
-     *
-     * @return {string}
-     * Trimed string
-     */
-    DataConverter.prototype.trim = function (str, inside) {
-        if (typeof str === 'string') {
-            str = str.replace(/^\s+|\s+$/g, '');
-            // Clear white space insdie the string, like thousands separators
-            if (inside && /^[\d\s]+$/.test(str)) {
-                str = str.replace(/\s/g, '');
-            }
-        }
-        return str;
     };
     /* *
      *
@@ -3043,13 +2890,7 @@ var DataConverter = /** @class */ (function () {
      */
     DataConverter.defaultOptions = {
         dateFormat: '',
-        alternativeFormat: '',
-        startColumn: 0,
-        endColumn: Number.MAX_VALUE,
-        startRow: 0,
-        endRow: Number.MAX_VALUE,
-        firstRowAsNames: true,
-        switchRowsAndColumns: false
+        firstRowAsNames: true
     };
     return DataConverter;
 }());
@@ -3102,29 +2943,6 @@ var DataConverter = /** @class */ (function () {
             !!(DataConverter.types[key] = DataConverterClass));
     }
     DataConverter.registerType = registerType;
-    /**
-     * Converts an array of columns to a table instance. Second dimension of the
-     * array are the row cells.
-     *
-     * @param {Array<DataTable.Column>} [columns]
-     * Array to convert.
-     *
-     * @param {Array<string>} [headers]
-     * Column names to use.
-     *
-     * @return {DataTable}
-     * Table instance from the arrays.
-     */
-    function getTableFromColumns(columns, headers) {
-        if (columns === void 0) { columns = []; }
-        if (headers === void 0) { headers = []; }
-        var table = new Data_DataTable();
-        for (var i = 0, iEnd = Math.max(headers.length, columns.length); i < iEnd; ++i) {
-            table.setColumn(headers[i] || "".concat(i), columns[i]);
-        }
-        return table;
-    }
-    DataConverter.getTableFromColumns = getTableFromColumns;
 })(DataConverter || (DataConverter = {}));
 /* *
  *
@@ -3136,11 +2954,11 @@ var DataConverter = /** @class */ (function () {
 ;// ./code/es5/es-modules/Data/DataCursor.js
 /* *
  *
- *  (c) 2020-2025 Highsoft AS
+ *  (c) 2020-2026 Highsoft AS
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  *  Authors:
  *  - Sophie Bremer
@@ -3161,6 +2979,11 @@ var DataConverter = /** @class */ (function () {
  * @name Data.DataCursor
  */
 var DataCursor = /** @class */ (function () {
+    /* *
+     *
+     *  Static Properties
+     *
+     * */
     /* *
      *
      *  Constructor
@@ -3362,16 +3185,6 @@ var DataCursor = /** @class */ (function () {
         }
         return this;
     };
-    /* *
-     *
-     *  Static Properties
-     *
-     * */
-    /**
-     * Semantic version string of the DataCursor class.
-     * @internal
-     */
-    DataCursor.version = '1.0.0';
     return DataCursor;
 }());
 /* *
@@ -3526,43 +3339,14 @@ var DataCursor = /** @class */ (function () {
  * */
 /* harmony default export */ var Data_DataCursor = (DataCursor);
 
-;// ./code/es5/es-modules/Data/DataPoolDefaults.js
-/* *
- *
- *  (c) 2009-2025 Highsoft AS
- *
- *  License: www.highcharts.com/license
- *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
- *
- *  Authors:
- *  - Sophie Bremer
- *
- * */
-
-/* *
- *
- *  API Options
- *
- * */
-var DataPoolDefaults = {
-    connectors: []
-};
-/* *
- *
- *  Export Defaults
- *
- * */
-/* harmony default export */ var Data_DataPoolDefaults = (DataPoolDefaults);
-
 ;// ./code/es5/es-modules/Data/DataPool.js
 /* *
  *
- *  (c) 2009-2025 Highsoft AS
+ *  (c) 2009-2026 Highsoft AS
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  *  Authors:
  *  - Sophie Bremer
@@ -3571,7 +3355,7 @@ var DataPoolDefaults = {
 
 
 
-
+var DataPool_addEvent = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).addEvent, DataPool_fireEvent = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).fireEvent, DataPool_merge = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).merge;
 /* *
  *
  *  Class
@@ -3583,7 +3367,7 @@ var DataPoolDefaults = {
  * @class
  * @name Data.DataPool
  *
- * @param {Data.DataPoolOptions} options
+ * @param {DataPoolOptions} options
  * Pool options with all connectors.
  */
 var DataPool = /** @class */ (function () {
@@ -3593,27 +3377,24 @@ var DataPool = /** @class */ (function () {
      *
      * */
     function DataPool(options) {
-        if (options === void 0) { options = Data_DataPoolDefaults; }
-        options.connectors = (options.connectors || []);
+        this.options = DataPool_merge(DataPool.defaultOptions, options);
         this.connectors = {};
-        this.options = options;
         this.waiting = {};
     }
     /* *
      *
-     *  Functions
+     *  Methods
      *
      * */
     /**
      * Emits an event on this data pool to all registered callbacks of the given
      * event.
-     * @private
      *
      * @param {DataTable.Event} e
      * Event object with event information.
      */
     DataPool.prototype.emit = function (e) {
-        highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default().fireEvent(this, e.type, e);
+        DataPool_fireEvent(this, e.type, e);
     };
     /**
      * Loads the connector.
@@ -3685,7 +3466,7 @@ var DataPool = /** @class */ (function () {
      * @param {string} connectorId
      * ID of the connector.
      *
-     * @return {DataPoolConnectorOptions|undefined}
+     * @return {DataConnectorTypeOptions | undefined}
      * Returns the options of the connector, or `undefined` if not found.
      */
     DataPool.prototype.getConnectorOptions = function (connectorId) {
@@ -3695,22 +3476,6 @@ var DataPool = /** @class */ (function () {
                 return connectors[i];
             }
         }
-    };
-    /**
-     * Loads the connector table.
-     *
-     * @function Data.DataPool#getConnectorTable
-     *
-     * @param {string} connectorId
-     * ID of the connector.
-     *
-     * @return {Promise<Data.DataTable>}
-     * Returns the connector table.
-     */
-    DataPool.prototype.getConnectorTable = function (connectorId) {
-        return this
-            .getConnector(connectorId)
-            .then(function (connector) { return connector.table; });
     };
     /**
      * Tests whether the connector has never been requested.
@@ -3726,7 +3491,8 @@ var DataPool = /** @class */ (function () {
         return !this.connectors[connectorId];
     };
     /**
-     * Creates and loads the connector.
+     * Instantiates the connector class for the given options and loads its
+     * data.
      *
      * @private
      *
@@ -3747,15 +3513,13 @@ var DataPool = /** @class */ (function () {
             if (!ConnectorClass) {
                 throw new Error("Connector type not found. (".concat(options.type, ")"));
             }
-            var connector = _this.connectors[options.id] = new ConnectorClass(options.options,
-                options.dataTables);
+            var connector = _this.connectors[options.id] =
+                    new ConnectorClass(options);
             // eslint-disable-next-line @typescript-eslint/no-floating-promises
             connector
                 .load()
                 .then(function (_a) {
-                var converter = _a.converter,
-                    dataTables = _a.dataTables;
-                connector.dataTables = dataTables;
+                var converter = _a.converter;
                 connector.converter = converter;
                 connector.loaded = true;
                 _this.emit({
@@ -3791,32 +3555,33 @@ var DataPool = /** @class */ (function () {
      * Function to unregister callback from the event.
      */
     DataPool.prototype.on = function (type, callback) {
-        return highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default().addEvent(this, type, callback);
+        return DataPool_addEvent(this, type, callback);
     };
     /**
      * Sets connector options under the specified `options.id`.
      *
-     * @param {Data.DataPoolConnectorOptions} options
+     * @param options
      * Connector options to set.
      */
     DataPool.prototype.setConnectorOptions = function (options) {
-        var connectors = this.options.connectors,
-            instances = this.connectors;
+        var connectorsOptions = this.options.connectors;
+        var connectorsInstances = this.connectors;
         this.emit({
             type: 'setConnectorOptions',
             options: options
         });
-        for (var i = 0, iEnd = connectors.length; i < iEnd; ++i) {
-            if (connectors[i].id === options.id) {
-                connectors.splice(i, 1);
+        for (var i = 0, iEnd = connectorsOptions.length; i < iEnd; ++i) {
+            if (connectorsOptions[i].id === options.id) {
+                connectorsOptions.splice(i, 1);
                 break;
             }
         }
-        if (instances[options.id]) {
-            instances[options.id].stopPolling();
-            delete instances[options.id];
+        // TODO: Check if can be refactored
+        if (connectorsInstances[options.id]) {
+            connectorsInstances[options.id].stopPolling();
+            delete connectorsInstances[options.id];
         }
-        connectors.push(options);
+        connectorsOptions.push(options);
         this.emit({
             type: 'afterSetConnectorOptions',
             options: options
@@ -3827,11 +3592,9 @@ var DataPool = /** @class */ (function () {
      *  Static Properties
      *
      * */
-    /**
-     * Semantic version string of the DataPool class.
-     * @internal
-     */
-    DataPool.version = '1.0.0';
+    DataPool.defaultOptions = {
+        connectors: []
+    };
     return DataPool;
 }());
 /* *
@@ -3844,17 +3607,19 @@ var DataPool = /** @class */ (function () {
 ;// ./code/es5/es-modules/Data/Formula/FormulaParser.js
 /* *
  *
- *  (c) 2009-2025 Highsoft AS
+ *  (c) 2009-2026 Highsoft AS
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  *  Authors:
  *  - Sophie Bremer
  *
  * */
 
+
+var isString = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).isString;
 /* *
  *
  *  Constants
@@ -4137,6 +3902,20 @@ function parseArguments(text, alternativeSeparators) {
     return args;
 }
 /**
+ * Checks if there's one of the following operator before the negative number
+ * value: '*', '/' or '^'.
+ *
+ * Used to properly indicate a negative value reference or negate a directly
+ * passed number value.
+ */
+function negativeReference(formula) {
+    var formulaLength = formula.length;
+    var priorFormula = formula[formulaLength - 2];
+    return (formula[formulaLength - 1] === '-' &&
+        isString(priorFormula) &&
+        !!priorFormula.match(/\*|\/|\^/));
+}
+/**
  * Converts a spreadsheet formula string into a formula array. Throws a
  * `FormulaParserError` when the string can not be parsed.
  *
@@ -4181,6 +3960,10 @@ function parseFormula(text, alternativeSeparators) {
             if (rowRelative) {
                 reference.rowRelative = true;
             }
+            if (negativeReference(formula)) {
+                formula.pop();
+                reference.isNegative = true;
+            }
             formula.push(reference);
             next = next.substring(match[0].length).trim();
             continue;
@@ -4205,6 +3988,10 @@ function parseFormula(text, alternativeSeparators) {
             if (rowRelative) {
                 reference.rowRelative = true;
             }
+            if (negativeReference(formula)) {
+                formula.pop();
+                reference.isNegative = true;
+            }
             formula.push(reference);
             next = next.substring(match[0].length).trim();
             continue;
@@ -4226,7 +4013,15 @@ function parseFormula(text, alternativeSeparators) {
         // Check for a number value
         match = next.match(decimalRegExp);
         if (match) {
-            formula.push(parseFloat(match[0]));
+            var number = parseFloat(match[0]);
+            // If the current value is multiplication-related and the previous
+            // one is a minus sign, set the current value to negative and remove
+            // the minus sign.
+            if (negativeReference(formula)) {
+                formula.pop();
+                number = -number;
+            }
+            formula.push(number);
             next = next.substring(match[0].length).trim();
             continue;
         }
@@ -4306,11 +4101,11 @@ var FormulaParser = {
 ;// ./code/es5/es-modules/Data/Formula/FormulaTypes.js
 /* *
  *
- *  (c) 2009-2025 Highsoft AS
+ *  (c) 2009-2026 Highsoft AS
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  *  Authors:
  *  - Sophie Bremer
@@ -4344,7 +4139,7 @@ var operators = ['+', '-', '*', '/', '^', '=', '<', '<=', '>', '>='];
  * `true`, if the item is a formula (or argument) array.
  */
 function isFormula(item) {
-    return item instanceof Array;
+    return Array.isArray(item);
 }
 /**
  * Tests an item for a Function structure.
@@ -4359,7 +4154,7 @@ function isFormula(item) {
  */
 function isFunction(item) {
     return (typeof item === 'object' &&
-        !(item instanceof Array) &&
+        !(Array.isArray(item)) &&
         item.type === 'function');
 }
 /**
@@ -4390,7 +4185,7 @@ function isOperator(item) {
  */
 function isRange(item) {
     return (typeof item === 'object' &&
-        !(item instanceof Array) &&
+        !(Array.isArray(item)) &&
         item.type === 'range');
 }
 /**
@@ -4406,7 +4201,7 @@ function isRange(item) {
  */
 function isReference(item) {
     return (typeof item === 'object' &&
-        !(item instanceof Array) &&
+        !(Array.isArray(item)) &&
         item.type === 'reference');
 }
 /**
@@ -4443,11 +4238,11 @@ var MathFormula = {
 ;// ./code/es5/es-modules/Data/Formula/FormulaProcessor.js
 /* *
  *
- *  (c) 2009-2025 Highsoft AS
+ *  (c) 2009-2026 Highsoft AS
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  *  Authors:
  *  - Sophie Bremer
@@ -4456,6 +4251,8 @@ var MathFormula = {
 
 
 var FormulaProcessor_isFormula = FormulaTypes.isFormula, FormulaProcessor_isFunction = FormulaTypes.isFunction, FormulaProcessor_isOperator = FormulaTypes.isOperator, FormulaProcessor_isRange = FormulaTypes.isRange, FormulaProcessor_isReference = FormulaTypes.isReference, FormulaProcessor_isValue = FormulaTypes.isValue;
+
+var FormulaProcessor_defined = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).defined;
 /* *
  *
  *  Constants
@@ -4678,21 +4475,21 @@ function getArgumentsValues(args, table) {
  * Extracted values.
  */
 function getRangeValues(range, table) {
-    var columnNames = table
-            .getColumnNames()
+    var columnIds = table
+            .getColumnIds()
             .slice(range.beginColumn,
         range.endColumn + 1),
         values = [];
-    for (var i = 0, iEnd = columnNames.length, cell = void 0; i < iEnd; ++i) {
-        var cells = table.getColumn(columnNames[i],
+    for (var i = 0, iEnd = columnIds.length, cell = void 0; i < iEnd; ++i) {
+        var cells = table.getColumn(columnIds[i],
             true) || [];
         for (var j = range.beginRow, jEnd = range.endRow + 1; j < jEnd; ++j) {
             cell = cells[j];
             if (typeof cell === 'string' &&
                 cell[0] === '=' &&
-                table !== table.modified) {
+                table !== table.getModified()) {
                 // Look in the modified table for formula result
-                cell = table.modified.getCell(columnNames[i], j);
+                cell = table.getModified().getCell(columnIds[i], j);
             }
             values.push(FormulaProcessor_isValue(cell) ? cell : NaN);
         }
@@ -4714,25 +4511,68 @@ function getRangeValues(range, table) {
  * Extracted value. 'undefined' might also indicate that the cell was not found.
  */
 function getReferenceValue(reference, table) {
-    var columnName = table.getColumnNames()[reference.column];
-    if (columnName) {
-        var cell = table.getCell(columnName,
+    var columnId = table.getColumnIds()[reference.column];
+    if (columnId) {
+        var cell = table.getCell(columnId,
             reference.row);
         if (typeof cell === 'string' &&
             cell[0] === '=' &&
-            table !== table.modified) {
+            table !== table.getModified()) {
             // Look in the modified table for formula result
-            var result = table.modified.getCell(columnName,
+            var result = table.getModified().getCell(columnId,
                 reference.row);
             return FormulaProcessor_isValue(result) ? result : NaN;
         }
-        return FormulaProcessor_isValue(cell) ? cell : NaN;
+        if (FormulaProcessor_isValue(cell)) {
+            return reference.isNegative ? -cell : cell;
+        }
+        return NaN;
     }
     return NaN;
 }
 /**
+ * Calculates a value based on the two top values and the related operator.
+ *
+ * Used to properly process the formula's values based on its operators.
+ *
+ * @private
+ * @function Highcharts.applyOperator
+ *
+ * @param {Array<Highcharts.Value>} values
+ * Processed formula values.
+ *
+ * @param {Array<Highcharts.Operator>} operators
+ * Processed formula operators.
+ */
+function applyOperator(values, operators) {
+    if (values.length < 2 || operators.length < 1) {
+        values.push(NaN);
+    }
+    var secondValue = values.pop();
+    var firstValue = values.pop();
+    var operator = operators.pop();
+    if (!FormulaProcessor_defined(secondValue) || !FormulaProcessor_defined(firstValue) || !FormulaProcessor_defined(operator)) {
+        values.push(NaN);
+    }
+    else {
+        values.push(basicOperation(operator, firstValue, secondValue));
+    }
+}
+/**
  * Processes a formula array on the given table. If the formula does not contain
  * references or ranges, then no table has to be provided.
+ *
+ * Performs formulas considering the operators precedence.
+ *
+ * // Example of the `2 * 3 + 4` formula:
+ * 2 -> values: [2], operators: []
+ * * -> values: [2], operators: [*]
+ * 3 -> values: [2, 3], operators: [*]
+ * // Since the higher precedence operator exists (* > +), perform it first.
+ * + -> values: [6], operators: [+]
+ * 4 -> values: [6, 4], operators: [+]
+ * // When non-higher precedence operators remain, perform rest calculations.
+ * -> values: [10], operators: []
  *
  * @private
  * @function Highcharts.processFormula
@@ -4747,61 +4587,69 @@ function getReferenceValue(reference, table) {
  * Result value of the process. `NaN` indicates an error.
  */
 function processFormula(formula, table) {
-    var x;
-    for (var i = 0, iEnd = formula.length, item = void 0, operator = void 0, result = void 0, y = void 0; i < iEnd; ++i) {
-        item = formula[i];
-        // Remember operator for operation on next item
+    // Keeps all the values to calculate them in a proper priority, based on the
+    // given operators.
+    var values = [];
+    // Keeps all the operators to calculate the values above, following the
+    // proper priority.
+    var operators = [];
+    // Indicates if the next item is a value (not an operator).
+    var expectingValue = true;
+    for (var i = 0, iEnd = formula.length; i < iEnd; ++i) {
+        var item = formula[i];
         if (FormulaProcessor_isOperator(item)) {
-            operator = item;
-            continue;
-        }
-        // Next item is a value
-        if (FormulaProcessor_isValue(item)) {
-            y = item;
-            // Next item is a formula and needs to get processed first
-        }
-        else if (FormulaProcessor_isFormula(item)) {
-            y = processFormula(formula, table);
-            // Next item is a function call and needs to get processed first
-        }
-        else if (FormulaProcessor_isFunction(item)) {
-            result = processFunction(item, table);
-            y = (FormulaProcessor_isValue(result) ? result : NaN); // Arrays are not allowed here
-            // Next item is a reference and needs to get resolved
-        }
-        else if (FormulaProcessor_isReference(item)) {
-            y = (table && getReferenceValue(item, table));
-        }
-        // If we have a next value, lets do the operation
-        if (typeof y !== 'undefined') {
-            // Next value is our first value
-            if (typeof x === 'undefined') {
-                if (operator) {
-                    x = basicOperation(operator, 0, y);
-                }
-                else {
-                    x = y;
-                }
-                // Fail fast if no operator available
-            }
-            else if (!operator) {
-                return NaN;
-                // Regular next value
+            if (expectingValue && item === '-') {
+                // Split the negative values to be handled as a binary
+                // operation if the next item is a value.
+                values.push(0);
+                operators.push('-');
+                expectingValue = true;
             }
             else {
-                var operator2 = formula[i + 1];
-                if (FormulaProcessor_isOperator(operator2) &&
-                    operatorPriority[operator2] > operatorPriority[operator]) {
-                    y = basicOperation(operator2, y, processFormula(formula.slice(i + 2)));
-                    i = iEnd;
+                // Perform if the higher precedence operator exist.
+                while (operators.length &&
+                    operatorPriority[operators[operators.length - 1]] >=
+                        operatorPriority[item]) {
+                    applyOperator(values, operators);
                 }
-                x = basicOperation(operator, x, y);
+                operators.push(item);
+                expectingValue = true;
             }
-            operator = void 0;
-            y = void 0;
+            continue;
+        }
+        var value = void 0;
+        // Assign the proper value, starting from the most common types.
+        if (FormulaProcessor_isValue(item)) {
+            value = item;
+        }
+        else if (FormulaProcessor_isReference(item)) {
+            value = table ? getReferenceValue(item, table) : NaN;
+        }
+        else if (FormulaProcessor_isFunction(item)) {
+            var result = processFunction(item,
+                table);
+            value = FormulaProcessor_isValue(result) ? result : NaN;
+        }
+        else if (FormulaProcessor_isFormula(item)) {
+            value = processFormula(item, table);
+        }
+        if (typeof value !== 'undefined') {
+            values.push(value);
+            expectingValue = false;
+        }
+        else {
+            return NaN;
         }
     }
-    return FormulaProcessor_isValue(x) ? x : NaN;
+    // Handle the remaining operators that weren't taken into consideration, due
+    // to non-higher precedence.
+    while (operators.length) {
+        applyOperator(values, operators);
+    }
+    if (values.length !== 1) {
+        return NaN;
+    }
+    return values[0];
 }
 /**
  * Process a function on the given table. If the arguments do not contain
@@ -4877,7 +4725,7 @@ function translateReferences(formula, columnDelta, rowDelta) {
     if (rowDelta === void 0) { rowDelta = 0; }
     for (var i = 0, iEnd = formula.length, item = void 0; i < iEnd; ++i) {
         item = formula[i];
-        if (item instanceof Array) {
+        if (Array.isArray(item)) {
             translateReferences(item, columnDelta, rowDelta);
         }
         else if (FormulaProcessor_isFunction(item)) {
@@ -4929,11 +4777,11 @@ var FormulaProcessor = {
 ;// ./code/es5/es-modules/Data/Formula/Functions/ABS.js
 /* *
  *
- *  (c) 2009-2025 Highsoft AS
+ *  (c) 2009-2026 Highsoft AS
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  *  Authors:
  *  - Sophie Bremer
@@ -4999,11 +4847,11 @@ Formula_FormulaProcessor.registerProcessorFunction('ABS', ABS);
 ;// ./code/es5/es-modules/Data/Formula/Functions/AND.js
 /* *
  *
- *  (c) 2009-2025 Highsoft AS
+ *  (c) 2009-2026 Highsoft AS
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  *  Authors:
  *  - Sophie Bremer
@@ -5060,11 +4908,11 @@ Formula_FormulaProcessor.registerProcessorFunction('AND', AND);
 ;// ./code/es5/es-modules/Data/Formula/Functions/AVERAGE.js
 /* *
  *
- *  (c) 2009-2025 Highsoft AS
+ *  (c) 2009-2026 Highsoft AS
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  *  Authors:
  *  - Sophie Bremer
@@ -5138,11 +4986,11 @@ Formula_FormulaProcessor.registerProcessorFunction('AVERAGE', AVERAGE);
 ;// ./code/es5/es-modules/Data/Formula/Functions/AVERAGEA.js
 /* *
  *
- *  (c) 2009-2025 Highsoft AS
+ *  (c) 2009-2026 Highsoft AS
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  *  Authors:
  *  - Sophie Bremer
@@ -5231,11 +5079,11 @@ Formula_FormulaProcessor.registerProcessorFunction('AVERAGEA', AVERAGEA);
 ;// ./code/es5/es-modules/Data/Formula/Functions/COUNT.js
 /* *
  *
- *  (c) 2009-2025 Highsoft AS
+ *  (c) 2009-2026 Highsoft AS
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  *  Authors:
  *  - Sophie Bremer
@@ -5299,11 +5147,11 @@ Formula_FormulaProcessor.registerProcessorFunction('COUNT', COUNT);
 ;// ./code/es5/es-modules/Data/Formula/Functions/COUNTA.js
 /* *
  *
- *  (c) 2009-2025 Highsoft AS
+ *  (c) 2009-2026 Highsoft AS
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  *  Authors:
  *  - Sophie Bremer
@@ -5373,11 +5221,11 @@ Formula_FormulaProcessor.registerProcessorFunction('COUNTA', COUNTA);
 ;// ./code/es5/es-modules/Data/Formula/Functions/IF.js
 /* *
  *
- *  (c) 2009-2025 Highsoft AS
+ *  (c) 2009-2026 Highsoft AS
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  *  Authors:
  *  - Sophie Bremer
@@ -5429,11 +5277,11 @@ Formula_FormulaProcessor.registerProcessorFunction('IF', IF);
 ;// ./code/es5/es-modules/Data/Formula/Functions/ISNA.js
 /* *
  *
- *  (c) 2009-2025 Highsoft AS
+ *  (c) 2009-2026 Highsoft AS
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  *  Authors:
  *  - Sophie Bremer
@@ -5484,11 +5332,11 @@ Formula_FormulaProcessor.registerProcessorFunction('ISNA', ISNA);
 ;// ./code/es5/es-modules/Data/Formula/Functions/MAX.js
 /* *
  *
- *  (c) 2009-2025 Highsoft AS
+ *  (c) 2009-2026 Highsoft AS
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  *  Authors:
  *  - Sophie Bremer
@@ -5556,11 +5404,11 @@ Formula_FormulaProcessor.registerProcessorFunction('MAX', MAX);
 ;// ./code/es5/es-modules/Data/Formula/Functions/MEDIAN.js
 /* *
  *
- *  (c) 2009-2025 Highsoft AS
+ *  (c) 2009-2026 Highsoft AS
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  *  Authors:
  *  - Sophie Bremer
@@ -5638,11 +5486,11 @@ Formula_FormulaProcessor.registerProcessorFunction('MEDIAN', MEDIAN);
 ;// ./code/es5/es-modules/Data/Formula/Functions/MIN.js
 /* *
  *
- *  (c) 2009-2025 Highsoft AS
+ *  (c) 2009-2026 Highsoft AS
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  *  Authors:
  *  - Sophie Bremer
@@ -5710,11 +5558,11 @@ Formula_FormulaProcessor.registerProcessorFunction('MIN', MIN);
 ;// ./code/es5/es-modules/Data/Formula/Functions/MOD.js
 /* *
  *
- *  (c) 2009-2025 Highsoft AS
+ *  (c) 2009-2026 Highsoft AS
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  *  Authors:
  *  - Sophie Bremer
@@ -5778,11 +5626,11 @@ Formula_FormulaProcessor.registerProcessorFunction('MOD', MOD);
 ;// ./code/es5/es-modules/Data/Formula/Functions/MODE.js
 /* *
  *
- *  (c) 2009-2025 Highsoft AS
+ *  (c) 2009-2026 Highsoft AS
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  *  Authors:
  *  - Sophie Bremer
@@ -5937,11 +5785,11 @@ var MODE = {
 ;// ./code/es5/es-modules/Data/Formula/Functions/NOT.js
 /* *
  *
- *  (c) 2009-2025 Highsoft AS
+ *  (c) 2009-2026 Highsoft AS
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  *  Authors:
  *  - Sophie Bremer
@@ -6000,11 +5848,11 @@ Formula_FormulaProcessor.registerProcessorFunction('NOT', NOT);
 ;// ./code/es5/es-modules/Data/Formula/Functions/OR.js
 /* *
  *
- *  (c) 2009-2025 Highsoft AS
+ *  (c) 2009-2026 Highsoft AS
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  *  Authors:
  *  - Sophie Bremer
@@ -6064,11 +5912,11 @@ Formula_FormulaProcessor.registerProcessorFunction('OR', OR);
 ;// ./code/es5/es-modules/Data/Formula/Functions/PRODUCT.js
 /* *
  *
- *  (c) 2009-2025 Highsoft AS
+ *  (c) 2009-2026 Highsoft AS
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  *  Authors:
  *  - Sophie Bremer
@@ -6136,11 +5984,11 @@ Formula_FormulaProcessor.registerProcessorFunction('PRODUCT', PRODUCT);
 ;// ./code/es5/es-modules/Data/Formula/Functions/SUM.js
 /* *
  *
- *  (c) 2009-2025 Highsoft AS
+ *  (c) 2009-2026 Highsoft AS
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  *  Authors:
  *  - Sophie Bremer
@@ -6204,11 +6052,11 @@ Formula_FormulaProcessor.registerProcessorFunction('SUM', SUM); // 🐝
 ;// ./code/es5/es-modules/Data/Formula/Functions/XOR.js
 /* *
  *
- *  (c) 2009-2025 Highsoft AS
+ *  (c) 2009-2026 Highsoft AS
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  *  Authors:
  *  - Sophie Bremer
@@ -6287,19 +6135,19 @@ Formula_FormulaProcessor.registerProcessorFunction('XOR', XOR);
 ;// ./code/es5/es-modules/Data/Formula/Formula.js
 /* *
  *
- *  (c) 2009-2025 Highsoft AS
+ *  (c) 2009-2026 Highsoft AS
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  *  Authors:
  *  - Sophie Bremer
  *
  * */
 
-var __assign = (undefined && undefined.__assign) || function () {
-    __assign = Object.assign || function(t) {
+var Formula_assign = (undefined && undefined.__assign) || function () {
+    Formula_assign = Object.assign || function(t) {
         for (var s, i = 1, n = arguments.length; i < n; i++) {
             s = arguments[i];
             for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
@@ -6307,7 +6155,7 @@ var __assign = (undefined && undefined.__assign) || function () {
         }
         return t;
     };
-    return __assign.apply(this, arguments);
+    return Formula_assign.apply(this, arguments);
 };
 /* *
  *
@@ -6344,23 +6192,24 @@ var __assign = (undefined && undefined.__assign) || function () {
  * Formula engine to make use of spreadsheet formula strings.
  * @internal
  */
-var Formula = __assign(__assign(__assign({}, Formula_FormulaParser), Formula_FormulaProcessor), FormulaTypes);
+var Formula = Formula_assign(Formula_assign(Formula_assign({}, Formula_FormulaParser), Formula_FormulaProcessor), FormulaTypes);
 /* harmony default export */ var Formula_Formula = (Formula);
 
 ;// ./code/es5/es-modules/Data/Converters/CSVConverter.js
 /* *
  *
- *  (c) 2009-2025 Highsoft AS
+ *  (c) 2009-2026 Highsoft AS
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  *  Authors:
  *  - Torstein Hønsi
  *  - Christer Vasseng
  *  - Gøran Slettemark
  *  - Sophie Bremer
+ *  - Kamil Kubik
  *
  * */
 
@@ -6396,6 +6245,7 @@ var CSVConverter_assign = (undefined && undefined.__assign) || function () {
 };
 
 
+
 var CSVConverter_merge = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).merge;
 /* *
  *
@@ -6417,7 +6267,7 @@ var CSVConverter = /** @class */ (function (_super) {
     /**
      * Constructs an instance of the CSV parser.
      *
-     * @param {CSVConverter.UserOptions} [options]
+     * @param {Partial<CSVConverterOptions>} [options]
      * Options for the CSV parser.
      */
     function CSVConverter(options) {
@@ -6430,7 +6280,6 @@ var CSVConverter = /** @class */ (function (_super) {
          *  Properties
          *
          * */
-        _this.columns = [];
         _this.headers = [];
         _this.dataTypes = [];
         _this.options = mergedOptions;
@@ -6442,94 +6291,16 @@ var CSVConverter = /** @class */ (function (_super) {
      *
      * */
     /**
-     * Creates a CSV string from the datatable on the connector instance.
+     * Parses the CSV string into a DataTable column collection.
+     * Handles line and item delimiters, optional header row, and
+     * applies pre-processing if a beforeParse callback is provided.
      *
-     * @param {DataConnector} connector
-     * Connector instance to export from.
-     *
-     * @param {CSVConverter.Options} [options]
-     * Options used for the export.
-     *
-     * @return {string}
-     * CSV string from the connector table.
-     */
-    CSVConverter.prototype.export = function (connector, options) {
-        if (options === void 0) { options = this.options; }
-        var useLocalDecimalPoint = options.useLocalDecimalPoint,
-            lineDelimiter = options.lineDelimiter,
-            exportNames = (this.options.firstRowAsNames !== false);
-        var decimalPoint = options.decimalPoint,
-            itemDelimiter = options.itemDelimiter;
-        if (!decimalPoint) {
-            decimalPoint = (itemDelimiter !== ',' && useLocalDecimalPoint ?
-                (1.1).toLocaleString()[1] :
-                '.');
-        }
-        if (!itemDelimiter) {
-            itemDelimiter = (decimalPoint === ',' ? ';' : ',');
-        }
-        var columns = connector.getSortedColumns(options.usePresentationOrder),
-            columnNames = Object.keys(columns),
-            csvRows = [],
-            columnsCount = columnNames.length;
-        var rowArray = [];
-        // Add the names as the first row if they should be exported
-        if (exportNames) {
-            csvRows.push(columnNames.map(function (columnName) { return "\"".concat(columnName, "\""); }).join(itemDelimiter));
-        }
-        for (var columnIndex = 0; columnIndex < columnsCount; columnIndex++) {
-            var columnName = columnNames[columnIndex],
-                column = columns[columnName],
-                columnLength = column.length;
-            var columnMeta = connector.whatIs(columnName);
-            var columnDataType = void 0;
-            if (columnMeta) {
-                columnDataType = columnMeta.dataType;
-            }
-            for (var rowIndex = 0; rowIndex < columnLength; rowIndex++) {
-                var cellValue = column[rowIndex];
-                if (!rowArray[rowIndex]) {
-                    rowArray[rowIndex] = [];
-                }
-                // Prefer datatype from metadata
-                if (columnDataType === 'string') {
-                    cellValue = '"' + cellValue + '"';
-                }
-                else if (typeof cellValue === 'number') {
-                    cellValue = String(cellValue).replace('.', decimalPoint);
-                }
-                else if (typeof cellValue === 'string') {
-                    cellValue = "\"".concat(cellValue, "\"");
-                }
-                rowArray[rowIndex][columnIndex] = cellValue;
-                // On the final column, push the row to the CSV
-                if (columnIndex === columnsCount - 1) {
-                    // Trim repeated undefined values starting at the end
-                    // Currently, we export the first "comma" even if the
-                    // second value is undefined
-                    var i = columnIndex;
-                    while (rowArray[rowIndex].length > 2) {
-                        var cellVal = rowArray[rowIndex][i];
-                        if (cellVal !== void 0) {
-                            break;
-                        }
-                        rowArray[rowIndex].pop();
-                        i--;
-                    }
-                    csvRows.push(rowArray[rowIndex].join(itemDelimiter));
-                }
-            }
-        }
-        return csvRows.join(lineDelimiter);
-    };
-    /**
-     * Initiates parsing of CSV
-     *
-     * @param {CSVConverter.UserOptions}[options]
-     * Options for the parser
-     *
+     * @param {Partial<CSVConverterOptions>} [options]
+     * Options for the parser.
      * @param {DataEvent.Detail} [eventDetail]
      * Custom information for pending events.
+     * @return {DataTable.ColumnCollection}
+     * The parsed column collection.
      *
      * @emits CSVDataParser#parse
      * @emits CSVDataParser#afterParse
@@ -6549,10 +6320,10 @@ var CSVConverter = /** @class */ (function (_super) {
             startRow = parserOptions.startRow,
             endRow = parserOptions.endRow,
             column;
-        converter.columns = [];
+        var columnsArray = [];
         converter.emit({
             type: 'parse',
-            columns: converter.columns,
+            columns: columnsArray,
             detail: eventDetail,
             headers: converter.headers
         });
@@ -6590,43 +6361,47 @@ var CSVConverter = /** @class */ (function (_super) {
                     offset++;
                 }
                 else {
-                    converter
-                        .parseCSVRow(lines[rowIt], rowIt - startRow - offset);
+                    converter.parseCSVRow(columnsArray, lines[rowIt], rowIt - startRow - offset);
                 }
             }
             if (dataTypes.length &&
                 dataTypes[0].length &&
                 dataTypes[0][1] === 'date' && // Format is a string date
                 !converter.options.dateFormat) {
-                converter.deduceDateFormat(converter.columns[0], null, true);
+                converter.deduceDateFormat(columnsArray[0], null, true);
             }
             // Guess types.
-            for (var i = 0, iEnd = converter.columns.length; i < iEnd; ++i) {
-                column = converter.columns[i];
+            for (var i = 0, iEnd = columnsArray.length; i < iEnd; ++i) {
+                column = columnsArray[i];
                 for (var j = 0, jEnd = column.length; j < jEnd; ++j) {
                     if (column[j] && typeof column[j] === 'string') {
-                        var cellValue = converter.asGuessedType(column[j]);
+                        var cellValue = converter.convertByType(column[j]);
                         if (cellValue instanceof Date) {
                             cellValue = cellValue.getTime();
                         }
-                        converter.columns[i][j] = cellValue;
+                        columnsArray[i][j] = cellValue;
                     }
                 }
             }
         }
+        // Normalize columns to same length to avoid truncation.
+        columnsArray.forEach(function (col) {
+            col.length = Math.max.apply(Math, columnsArray.map(function (c) { return c.length; }));
+        });
         converter.emit({
             type: 'afterParse',
-            columns: converter.columns,
+            columns: columnsArray,
             detail: eventDetail,
             headers: converter.headers
         });
+        return Converters_DataConverterUtils.getColumnsCollection(columnsArray, converter.headers);
     };
     /**
-     * Internal method that parses a single CSV row
+     * Parses a single CSV row string into columns, handling delimiters,
+     * quoted values, data type inference, and column range selection.
      */
-    CSVConverter.prototype.parseCSVRow = function (columnStr, rowNumber) {
+    CSVConverter.prototype.parseCSVRow = function (columns, columnStr, rowNumber) {
         var converter = this,
-            columns = converter.columns || [],
             dataTypes = converter.dataTypes,
             _a = converter.options,
             startColumn = _a.startColumn,
@@ -6658,8 +6433,9 @@ var CSVConverter = /** @class */ (function (_super) {
             }
             // Save the type of the token.
             if (typeof token === 'string') {
-                if (!isNaN(parseFloat(token)) && isFinite(token)) {
-                    token = parseFloat(token);
+                var parsedNumber = parseFloat(token);
+                if (!isNaN(parsedNumber) && isFinite(Number(token))) {
+                    token = parsedNumber;
                     pushType('number');
                 }
                 else if (!isNaN(Date.parse(token))) {
@@ -6679,11 +6455,11 @@ var CSVConverter = /** @class */ (function (_super) {
             // Try to apply the decimal point, and check if the token then is a
             // number. If not, reapply the initial value
             if (typeof token !== 'number' &&
-                converter.guessType(token) !== 'number' &&
+                Converters_DataConverterUtils.guessType(token, converter) !== 'number' &&
                 decimalPoint) {
                 var initialValue = token;
                 token = token.replace(decimalPoint, '.');
-                if (converter.guessType(token) !== 'number') {
+                if (Converters_DataConverterUtils.guessType(token, converter) !== 'number') {
                     token = initialValue;
                 }
             }
@@ -6732,7 +6508,7 @@ var CSVConverter = /** @class */ (function (_super) {
     /**
      * Internal method that guesses the delimiter from the first
      * 13 lines of the CSV
-     * @param {Array<string>} lines
+     * @param {string[]} lines
      * The CSV, split into lines
      */
     CSVConverter.prototype.guessDelimiter = function (lines) {
@@ -6827,15 +6603,6 @@ var CSVConverter = /** @class */ (function (_super) {
         }
         return guessed;
     };
-    /**
-     * Handles converting the parsed data to a table.
-     *
-     * @return {DataTable}
-     * Table from the parsed CSV.
-     */
-    CSVConverter.prototype.getTable = function () {
-        return Converters_DataConverter.getTableFromColumns(this.columns, this.headers);
-    };
     /* *
      *
      *  Static Properties
@@ -6844,7 +6611,7 @@ var CSVConverter = /** @class */ (function (_super) {
     /**
      * Default options
      */
-    CSVConverter.defaultOptions = CSVConverter_assign(CSVConverter_assign({}, Converters_DataConverter.defaultOptions), { lineDelimiter: '\n' });
+    CSVConverter.defaultOptions = CSVConverter_assign(CSVConverter_assign({}, Converters_DataConverter.defaultOptions), { lineDelimiter: '\n', startColumn: 0, endColumn: Number.MAX_VALUE, startRow: 0, endRow: Number.MAX_VALUE });
     return CSVConverter;
 }(Converters_DataConverter));
 Converters_DataConverter.registerType('CSV', CSVConverter);
@@ -6858,17 +6625,18 @@ Converters_DataConverter.registerType('CSV', CSVConverter);
 ;// ./code/es5/es-modules/Data/Connectors/CSVConnector.js
 /* *
  *
- *  (c) 2009-2025 Highsoft AS
+ *  (c) 2009-2026 Highsoft AS
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  *  Authors:
  *  - Torstein Hønsi
  *  - Christer Vasseng
  *  - Gøran Slettemark
  *  - Sophie Bremer
+ *  - Kamil Kubik
  *
  * */
 
@@ -6894,7 +6662,7 @@ var CSVConnector_extends = (undefined && undefined.__extends) || (function () {
 
 
 
-var CSVConnector_merge = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).merge, CSVConnector_defined = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).defined;
+var CSVConnector_merge = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).merge, CSVConnector_fireEvent = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).fireEvent;
 /* *
  *
  *  Class
@@ -6915,20 +6683,15 @@ var CSVConnector = /** @class */ (function (_super) {
     /**
      * Constructs an instance of CSVConnector.
      *
-     * @param {CSVConnector.UserOptions} [options]
+     * @param {Partial<CSVConnectorOptions>} [options]
      * Options for the connector and converter.
-     *
-     * @param {Array<DataTableOptions>} [dataTables]
-     * Multiple connector data tables options.
-     *
      */
-    function CSVConnector(options, dataTables) {
+    function CSVConnector(options) {
         var _this = this;
         var mergedOptions = CSVConnector_merge(CSVConnector.defaultOptions,
             options);
-        _this = _super.call(this, mergedOptions, dataTables) || this;
-        _this.options = CSVConnector_defined(dataTables) ?
-            CSVConnector_merge(mergedOptions, { dataTables: dataTables }) : mergedOptions;
+        _this = _super.call(this, mergedOptions) || this;
+        _this.options = mergedOptions;
         if (mergedOptions.enablePolling) {
             _this.startPolling(Math.max(mergedOptions.dataRefreshRate || 0, 1) * 1000);
         }
@@ -6939,6 +6702,16 @@ var CSVConnector = /** @class */ (function (_super) {
      *  Functions
      *
      * */
+    /**
+     * Overrides the DataConnector method. Emits an event on the connector to
+     * all registered callbacks of this event.
+     *
+     * @param {CSVConnector.Event} e
+     * Event object containing additional event information.
+     */
+    CSVConnector.prototype.emit = function (e) {
+        CSVConnector_fireEvent(this, e.type, e);
+    };
     /**
      * Initiates the loading of the CSV source to the connector
      *
@@ -6951,18 +6724,15 @@ var CSVConnector = /** @class */ (function (_super) {
     CSVConnector.prototype.load = function (eventDetail) {
         var _this = this;
         var _a;
-        var connector = this,
-            tables = connector.dataTables,
-            _b = connector.options,
-            csv = _b.csv,
-            csvURL = _b.csvURL,
-            dataModifier = _b.dataModifier,
-            dataTables = _b.dataTables;
+        var connector = this;
+        var options = connector.options;
+        var csv = options.csv,
+            csvURL = options.csvURL,
+            dataTables = options.dataTables,
+            decimalPoint = options.decimalPoint;
         connector.emit({
             type: 'load',
-            csv: csv,
-            detail: eventDetail,
-            tables: tables
+            csv: csv
         });
         return Promise
             .resolve(csvURL ?
@@ -6973,39 +6743,38 @@ var CSVConnector = /** @class */ (function (_super) {
             .then(function (csv) {
             if (csv) {
                 _this.initConverters(csv, function (key) {
-                    var _a,
-                        _b;
-                    var options = _this.options;
                     var tableOptions = dataTables === null || dataTables === void 0 ? void 0 : dataTables.find(function (dataTable) { return dataTable.key === key; });
-                    // Takes over the connector default options.
-                    var mergedTableOptions = {
-                            dataTableKey: key,
-                            firstRowAsNames: (_a = tableOptions === null || tableOptions === void 0 ? void 0 : tableOptions.firstRowAsNames) !== null && _a !== void 0 ? _a : options.firstRowAsNames,
-                            beforeParse: (_b = tableOptions === null || tableOptions === void 0 ? void 0 : tableOptions.beforeParse) !== null && _b !== void 0 ? _b : options.beforeParse
+                    // The data table options takes precedence over the
+                    // connector options.
+                    var _a = tableOptions || {},
+                        _b = _a.firstRowAsNames,
+                        firstRowAsNames = _b === void 0 ? options.firstRowAsNames : _b,
+                        _c = _a.beforeParse,
+                        beforeParse = _c === void 0 ? options.beforeParse : _c;
+                    var converterOptions = {
+                            decimalPoint: decimalPoint,
+                            firstRowAsNames: firstRowAsNames,
+                            beforeParse: beforeParse
                         };
-                    return new Converters_CSVConverter(CSVConnector_merge(_this.options, mergedTableOptions));
+                    return new Converters_CSVConverter(CSVConnector_merge(options, converterOptions));
                 }, function (converter, data) {
-                    converter.parse({ csv: data });
+                    return converter.parse({ csv: data });
                 });
             }
-            return connector
-                .setModifierOptions(dataModifier, dataTables)
-                .then(function () { return csv; });
+            return connector.applyTableModifiers().then(function () { return csv; });
         })
             .then(function (csv) {
             connector.emit({
                 type: 'afterLoad',
-                csv: csv,
                 detail: eventDetail,
-                tables: tables
+                csv: csv
             });
             return connector;
         })['catch'](function (error) {
             connector.emit({
                 type: 'loadError',
                 detail: eventDetail,
-                error: error,
-                tables: tables
+                error: error
             });
             throw error;
         });
@@ -7016,6 +6785,8 @@ var CSVConnector = /** @class */ (function (_super) {
      *
      * */
     CSVConnector.defaultOptions = {
+        id: 'csv-connector',
+        type: 'CSV',
         csv: '',
         csvURL: '',
         enablePolling: false,
@@ -7024,6 +6795,11 @@ var CSVConnector = /** @class */ (function (_super) {
     };
     return CSVConnector;
 }(Connectors_DataConnector));
+/* *
+ *
+ *  Registry
+ *
+ * */
 Connectors_DataConnector.registerType('CSV', CSVConnector);
 /* *
  *
@@ -7035,14 +6811,15 @@ Connectors_DataConnector.registerType('CSV', CSVConnector);
 ;// ./code/es5/es-modules/Data/Converters/JSONConverter.js
 /* *
  *
- *  (c) 2009-2025 Highsoft AS
+ *  (c) 2009-2026 Highsoft AS
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  *  Authors:
  *  - Pawel Lysy
+ *  - Kamil Kubik
  *
  * */
 
@@ -7100,7 +6877,7 @@ var JSONConverter = /** @class */ (function (_super) {
     /**
      * Constructs an instance of the JSON parser.
      *
-     * @param {JSONConverter.UserOptions} [options]
+     * @param {Partial<JSONConverterOptions>} [options]
      * Options for the JSON parser.
      */
     function JSONConverter(options) {
@@ -7113,10 +6890,9 @@ var JSONConverter = /** @class */ (function (_super) {
          *  Properties
          *
          * */
-        _this.columns = [];
+        _this.headerColumnIds = [];
         _this.headers = [];
         _this.options = mergedOptions;
-        _this.table = new Data_DataTable();
         return _this;
     }
     /* *
@@ -7127,7 +6903,7 @@ var JSONConverter = /** @class */ (function (_super) {
     /**
      * Initiates parsing of JSON structure.
      *
-     * @param {JSONConverter.UserOptions}[options]
+     * @param {Partial<JSONConverterOptions>}[options]
      * Options for the parser
      *
      * @param {DataEvent.Detail} [eventDetail]
@@ -7142,15 +6918,16 @@ var JSONConverter = /** @class */ (function (_super) {
         var beforeParse = options.beforeParse,
             orientation = options.orientation,
             firstRowAsNames = options.firstRowAsNames,
-            columnNames = options.columnNames;
+            columnIds = options.columnIds;
         var data = options.data;
         if (!data) {
-            return;
+            return {};
         }
-        converter.columns = [];
+        converter.headers = [];
+        var columnsArray = [];
         converter.emit({
             type: 'parse',
-            columns: converter.columns,
+            columns: columnsArray,
             detail: eventDetail,
             headers: converter.headers
         });
@@ -7159,84 +6936,136 @@ var JSONConverter = /** @class */ (function (_super) {
         }
         data = data.slice();
         if (orientation === 'columns') {
-            for (var i = 0, iEnd = data.length; i < iEnd; i++) {
-                var item = data[i];
-                if (!(item instanceof Array)) {
-                    return;
-                }
-                if (converter.headers instanceof Array) {
-                    if (firstRowAsNames) {
-                        converter.headers.push("".concat(item.shift()));
-                    }
-                    else if (columnNames && columnNames instanceof Array) {
-                        converter.headers.push(columnNames[i]);
-                    }
-                    converter.table.setColumn(converter.headers[i] || i.toString(), item);
-                }
-                else {
-                    error('JSONConverter: Invalid `columnNames` option.', false);
-                }
-            }
+            this.parseColumnsOrientation(columnsArray, data, firstRowAsNames, columnIds);
         }
         else if (orientation === 'rows') {
-            if (firstRowAsNames) {
-                converter.headers = data.shift();
-            }
-            else if (columnNames) {
-                converter.headers = columnNames;
-            }
-            var _loop_1 = function (rowIndex,
-                iEnd) {
-                    var row = data[rowIndex];
-                if (isArray(row)) {
-                    for (var columnIndex = 0, jEnd = row.length; columnIndex < jEnd; columnIndex++) {
-                        if (converter.columns.length < columnIndex + 1) {
-                            converter.columns.push([]);
-                        }
-                        converter.columns[columnIndex].push(row[columnIndex]);
-                        if (converter.headers instanceof Array) {
-                            this_1.table.setColumn(converter.headers[columnIndex] ||
-                                columnIndex.toString(), converter.columns[columnIndex]);
-                        }
-                        else {
-                            error('JSONConverter: Invalid `columnNames` option.', false);
-                        }
-                    }
-                }
-                else {
-                    var columnNames_1 = converter.headers;
-                    if (columnNames_1 && !(columnNames_1 instanceof Array)) {
-                        var newRow_1 = {};
-                        JSONConverter_objectEach(columnNames_1, function (arrayWithPath, name) {
-                            newRow_1[name] = arrayWithPath.reduce(function (acc, key) {
-                                return acc[key];
-                            }, row);
-                        });
-                        row = newRow_1;
-                    }
-                    this_1.table.setRows([row], rowIndex);
-                }
-            };
-            var this_1 = this;
-            for (var rowIndex = 0, iEnd = data.length; rowIndex < iEnd; rowIndex++) {
-                _loop_1(rowIndex, iEnd);
-            }
+            this.parseRowsOrientation(columnsArray, data, firstRowAsNames, columnIds);
         }
         converter.emit({
             type: 'afterParse',
-            columns: converter.columns,
+            columns: columnsArray,
             detail: eventDetail,
             headers: converter.headers
         });
+        return Converters_DataConverterUtils.getColumnsCollection(columnsArray, converter.headers);
     };
     /**
-     * Handles converting the parsed data to a table.
+     * Helper for parsing data in 'columns' orientation.
      *
-     * @return {DataTable}
-     * Table from the parsed CSV.
+     * @param {DataTable.BasicColumn[]} [columnsArray]
+     * Array of columns.
+     *
+     * @param {unknown[]} [data]
+     * Array of data elements.
+     *
+     * @param {Boolean} [firstRowAsNames]
+     * Defines row as names.
+     *
+     * @param {Array<string>} [columnIds]
+     * Column ids to retrieve.
+     *
+     * @return {void}
      */
-    JSONConverter.prototype.getTable = function () {
-        return this.table;
+    JSONConverter.prototype.parseColumnsOrientation = function (columnsArray, data, firstRowAsNames, columnIds) {
+        var converter = this;
+        for (var i = 0, iEnd = data.length; i < iEnd; i++) {
+            var item = data[i];
+            if (!(Array.isArray(item))) {
+                return;
+            }
+            if (Array.isArray(converter.headers)) {
+                if (firstRowAsNames) {
+                    converter.headers.push("".concat(item.shift()));
+                }
+                else if (columnIds && Array.isArray(columnIds)) {
+                    converter.headers.push(columnIds[i]);
+                }
+                columnsArray.push(item);
+            }
+            else {
+                error('JSONConverter: Invalid `columnIds` option.', false);
+            }
+        }
+    };
+    /**
+     * Helper for parsing data in 'rows' orientation.
+     *
+     * @param {DataTable.BasicColumn[]} [columnsArray]
+     * Array of columns.
+     *
+     * Helper for parsing data in 'rows' orientation.
+     *
+     * @param {unknown[]} [data]
+     * Array of data elements.
+     *
+     * @param {Boolean} [firstRowAsNames]
+     * Defines row as names.
+     *
+     * @param {Array<string>} [columnIds]
+     * Column ids to retrieve.
+     *
+     * @return {DataTable.BasicColumn[]}
+     * Parsed columns.
+     */
+    JSONConverter.prototype.parseRowsOrientation = function (columnsArray, data, firstRowAsNames, columnIds) {
+        var converter = this;
+        if (firstRowAsNames) {
+            converter.headers = data.shift();
+        }
+        else if (columnIds) {
+            converter.headerColumnIds = columnIds;
+        }
+        for (var rowIndex = 0, iEnd = data.length; rowIndex < iEnd; rowIndex++) {
+            var row = data[rowIndex];
+            if (!isArray(row)) {
+                row = this.convertItemToRow(row, columnIds);
+            }
+            for (var columnIndex = 0, jEnd = row.length; columnIndex < jEnd; columnIndex++) {
+                if (columnsArray.length < columnIndex + 1) {
+                    columnsArray.push([]);
+                }
+                columnsArray[columnIndex].push(row[columnIndex]);
+                // Create headers only once.
+                if (!firstRowAsNames && rowIndex === 0) {
+                    if (Array.isArray(converter.headerColumnIds)) {
+                        converter.headers.push(converter.headerColumnIds[columnIndex] ||
+                            columnIndex.toString());
+                    }
+                    else {
+                        error('JSONConverter: Invalid `columnIds` option.', false);
+                    }
+                }
+            }
+        }
+    };
+    /**
+     * Extracts a row from an object, using columnIds if provided.
+     *
+     * @param {Record<string, string|number>} [rowObj]
+     * Set of props.
+     *
+     * @param {Array<string>} [columnIds]
+     * Column ids to retrieve.
+     *
+     * @return {Array<string | number>}
+     * Row converted to array.
+     */
+    JSONConverter.prototype.convertItemToRow = function (rowObj, columnIds) {
+        var converter = this;
+        if (columnIds && !(Array.isArray(columnIds))) {
+            var newRow_1 = [];
+            JSONConverter_objectEach(columnIds, function (arrayWithPath, name) {
+                newRow_1.push(arrayWithPath.reduce(function (acc, key) {
+                    return acc[key];
+                }, rowObj));
+                if (converter.headers.indexOf(name) < 0) {
+                    converter.headers.push(name);
+                }
+            });
+            return newRow_1;
+        }
+        converter.headerColumnIds = Object.keys(rowObj);
+        return Object.values(rowObj);
     };
     /* *
      *
@@ -7246,7 +7075,7 @@ var JSONConverter = /** @class */ (function (_super) {
     /**
      * Default options
      */
-    JSONConverter.defaultOptions = JSONConverter_assign(JSONConverter_assign({}, Converters_DataConverter.defaultOptions), { data: [], orientation: 'rows' });
+    JSONConverter.defaultOptions = JSONConverter_assign(JSONConverter_assign({}, Converters_DataConverter.defaultOptions), { orientation: 'rows' });
     return JSONConverter;
 }(Converters_DataConverter));
 Converters_DataConverter.registerType('JSON', JSONConverter);
@@ -7260,14 +7089,15 @@ Converters_DataConverter.registerType('JSON', JSONConverter);
 ;// ./code/es5/es-modules/Data/Connectors/JSONConnector.js
 /* *
  *
- *  (c) 2009-2025 Highsoft AS
+ *  (c) 2009-2026 Highsoft AS
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  *  Authors:
  *  - Pawel Lysy
+ *  - Kamil Kubik
  *
  * */
 
@@ -7290,10 +7120,53 @@ var JSONConnector_extends = (undefined && undefined.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+var JSONConnector_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var JSONConnector_generator = (undefined && undefined.__generator) || function (thisArg, body) {
+    var _ = { label: 0,
+        sent: function() { if (t[0] & 1) throw t[1]; return t[1]; },
+        trys: [],
+        ops: [] },
+        f,
+        y,
+        t,
+        g = Object.create((typeof Iterator === "function" ? Iterator : Object).prototype);
+    return g.next = verb(0), g["throw"] = verb(1), g["return"] = verb(2), typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (g && (g = 0, op[0] && (_ = 0)), _) try {
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
 
 
 
-var JSONConnector_merge = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).merge, JSONConnector_defined = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).defined;
+var JSONConnector_merge = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).merge, JSONConnector_fireEvent = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).fireEvent;
 /* *
  *
  *  Class
@@ -7314,19 +7187,15 @@ var JSONConnector = /** @class */ (function (_super) {
     /**
      * Constructs an instance of JSONConnector.
      *
-     * @param {JSONConnector.UserOptions} [options]
+     * @param {Partial<JSONConnectorOptions>} [options]
      * Options for the connector and converter.
-     *
-     * @param {Array<DataTableOptions>} [dataTables]
-     * Multiple connector data tables options.
      */
-    function JSONConnector(options, dataTables) {
+    function JSONConnector(options) {
         var _this = this;
         var mergedOptions = JSONConnector_merge(JSONConnector.defaultOptions,
             options);
-        _this = _super.call(this, mergedOptions, dataTables) || this;
-        _this.options = JSONConnector_defined(dataTables) ?
-            JSONConnector_merge(mergedOptions, { dataTables: dataTables }) : mergedOptions;
+        _this = _super.call(this, mergedOptions) || this;
+        _this.options = mergedOptions;
         if (mergedOptions.enablePolling) {
             _this.startPolling(Math.max(mergedOptions.dataRefreshRate || 0, 1) * 1000);
         }
@@ -7337,6 +7206,16 @@ var JSONConnector = /** @class */ (function (_super) {
      *  Functions
      *
      * */
+    /**
+     * Overrides the DataConnector method. Emits an event on the connector to
+     * all registered callbacks of this event.
+     *
+     * @param {JSONConnector.Event} e
+     * Event object containing additional event information.
+     */
+    JSONConnector.prototype.emit = function (e) {
+        JSONConnector_fireEvent(this, e.type, e);
+    };
     /**
      * Initiates the loading of the JSON source to the connector
      *
@@ -7349,18 +7228,15 @@ var JSONConnector = /** @class */ (function (_super) {
     JSONConnector.prototype.load = function (eventDetail) {
         var _this = this;
         var _a;
-        var connector = this,
-            tables = connector.dataTables,
-            _b = connector.options,
-            data = _b.data,
-            dataUrl = _b.dataUrl,
-            dataModifier = _b.dataModifier,
-            dataTables = _b.dataTables;
+        var connector = this;
+        var options = connector.options;
+        var data = options.data,
+            dataUrl = options.dataUrl,
+            dataTables = options.dataTables;
         connector.emit({
             type: 'load',
-            data: data,
             detail: eventDetail,
-            tables: tables
+            data: data
         });
         return Promise
             .resolve(dataUrl ?
@@ -7370,51 +7246,54 @@ var JSONConnector = /** @class */ (function (_super) {
                 connector.emit({
                     type: 'loadError',
                     detail: eventDetail,
-                    error: error,
-                    tables: tables
+                    error: error
                 });
                 console.warn("Unable to fetch data from ".concat(dataUrl, ".")); // eslint-disable-line no-console
             }) :
             data || [])
-            .then(function (data) {
-            if (data) {
-                _this.initConverters(data, function (key) {
-                    var _a,
-                        _b,
-                        _c,
-                        _d;
-                    var options = _this.options;
-                    var tableOptions = dataTables === null || dataTables === void 0 ? void 0 : dataTables.find(function (dataTable) { return dataTable.key === key; });
-                    // Takes over the connector default options.
-                    var mergedTableOptions = {
-                            dataTableKey: key,
-                            columnNames: (_a = tableOptions === null || tableOptions === void 0 ? void 0 : tableOptions.columnNames) !== null && _a !== void 0 ? _a : options.columnNames,
-                            firstRowAsNames: (_b = tableOptions === null || tableOptions === void 0 ? void 0 : tableOptions.firstRowAsNames) !== null && _b !== void 0 ? _b : options.firstRowAsNames,
-                            orientation: (_c = tableOptions === null || tableOptions === void 0 ? void 0 : tableOptions.orientation) !== null && _c !== void 0 ? _c : options.orientation,
-                            beforeParse: (_d = tableOptions === null || tableOptions === void 0 ? void 0 : tableOptions.beforeParse) !== null && _d !== void 0 ? _d : options.beforeParse
-                        };
-                    return new Converters_JSONConverter(JSONConnector_merge(_this.options, mergedTableOptions));
-                }, function (converter, data) {
-                    converter.parse({ data: data });
-                });
-            }
-            return connector.setModifierOptions(dataModifier, dataTables)
-                .then(function () { return data; });
-        })
+            .then(function (data) { return JSONConnector_awaiter(_this, void 0, void 0, function () {
+            return JSONConnector_generator(this, function (_a) {
+                if (data) {
+                    this.initConverters(data, function (key) {
+                        var tableOptions = dataTables === null || dataTables === void 0 ? void 0 : dataTables.find(function (dataTable) { return dataTable.key === key; });
+                        // The data table options takes precedence over the
+                        // connector options.
+                        var _a = tableOptions || {},
+                            _b = _a.columnIds,
+                            columnIds = _b === void 0 ? options.columnIds : _b,
+                            _c = _a.firstRowAsNames,
+                            firstRowAsNames = _c === void 0 ? options.firstRowAsNames : _c,
+                            _d = _a.orientation,
+                            orientation = _d === void 0 ? options.orientation : _d,
+                            _e = _a.beforeParse,
+                            beforeParse = _e === void 0 ? options.beforeParse : _e;
+                        var converterOptions = {
+                                data: data,
+                                columnIds: columnIds,
+                                firstRowAsNames: firstRowAsNames,
+                                orientation: orientation,
+                                beforeParse: beforeParse
+                            };
+                        return new Converters_JSONConverter(converterOptions);
+                    }, function (converter, data) {
+                        return converter.parse({ data: data });
+                    });
+                }
+                return [2 /*return*/, connector.applyTableModifiers().then(function () { return data !== null && data !== void 0 ? data : []; })];
+            });
+        }); })
             .then(function (data) {
             connector.emit({
                 type: 'afterLoad',
-                data: data,
                 detail: eventDetail,
-                tables: tables
+                data: data
             });
             return connector;
         })['catch'](function (error) {
             connector.emit({
                 type: 'loadError',
                 detail: eventDetail,
-                error: error,
-                tables: tables
+                error: error
             });
             throw error;
         });
@@ -7425,6 +7304,8 @@ var JSONConnector = /** @class */ (function (_super) {
      *
      * */
     JSONConnector.defaultOptions = {
+        type: 'JSON',
+        id: 'json-connector',
         data: [],
         enablePolling: false,
         dataRefreshRate: 0,
@@ -7433,6 +7314,11 @@ var JSONConnector = /** @class */ (function (_super) {
     };
     return JSONConnector;
 }(Connectors_DataConnector));
+/* *
+ *
+ *  Registry
+ *
+ * */
 Connectors_DataConnector.registerType('JSON', JSONConnector);
 /* *
  *
@@ -7444,17 +7330,18 @@ Connectors_DataConnector.registerType('JSON', JSONConnector);
 ;// ./code/es5/es-modules/Data/Converters/GoogleSheetsConverter.js
 /* *
  *
- *  (c) 2009-2025 Highsoft AS
+ *  (c) 2009-2026 Highsoft AS
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  *  Authors:
  *  - Torstein Hønsi
  *  - Gøran Slettemark
  *  - Wojciech Chmiel
  *  - Sophie Bremer
+ *  - Kamil Kubik
  *
  * */
 
@@ -7490,6 +7377,7 @@ var GoogleSheetsConverter_assign = (undefined && undefined.__assign) || function
 };
 
 
+
 var GoogleSheetsConverter_merge = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).merge, GoogleSheetsConverter_uniqueKey = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).uniqueKey;
 /* *
  *
@@ -7511,7 +7399,7 @@ var GoogleSheetsConverter = /** @class */ (function (_super) {
     /**
      * Constructs an instance of the GoogleSheetsConverter.
      *
-     * @param {GoogleSheetsConverter.UserOptions} [options]
+     * @param {Partial<GoogleSheetsConverterOptions>} [options]
      * Options for the GoogleSheetsConverter.
      */
     function GoogleSheetsConverter(options) {
@@ -7519,7 +7407,6 @@ var GoogleSheetsConverter = /** @class */ (function (_super) {
         var mergedOptions = GoogleSheetsConverter_merge(GoogleSheetsConverter.defaultOptions,
             options);
         _this = _super.call(this, mergedOptions) || this;
-        _this.columns = [];
         _this.header = [];
         _this.options = mergedOptions;
         return _this;
@@ -7532,7 +7419,7 @@ var GoogleSheetsConverter = /** @class */ (function (_super) {
     /**
      * Initiates the parsing of the Google Sheet
      *
-     * @param {GoogleSheetsConverter.UserOptions}[options]
+     * @param {Partial<GoogleSheetsConverterOptions>}[options]
      * Options for the parser
      *
      * @param {DataEvent.Detail} [eventDetail]
@@ -7546,15 +7433,14 @@ var GoogleSheetsConverter = /** @class */ (function (_super) {
         var converter = this,
             parseOptions = GoogleSheetsConverter_merge(converter.options,
             options);
-        var columns = (((_a = parseOptions.json) === null || _a === void 0 ? void 0 : _a.values) || []).map(function (column) { return column.slice(); });
-        if (columns.length === 0) {
-            return false;
+        var columnsArray = (((_a = parseOptions.json) === null || _a === void 0 ? void 0 : _a.values) || []).map(function (column) { return column.slice(); });
+        if (columnsArray.length === 0) {
+            return {};
         }
         converter.header = [];
-        converter.columns = [];
         converter.emit({
             type: 'parse',
-            columns: converter.columns,
+            columns: [],
             detail: eventDetail,
             headers: converter.header
         });
@@ -7562,40 +7448,29 @@ var GoogleSheetsConverter = /** @class */ (function (_super) {
         var beforeParse = parseOptions.beforeParse,
             json = parseOptions.json;
         if (beforeParse && json) {
-            columns = beforeParse(json.values);
+            columnsArray = beforeParse(json.values);
         }
         var column;
-        converter.columns = columns;
-        for (var i = 0, iEnd = columns.length; i < iEnd; i++) {
-            column = columns[i];
+        for (var i = 0, iEnd = columnsArray.length; i < iEnd; i++) {
+            column = columnsArray[i];
             converter.header[i] = (parseOptions.firstRowAsNames ?
                 "".concat(column.shift()) :
                 GoogleSheetsConverter_uniqueKey());
             for (var j = 0, jEnd = column.length; j < jEnd; ++j) {
-                if (column[j] && typeof column[j] === 'string') {
-                    var cellValue = converter.asGuessedType(column[j]);
-                    if (cellValue instanceof Date) {
-                        cellValue = cellValue.getTime();
-                    }
-                    converter.columns[i][j] = cellValue;
+                var cellValue = column[j];
+                if (isDateObject(cellValue)) {
+                    cellValue = cellValue.getTime();
                 }
+                columnsArray[i][j] = cellValue;
             }
         }
         converter.emit({
             type: 'afterParse',
-            columns: converter.columns,
+            columns: columnsArray,
             detail: eventDetail,
             headers: converter.header
         });
-    };
-    /**
-     * Handles converting the parsed data to a table.
-     *
-     * @return {DataTable}
-     * Table from the parsed Google Sheet
-     */
-    GoogleSheetsConverter.prototype.getTable = function () {
-        return Converters_DataConverter.getTableFromColumns(this.columns, this.header);
+        return Converters_DataConverterUtils.getColumnsCollection(columnsArray, converter.header);
     };
     /* *
      *
@@ -7615,15 +7490,25 @@ Converters_DataConverter.registerType('GoogleSheets', GoogleSheetsConverter);
  *
  * */
 /* harmony default export */ var Converters_GoogleSheetsConverter = (GoogleSheetsConverter);
+/**
+ * Check if a value is a Date object
+ *
+ * @param {unknown} value to verify
+ * @return {boolean}
+ * True if the value is a Date object, false otherwise.
+ */
+function isDateObject(value) {
+    return Object.prototype.toString.call(value) === '[object Date]';
+}
 
 ;// ./code/es5/es-modules/Data/Connectors/GoogleSheetsConnector.js
 /* *
  *
- *  (c) 2009-2025 Highsoft AS
+ *  (c) 2009-2026 Highsoft AS
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  *  Authors:
  *  - Torstein Hønsi
@@ -7631,6 +7516,7 @@ Converters_DataConverter.registerType('GoogleSheets', GoogleSheetsConverter);
  *  - Wojciech Chmiel
  *  - Sophie Bremer
  *  - Jomar Hønsi
+ *  - Kamil Kubik
  *
  * */
 
@@ -7656,7 +7542,7 @@ var GoogleSheetsConnector_extends = (undefined && undefined.__extends) || (funct
 
 
 
-var GoogleSheetsConnector_merge = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).merge, GoogleSheetsConnector_pick = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).pick, GoogleSheetsConnector_defined = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).defined;
+var GoogleSheetsConnector_merge = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).merge, GoogleSheetsConnector_pick = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).pick, GoogleSheetsConnector_fireEvent = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).fireEvent;
 /* *
  *
  *  Functions
@@ -7692,20 +7578,15 @@ var GoogleSheetsConnector = /** @class */ (function (_super) {
     /**
      * Constructs an instance of GoogleSheetsConnector
      *
-     * @param {GoogleSheetsConnector.UserOptions} [options]
+     * @param {Partial<GoogleSheetsConnectorOptions>} [options]
      * Options for the connector and converter.
-     *
-     * @param {Array<DataTableOptions>} [dataTables]
-     * Multiple connector data tables options.
-     *
      */
-    function GoogleSheetsConnector(options, dataTables) {
+    function GoogleSheetsConnector(options) {
         var _this = this;
         var mergedOptions = GoogleSheetsConnector_merge(GoogleSheetsConnector.defaultOptions,
             options);
-        _this = _super.call(this, mergedOptions, dataTables) || this;
-        _this.options = GoogleSheetsConnector_defined(dataTables) ?
-            GoogleSheetsConnector_merge(mergedOptions, { dataTables: dataTables }) : mergedOptions;
+        _this = _super.call(this, mergedOptions) || this;
+        _this.options = mergedOptions;
         return _this;
     }
     /* *
@@ -7713,6 +7594,16 @@ var GoogleSheetsConnector = /** @class */ (function (_super) {
      *  Functions
      *
      * */
+    /**
+     * Overrides the DataConnector method. Emits an event on the connector to
+     * all registered callbacks of this event.
+     *
+     * @param {GoogleSheetsConnector.Event} e
+     * Event object containing additional event information.
+     */
+    GoogleSheetsConnector.prototype.emit = function (e) {
+        GoogleSheetsConnector_fireEvent(this, e.type, e);
+    };
     /**
      * Loads data from a Google Spreadsheet.
      *
@@ -7725,22 +7616,19 @@ var GoogleSheetsConnector = /** @class */ (function (_super) {
     GoogleSheetsConnector.prototype.load = function (eventDetail) {
         var _this = this;
         var _a;
-        var connector = this,
-            tables = connector.dataTables,
-            _b = connector.options,
-            dataModifier = _b.dataModifier,
-            dataRefreshRate = _b.dataRefreshRate,
-            enablePolling = _b.enablePolling,
-            googleAPIKey = _b.googleAPIKey,
-            googleSpreadsheetKey = _b.googleSpreadsheetKey,
-            dataTables = _b.dataTables,
-            url = GoogleSheetsConnector.buildFetchURL(googleAPIKey,
+        var connector = this;
+        var options = connector.options;
+        var dataRefreshRate = options.dataRefreshRate,
+            enablePolling = options.enablePolling,
+            googleAPIKey = options.googleAPIKey,
+            googleSpreadsheetKey = options.googleSpreadsheetKey,
+            dataTables = options.dataTables;
+        var url = GoogleSheetsConnector.buildFetchURL(googleAPIKey,
             googleSpreadsheetKey,
-            connector.options);
+            options);
         connector.emit({
             type: 'load',
             detail: eventDetail,
-            tables: tables,
             url: url
         });
         if (!URL.canParse(url)) {
@@ -7753,27 +7641,28 @@ var GoogleSheetsConnector = /** @class */ (function (_super) {
                 throw new Error(json.error.message);
             }
             _this.initConverters(json, function (key) {
-                var _a,
-                    _b;
-                var options = _this.options;
                 var tableOptions = dataTables === null || dataTables === void 0 ? void 0 : dataTables.find(function (dataTable) { return dataTable.key === key; });
-                // Takes over the connector default options.
-                var mergedTableOptions = {
-                        dataTableKey: key,
-                        firstRowAsNames: (_a = tableOptions === null || tableOptions === void 0 ? void 0 : tableOptions.firstRowAsNames) !== null && _a !== void 0 ? _a : options.firstRowAsNames,
-                        beforeParse: (_b = tableOptions === null || tableOptions === void 0 ? void 0 : tableOptions.beforeParse) !== null && _b !== void 0 ? _b : options.beforeParse
+                // The data table options takes precedence over the
+                // connector options.
+                var _a = tableOptions || {},
+                    _b = _a.firstRowAsNames,
+                    firstRowAsNames = _b === void 0 ? options.firstRowAsNames : _b,
+                    _c = _a.beforeParse,
+                    beforeParse = _c === void 0 ? options.beforeParse : _c;
+                var converterOptions = {
+                        firstRowAsNames: firstRowAsNames,
+                        beforeParse: beforeParse
                     };
-                return new Converters_GoogleSheetsConverter(GoogleSheetsConnector_merge(_this.options, mergedTableOptions));
+                return new Converters_GoogleSheetsConverter(converterOptions);
             }, function (converter, data) {
-                converter.parse({ json: data });
+                return converter.parse({ json: data });
             });
-            return connector.setModifierOptions(dataModifier, dataTables);
+            return connector.applyTableModifiers();
         })
             .then(function () {
             connector.emit({
                 type: 'afterLoad',
                 detail: eventDetail,
-                tables: tables,
                 url: url
             });
             // Polling
@@ -7785,8 +7674,7 @@ var GoogleSheetsConnector = /** @class */ (function (_super) {
             connector.emit({
                 type: 'loadError',
                 detail: eventDetail,
-                error: error,
-                tables: tables
+                error: error
             });
             throw error;
         });
@@ -7797,6 +7685,8 @@ var GoogleSheetsConnector = /** @class */ (function (_super) {
      *
      * */
     GoogleSheetsConnector.defaultOptions = {
+        id: 'google-sheets-connector',
+        type: 'GoogleSheets',
         googleAPIKey: '',
         googleSpreadsheetKey: '',
         enablePolling: false,
@@ -7834,12 +7724,12 @@ var GoogleSheetsConnector = /** @class */ (function (_super) {
     function buildFetchURL(apiKey, sheetKey, options) {
         if (options === void 0) { options = {}; }
         var url = new URL("https://sheets.googleapis.com/v4/spreadsheets/".concat(sheetKey, "/values/"));
-        var range = options.onlyColumnNames ?
+        var range = options.onlyColumnIds ?
                 'A1:Z1' : buildQueryRange(options);
         url.pathname += range;
         var searchParams = url.searchParams;
         searchParams.set('alt', 'json');
-        if (!options.onlyColumnNames) {
+        if (!options.onlyColumnIds) {
             searchParams.set('dateTimeRenderOption', 'FORMATTED_STRING');
             searchParams.set('majorDimension', 'COLUMNS');
             searchParams.set('valueRenderOption', 'UNFORMATTED_VALUE');
@@ -7870,6 +7760,11 @@ var GoogleSheetsConnector = /** @class */ (function (_super) {
     }
     GoogleSheetsConnector.buildQueryRange = buildQueryRange;
 })(GoogleSheetsConnector || (GoogleSheetsConnector = {}));
+/* *
+ *
+ *  Registry
+ *
+ * */
 Connectors_DataConnector.registerType('GoogleSheets', GoogleSheetsConnector);
 /* *
  *
@@ -7881,17 +7776,18 @@ Connectors_DataConnector.registerType('GoogleSheets', GoogleSheetsConnector);
 ;// ./code/es5/es-modules/Data/Converters/HTMLTableConverter.js
 /* *
  *
- *  (c) 2009-2025 Highsoft AS
+ *  (c) 2009-2026 Highsoft AS
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  *  Authors:
  *  - Torstein Hønsi
  *  - Gøran Slettemark
  *  - Wojciech Chmiel
  *  - Sophie Bremer
+ *  - Kamil Kubik
  *
  * */
 
@@ -7925,6 +7821,7 @@ var HTMLTableConverter_assign = (undefined && undefined.__assign) || function ()
     };
     return HTMLTableConverter_assign.apply(this, arguments);
 };
+
 
 
 var HTMLTableConverter_merge = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).merge;
@@ -7970,7 +7867,7 @@ var HTMLTableConverter = /** @class */ (function (_super) {
     /**
      * Constructs an instance of the HTMLTableConverter.
      *
-     * @param {HTMLTableConverter.UserOptions} [options]
+     * @param {Partial<HTMLTableConverterOptions>} [options]
      * Options for the HTMLTableConverter.
      */
     function HTMLTableConverter(options) {
@@ -7978,7 +7875,6 @@ var HTMLTableConverter = /** @class */ (function (_super) {
         var mergedOptions = HTMLTableConverter_merge(HTMLTableConverter.defaultOptions,
             options);
         _this = _super.call(this, mergedOptions) || this;
-        _this.columns = [];
         _this.headers = [];
         _this.options = mergedOptions;
         if (mergedOptions.tableElement) {
@@ -8009,10 +7905,10 @@ var HTMLTableConverter = /** @class */ (function (_super) {
         if (options === void 0) { options = this.options; }
         var exportNames = (options.firstRowAsNames !== false),
             useMultiLevelHeaders = options.useMultiLevelHeaders;
-        var columns = connector.getSortedColumns(options.usePresentationOrder),
-            columnNames = Object.keys(columns),
+        var columns = connector.getSortedColumns(),
+            columnIds = Object.keys(columns),
             htmlRows = [],
-            columnsCount = columnNames.length;
+            columnsCount = columnIds.length;
         var rowArray = [];
         var tableHead = '';
         // Add the names as the first row if they should be exported
@@ -8021,35 +7917,33 @@ var HTMLTableConverter = /** @class */ (function (_super) {
             // If using multilevel headers, the first value
             // of each column is a subcategory
             if (useMultiLevelHeaders) {
-                for (var _i = 0, columnNames_1 = columnNames; _i < columnNames_1.length; _i++) {
-                    var name_1 = columnNames_1[_i];
-                    var column = columns[name_1];
+                for (var _i = 0, columnIds_1 = columnIds; _i < columnIds_1.length; _i++) {
+                    var columnId = columnIds_1[_i];
+                    var column = columns[columnId];
                     if (!Array.isArray(column)) {
                         // Convert to conventional array from typed array
                         // if needed
                         column = Array.from(column);
                     }
                     var subhead = (column.shift() || '').toString();
-                    columns[name_1] = column;
+                    columns[columnId] = column;
                     subcategories.push(subhead);
                 }
-                tableHead = this.getTableHeaderHTML(columnNames, subcategories, options);
+                tableHead = this.getTableHeaderHTML(columnIds, subcategories, options);
             }
             else {
-                tableHead = this.getTableHeaderHTML(void 0, columnNames, options);
+                tableHead = this.getTableHeaderHTML(void 0, columnIds, options);
             }
         }
         for (var columnIndex = 0; columnIndex < columnsCount; columnIndex++) {
-            var columnName = columnNames[columnIndex],
-                column = columns[columnName],
+            var columnId = columnIds[columnIndex],
+                column = columns[columnId],
                 columnLength = column.length;
             for (var rowIndex = 0; rowIndex < columnLength; rowIndex++) {
                 var cellValue = column[rowIndex];
                 if (!rowArray[rowIndex]) {
                     rowArray[rowIndex] = [];
                 }
-                // Alternative: Datatype from HTML attribute with
-                // connector.whatIs(columnName)
                 if (!(typeof cellValue === 'string' ||
                     typeof cellValue === 'number' ||
                     typeof cellValue === 'undefined')) {
@@ -8147,7 +8041,7 @@ var HTMLTableConverter = /** @class */ (function (_super) {
                     if (cur === subheaders[i]) {
                         if (useRowspanHeaders) {
                             rowspan = 2;
-                            delete subheaders[i];
+                            subheaders.splice(i, 1);
                         }
                         else {
                             rowspan = 1;
@@ -8181,7 +8075,7 @@ var HTMLTableConverter = /** @class */ (function (_super) {
     /**
      * Initiates the parsing of the HTML table
      *
-     * @param {HTMLTableConverter.UserOptions}[options]
+     * @param {Partial<HTMLTableConverterOptions>}[options]
      * Options for the parser
      *
      * @param {DataEvent.Detail} [eventDetail]
@@ -8193,7 +8087,7 @@ var HTMLTableConverter = /** @class */ (function (_super) {
      */
     HTMLTableConverter.prototype.parse = function (options, eventDetail) {
         var converter = this,
-            columns = [],
+            columnsArray = [],
             headers = [],
             parseOptions = HTMLTableConverter_merge(converter.options,
             options),
@@ -8205,18 +8099,18 @@ var HTMLTableConverter = /** @class */ (function (_super) {
         if (!(tableHTML instanceof HTMLElement)) {
             converter.emit({
                 type: 'parseError',
-                columns: columns,
+                columns: columnsArray,
                 detail: eventDetail,
                 headers: headers,
                 error: 'Not a valid HTML Table'
             });
-            return;
+            return {};
         }
         converter.tableElement = tableHTML;
         converter.tableElementID = tableHTML.id;
         this.emit({
             type: 'parse',
-            columns: converter.columns,
+            columns: columnsArray,
             detail: eventDetail,
             headers: converter.headers
         });
@@ -8248,20 +8142,20 @@ var HTMLTableConverter = /** @class */ (function (_super) {
                 var columnIndex = 0;
                 while (columnIndex < columnsInRowLength) {
                     var relativeColumnIndex = columnIndex - startColumn,
-                        row = columns[relativeColumnIndex];
+                        row = columnsArray[relativeColumnIndex];
                     item = columnsInRow[columnIndex];
                     if ((item.tagName === 'TD' ||
                         item.tagName === 'TH') &&
                         (columnIndex >= startColumn &&
                             columnIndex <= endColumn)) {
-                        if (!columns[relativeColumnIndex]) {
-                            columns[relativeColumnIndex] = [];
+                        if (!columnsArray[relativeColumnIndex]) {
+                            columnsArray[relativeColumnIndex] = [];
                         }
-                        var cellValue = converter.asGuessedType(item.innerHTML);
+                        var cellValue = converter.convertByType(item.innerHTML);
                         if (cellValue instanceof Date) {
                             cellValue = cellValue.getTime();
                         }
-                        columns[relativeColumnIndex][rowIndex - startRow] = cellValue;
+                        columnsArray[relativeColumnIndex][rowIndex - startRow] = cellValue;
                         // Loop over all previous indices and make sure
                         // they are nulls, not undefined.
                         var i = 1;
@@ -8276,23 +8170,14 @@ var HTMLTableConverter = /** @class */ (function (_super) {
             }
             rowIndex++;
         }
-        this.columns = columns;
         this.headers = headers;
         this.emit({
             type: 'afterParse',
-            columns: columns,
+            columns: columnsArray,
             detail: eventDetail,
             headers: headers
         });
-    };
-    /**
-     * Handles converting the parsed data to a table.
-     *
-     * @return {DataTable}
-     * Table from the parsed HTML table
-     */
-    HTMLTableConverter.prototype.getTable = function () {
-        return Converters_DataConverter.getTableFromColumns(this.columns, this.headers);
+        return Converters_DataConverterUtils.getColumnsCollection(columnsArray, converter.headers);
     };
     /* *
      *
@@ -8302,7 +8187,7 @@ var HTMLTableConverter = /** @class */ (function (_super) {
     /**
      * Default options
      */
-    HTMLTableConverter.defaultOptions = HTMLTableConverter_assign(HTMLTableConverter_assign({}, Converters_DataConverter.defaultOptions), { useRowspanHeaders: true, useMultiLevelHeaders: true });
+    HTMLTableConverter.defaultOptions = HTMLTableConverter_assign(HTMLTableConverter_assign({}, Converters_DataConverter.defaultOptions), { useRowspanHeaders: true, useMultiLevelHeaders: true, startColumn: 0, endColumn: Number.MAX_VALUE, startRow: 0, endRow: Number.MAX_VALUE });
     return HTMLTableConverter;
 }(Converters_DataConverter));
 Converters_DataConverter.registerType('HTMLTable', HTMLTableConverter);
@@ -8316,17 +8201,18 @@ Converters_DataConverter.registerType('HTMLTable', HTMLTableConverter);
 ;// ./code/es5/es-modules/Data/Connectors/HTMLTableConnector.js
 /* *
  *
- *  (c) 2009-2025 Highsoft AS
+ *  (c) 2009-2026 Highsoft AS
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  *  Authors:
  *  - Torstein Hønsi
  *  - Gøran Slettemark
  *  - Wojciech Chmiel
  *  - Sophie Bremer
+ *  - Kamil Kubik
  *
  * */
 
@@ -8349,10 +8235,53 @@ var HTMLTableConnector_extends = (undefined && undefined.__extends) || (function
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+var HTMLTableConnector_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var HTMLTableConnector_generator = (undefined && undefined.__generator) || function (thisArg, body) {
+    var _ = { label: 0,
+        sent: function() { if (t[0] & 1) throw t[1]; return t[1]; },
+        trys: [],
+        ops: [] },
+        f,
+        y,
+        t,
+        g = Object.create((typeof Iterator === "function" ? Iterator : Object).prototype);
+    return g.next = verb(0), g["throw"] = verb(1), g["return"] = verb(2), typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (g && (g = 0, op[0] && (_ = 0)), _) try {
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+
 
 
 var win = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).win;
-
 
 var HTMLTableConnector_merge = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).merge;
 /* *
@@ -8375,7 +8304,7 @@ var HTMLTableConnector = /** @class */ (function (_super) {
     /**
      * Constructs an instance of HTMLTableConnector.
      *
-     * @param {HTMLTableConnector.UserOptions} [options]
+     * @param {HTMLTableConnector.CombinedHTMLTableConnectorOptions} [options]
      * Options for the connector and converter.
      */
     function HTMLTableConnector(options) {
@@ -8383,8 +8312,8 @@ var HTMLTableConnector = /** @class */ (function (_super) {
         var mergedOptions = HTMLTableConnector_merge(HTMLTableConnector.defaultOptions,
             options);
         _this = _super.call(this, mergedOptions) || this;
-        _this.converter = new Converters_HTMLTableConverter(mergedOptions);
         _this.options = mergedOptions;
+        _this.converter = new Converters_HTMLTableConverter(mergedOptions);
         return _this;
     }
     /**
@@ -8398,52 +8327,59 @@ var HTMLTableConnector = /** @class */ (function (_super) {
      * @emits HTMLTableConnector#loadError
      */
     HTMLTableConnector.prototype.load = function (eventDetail) {
-        var connector = this,
-            converter = connector.converter,
-            table = connector.table,
-            _a = connector.options,
-            dataModifier = _a.dataModifier,
-            tableHTML = _a.table;
-        connector.emit({
-            type: 'load',
-            detail: eventDetail,
-            tables: { table: table },
-            tableElement: connector.tableElement
-        });
-        var tableElement;
-        if (typeof tableHTML === 'string') {
-            connector.tableID = tableHTML;
-            tableElement = win.document.getElementById(tableHTML);
-        }
-        else {
-            tableElement = tableHTML;
-            connector.tableID = tableElement.id;
-        }
-        connector.tableElement = tableElement || void 0;
-        if (!connector.tableElement) {
-            var error = 'HTML table not provided, or element with ID not found';
-            connector.emit({
-                type: 'loadError',
-                detail: eventDetail,
-                error: error,
-                tables: { table: table }
+        return HTMLTableConnector_awaiter(this, void 0, void 0, function () {
+            var connector,
+                options,
+                converter,
+                table,
+                htmlTable,
+                tableElement,
+                error,
+                columns;
+            return HTMLTableConnector_generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        connector = this;
+                        options = connector.options;
+                        converter = connector.converter;
+                        table = connector.getTable();
+                        htmlTable = options.htmlTable;
+                        connector.emit({
+                            type: 'load',
+                            detail: eventDetail
+                        });
+                        if (typeof htmlTable === 'string') {
+                            connector.tableID = htmlTable;
+                            tableElement = win.document.getElementById(htmlTable);
+                        }
+                        else {
+                            tableElement = htmlTable;
+                            connector.tableID = tableElement.id;
+                        }
+                        connector.tableElement = tableElement || void 0;
+                        if (!connector.tableElement) {
+                            error = 'HTML table not provided, or element with ID not found';
+                            connector.emit({
+                                type: 'loadError',
+                                detail: eventDetail,
+                                error: error
+                            });
+                            return [2 /*return*/, Promise.reject(new Error(error))];
+                        }
+                        columns = converter.parse(HTMLTableConnector_merge({ tableElement: connector.tableElement }, options), eventDetail);
+                        // If already loaded, clear the current rows
+                        table.deleteColumns();
+                        table.setColumns(columns);
+                        return [4 /*yield*/, connector.applyTableModifiers()];
+                    case 1:
+                        _a.sent();
+                        connector.emit({
+                            type: 'afterLoad',
+                            detail: eventDetail
+                        });
+                        return [2 /*return*/, connector];
+                }
             });
-            return Promise.reject(new Error(error));
-        }
-        converter.parse(HTMLTableConnector_merge({ tableElement: connector.tableElement }, connector.options), eventDetail);
-        // If already loaded, clear the current rows
-        table.deleteColumns();
-        table.setColumns(converter.getTable().getColumns());
-        return connector
-            .setModifierOptions(dataModifier)
-            .then(function () {
-            connector.emit({
-                type: 'afterLoad',
-                detail: eventDetail,
-                tables: { table: table },
-                tableElement: connector.tableElement
-            });
-            return connector;
         });
     };
     /* *
@@ -8452,7 +8388,9 @@ var HTMLTableConnector = /** @class */ (function (_super) {
      *
      * */
     HTMLTableConnector.defaultOptions = {
-        table: ''
+        id: 'HTML-table-connector',
+        type: 'HTMLTable',
+        htmlTable: ''
     };
     return HTMLTableConnector;
 }(Connectors_DataConnector));
@@ -8467,11 +8405,11 @@ Connectors_DataConnector.registerType('HTMLTable', HTMLTableConnector);
 ;// ./code/es5/es-modules/Data/Modifiers/ChainModifier.js
 /* *
  *
- *  (c) 2009-2025 Highsoft AS
+ *  (c) 2009-2026 Highsoft AS
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  *  Authors:
  *  - Sophie Bremer
@@ -8515,8 +8453,8 @@ var ChainModifier_generator = (undefined && undefined.__generator) || function (
         f,
         y,
         t,
-        g;
-    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+        g = Object.create((typeof Iterator === "function" ? Iterator : Object).prototype);
+    return g.next = verb(0), g["throw"] = verb(1), g["return"] = verb(2), typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
     function verb(n) { return function (v) { return step([n, v]); }; }
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
@@ -8543,7 +8481,7 @@ var ChainModifier_generator = (undefined && undefined.__generator) || function (
 };
 
 
-var ChainModifier_merge = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).merge;
+var ChainModifier_addEvent = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).addEvent, ChainModifier_fireEvent = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).fireEvent, ChainModifier_merge = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).merge;
 /* *
  *
  *  Class
@@ -8636,8 +8574,10 @@ var ChainModifier = /** @class */ (function (_super) {
         });
     };
     /**
-     * Applies several modifications to the table and returns a modified copy of
-     * the given table.
+     * Sequentially applies all modifiers in the chain to the given table,
+     * updating its `modified` property with the final result.
+     *
+     * *Note:* The `modified` property reference of the table gets replaced.
      *
      * @param {Highcharts.DataTable} table
      * Table to modify.
@@ -8661,7 +8601,7 @@ var ChainModifier = /** @class */ (function (_super) {
                         modifiers = (this.options.reverse ?
                             this.chain.slice().reverse() :
                             this.chain.slice());
-                        if (table.modified === table) {
+                        if (!table.modified) {
                             table.modified = table.clone(false, eventDetail);
                         }
                         modified = table;
@@ -8685,7 +8625,7 @@ var ChainModifier = /** @class */ (function (_super) {
                         });
                         throw error_1;
                     case 5:
-                        modified = modified.modified;
+                        modified = modified.getModified();
                         _a.label = 6;
                     case 6:
                         ++i;
@@ -8698,117 +8638,9 @@ var ChainModifier = /** @class */ (function (_super) {
         });
     };
     /**
-     * Applies partial modifications of a cell change to the property `modified`
-     * of the given modified table.
-     *
-     * *Note:* The `modified` property of the table gets replaced.
-     *
-     * @param {Highcharts.DataTable} table
-     * Modified table.
-     *
-     * @param {string} columnName
-     * Column name of changed cell.
-     *
-     * @param {number|undefined} rowIndex
-     * Row index of changed cell.
-     *
-     * @param {Highcharts.DataTableCellType} cellValue
-     * Changed cell value.
-     *
-     * @param {Highcharts.DataTableEventDetail} [eventDetail]
-     * Custom information for pending events.
-     *
-     * @return {Highcharts.DataTable}
-     * Table with `modified` property as a reference.
-     */
-    ChainModifier.prototype.modifyCell = function (table, columnName, rowIndex, cellValue, eventDetail) {
-        var modifiers = (this.options.reverse ?
-                this.chain.reverse() :
-                this.chain);
-        if (modifiers.length) {
-            var clone = table.clone();
-            for (var i = 0, iEnd = modifiers.length; i < iEnd; ++i) {
-                modifiers[i].modifyCell(clone, columnName, rowIndex, cellValue, eventDetail);
-                clone = clone.modified;
-            }
-            table.modified = clone;
-        }
-        return table;
-    };
-    /**
-     * Applies partial modifications of column changes to the property
-     * `modified` of the given table.
-     *
-     * *Note:* The `modified` property of the table gets replaced.
-     *
-     * @param {Highcharts.DataTable} table
-     * Modified table.
-     *
-     * @param {Highcharts.DataTableColumnCollection} columns
-     * Changed columns as a collection, where the keys are the column names.
-     *
-     * @param {number} [rowIndex=0]
-     * Index of the first changed row.
-     *
-     * @param {Highcharts.DataTableEventDetail} [eventDetail]
-     * Custom information for pending events.
-     *
-     * @return {Highcharts.DataTable}
-     * Table with `modified` property as a reference.
-     */
-    ChainModifier.prototype.modifyColumns = function (table, columns, rowIndex, eventDetail) {
-        var modifiers = (this.options.reverse ?
-                this.chain.reverse() :
-                this.chain.slice());
-        if (modifiers.length) {
-            var clone = table.clone();
-            for (var i = 0, iEnd = modifiers.length; i < iEnd; ++i) {
-                modifiers[i].modifyColumns(clone, columns, rowIndex, eventDetail);
-                clone = clone.modified;
-            }
-            table.modified = clone;
-        }
-        return table;
-    };
-    /**
-     * Applies partial modifications of row changes to the property `modified`
-     * of the given table.
-     *
-     * *Note:* The `modified` property of the table gets replaced.
-     *
-     * @param {Highcharts.DataTable} table
-     * Modified table.
-     *
-     * @param {Array<(Highcharts.DataTableRow|Highcharts.DataTableRowObject)>} rows
-     * Changed rows.
-     *
-     * @param {number} [rowIndex]
-     * Index of the first changed row.
-     *
-     * @param {Highcharts.DataTableEventDetail} [eventDetail]
-     * Custom information for pending events.
-     *
-     * @return {Highcharts.DataTable}
-     * Table with `modified` property as a reference.
-     */
-    ChainModifier.prototype.modifyRows = function (table, rows, rowIndex, eventDetail) {
-        var modifiers = (this.options.reverse ?
-                this.chain.reverse() :
-                this.chain.slice());
-        if (modifiers.length) {
-            var clone = table.clone();
-            for (var i = 0, iEnd = modifiers.length; i < iEnd; ++i) {
-                modifiers[i].modifyRows(clone, rows, rowIndex, eventDetail);
-                clone = clone.modified;
-            }
-            table.modified = clone;
-        }
-        return table;
-    };
-    /**
      * Applies several modifications to the table.
      *
-     * *Note:* The `modified` property of the table gets replaced.
+     * *Note:* The `modified` property reference of the table gets replaced.
      *
      * @param {DataTable} table
      * Table to modify.
@@ -8832,10 +8664,11 @@ var ChainModifier = /** @class */ (function (_super) {
         var modifiers = (chain.options.reverse ?
                 chain.chain.reverse() :
                 chain.chain.slice());
-        var modified = table.modified;
+        var modified = table.getModified();
         for (var i = 0, iEnd = modifiers.length, modifier = void 0; i < iEnd; ++i) {
             modifier = modifiers[i];
-            modified = modifier.modifyTable(modified, eventDetail).modified;
+            modified =
+                modifier.modifyTable(modified, eventDetail).getModified();
         }
         table.modified = modified;
         chain.emit({
@@ -8868,6 +8701,12 @@ var ChainModifier = /** @class */ (function (_super) {
             modifier: modifier
         });
     };
+    ChainModifier.prototype.emit = function (e) {
+        ChainModifier_fireEvent(this, e.type, e);
+    };
+    ChainModifier.prototype.on = function (type, callback) {
+        return ChainModifier_addEvent(this, type, callback);
+    };
     /* *
      *
      *  Static Properties
@@ -8892,11 +8731,11 @@ Modifiers_DataModifier.registerType('Chain', ChainModifier);
 ;// ./code/es5/es-modules/Data/Modifiers/InvertModifier.js
 /* *
  *
- *  (c) 2009-2025 Highsoft AS
+ *  (c) 2009-2026 Highsoft AS
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  *  Authors:
  *  - Wojciech Chmiel
@@ -8960,136 +8799,9 @@ var InvertModifier = /** @class */ (function (_super) {
      *
      * */
     /**
-     * Applies partial modifications of a cell change to the property `modified`
-     * of the given modified table.
-     *
-     * @param {Highcharts.DataTable} table
-     * Modified table.
-     *
-     * @param {string} columnName
-     * Column name of changed cell.
-     *
-     * @param {number|undefined} rowIndex
-     * Row index of changed cell.
-     *
-     * @param {Highcharts.DataTableCellType} cellValue
-     * Changed cell value.
-     *
-     * @param {Highcharts.DataTableEventDetail} [eventDetail]
-     * Custom information for pending events.
-     *
-     * @return {Highcharts.DataTable}
-     * Table with `modified` property as a reference.
-     */
-    InvertModifier.prototype.modifyCell = function (table, columnName, rowIndex, cellValue, eventDetail) {
-        var modified = table.modified,
-            modifiedRowIndex = modified.getRowIndexBy('columnNames',
-            columnName);
-        if (typeof modifiedRowIndex === 'undefined') {
-            modified.setColumns(this.modifyTable(table.clone()).getColumns(), void 0, eventDetail);
-        }
-        else {
-            modified.setCell("".concat(rowIndex), modifiedRowIndex, cellValue, eventDetail);
-        }
-        return table;
-    };
-    /**
-     * Applies partial modifications of column changes to the property
-     * `modified` of the given table.
-     *
-     * @param {Highcharts.DataTable} table
-     * Modified table.
-     *
-     * @param {Highcharts.DataTableColumnCollection} columns
-     * Changed columns as a collection, where the keys are the column names.
-     *
-     * @param {number} [rowIndex=0]
-     * Index of the first changed row.
-     *
-     * @param {Highcharts.DataTableEventDetail} [eventDetail]
-     * Custom information for pending events.
-     *
-     * @return {Highcharts.DataTable}
-     * Table with `modified` property as a reference.
-     */
-    InvertModifier.prototype.modifyColumns = function (table, columns, rowIndex, eventDetail) {
-        var modified = table.modified,
-            modifiedColumnNames = (modified.getColumn('columnNames') || []);
-        var columnNames = table.getColumnNames(),
-            reset = (table.getRowCount() !== modifiedColumnNames.length);
-        if (!reset) {
-            for (var i = 0, iEnd = columnNames.length; i < iEnd; ++i) {
-                if (columnNames[i] !== modifiedColumnNames[i]) {
-                    reset = true;
-                    break;
-                }
-            }
-        }
-        if (reset) {
-            return this.modifyTable(table, eventDetail);
-        }
-        columnNames = Object.keys(columns);
-        for (var i = 0, iEnd = columnNames.length, column = void 0, columnName = void 0, modifiedRowIndex = void 0; i < iEnd; ++i) {
-            columnName = columnNames[i];
-            column = columns[columnName];
-            modifiedRowIndex = (modified.getRowIndexBy('columnNames', columnName) ||
-                modified.getRowCount());
-            for (var j = 0, j2 = rowIndex, jEnd = column.length; j < jEnd; ++j, ++j2) {
-                modified.setCell("".concat(j2), modifiedRowIndex, column[j], eventDetail);
-            }
-        }
-        return table;
-    };
-    /**
-     * Applies partial modifications of row changes to the property `modified`
-     * of the given table.
-     *
-     * @param {Highcharts.DataTable} table
-     * Modified table.
-     *
-     * @param {Array<(Highcharts.DataTableRow|Highcharts.DataTableRowObject)>} rows
-     * Changed rows.
-     *
-     * @param {number} [rowIndex]
-     * Index of the first changed row.
-     *
-     * @param {Highcharts.DataTableEventDetail} [eventDetail]
-     * Custom information for pending events.
-     *
-     * @return {Highcharts.DataTable}
-     * Table with `modified` property as a reference.
-     */
-    InvertModifier.prototype.modifyRows = function (table, rows, rowIndex, eventDetail) {
-        var columnNames = table.getColumnNames(),
-            modified = table.modified,
-            modifiedColumnNames = (modified.getColumn('columnNames') || []);
-        var reset = (table.getRowCount() !== modifiedColumnNames.length);
-        if (!reset) {
-            for (var i = 0, iEnd = columnNames.length; i < iEnd; ++i) {
-                if (columnNames[i] !== modifiedColumnNames[i]) {
-                    reset = true;
-                    break;
-                }
-            }
-        }
-        if (reset) {
-            return this.modifyTable(table, eventDetail);
-        }
-        for (var i = 0, i2 = rowIndex, iEnd = rows.length, row = void 0; i < iEnd; ++i, ++i2) {
-            row = rows[i];
-            if (row instanceof Array) {
-                modified.setColumn("".concat(i2), row);
-            }
-            else {
-                for (var j = 0, jEnd = columnNames.length; j < jEnd; ++j) {
-                    modified.setCell("".concat(i2), j, row[columnNames[j]], eventDetail);
-                }
-            }
-        }
-        return table;
-    };
-    /**
-     * Inverts rows and columns in the table.
+     * Inverts rows and columns in the table. If the given table does not have
+     * defined a `modified` property, the filtering is applied in-place on the
+     * original table rather than on a `modified` copy.
      *
      * @param {DataTable} table
      * Table to invert.
@@ -9098,24 +8810,25 @@ var InvertModifier = /** @class */ (function (_super) {
      * Custom information for pending events.
      *
      * @return {DataTable}
-     * Table with inverted `modified` property as a reference.
+     * Table with inverted `modified` property as a reference or modified table,
+     * if `modified` property of the original table is undefined.
      */
     InvertModifier.prototype.modifyTable = function (table, eventDetail) {
         var modifier = this;
         modifier.emit({ type: 'modify', detail: eventDetail, table: table });
-        var modified = table.modified;
-        if (table.hasColumns(['columnNames'])) { // Inverted table
-            var columnNamesColumn = ((table.deleteColumns(['columnNames']) || {})
-                    .columnNames || []),
+        var modified = table.getModified();
+        if (table.hasColumns(['columnIds'])) { // Inverted table
+            var columnIdsColumn = ((table.deleteColumns(['columnIds']) || {})
+                    .columnIds || []),
                 columns = {},
-                columnNames = [];
-            for (var i = 0, iEnd = columnNamesColumn.length; i < iEnd; ++i) {
-                columnNames.push('' + columnNamesColumn[i]);
+                columnIds = [];
+            for (var i = 0, iEnd = columnIdsColumn.length; i < iEnd; ++i) {
+                columnIds.push('' + columnIdsColumn[i]);
             }
             for (var i = 0, iEnd = table.getRowCount(), row = void 0; i < iEnd; ++i) {
                 row = table.getRow(i);
                 if (row) {
-                    columns[columnNames[i]] = row;
+                    columns[columnIds[i]] = row;
                 }
             }
             modified.deleteColumns();
@@ -9129,7 +8842,7 @@ var InvertModifier = /** @class */ (function (_super) {
                     columns["".concat(i)] = row;
                 }
             }
-            columns.columnNames = table.getColumnNames();
+            columns.columnIds = table.getColumnIds();
             modified.deleteColumns();
             modified.setColumns(columns);
         }
@@ -9160,11 +8873,11 @@ Modifiers_DataModifier.registerType('Invert', InvertModifier);
 ;// ./code/es5/es-modules/Data/Modifiers/MathModifier.js
 /* *
  *
- *  (c) 2009-2025 Highsoft AS
+ *  (c) 2009-2026 Highsoft AS
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  *  Authors:
  *  - Sophie Bremer
@@ -9238,12 +8951,12 @@ var MathModifier = /** @class */ (function (_super) {
         modifier.emit({ type: 'modify', detail: eventDetail, table: table });
         var alternativeSeparators = modifier.options.alternativeSeparators,
             formulaColumns = (modifier.options.formulaColumns ||
-                table.getColumnNames()),
-            modified = table.modified;
-        for (var i = 0, iEnd = formulaColumns.length, columnName = void 0; i < iEnd; ++i) {
-            columnName = formulaColumns[i];
-            if (formulaColumns.indexOf(columnName) >= 0) {
-                modified.setColumn(columnName, modifier.processColumn(table, columnName));
+                table.getColumnIds()),
+            modified = table.getModified();
+        for (var i = 0, iEnd = formulaColumns.length, columnId = void 0; i < iEnd; ++i) {
+            columnId = formulaColumns[i];
+            if (formulaColumns.indexOf(columnId) >= 0) {
+                modified.setColumn(columnId, modifier.processColumn(table, columnId));
             }
         }
         var columnFormulas = (modifier.options.columnFormulas || []);
@@ -9263,8 +8976,8 @@ var MathModifier = /** @class */ (function (_super) {
      * @param {Highcharts.DataTable} table
      * Table to extract column from and use as reference.
      *
-     * @param {string} columnName
-     * Name of column to process.
+     * @param {string} columnId
+     * Id of column to process.
      *
      * @param {number} rowIndex
      * Row index to start the replacing process from.
@@ -9272,10 +8985,10 @@ var MathModifier = /** @class */ (function (_super) {
      * @return {Highcharts.DataTableColumn}
      * Returns the processed table column.
      */
-    MathModifier.prototype.processColumn = function (table, columnName, rowIndex) {
+    MathModifier.prototype.processColumn = function (table, columnId, rowIndex) {
         if (rowIndex === void 0) { rowIndex = 0; }
         var alternativeSeparators = this.options.alternativeSeparators,
-            column = (table.getColumn(columnName,
+            column = (table.getColumn(columnId,
             true) || [])
                 .slice(rowIndex > 0 ? rowIndex : 0);
         for (var i = 0, iEnd = column.length, cacheFormula = [], cacheString = '', cell = void 0; i < iEnd; ++i) {
@@ -9325,7 +9038,7 @@ var MathModifier = /** @class */ (function (_super) {
         rowStart = rowStart >= 0 ? rowStart : 0;
         rowEnd = rowEnd >= 0 ? rowEnd : table.getRowCount() + rowEnd;
         var column = [],
-            modified = table.modified;
+            modified = table.getModified();
         for (var i = 0, iEnd = (rowEnd - rowStart); i < iEnd; ++i) {
             try {
                 column[i] = Formula_FormulaProcessor.processFormula(formula, modified);
@@ -9365,11 +9078,11 @@ Modifiers_DataModifier.registerType('Math', MathModifier);
 ;// ./code/es5/es-modules/Data/Modifiers/RangeModifier.js
 /* *
  *
- *  (c) 2009-2025 Highsoft AS
+ *  (c) 2009-2026 Highsoft AS
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  *  Authors:
  *  - Sophie Bremer
@@ -9405,8 +9118,7 @@ var RangeModifier_merge = (highcharts_commonjs_highcharts_commonjs2_highcharts_r
  *
  * */
 /**
- * Filters out table rows with a specific value range.
- *
+ * Slices the table rows based on the specified range.
  */
 var RangeModifier = /** @class */ (function (_super) {
     RangeModifier_extends(RangeModifier, _super);
@@ -9432,7 +9144,9 @@ var RangeModifier = /** @class */ (function (_super) {
      *
      * */
     /**
-     * Replaces table rows with filtered rows.
+     * Replaces table rows with ranged rows. If the given table does not have
+     * defined a `modified` property, the filtering is applied in-place on the
+     * original table rather than on a `modified` copy.
      *
      * @param {DataTable} table
      * Table to modify.
@@ -9441,70 +9155,22 @@ var RangeModifier = /** @class */ (function (_super) {
      * Custom information for pending events.
      *
      * @return {DataTable}
-     * Table with `modified` property as a reference.
+     * Table with `modified` property as a reference or modified table, if
+     * `modified` property of the original table is undefined.
      */
     RangeModifier.prototype.modifyTable = function (table, eventDetail) {
         var modifier = this;
         modifier.emit({ type: 'modify', detail: eventDetail, table: table });
-        var indexes = [];
         var _a = modifier.options,
-            additive = _a.additive,
-            ranges = _a.ranges,
-            strict = _a.strict;
-        if (ranges.length) {
-            var modified = table.modified;
-            var columns = table.getColumns(),
-                rows = [];
-            for (var i = 0, iEnd = ranges.length, range = void 0, rangeColumn = void 0; i < iEnd; ++i) {
-                range = ranges[i];
-                if (strict &&
-                    typeof range.minValue !== typeof range.maxValue) {
-                    continue;
-                }
-                if (i > 0 && !additive) {
-                    modified.deleteRows();
-                    modified.setRows(rows);
-                    modified.setOriginalRowIndexes(indexes, true);
-                    columns = modified.getColumns();
-                    rows = [];
-                    indexes = [];
-                }
-                rangeColumn = (columns[range.column] || []);
-                for (var j = 0, jEnd = rangeColumn.length, cell = void 0, row = void 0, originalRowIndex = void 0; j < jEnd; ++j) {
-                    cell = rangeColumn[j];
-                    switch (typeof cell) {
-                        default:
-                            continue;
-                        case 'boolean':
-                        case 'number':
-                        case 'string':
-                            break;
-                    }
-                    if (strict &&
-                        typeof cell !== typeof range.minValue) {
-                        continue;
-                    }
-                    if (cell >= range.minValue &&
-                        cell <= range.maxValue) {
-                        if (additive) {
-                            row = table.getRow(j);
-                            originalRowIndex = table.getOriginalRowIndex(j);
-                        }
-                        else {
-                            row = modified.getRow(j);
-                            originalRowIndex = modified.getOriginalRowIndex(j);
-                        }
-                        if (row) {
-                            rows.push(row);
-                            indexes.push(originalRowIndex);
-                        }
-                    }
-                }
-            }
-            modified.deleteRows();
-            modified.setRows(rows);
-            modified.setOriginalRowIndexes(indexes);
-        }
+            start = _a.start,
+            end = _a.end;
+        start = Math.max(0, start || 0);
+        end = Math.min(end || Infinity, table.getRowCount());
+        var length = Math.max(end - start, 0);
+        var modified = table.getModified();
+        modified.deleteRows();
+        modified.setRows(table.getRows(start, length));
+        modified.setOriginalRowIndexes(Array.from({ length: length }, function (_, i) { return table.getOriginalRowIndex(start + i); }));
         modifier.emit({ type: 'afterModify', detail: eventDetail, table: table });
         return table;
     };
@@ -9518,7 +9184,8 @@ var RangeModifier = /** @class */ (function (_super) {
      */
     RangeModifier.defaultOptions = {
         type: 'Range',
-        ranges: []
+        start: 0,
+        end: Infinity
     };
     return RangeModifier;
 }(Modifiers_DataModifier));
@@ -9533,11 +9200,11 @@ Modifiers_DataModifier.registerType('Range', RangeModifier);
 ;// ./code/es5/es-modules/Data/Modifiers/SortModifier.js
 /* *
  *
- *  (c) 2009-2025 Highsoft AS
+ *  (c) 2009-2026 Highsoft AS
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  *  Authors:
  *  - Sophie Bremer
@@ -9566,7 +9233,6 @@ var SortModifier_extends = (undefined && undefined.__extends) || (function () {
 })();
 
 
-
 var SortModifier_merge = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).merge;
 /* *
  *
@@ -9585,10 +9251,10 @@ var SortModifier = /** @class */ (function (_super) {
      *
      * */
     /**
-     * Constructs an instance of the range modifier.
+     * Constructs an instance of the sort modifier.
      *
-     * @param {Partial<RangeDataModifier.Options>} [options]
-     * Options to configure the range modifier.
+     * @param {Partial<SortDataModifier.Options>} [options]
+     * Options to configure the sort modifier.
      */
     function SortModifier(options) {
         var _this = _super.call(this) || this;
@@ -9609,6 +9275,17 @@ var SortModifier = /** @class */ (function (_super) {
         return ((b || 0) < (a || 0) ? -1 :
             (b || 0) > (a || 0) ? 1 :
                 0);
+    };
+    SortModifier.compareFactory = function (direction, customCompare) {
+        if (customCompare) {
+            if (direction === 'desc') {
+                return function (a, b) { return -customCompare(a, b); };
+            }
+            return customCompare;
+        }
+        return (direction === 'asc' ?
+            SortModifier.ascending :
+            SortModifier.descending);
     };
     /* *
      *
@@ -9637,163 +9314,49 @@ var SortModifier = /** @class */ (function (_super) {
         }
         return rowReferences;
     };
-    /**
-     * Applies partial modifications of a cell change to the property `modified`
-     * of the given modified table.
-     *
-     * @param {Highcharts.DataTable} table
-     * Modified table.
-     *
-     * @param {string} columnName
-     * Column name of changed cell.
-     *
-     * @param {number|undefined} rowIndex
-     * Row index of changed cell.
-     *
-     * @param {Highcharts.DataTableCellType} cellValue
-     * Changed cell value.
-     *
-     * @param {Highcharts.DataTableEventDetail} [eventDetail]
-     * Custom information for pending events.
-     *
-     * @return {Highcharts.DataTable}
-     * Table with `modified` property as a reference.
-     */
-    SortModifier.prototype.modifyCell = function (table, columnName, rowIndex, cellValue, eventDetail) {
-        var modifier = this,
-            _a = modifier.options,
-            orderByColumn = _a.orderByColumn,
-            orderInColumn = _a.orderInColumn;
-        if (columnName === orderByColumn) {
-            if (orderInColumn) {
-                table.modified.setCell(columnName, rowIndex, cellValue);
-                table.modified.setColumn(orderInColumn, modifier
-                    .modifyTable(new Data_DataTable({
-                    columns: table
-                        .getColumns([orderByColumn, orderInColumn])
-                }))
-                    .modified
-                    .getColumn(orderInColumn));
-            }
-            else {
-                modifier.modifyTable(table, eventDetail);
-            }
-        }
-        return table;
-    };
-    /**
-     * Applies partial modifications of column changes to the property
-     * `modified` of the given table.
-     *
-     * @param {Highcharts.DataTable} table
-     * Modified table.
-     *
-     * @param {Highcharts.DataTableColumnCollection} columns
-     * Changed columns as a collection, where the keys are the column names.
-     *
-     * @param {number} [rowIndex=0]
-     * Index of the first changed row.
-     *
-     * @param {Highcharts.DataTableEventDetail} [eventDetail]
-     * Custom information for pending events.
-     *
-     * @return {Highcharts.DataTable}
-     * Table with `modified` property as a reference.
-     */
-    SortModifier.prototype.modifyColumns = function (table, columns, rowIndex, eventDetail) {
-        var modifier = this,
-            _a = modifier.options,
-            orderByColumn = _a.orderByColumn,
-            orderInColumn = _a.orderInColumn,
-            columnNames = Object.keys(columns);
-        if (columnNames.indexOf(orderByColumn) > -1) {
-            if (orderInColumn &&
-                columns[columnNames[0]].length) {
-                table.modified.setColumns(columns, rowIndex);
-                table.modified.setColumn(orderInColumn, modifier
-                    .modifyTable(new Data_DataTable({
-                    columns: table
-                        .getColumns([orderByColumn, orderInColumn])
-                }))
-                    .modified
-                    .getColumn(orderInColumn));
-            }
-            else {
-                modifier.modifyTable(table, eventDetail);
-            }
-        }
-        return table;
-    };
-    /**
-     * Applies partial modifications of row changes to the property `modified`
-     * of the given table.
-     *
-     * @param {Highcharts.DataTable} table
-     * Modified table.
-     *
-     * @param {Array<(Highcharts.DataTableRow|Highcharts.DataTableRowObject)>} rows
-     * Changed rows.
-     *
-     * @param {number} [rowIndex]
-     * Index of the first changed row.
-     *
-     * @param {Highcharts.DataTableEventDetail} [eventDetail]
-     * Custom information for pending events.
-     *
-     * @return {Highcharts.DataTable}
-     * Table with `modified` property as a reference.
-     */
-    SortModifier.prototype.modifyRows = function (table, rows, rowIndex, eventDetail) {
-        var modifier = this,
-            _a = modifier.options,
-            orderByColumn = _a.orderByColumn,
-            orderInColumn = _a.orderInColumn;
-        if (orderInColumn &&
-            rows.length) {
-            table.modified.setRows(rows, rowIndex);
-            table.modified.setColumn(orderInColumn, modifier
-                .modifyTable(new Data_DataTable({
-                columns: table
-                    .getColumns([orderByColumn, orderInColumn])
-            }))
-                .modified
-                .getColumn(orderInColumn));
-        }
-        else {
-            modifier.modifyTable(table, eventDetail);
-        }
-        return table;
-    };
-    /**
-     * Sorts rows in the table.
-     *
-     * @param {DataTable} table
-     * Table to sort in.
-     *
-     * @param {DataEvent.Detail} [eventDetail]
-     * Custom information for pending events.
-     *
-     * @return {DataTable}
-     * Table with `modified` property as a reference.
-     */
     SortModifier.prototype.modifyTable = function (table, eventDetail) {
         var _a;
         var modifier = this;
         modifier.emit({ type: 'modify', detail: eventDetail, table: table });
-        var columnNames = table.getColumnNames(),
+        var columnIds = table.getColumnIds(),
             rowCount = table.getRowCount(),
             rowReferences = this.getRowReferences(table),
             _b = modifier.options,
             direction = _b.direction,
-            orderByColumn = _b.orderByColumn,
             orderInColumn = _b.orderInColumn,
-            compare = (direction === 'asc' ?
-                SortModifier.ascending :
-                SortModifier.descending),
-            orderByColumnIndex = columnNames.indexOf(orderByColumn),
-            modified = table.modified;
-        if (orderByColumnIndex !== -1) {
-            rowReferences.sort(function (a, b) { return compare(a.row[orderByColumnIndex], b.row[orderByColumnIndex]); });
+            customCompare = _b.compare,
+            modified = table.getModified();
+        var orderBy = ('columns' in modifier.options ?
+                modifier.options.columns :
+                [modifier.options.orderByColumn]);
+        var orderByIndexes = [];
+        for (var i = 0, iEnd = orderBy.length; i < iEnd; ++i) {
+            var sort = orderBy[i];
+            var isString = typeof sort === 'string';
+            var column = isString ? sort : sort.column;
+            var columnIndex = columnIds.indexOf(column);
+            if (columnIndex === -1) {
+                continue;
+            }
+            orderByIndexes.push({
+                columnIndex: columnIndex,
+                compare: SortModifier.compareFactory(isString ? direction : (sort.direction || direction), isString ? customCompare : (sort.compare || customCompare))
+            });
+        }
+        if (orderByIndexes.length) {
+            rowReferences.sort(function (a, b) {
+                for (var i = 0, iEnd = orderByIndexes.length; i < iEnd; ++i) {
+                    var _a = orderByIndexes[i],
+                        columnIndex = _a.columnIndex,
+                        compare = _a.compare;
+                    var result = compare(a.row[columnIndex],
+                        b.row[columnIndex]);
+                    if (result) {
+                        return result;
+                    }
+                }
+                return a.index - b.index;
+            });
         }
         if (orderInColumn) {
             var column = [];
@@ -9808,7 +9371,7 @@ var SortModifier = /** @class */ (function (_super) {
             var rowReference = void 0;
             for (var i = 0; i < rowCount; ++i) {
                 rowReference = rowReferences[i];
-                originalIndexes.push(modified.getOriginalRowIndex(rowReference.index));
+                originalIndexes.push(table.getOriginalRowIndex(rowReference.index));
                 rows.push(rowReference.row);
             }
             modified.setRows(rows, 0);
@@ -9840,7 +9403,206 @@ Modifiers_DataModifier.registerType('Sort', SortModifier);
  * */
 /* harmony default export */ var Modifiers_SortModifier = ((/* unused pure expression or super */ null && (SortModifier)));
 
+;// ./code/es5/es-modules/Data/Modifiers/FilterModifier.js
+/* *
+ *
+ *  (c) 2009-2026 Highsoft AS
+ *
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
+ *
+ *
+ *  Authors:
+ *  - Dawid Dragula
+ *
+ * */
+
+var FilterModifier_extends = (undefined && undefined.__extends) || (function () {
+    var extendStatics = function (d,
+        b) {
+            extendStatics = Object.setPrototypeOf ||
+                ({ __proto__: [] } instanceof Array && function (d,
+        b) { d.__proto__ = b; }) ||
+                function (d,
+        b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b,
+        p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+
+
+var FilterModifier_isFunction = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).isFunction, FilterModifier_merge = (highcharts_commonjs_highcharts_commonjs2_highcharts_root_Highcharts_default()).merge;
+/* *
+ *
+ *  Class
+ *
+ * */
+/**
+ * Filters out table rows matching a given condition.
+ */
+var FilterModifier = /** @class */ (function (_super) {
+    FilterModifier_extends(FilterModifier, _super);
+    /* *
+     *
+     *  Constructor
+     *
+     * */
+    /**
+     * Constructs an instance of the filter modifier.
+     *
+     * @param {Partial<FilterModifier.Options>} [options]
+     * Options to configure the filter modifier.
+     */
+    function FilterModifier(options) {
+        var _this = _super.call(this) || this;
+        _this.options = FilterModifier_merge(FilterModifier.defaultOptions, options);
+        return _this;
+    }
+    /* *
+     *
+     *  Static Functions
+     *
+     * */
+    /**
+     * Compiles a filter condition into a callback function.
+     *
+     * @param {FilterCondition} condition
+     * Condition to compile.
+     */
+    FilterModifier.compile = function (condition) {
+        var _this = this;
+        if (FilterModifier_isFunction(condition)) {
+            return condition;
+        }
+        var op = condition.operator;
+        switch (op) {
+            case 'and': {
+                var subs_1 = condition.conditions.map(function (c) { return _this.compile(c); });
+                return function (row, table, i) { return subs_1.every(function (cond) { return cond(row, table, i); }); };
+            }
+            case 'or': {
+                var subs_2 = condition.conditions.map(function (c) { return _this.compile(c); });
+                return function (row, table, i) { return subs_2.some(function (cond) { return cond(row, table, i); }); };
+            }
+            case 'not': {
+                var sub_1 = this.compile(condition.condition);
+                return function (row, table, i) { return !sub_1(row, table, i); };
+            }
+        }
+        var col = condition.columnId,
+            value = condition.value;
+        switch (op) {
+            case '==':
+                // eslint-disable-next-line eqeqeq
+                return function (row) { return row[col] == value; };
+            case '===':
+                return function (row) { return row[col] === value; };
+            case '!=':
+                // eslint-disable-next-line eqeqeq
+                return function (row) { return row[col] != value; };
+            case '!==':
+                return function (row) { return row[col] !== value; };
+            case '>':
+                return function (row) { return (row[col] || 0) > (value || 0); };
+            case '>=':
+                return function (row) { return (row[col] || 0) >= (value || 0); };
+            case '<':
+                return function (row) { return (row[col] || 0) < (value || 0); };
+            case '<=':
+                return function (row) { return (row[col] || 0) <= (value || 0); };
+            case 'empty':
+                return function (row) { return row[col] === null || row[col] === ''; };
+        }
+        var ignoreCase = condition.ignoreCase;
+        var str = function (val) {
+                var s = '' + val;
+            return (ignoreCase !== null && ignoreCase !== void 0 ? ignoreCase : true) ? s.toLowerCase() : s;
+        };
+        switch (op) {
+            case 'contains':
+                return function (row) { return str(row[col]).includes(str(value)); };
+            default:
+                return function (row) { return str(row[col])[op](str(value)); };
+        }
+    };
+    /* *
+     *
+     *  Functions
+     *
+     * */
+    /**
+     * Filters out table rows matching a given condition. If the given table
+     * does not have defined a `modified` property, the filtering is applied
+     * in-place on the original table rather than on a `modified` copy.
+     *
+     * @param {DataTable} table
+     * Table to modify.
+     *
+     * @param {DataEvent.Detail} [eventDetail]
+     * Custom information for pending events.
+     *
+     * @return {DataTable}
+     * Table with `modified` property as a reference or modified table, if
+     * `modified` property of the original table is undefined.
+     */
+    FilterModifier.prototype.modifyTable = function (table, eventDetail) {
+        var modifier = this;
+        modifier.emit({ type: 'modify', detail: eventDetail, table: table });
+        var condition = modifier.options.condition;
+        if (!condition) {
+            // If no condition is set, return the unmodified table.
+            return table;
+        }
+        var matchRow = FilterModifier.compile(condition);
+        var modified = table.getModified();
+        var rows = [];
+        var indexes = [];
+        for (var i = 0, iEnd = table.getRowCount(); i < iEnd; ++i) {
+            var row = table.getRowObject(i);
+            if (!row) {
+                continue;
+            }
+            if (matchRow(row, table, i)) {
+                rows.push(row);
+                indexes.push(table.getOriginalRowIndex(i));
+            }
+        }
+        modified.deleteRows();
+        modified.setRows(rows);
+        modified.setOriginalRowIndexes(indexes);
+        modifier.emit({ type: 'afterModify', detail: eventDetail, table: table });
+        return table;
+    };
+    /* *
+     *
+     *  Static Properties
+     *
+     * */
+    /**
+     * Default options for the filter modifier.
+     */
+    FilterModifier.defaultOptions = {
+        type: 'Filter'
+    };
+    return FilterModifier;
+}(Modifiers_DataModifier));
+Modifiers_DataModifier.registerType('Filter', FilterModifier);
+/* *
+ *
+ *  Default Export
+ *
+ * */
+/* harmony default export */ var Modifiers_FilterModifier = ((/* unused pure expression or super */ null && (FilterModifier)));
+
 ;// ./code/es5/es-modules/masters/modules/data-tools.src.js
+
 
 
 

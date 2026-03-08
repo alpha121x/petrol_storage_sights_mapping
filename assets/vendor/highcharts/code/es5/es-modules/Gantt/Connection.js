@@ -1,11 +1,11 @@
 /* *
  *
- *  (c) 2016 Highsoft AS
+ *  (c) 2016-2026 Highsoft AS
  *  Authors: Øystein Moseng, Lars A. V. Cabrera
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -27,7 +27,7 @@ var deg2rad = H.deg2rad, max = Math.max, min = Math.min;
  * The Connection class. Used internally to represent a connection between two
  * points.
  *
- * @private
+ * @internal
  * @class
  * @name Highcharts.Connection
  *
@@ -41,6 +41,7 @@ var deg2rad = H.deg2rad, max = Math.max, min = Math.min;
  *        Connection options.
  */
 var Connection = /** @class */ (function () {
+    /** @internal */
     function Connection(from, to, options) {
         this.init(from, to, options);
     }
@@ -322,6 +323,7 @@ var Connection = /** @class */ (function () {
  *  Default Export
  *
  * */
+/** @internal */
 export default Connection;
 /* *
  *

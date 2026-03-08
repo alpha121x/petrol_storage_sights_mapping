@@ -1,6 +1,5 @@
 /* *
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -12,17 +11,13 @@ var merge = U.merge;
  *  Class
  *
  * */
-/**
- * It provides methods for handling points, control points
- * and points transformations.
- * @private
- */
 var Controllable = /** @class */ (function () {
     /* *
      *
      *  Constructor
      *
      * */
+    /** @internal */
     function Controllable(annotation, options, index, itemType) {
         this.annotation = annotation;
         this.chart = annotation.chart;
@@ -41,7 +36,7 @@ var Controllable = /** @class */ (function () {
      * */
     /**
      * Redirect attr usage on the controllable graphic element.
-     * @private
+     * @internal
      */
     Controllable.prototype.attr = function () {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -61,7 +56,7 @@ var Controllable = /** @class */ (function () {
     /**
      * Utility function for mapping item's options
      * to element's attribute
-     * @private
+     * @internal
      * @param {Highcharts.AnnotationsLabelsOptions|Highcharts.AnnotationsShapesOptions} options
      * @return {Highcharts.SVGAttributes}
      *         Mapped options.
@@ -82,7 +77,7 @@ var Controllable = /** @class */ (function () {
     };
     /**
      * Destroy a controllable.
-     * @private
+     * @internal
      */
     Controllable.prototype.destroy = function () {
         if (this.graphic) {
@@ -95,7 +90,7 @@ var Controllable = /** @class */ (function () {
     };
     /**
      * Init the controllable
-     * @private
+     * @internal
      */
     Controllable.prototype.init = function (annotation, options, index) {
         this.annotation = annotation;
@@ -109,14 +104,14 @@ var Controllable = /** @class */ (function () {
     };
     /**
      * Redraw a controllable.
-     * @private
+     * @internal
      */
     Controllable.prototype.redraw = function (animation) {
         this.redrawControlPoints(animation);
     };
     /**
      * Render a controllable.
-     * @private
+     * @internal
      */
     Controllable.prototype.render = function (
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -128,7 +123,7 @@ var Controllable = /** @class */ (function () {
     };
     /**
      * Rotate a controllable.
-     * @private
+     * @internal
      * @param {number} cx
      *        Origin x rotation
      * @param {number} cy
@@ -140,7 +135,7 @@ var Controllable = /** @class */ (function () {
     };
     /**
      * Scale a controllable.
-     * @private
+     * @internal
      * @param {number} cx
      *        Origin x rotation
      * @param {number} cy
@@ -155,7 +150,7 @@ var Controllable = /** @class */ (function () {
     };
     /**
      * Set control points' visibility.
-     * @private
+     * @internal
      */
     Controllable.prototype.setControlPointsVisibility = function (visible) {
         this.controlPoints.forEach(function (controlPoint) {
@@ -164,7 +159,7 @@ var Controllable = /** @class */ (function () {
     };
     /**
      * Check if a controllable should be rendered/redrawn.
-     * @private
+     * @internal
      * @return {boolean}
      *         Whether a controllable should be drawn.
      */
@@ -174,7 +169,8 @@ var Controllable = /** @class */ (function () {
     /**
      * Translate shape within controllable item.
      * Replaces `controllable.translate` method.
-     * @private
+     *
+     * @internal
      * @param {number} dx
      *        Translation for x coordinate
      * @param {number} dy
@@ -203,7 +199,7 @@ var Controllable = /** @class */ (function () {
     };
     /**
      * Update a controllable.
-     * @private
+     * @internal
      */
     Controllable.prototype.update = function (newOptions) {
         var annotation = this.annotation, options = merge(true, this.options, newOptions), parentGroup = this.graphic.parentGroup, Constructor = this.constructor;
@@ -231,14 +227,18 @@ export default Controllable;
  * An object which denotes a controllable's anchor positions - relative and
  * absolute.
  *
- * @private
+ * @internal
  * @interface Highcharts.AnnotationAnchorObject
  */ /**
-* Relative to the plot area position
+* Relative to the plot area position.
+*
+* @internal
 * @name Highcharts.AnnotationAnchorObject#relativePosition
 * @type {Highcharts.BBoxObject}
 */ /**
-* Absolute position
+* Absolute position.
+*
+* @internal
 * @name Highcharts.AnnotationAnchorObject#absolutePosition
 * @type {Highcharts.BBoxObject}
 */
@@ -254,7 +254,7 @@ export default Controllable;
 * @name Highcharts.AnnotationControllable#collection
 * @type {string}
 */ /**
-* @private
+* @internal
 * @name Highcharts.AnnotationControllable#controlPoints
 * @type {Array<Highcharts.AnnotationControlPoint>}
 */ /**

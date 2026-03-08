@@ -1,12 +1,12 @@
 /* *
  *
- *  (c) 2016-2025 Highsoft AS
+ *  (c) 2016-2026 Highsoft AS
  *
  *  Author: Lars A. V. Cabrera
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -78,6 +78,7 @@ var GanttPoint = /** @class */ (function (_super) {
         var ganttPoint = _super.prototype.applyOptions.call(this, options, x);
         GanttPoint.setGanttPointAliases(ganttPoint, ganttPoint.series.chart);
         this.isNull = !((_a = this.isValid) === null || _a === void 0 ? void 0 : _a.call(this));
+        this.formatPrefix = this.isNull ? 'null' : 'point'; // #23605
         return ganttPoint;
     };
     GanttPoint.prototype.isValid = function () {

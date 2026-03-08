@@ -1,6 +1,5 @@
 /* *
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -31,8 +30,8 @@ var extend = U.extend, getAlignFactor = U.getAlignFactor, isNumber = U.isNumber,
  *
  * */
 /**
- * General symbol definition for labels with connector
- * @private
+ * General symbol definition for labels with connector.
+ * @internal
  */
 function symbolConnector(x, y, w, h, options) {
     var anchorX = options && options.anchorX, anchorY = options && options.anchorY;
@@ -74,9 +73,9 @@ function symbolConnector(x, y, w, h, options) {
 /**
  * A controllable label class.
  *
+ * @internal
  * @requires modules/annotations
  *
- * @private
  * @class
  * @name Highcharts.AnnotationControllableLabel
  *
@@ -212,6 +211,7 @@ var ControllableLabel = /** @class */ (function (_super) {
      * @param {number} dy translation for y coordinate
      */
     ControllableLabel.prototype.translate = function (dx, dy) {
+        var _a, _b;
         var chart = this.annotation.chart, 
         // Annotation.options
         labelOptions = this.annotation.userOptions, 
@@ -223,6 +223,8 @@ var ControllableLabel = /** @class */ (function (_super) {
             dy = temp;
         }
         // Local options:
+        (_a = this.options).x || (_a.x = 0);
+        (_b = this.options).y || (_b.y = 0);
         this.options.x += dx;
         this.options.y += dy;
         // Options stored in chart:
@@ -240,9 +242,9 @@ var ControllableLabel = /** @class */ (function (_super) {
             .attr(attrs)
             .add(parent);
         if (!this.annotation.chart.styledMode) {
-            if (style.color === 'contrast') {
-                var background = (ControllableLabel.shapesWithoutBackground.indexOf(options.shape) > -1 ||
-                    options.backgroundColor === 'none') ?
+            if ((style === null || style === void 0 ? void 0 : style.color) === 'contrast') {
+                var background = ((!options.shape ||
+                    ControllableLabel.shapesWithoutBackground.indexOf(options.shape) > -1) || options.backgroundColor === 'none') ?
                     chartBackground :
                     options.backgroundColor;
                 style.color = this.annotation.chart.renderer.getContrast(typeof background === 'string' ? background :
@@ -250,7 +252,7 @@ var ControllableLabel = /** @class */ (function (_super) {
                         '#ffffff');
             }
             this.graphic
-                .css(options.style)
+                .css(options.style || {})
                 .shadow(options.shadow);
         }
         this.graphic.labelrank = options.labelrank;
@@ -383,4 +385,5 @@ var ControllableLabel = /** @class */ (function (_super) {
  *  Default Export
  *
  * */
+/** @internal */
 export default ControllableLabel;

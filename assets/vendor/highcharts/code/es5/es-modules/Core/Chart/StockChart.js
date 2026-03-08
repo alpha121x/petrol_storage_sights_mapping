@@ -1,10 +1,11 @@
 /* *
  *
- *  (c) 2010-2025 Torstein Honsi
+ *  (c) 2010-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -43,7 +44,7 @@ var addEvent = U.addEvent, clamp = U.clamp, crisp = U.crisp, defined = U.defined
 /**
  * Get stock-specific default axis options.
  *
- * @private
+ * @internal
  * @function getDefaultAxisOptions
  */
 function getDefaultAxisOptions(coll, options, defaultOptions) {
@@ -76,7 +77,7 @@ function getDefaultAxisOptions(coll, options, defaultOptions) {
 /**
  * Get stock-specific forced axis options.
  *
- * @private
+ * @internal
  * @function getForcedAxisOptions
  */
 function getForcedAxisOptions(type, chartOptions) {
@@ -202,7 +203,7 @@ var StockChart = /** @class */ (function (_super) {
      * Factory for creating different axis types.
      * Extended to add stock defaults.
      *
-     * @private
+     * @internal
      * @function Highcharts.StockChart#createAxis
      * @param {string} coll
      * An axis type.
@@ -231,13 +232,30 @@ addEvent(Chart, 'update', function (e) {
  *  Composition
  *
  * */
+/** @internal */
 (function (StockChart) {
     /* *
      *
      *  Functions
      *
      * */
-    /** @private */
+    /**
+     * Composes the chart with the stock-specific functionality.
+     *
+     * @internal
+     *
+     * @param {Highcharts.Class<Highcharts.Chart>} ChartClass
+     * The chart class to compose.
+     *
+     * @param {Highcharts.Class<Highcharts.Axis>} AxisClass
+     * The axis class to compose.
+     *
+     * @param {Highcharts.Class<Highcharts.Series>} SeriesClass
+     * The series class to compose.
+     *
+     * @param {Highcharts.Class<Highcharts.SVGRenderer>} SVGRendererClass
+     * The SVG renderer class to compose.
+     */
     function compose(ChartClass, AxisClass, SeriesClass, SVGRendererClass) {
         var seriesProto = SeriesClass.prototype;
         if (!seriesProto.forceCropping) {
@@ -255,7 +273,7 @@ addEvent(Chart, 'update', function (e) {
     StockChart.compose = compose;
     /**
      * Extend crosshairs to also draw the label.
-     * @private
+     * @internal
      */
     function onAxisAfterDrawCrosshair(event) {
         var _a, _b, _c, _d;
@@ -408,7 +426,7 @@ addEvent(Chart, 'update', function (e) {
     }
     /**
      * Wrapper to hide the label.
-     * @private
+     * @internal
      */
     function onAxisAfterHideCrosshair() {
         var axis = this;
@@ -419,7 +437,7 @@ addEvent(Chart, 'update', function (e) {
     /**
      * Override the automatic label alignment so that the first Y axis' labels
      * are drawn on top of the grid line, and subsequent axes are drawn outside.
-     * @private
+     * @internal
      */
     function onAxisAutoLabelAlign(e) {
         var axis = this, chart = axis.chart, options = axis.options, panes = chart._labelPanes = chart._labelPanes || {}, labelOptions = options.labels;
@@ -442,7 +460,7 @@ addEvent(Chart, 'update', function (e) {
     }
     /**
      * Clear axis from label panes. (#6071)
-     * @private
+     * @internal
      */
     function onAxisDestroy() {
         var axis = this, chart = axis.chart, key = (axis.options &&
@@ -453,19 +471,24 @@ addEvent(Chart, 'update', function (e) {
     }
     /**
      * Override getPlotLinePath to allow for multipane charts.
-     * @private
+     * @internal
      */
     function onAxisGetPlotLinePath(e) {
         var axis = this, series = (axis.isLinked && !axis.series && axis.linkedParent ?
             axis.linkedParent.series :
-            axis.series), chart = axis.chart, renderer = chart.renderer, axisLeft = axis.left, axisTop = axis.top, result = [], translatedValue = e.translatedValue, value = e.value, force = e.force, 
+            axis.series), chart = axis.chart, horiz = axis.horiz, renderer = chart.renderer, result = [], _a = e.acrossPanes, acrossPanes = _a === void 0 ? true : _a, force = e.force, translatedValue = e.translatedValue, value = e.value, allPerpendicularAxes = (axis.isXAxis ? chart.yAxis : chart.xAxis) || [], 
         /**
          * Return the other axis based on either the axis option or on
          * related series.
-         * @private
+         * @internal
          */
         getAxis = function (coll) {
             var otherColl = coll === 'xAxis' ? 'yAxis' : 'xAxis', opt = axis.options[otherColl];
+            if (acrossPanes && !axis.options.isInternal) {
+                return allPerpendicularAxes.filter(function (a) {
+                    return !a.options.isInternal;
+                });
+            }
             // Other axis indexed by number
             if (isNumber(opt)) {
                 return [chart[otherColl][opt]];
@@ -477,24 +500,26 @@ addEvent(Chart, 'update', function (e) {
             // Auto detect based on existing series
             return series.map(function (s) { return s[otherColl]; });
         };
-        var x1, y1, x2, y2, axes = [], // #3416 need a default array
-        axes2, uniqueAxes, transVal;
-        if ( // For stock chart, by default render paths across the panes
-        // except the case when `acrossPanes` is disabled by user (#6644)
-        (chart.options.isStock && e.acrossPanes !== false) &&
+        /**
+         * Push a segment to the result SVGPath array
+         */
+        function pushSegment(pos, crossingPos1, crossingPos2) {
+            result.push(['M', horiz ? pos : crossingPos1, horiz ? crossingPos1 : pos], ['L', horiz ? pos : crossingPos2, horiz ? crossingPos2 : pos]);
+        }
+        var axes = [], // #3416 need a default array
+        uniqueAxes, transVal;
+        if (chart.options.isStock &&
             // Ignore in case of colorAxis or zAxis. #3360, #3524, #6720
-            axis.coll === 'xAxis' || axis.coll === 'yAxis') {
+            (axis.coll === 'xAxis' || axis.coll === 'yAxis')) {
             e.preventDefault();
             // Get the related axes based on series
             axes = getAxis(axis.coll);
             // Get the related axes based options.*Axis setting #2810
-            axes2 = (axis.isXAxis ? chart.yAxis : chart.xAxis);
-            for (var _i = 0, axes2_1 = axes2; _i < axes2_1.length; _i++) {
-                var A = axes2_1[_i];
+            for (var _i = 0, allPerpendicularAxes_1 = allPerpendicularAxes; _i < allPerpendicularAxes_1.length; _i++) {
+                var A = allPerpendicularAxes_1[_i];
                 if (!A.options.isInternal) {
-                    var a = (A.isXAxis ? 'yAxis' : 'xAxis'), relatedAxis = (defined(A.options[a]) ?
-                        chart[a][A.options[a]] :
-                        chart[a][0]);
+                    var a = (A.isXAxis ? 'yAxis' : 'xAxis'), relatedAxis = (defined(A.options[a]) &&
+                        chart[a][A.options[a]]);
                     if (axis === relatedAxis) {
                         axes.push(A);
                     }
@@ -514,53 +539,40 @@ addEvent(Chart, 'update', function (e) {
                     uniqueAxes.push(axis2);
                 }
             };
-            for (var _a = 0, axes_1 = axes; _a < axes_1.length; _a++) {
-                var axis2 = axes_1[_a];
+            for (var _b = 0, axes_1 = axes; _b < axes_1.length; _b++) {
+                var axis2 = axes_1[_b];
                 _loop_1(axis2);
             }
             transVal = pick(translatedValue, axis.translate(value || 0, void 0, void 0, e.old));
             if (isNumber(transVal)) {
-                if (axis.horiz) {
-                    for (var _b = 0, uniqueAxes_1 = uniqueAxes; _b < uniqueAxes_1.length; _b++) {
-                        var axis2 = uniqueAxes_1[_b];
-                        var skip = void 0;
-                        y1 = axis2.pos;
-                        y2 = y1 + axis2.len;
-                        x1 = x2 = Math.round(transVal + axis.transB);
-                        // Outside plot area
-                        if (force !== 'pass' &&
-                            (x1 < axisLeft || x1 > axisLeft + axis.width)) {
-                            if (force) {
-                                x1 = x2 = clamp(x1, axisLeft, axisLeft + axis.width);
-                            }
-                            else {
-                                skip = true;
-                            }
-                        }
-                        if (!skip) {
-                            result.push(['M', x1, y1], ['L', x2, y2]);
-                        }
+                var skip = void 0, pos = horiz ?
+                    transVal + axis.pos :
+                    axis.pos + axis.len - transVal;
+                // Outside plot area
+                if (force !== 'pass' &&
+                    (pos < axis.pos || pos > axis.pos + axis.len)) {
+                    if (force) {
+                        pos = clamp(pos, axis.pos, axis.pos + axis.len);
+                    }
+                    else {
+                        skip = true;
                     }
                 }
-                else {
-                    for (var _c = 0, uniqueAxes_2 = uniqueAxes; _c < uniqueAxes_2.length; _c++) {
-                        var axis2 = uniqueAxes_2[_c];
-                        var skip = void 0;
-                        x1 = axis2.pos;
-                        x2 = x1 + axis2.len;
-                        y1 = y2 = axisTop + axis.height - transVal;
-                        // Outside plot area
-                        if (force !== 'pass' &&
-                            (y1 < axisTop || y1 > axisTop + axis.height)) {
-                            if (force) {
-                                y1 = y2 = clamp(y1, axisTop, axisTop + axis.height);
-                            }
-                            else {
-                                skip = true;
-                            }
-                        }
-                        if (!skip) {
-                            result.push(['M', x1, y1], ['L', x2, y2]);
+                if (!skip) {
+                    var crossingPosName = horiz ? 'top' : 'left', crossingLenName = horiz ? 'height' : 'width';
+                    if (!acrossPanes &&
+                        // If the perpendicular position is set explicitly on
+                        // the axis, use it. For example, if `top` and `height`
+                        // options are set on a horizontal x-axis, the grid
+                        // lines should conform to that position.
+                        (axis.options[crossingPosName] ||
+                            axis.options[crossingLenName])) {
+                        pushSegment(pos, axis[crossingPosName], axis[crossingPosName] + axis[crossingLenName]);
+                    }
+                    else {
+                        for (var _c = 0, uniqueAxes_1 = uniqueAxes; _c < uniqueAxes_1.length; _c++) {
+                            var perpendicularAxis = uniqueAxes_1[_c];
+                            pushSegment(pos, perpendicularAxis.pos, perpendicularAxis.pos + perpendicularAxis.len);
                         }
                     }
                 }
@@ -574,7 +586,7 @@ addEvent(Chart, 'update', function (e) {
     /**
      * Handle som Stock-specific series defaults, override the plotOptions
      * before series options are handled.
-     * @private
+     * @internal
      */
     function onSeriesSetOptions(e) {
         var series = this;
@@ -653,7 +665,7 @@ addEvent(Chart, 'update', function (e) {
     /**
      * Function to crisp a line with multiple segments
      *
-     * @private
+     * @internal
      * @function Highcharts.SVGRenderer#crispPolyLine
      */
     function svgRendererCrispPolyLine(points, width) {

@@ -1,10 +1,11 @@
 /* *
  *
- *  (c) 2021 Torstein Honsi
+ *  (c) 2021-2026 Highsoft AS
+ *  Author: Torstein Honsi
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -39,7 +40,6 @@ floatCorrection = 0.000001;
 /**
  * Keep longitude within -180 and 180. This is faster than using the modulo
  * operator, and preserves the distinction between -180 and 180.
- * @private
  */
 var wrapLon = function (lon) {
     // Replacing the if's with while would increase the range, but make it prone
@@ -54,12 +54,10 @@ var wrapLon = function (lon) {
 };
 /**
  * Calculate the haversine of an angle.
- * @private
  */
 var hav = function (radians) { return (1 - Math.cos(radians)) / 2; };
 /**
 * Calculate the haversine of an angle from two coordinates.
-* @private
 */
 var havFromCoords = function (point1, point2) {
     var cos = Math.cos, lat1 = point1[1] * deg2rad, lon1 = point1[0] * deg2rad, lat2 = point2[1] * deg2rad, lon2 = point2[0] * deg2rad, deltaLat = lat2 - lat1, deltaLon = lon2 - lon1, havFromCoords = hav(deltaLat) + cos(lat1) * cos(lat2) * hav(deltaLon);
@@ -70,6 +68,7 @@ var havFromCoords = function (point1, point2) {
  *  Class
  *
  * */
+/** @internal */
 var Projection = /** @class */ (function () {
     /* *
      *
@@ -78,12 +77,16 @@ var Projection = /** @class */ (function () {
      * */
     function Projection(options) {
         if (options === void 0) { options = {}; }
-        // Whether the chart has points, lines or polygons given as coordinates
-        // with positive up, as opposed to paths in the SVG plane with positive
-        // down.
+        /**
+         * Whether the chart has points, lines or polygons given as coordinates
+         * with positive up, as opposed to paths in the SVG plane with positive
+         * down.
+         */
         this.hasCoordinates = false;
-        // Whether the chart has true projection as opposed to pre-projected geojson
-        // as in the legacy map collection.
+        /**
+         * Whether the chart has true projection as opposed to pre-projected geojson
+         * as in the legacy map collection.
+         */
         this.hasGeoProjection = false;
         this.maxLatitude = 90;
         this.options = options;
@@ -126,14 +129,12 @@ var Projection = /** @class */ (function () {
      * */
     /**
      * Add a projection definition to the registry, accessible by its `name`.
-     * @private
      */
     Projection.add = function (name, definition) {
         Projection.registry[name] = definition;
     };
     /**
      * Calculate the distance in meters between two given coordinates.
-     * @private
      */
     Projection.distance = function (point1, point2) {
         var atan2 = Math.atan2, sqrt = Math.sqrt, hav = havFromCoords(point1, point2), angularDistance = 2 * atan2(sqrt(hav), sqrt(1 - hav)), distance = angularDistance * 6371e3;
@@ -141,7 +142,6 @@ var Projection = /** @class */ (function () {
     };
     /**
      * Calculate the geodesic line string between two given coordinates.
-     * @private
      */
     Projection.geodesic = function (point1, point2, inclusive, stepDistance) {
         if (stepDistance === void 0) { stepDistance = 500000; }
@@ -220,7 +220,6 @@ var Projection = /** @class */ (function () {
     /**
      * Take the rotation options and returns the appropriate projection
      * functions.
-     * @private
      */
     Projection.prototype.getRotator = function (rotation) {
         var deltaLambda = rotation[0] * deg2rad, deltaPhi = (rotation[1] || 0) * deg2rad, deltaGamma = (rotation[2] || 0) * deg2rad;
@@ -255,7 +254,6 @@ var Projection = /** @class */ (function () {
     /**
      * Project a lonlat coordinate position to xy. Dynamically overridden when
      * projection is set.
-     * @private
      */
     Projection.prototype.forward = function (lonLat) {
         return lonLat;
@@ -263,7 +261,6 @@ var Projection = /** @class */ (function () {
     /**
      * Unproject an xy chart coordinate position to lonlat. Dynamically
      * overridden when projection is set.
-     * @private
      */
     Projection.prototype.inverse = function (xy) {
         return xy;
@@ -382,7 +379,6 @@ var Projection = /** @class */ (function () {
     };
     /**
      * Take a GeoJSON geometry and return a translated SVGPath.
-     * @private
      */
     Projection.prototype.path = function (geometry) {
         var _this = this;
@@ -592,4 +588,5 @@ var Projection = /** @class */ (function () {
  *  Default Export
  *
  * */
+/** @internal */
 export default Projection;

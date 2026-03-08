@@ -1,13 +1,14 @@
 /* *
  *
- *  (c) 2009-2025 Øystein Moseng
+ *  (c) 2009-2026 Highsoft AS
+ *  Author: Øystein Moseng
  *
  *  Class representing a Synth Patch, used by Instruments in the
  *  sonification.js module.
  *
- *  License: www.highcharts.com/license
+ *  A commercial license may be required depending on use.
+ *  See www.highcharts.com/license
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -28,7 +29,7 @@ var clamp = U.clamp, defined = U.defined, pick = U.pick;
  * Get the multiplier value from a pitch tracked multiplier. The parameter
  * specifies the multiplier at ca 3200Hz. It is 1 at ca 50Hz. In between
  * it is mapped logarithmically.
- * @private
+ * @internal
  * @param {number} multiplier The multiplier to track.
  * @param {number} freq The current frequency.
  */
@@ -38,7 +39,7 @@ function getPitchTrackedMultiplierVal(multiplier, freq) {
 }
 /**
  * Schedule a mini ramp to volume at time - avoid clicks/pops.
- * @private
+ * @internal
  * @param {Object} gainNode The gain node to schedule for.
  * @param {number} time The time in seconds to start ramp.
  * @param {number} vol The volume to ramp to.
@@ -50,7 +51,7 @@ function miniRampToVolAtTime(gainNode, time, vol) {
 }
 /**
  * Schedule a gain envelope for a gain node.
- * @private
+ * @internal
  * @param {Array<Object>} envelope The envelope to schedule.
  * @param {string} type Type of envelope, attack or release.
  * @param {number} time At what time (in seconds) to start envelope.
@@ -78,7 +79,7 @@ function scheduleGainEnvelope(envelope, type, time, gainNode, volumeMultiplier) 
  * Combines two sawtooth oscillators to create a pulse by phase inverting and
  * delaying one of them.
  * @class
- * @private
+ * @internal
  */
 var PulseOscNode = /** @class */ (function () {
     function PulseOscNode(context, options) {
@@ -147,7 +148,7 @@ var PulseOscNode = /** @class */ (function () {
 /**
  * Internal class used by SynthPatch
  * @class
- * @private
+ * @internal
  */
 var Oscillator = /** @class */ (function () {
     function Oscillator(audioContext, options, destination) {
@@ -496,7 +497,7 @@ var SynthPatch = /** @class */ (function () {
     };
     /**
      * Create nodes for master EQ
-     * @private
+     * @internal
      */
     SynthPatch.prototype.createEqChain = function (outputNode) {
         var _this = this;
@@ -511,7 +512,7 @@ var SynthPatch = /** @class */ (function () {
     };
     /**
      * Fade by release envelopes at time
-     * @private
+     * @internal
      */
     SynthPatch.prototype.releaseAtTime = function (time) {
         var maxReleaseDuration = 0;

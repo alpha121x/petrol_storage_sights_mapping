@@ -1,6 +1,5 @@
 /* *
  *
- *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
  *
  * */
 'use strict';
@@ -12,6 +11,7 @@ import U from '../../Core/Utilities.js';
  *  Composition Namespace
  *
  * */
+/** @internal */
 var ControlTarget;
 (function (ControlTarget) {
     /* *
@@ -26,7 +26,7 @@ var ControlTarget;
      * */
     /**
      * Add control points.
-     * @private
+     * @internal
      */
     function addControlPoints() {
         var _this = this;
@@ -42,7 +42,8 @@ var ControlTarget;
     }
     /**
      * Returns object which denotes anchor position - relative and absolute.
-     * @private
+     *
+     * @internal
      * @param {Highcharts.AnnotationPointType} point
      * An annotation point.
      *
@@ -72,7 +73,7 @@ var ControlTarget;
     }
     /**
      * Adds shared functions to be used with targets of ControlPoint.
-     * @private
+     * @internal
      */
     function compose(ControlTargetClass) {
         var controlProto = ControlTargetClass.prototype;
@@ -96,7 +97,7 @@ var ControlTarget;
     ControlTarget.compose = compose;
     /**
      * Destroy control points.
-     * @private
+     * @internal
      */
     function destroyControlTarget() {
         this.controlPoints.forEach(function (controlPoint) { return controlPoint.destroy(); });
@@ -110,7 +111,8 @@ var ControlTarget;
     }
     /**
      * Get the points options.
-     * @private
+     *
+     * @internal
      * @return {Array<Highcharts.PointOptionsObject>}
      * An array of points' options.
      */
@@ -121,12 +123,13 @@ var ControlTarget;
     }
     /**
      * Find point-like objects based on points options.
-     * @private
-     * @return {Array<Annotation.PointLike>}
+     *
+     * @internal
+     * @return {Array<Annotation.PointBase>}
      *         An array of point-like objects.
      */
     function linkPoints() {
-        var pointsOptions = this.getPointsOptions(), points = this.points, len = (pointsOptions && pointsOptions.length) || 0;
+        var pointsOptions = this.getPointsOptions(), points = this.points, len = (pointsOptions === null || pointsOptions === void 0 ? void 0 : pointsOptions.length) || 0;
         var i, point;
         for (i = 0; i < len; i++) {
             point = this.point(pointsOptions[i], points[i]);
@@ -143,8 +146,14 @@ var ControlTarget;
     }
     /**
      * Map point's options to a point-like object.
-     * @private
-     * @param {string|Function|Highcharts.AnnotationMockPointOptionsObject|Highcharts.AnnotationPointType} pointOptions
+     *
+     * @internal
+     * @param {
+     *      string|
+     *      Function|
+     *      Highcharts.AnnotationMockPointOptionsObject|
+     *      Highcharts.AnnotationPointType
+     * } pointOptions
      *        Point's options.
      * @param {Highcharts.AnnotationPointType} point
      *        A point-like instance.
@@ -163,9 +172,9 @@ var ControlTarget;
                 point = this.chart.get(pointOptions) || null;
             }
             else if (typeof pointOptions === 'function') {
-                var pointConfig = pointOptions.call(point, this);
-                point = pointConfig.series ?
-                    pointConfig :
+                var pointConfigOrPoint = pointOptions.call(point, this);
+                point = pointConfigOrPoint.series ?
+                    pointConfigOrPoint :
                     new MockPoint(this.chart, this, pointOptions);
             }
         }
@@ -173,21 +182,22 @@ var ControlTarget;
     }
     /**
      * Redraw control points.
-     * @private
+     * @internal
      */
     function redrawControlPoints(animation) {
         this.controlPoints.forEach(function (controlPoint) { return controlPoint.redraw(animation); });
     }
     /**
      * Render control points.
-     * @private
+     * @internal
      */
     function renderControlPoints() {
         this.controlPoints.forEach(function (controlPoint) { return controlPoint.render(); });
     }
     /**
      * Transform control points with a specific transformation.
-     * @private
+     *
+     * @internal
      * @param {string} transformation
      *        A transformation name
      * @param {number|null} cx
@@ -212,7 +222,8 @@ var ControlTarget;
      * Transform a point with a specific transformation
      * If a transformed point is a real point it is replaced with
      * the mock point.
-     * @private
+     *
+     * @internal
      * @param {string} transformation
      *        A transformation name
      * @param {number|null} cx
@@ -235,7 +246,8 @@ var ControlTarget;
     }
     /**
      * Translate control points.
-     * @private
+     *
+     * @internal
      * @param {number} dx
      *        Translation for x coordinate
      * @param {number} dy
@@ -246,7 +258,8 @@ var ControlTarget;
     }
     /**
      * Translate a specific control point.
-     * @private
+     *
+     * @internal
      * @param {number} dx
      *        Translation for x coordinate
      * @param {number} dy
