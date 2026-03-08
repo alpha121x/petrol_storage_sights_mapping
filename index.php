@@ -162,12 +162,12 @@
                     <div class="kpi-value" id="kpiDistricts">0</div>
                 </div>
             </div>
-            <div class="col-md-4 col-lg-2">
+            <!-- <div class="col-md-4 col-lg-2">
                 <div class="kpi-card">
                     <div class="kpi-label">Active Users</div>
                     <div class="kpi-value" id="kpiUsers">0</div>
                 </div>
-            </div>
+            </div> -->
         </div>
 
         <div class="row g-3 mt-1">
