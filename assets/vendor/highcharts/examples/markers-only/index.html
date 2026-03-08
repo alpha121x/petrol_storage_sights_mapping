@@ -1,0 +1,86 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Highstock Example</title>
+
+		<style type="text/css">
+#container {
+    height: 400px;
+    min-width: 310px;
+}
+
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: #141414;
+        color: #ddd;
+    }
+    a {
+        color: #2caffe;
+    }
+}
+		</style>
+	</head>
+	<body>
+<script src="../../code/highstock.js"></script>
+<script src="../../code/indicators/indicators.js"></script>
+<script src="../../code/indicators/trendline.js"></script>
+<script src="../../code/modules/exporting.js"></script>
+<script src="../../code/modules/export-data.js"></script>
+<script src="../../code/modules/accessibility.js"></script>
+<script src="../../code/themes/adaptive.js"></script>
+
+<div id="container"></div>
+
+
+		<script type="text/javascript">
+(async () => {
+
+    // Load the dataset
+    const data = await fetch(
+        'https://demo-live-data.highcharts.com/aapl-c.json'
+    ).then(response => response.json());
+
+    // Create the chart
+    Highcharts.stockChart('container', {
+
+        rangeSelector: {
+            selected: 2
+        },
+
+        title: {
+            text: 'AAPL Stock Price'
+        },
+
+        tooltip: {
+            valueDecimals: 2,
+            valueSuffix: ' USD'
+        },
+
+        series: [{
+            name: 'AAPL Stock Price',
+            id: 'aapl',
+            data: data,
+            lineWidth: 0,
+            marker: {
+                enabled: true,
+                radius: 2
+            },
+            states: {
+                hover: {
+                    lineWidthPlus: 0
+                }
+            }
+        }, {
+            type: 'trendline',
+            linkedTo: 'aapl',
+            marker: {
+                enabled: false
+            }
+        }]
+    });
+})();
+		</script>
+	</body>
+</html>

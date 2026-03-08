@@ -1,0 +1,81 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Highstock Example</title>
+
+		<style type="text/css">
+#container {
+    height: 400px;
+    min-width: 310px;
+}
+
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: #141414;
+        color: #ddd;
+    }
+    a {
+        color: #2caffe;
+    }
+}
+		</style>
+	</head>
+	<body>
+
+<script src="../../code/highstock.js"></script>
+<script src="../../code/modules/exporting.js"></script>
+<script src="../../code/modules/accessibility.js"></script>
+<script src="../../code/themes/adaptive.js"></script>
+
+<div id="container"></div>
+
+
+		<script type="text/javascript">
+(async () => {
+
+    // Load the dataset
+    const data = await fetch(
+        'https://www.highcharts.com/samples/data/new-intraday.json'
+    ).then(response => response.json());
+
+    // create the chart
+    Highcharts.stockChart('container', {
+
+        title: {
+            text: 'AAPL stock price by minute'
+        },
+
+        rangeSelector: {
+            buttons: [{
+                type: 'hour',
+                count: 1,
+                text: '1h'
+            }, {
+                type: 'day',
+                count: 1,
+                text: '1D'
+            }, {
+                type: 'all',
+                count: 1,
+                text: 'All'
+            }],
+            selected: 1,
+            inputEnabled: false
+        },
+
+        series: [{
+            name: 'AAPL',
+            type: 'candlestick',
+            data: data,
+            tooltip: {
+                valueDecimals: 2
+            }
+        }]
+    });
+})();
+
+		</script>
+	</body>
+</html>

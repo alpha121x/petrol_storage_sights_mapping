@@ -1,0 +1,95 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Highstock Example</title>
+
+		<style type="text/css">
+* {
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        Helvetica,
+        Arial,
+        "Apple Color Emoji",
+        "Segoe UI Emoji",
+        "Segoe UI Symbol",
+        sans-serif;
+}
+
+.highcharts-figure {
+    min-width: 310px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.highcharts-figure p {
+    margin: 10px;
+}
+
+.highcharts-description {
+    margin: 0.3rem 10px;
+}
+
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: #141414;
+        color: #ddd;
+    }
+    a {
+        color: #2caffe;
+    }
+}
+		</style>
+	</head>
+	<body>
+<script src="../../code/highstock.js"></script>
+<script src="../../code/modules/data.js"></script>
+<script src="../../code/modules/pointandfigure.js"></script>
+<script src="../../code/modules/exporting.js"></script>
+<script src="../../code/modules/accessibility.js"></script>
+<script src="../../code/themes/adaptive.js"></script>
+
+<figure class="highcharts-figure">
+    <div id="container"></div>
+    <p class="highcharts-description">
+        Point and figure series is used in technical analysis to represent
+        changes in stock prices over time, focusing solely on price movements
+        without time and volume. The columns of X's represent a rising price,
+        while O's - falling prices. Each symbol corresponds to a specific price
+        movement, and the new marker is created only when the price changes by a
+        predetermined amount, known as the box size. A new column is created
+        only if the price goes in the opposite direction, and the threshold
+        required to create one is called the reversal amount.
+
+    </p>
+</figure>
+
+
+		<script type="text/javascript">
+(async () => {
+    const data = await fetch(
+        'https://demo-live-data.highcharts.com/aapl-c.json'
+    ).then(response => response.json());
+
+    Highcharts.stockChart('container', {
+        chart: {
+            height: 800
+        },
+        title: {
+            text: 'Point and Figure series'
+        },
+        series: [
+            {
+                type: 'pointandfigure',
+                data
+            }
+        ]
+    });
+})();
+		</script>
+	</body>
+</html>

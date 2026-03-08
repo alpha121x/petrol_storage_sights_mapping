@@ -1,0 +1,126 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Highstock Example</title>
+
+		<style type="text/css">
+#container {
+    height: 730px;
+}
+
+@media screen and (max-width: 600px) {
+    #container {
+        height: 400px;
+    }
+}
+
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: #141414;
+        color: #ddd;
+    }
+    a {
+        color: #2caffe;
+    }
+}
+		</style>
+	</head>
+	<body>
+<link rel="stylesheet" type="text/css" href="https://code.highcharts.com/css/stocktools/gui.css">
+<link rel="stylesheet" type="text/css" href="https://code.highcharts.com/css/annotations/popup.css">
+
+<script src="../../code/highstock.js"></script>
+
+<script src="../../code/indicators/indicators-all.js"></script>
+<script src="../../code/modules/drag-panes.js"></script>
+
+<script src="../../code/modules/annotations-advanced.js"></script>
+<script src="../../code/modules/price-indicator.js"></script>
+<script src="../../code/modules/full-screen.js"></script>
+
+<script src="../../code/modules/stock-tools.js"></script>
+
+<script src="../../code/modules/heikinashi.js"></script>
+<script src="../../code/modules/hollowcandlestick.js"></script>
+<script src="../../code/modules/exporting.js"></script>
+<script src="../../code/modules/export-data.js"></script>
+<script src="../../code/modules/accessibility.js"></script>
+<script src="../../code/themes/adaptive.js"></script>
+
+<div id="container" class="chart"></div>
+
+
+
+		<script type="text/javascript">
+(async () => {
+
+    const data = await fetch(
+        'https://www.highcharts.com/samples/data/mini-ohlc.json'
+    ).then(response => response.json());
+
+    Highcharts.stockChart('container', {
+
+        yAxis: {
+            plotBands: [{
+                color: 'rgba(169, 255, 101, 0.4)',
+                from: 182.94,
+                to: 177.57,
+                zIndex: 3,
+                label: {
+                    text: 'Resistance Zone'
+                }
+            }]
+        },
+
+        annotations: [{
+            type: 'fibonacci',
+            langKey: 'Fibonacci',
+            typeOptions: {
+                points: [{
+                    x: 1631021400000,
+                    y: 157.26
+                }, {
+                    x: 1633354200000,
+                    y: 157.26
+                }],
+                height: 138.27 - 157.26,
+                xAxis: 0,
+                yAxis: 0
+            }
+        }, {
+            type: 'crookedLine',
+            langKey: 'Trendline',
+            typeOptions: {
+                points: [{
+                    x: 1636727400000,
+                    y: 147.48
+                }, {
+                    x: 1642516200000,
+                    y: 182.5
+                }]
+            },
+            shapeOptions: {
+                stroke: 'orange',
+                strokeWidth: 2
+            }
+        }],
+
+        series: [{
+            id: 'main',
+            type: 'candlestick',
+            color: '#FF6F6F',
+            upColor: '#6FB76F',
+            data,
+            dataGrouping: {
+                enabled: false
+            }
+        }]
+
+    });
+})();
+
+		</script>
+	</body>
+</html>

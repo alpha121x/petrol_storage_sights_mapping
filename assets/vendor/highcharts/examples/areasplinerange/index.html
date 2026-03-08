@@ -1,0 +1,77 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Highstock Example</title>
+
+		<style type="text/css">
+#container {
+    min-width: 310px;
+    height: 400px;
+    margin: 0 auto;
+}
+
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: #141414;
+        color: #ddd;
+    }
+    a {
+        color: #2caffe;
+    }
+}
+		</style>
+	</head>
+	<body>
+
+<script src="../../code/highstock.js"></script>
+<script src="../../code/highcharts-more.js"></script>
+<script src="../../code/modules/exporting.js"></script>
+<script src="../../code/modules/export-data.js"></script>
+<script src="../../code/modules/accessibility.js"></script>
+<script src="../../code/themes/adaptive.js"></script>
+
+<div id="container"></div>
+
+
+
+		<script type="text/javascript">
+(async () => {
+
+    // Notice that the dataset has missing data
+    // Data taken from https://seklima.met.no/
+    const data = await fetch(
+        'https://cdn.jsdelivr.net/gh/highcharts/highcharts@d2270f7c/samples/data/temp-range.json'
+    ).then(response => response.json());
+
+    Highcharts.stockChart('container', {
+
+        chart: {
+            type: 'areasplinerange'
+        },
+
+        rangeSelector: {
+            selected: 2
+        },
+
+        title: {
+            text: 'Temperature variation by day'
+        },
+
+        tooltip: {
+            valueSuffix: '°C'
+        },
+
+        series: [{
+            name: 'Temperatures',
+            data: data
+        }]
+
+    });
+
+})();
+
+		</script>
+	</body>
+</html>

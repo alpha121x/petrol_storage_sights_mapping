@@ -1,0 +1,355 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Highstock Example</title>
+
+		<style type="text/css">
+@import url("https://code.highcharts.com/css/annotations/popup.css");
+@import url("https://code.highcharts.com/css/stocktools/gui.css");
+@import url("https://code.highcharts.com/css/highcharts.css");
+
+* {
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        Helvetica,
+        Arial,
+        "Apple Color Emoji",
+        "Segoe UI Emoji",
+        "Segoe UI Symbol",
+        sans-serif;
+}
+
+:root {
+    --highcharts-background-color: #19191b;
+    --highcharts-color-1: #9689e6;
+}
+
+.highcharts-figure {
+    margin: 0;
+}
+
+#container {
+    height: 730px;
+    margin: 0 auto;
+}
+
+.highcharts-candlestick-series .highcharts-point {
+    stroke-width: 1px;
+}
+
+.highcharts-point-down {
+    fill: #ff4242;
+    stroke: #ff4242;
+}
+
+.highcharts-candlestick-series .highcharts-point-down {
+    fill: #ff4242;
+    stroke: #ff4242;
+}
+
+.highcharts-candlestick-series .highcharts-point-up {
+    fill: #51af7b;
+    stroke: #51af7b;
+}
+
+.highcharts-point-up {
+    fill: #51af7b;
+    stroke: #51af7b;
+}
+
+.highcharts-crosshair-label text {
+    font-size: 1em;
+}
+
+.highcharts-grid-line {
+    stroke: black;
+}
+
+.highcharts-crosshair {
+    stroke-width: 1px;
+    stroke-dasharray: 1;
+}
+
+.highcharts-crosshair-custom {
+    stroke: white;
+    stroke-width: 1px;
+    stroke-dasharray: 4;
+}
+
+.highcharts-popup > button {
+    filter: invert(1);
+    background-color: var(--highcharts-neutral-color-80);
+}
+
+.highcharts-menu-item-btn {
+    filter: invert(1);
+}
+
+.highcharts-bindings-wrapper .highcharts-submenu-wrapper,
+.highcharts-label-annotation > .highcharts-submenu-wrapper {
+    background-color: #19191b;
+}
+
+.highcharts-bindings-wrapper li > span.highcharts-menu-item-btn:hover {
+    background-color: var(--highcharts-neutral-color-60);
+}
+
+.highcharts-popup select,
+.highcharts-popup input {
+    background-color: #1e222d;
+    color: var(--highcharts-neutral-color-80);
+}
+
+.highcharts-bindings-wrapper li.highcharts-active > span.highcharts-menu-item-btn {
+    background-color: var(--highcharts-neutral-color-40);
+}
+
+.highcharts-axis-title {
+    visibility: hidden;
+}
+
+.highcharts-popup > .highcharts-popup-close:hover,
+.highcharts-popup button.highcharts-annotation-edit-button:hover,
+.highcharts-popup button.highcharts-annotation-remove-button:hover,
+.highcharts-popup > button:hover {
+    filter: invert(1);
+    background-color: var(--highcharts-neutral-color-100);
+}
+
+.highcharts-popup > .highcharts-popup-close,
+div.highcharts-popup-bottom-row > button {
+    margin-right: 3px;
+    background-color: var(--highcharts-neutral-color-80);
+    filter: invert(1);
+}
+
+button.highcharts-indicator-list-item {
+    color: var(--highcharts-neutral-color-80);
+}
+
+div.highcharts-popup.highcharts-no-tooltip > button.highcharts-tab-item.highcharts-tab-item-active {
+    background-color: var(--highcharts-neutral-color-80);
+}
+
+div.highcharts-popup.highcharts-no-tooltip > button.highcharts-tab-item.highcharts-tab-item-disabled {
+    background-color: var(--highcharts-neutral-color-60);
+}
+
+button.highcharts-menu-item-btn:hover {
+    background-color: var(--highcharts-neutral-color-100);
+}
+
+button.highcharts-menu-item-btn-disabled {
+    background-color: var(--highcharts-neutral-color-80);
+}
+
+button.highcharts-menu-item-btn-active {
+    background-color: var(--highcharts-neutral-color-60);
+}
+
+.highcharts-bindings-wrapper .highcharts-submenu-wrapper {
+    background-color: var(--highcharts-background-color);
+}
+
+.highcharts-description {
+    margin: 0.3rem 10px;
+}
+
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: #141414;
+        color: #ddd;
+    }
+    a {
+        color: #2caffe;
+    }
+}
+		</style>
+	</head>
+	<body>
+
+
+<script src="../../code/highstock.js"></script>
+
+<script src="../../code/indicators/indicators-all.js"></script>
+<script src="../../code/modules/drag-panes.js"></script>
+
+<script src="../../code/modules/annotations-advanced.js"></script>
+<script src="../../code/modules/price-indicator.js"></script>
+<script src="../../code/modules/full-screen.js"></script>
+
+<script src="../../code/modules/stock-tools.js"></script>
+
+<script src="../../code/modules/heikinashi.js"></script>
+<script src="../../code/modules/hollowcandlestick.js"></script>
+<script src="../../code/modules/accessibility.js"></script>
+<script src="../../code/themes/adaptive.js"></script>
+<figure class="highcharts-figure">
+    <div id="container" class="chart highcharts-dark"></div>
+    <p class="highcharts-description">Styled in dark mode using CSS, this chart illustrates Apple Inc. (AAPL) stock prices with a candlestick series from February 14, 2022, to February 13, 2024. The horizontal axis denotes the timeline, while the candlesticks represent daily opening, closing, highest, and lowest prices. Additionally, a second vertical axis displays the volume of sales, offering insights into trading activity. The design prioritizes readability with appropriate contrast ratios, providing users with a comprehensive and visually engaging overview of the stock's performance.</p>
+</figure>
+
+
+
+		<script type="text/javascript">
+(async () => {
+    // Load the dataset
+    const colorTemplate =
+        '{#ge point.open point.close}#ff6e6e{else}#51af7b{/ge}';
+    const data = await fetch(
+        'https://demo-live-data.highcharts.com/aapl-ohlcv.json'
+    ).then(response => response.json());
+
+    // split the data set into ohlc and volume
+    const ohlc = [],
+        volume = [],
+        dataLength = data.length;
+
+    for (let i = 0; i < dataLength; i += 1) {
+        ohlc.push([
+            data[i][0], // the date
+            data[i][1], // open
+            data[i][2], // high
+            data[i][3], // low
+            data[i][4] // close
+        ]);
+
+        volume.push([
+            data[i][0], // the date
+            data[i][5],
+            data[i][1] < data[i][4] ?
+                'highcharts-point-up' :
+                'highcharts-point-down' // the volume
+        ]);
+    }
+
+    Highcharts.stockChart('container', {
+        lang: {
+            accessibility: {
+                defaultChartTitle: 'AAPL Stock Price'
+            }
+        },
+        xAxis: {
+            crosshair: {
+                className: 'highcharts-crosshair-custom',
+                enabled: true
+            }
+        },
+        yAxis: [{
+            title: {
+                text: 'price (USD)'
+            },
+            crosshair: {
+                snap: false,
+                className: 'highcharts-crosshair-custom',
+                label: {
+                    className: 'highcharts-crosshair-custom-label',
+                    enabled: true,
+                    format: '{value:.2f}'
+                },
+                enabled: true
+            },
+            labels: {
+                align: 'left'
+            },
+            height: '70%'
+        }, {
+            title: {
+                text: 'volume'
+            },
+            crosshair: {
+                className: 'highcharts-crosshair-custom',
+                snap: false,
+                enabled: true,
+                label: {
+                    format:
+                        '{#if value ge 1000000} {(divide value 1000000):.2f} ' +
+                        'M {else} {value} {/if}',
+                    className: 'highcharts-crosshair-custom-label',
+                    enabled: true
+                }
+            },
+            labels: {
+                align: 'left'
+            },
+            top: '70%',
+            height: '30%',
+            offset: 0
+        }],
+        chart: {
+            styledMode: true
+        },
+        tooltip: {
+            shape: 'square',
+            split: false,
+            shared: true,
+            headerShape: 'callout',
+            fixed: true,
+            format: `<span style="font-size: 1.4em">{point.series.name}</span>
+O<span style="color:${colorTemplate}";>{point.open}</span>
+H<span style="color:${colorTemplate}";>{point.high}</span>
+L<span style="color:${colorTemplate}";>{point.low}</span>
+C<span style="color:${colorTemplate}";>{point.close}
+{(subtract point.open point.close):.2f}
+{(multiply (divide (subtract point.open point.close) point.close) 100):.2f}%
+</span>
+<br>
+Volume<span style="color:${colorTemplate}";>{points.1.y}</span>`
+        },
+        series: [{
+            type: 'candlestick',
+            id: 'aapl-ohlc',
+            name: 'AAPL Stock Price',
+            lastPrice: {
+                enabled: true,
+                label: {
+                    enabled: true,
+                    align: 'left',
+                    x: 8
+                }
+            },
+            data: ohlc
+        }, {
+            type: 'column',
+            lastPrice: {
+                enabled: true,
+                label: {
+                    format: '{#if value ge 1000000} ' +
+                        '{(divide value 1000000):.2f} M {else} {value} {/if}',
+                    enabled: true,
+                    align: 'left',
+                    x: 8
+                }
+            },
+            keys: ['x', 'y', 'className'],
+            id: 'aapl-volume',
+            name: 'AAPL Volume',
+            data: volume,
+            yAxis: 1
+        }],
+        rangeSelector: {
+            verticalAlign: 'bottom'
+        },
+        responsive: {
+            rules: [{
+                condition: {
+                    maxWidth: 800
+                },
+                chartOptions: {
+                    rangeSelector: {
+                        inputEnabled: false
+                    }
+                }
+            }]
+        }
+    });
+})();
+
+		</script>
+	</body>
+</html>

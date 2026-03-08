@@ -1,0 +1,297 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Highstock Example</title>
+
+		<style type="text/css">
+* {
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        Helvetica,
+        Arial,
+        "Apple Color Emoji",
+        "Segoe UI Emoji",
+        "Segoe UI Symbol",
+        sans-serif;
+}
+
+.highcharts-figure {
+    min-width: 310px;
+    margin: 0 auto;
+}
+
+.highcharts-figure p {
+    margin: 10px;
+}
+
+.highcharts-description {
+    margin: 0.3rem 10px;
+}
+
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: #141414;
+        color: #ddd;
+    }
+    a {
+        color: #2caffe;
+    }
+}
+		</style>
+	</head>
+	<body>
+<script src="../../code/highstock.js"></script>
+<script src="../../code/modules/price-indicator.js"></script>
+<script src="../../code/modules/exporting.js"></script>
+<script src="../../code/modules/accessibility.js"></script>
+<script src="../../code/themes/adaptive.js"></script>
+
+<figure class="highcharts-figure">
+    <div id="container"></div>
+    <p class="highcharts-description">A minimalistic, black and white stock
+    demo, focused on readability and usability. The buttons above the chart
+    allow changing the current timeframe of each candle to the chosen period,
+    while the navigator located at the bottom highlights the current data range.
+    This provides a quick overview of the data, and allows us to fine-tune the
+    desired range. For this particular example, the tooltip is fixed at the top
+    left corner of the chart, with asset name and OHLC values shown
+    respectively. To avoid date confusion, the first x-axis tick label will
+    always show the day, month, and year of the current range, while the rest of
+    them are designed to show the current day, month, and time.</p>
+</figure>
+
+
+		<script type="text/javascript">
+(async () => {
+    const data = await fetch(
+        'https://www.highcharts.com/samples/data/new-intraday.json'
+    ).then(response => response.json());
+
+    Highcharts.setOptions({
+        lang: {
+            accessibility: {
+                defaultChartTitle: 'Black and white themed Highcharts Stock ' +
+                    'demo'
+            },
+            rangeSelectorZoom: ''
+        },
+        chart: {
+            plotBorderWidth: 1,
+            plotBorderColor: '#000000',
+            marginRight: 30
+        },
+        navigator: {
+            maskInside: false,
+            maskFill: 'rgba(0, 0, 0, 0.3)',
+            height: 30,
+            margin: 10,
+            handles: {
+                backgroundColor: '#000000'
+            },
+            xAxis: {
+                labels: {
+                    enabled: false
+                },
+                gridLineWidth: 0
+            },
+            series: {
+                color: 'var(--highcharts-neutral-color-100, #000)'
+            }
+        },
+        scrollbar: {
+            height: 0
+        },
+        xAxis: {
+            gridLineWidth: 1,
+            gridLineColor: '#c0c0c0',
+            gridLineDashStyle: 'Dash',
+            tickLength: 5,
+            crosshair: {
+                label: {
+                    backgroundColor: '#000000',
+                    padding: 2,
+                    shape: 'rect',
+                    borderRadius: 0
+                }
+            }
+        },
+        yAxis: {
+            gridLineWidth: 1,
+            gridLineColor: '#c0c0c0',
+            gridLineDashStyle: 'Dash',
+            tickInterval: 5,
+            crosshair: {
+                label: {
+                    backgroundColor: '#000000',
+                    padding: 2,
+                    shape: 'rect',
+                    borderRadius: 0
+                }
+            }
+        }
+    });
+
+    Highcharts.stockChart('container', {
+        title: {
+            text: ''
+        },
+        rangeSelector: {
+            buttons: [{
+                text: 'M1',
+                title: 'Set timeframe to 1 minute',
+                dataGrouping: {
+                    forced: true,
+                    units: [
+                        ['minute', [1]]
+                    ]
+                }
+            }, {
+                text: 'M5',
+                title: 'Set timeframe to 5 minutes',
+                dataGrouping: {
+                    forced: true,
+                    units: [
+                        ['minute', [5]]
+                    ]
+                }
+            }, {
+                text: 'M15',
+                title: 'Set timeframe to 15 minutes',
+                dataGrouping: {
+                    forced: true,
+                    units: [
+                        ['minute', [15]]
+                    ]
+                }
+            }, {
+                text: 'M30',
+                title: 'Set timeframe to 30 minutes',
+                dataGrouping: {
+                    forced: true,
+                    units: [
+                        ['minute', [30]]
+                    ]
+                }
+            }, {
+                text: 'H1',
+                title: 'Set timeframe to 1 hour',
+                dataGrouping: {
+                    forced: true,
+                    units: [
+                        ['hour', [1]]
+                    ]
+                }
+            }, {
+                text: 'H4',
+                title: 'Set timeframe to 4 hours',
+                dataGrouping: {
+                    forced: true,
+                    units: [
+                        ['hour', [4]]
+                    ]
+                }
+            }, {
+                text: 'D1',
+                title: 'Set timeframe to 1 day',
+                dataGrouping: {
+                    forced: true,
+                    units: [
+                        ['day', [1]]
+                    ]
+                }
+            }, {
+                text: 'W1',
+                title: 'Set timeframe to 1 week',
+                dataGrouping: {
+                    forced: true,
+                    units: [
+                        ['week', [1]]
+                    ]
+                }
+            }, {
+                text: 'MN',
+                title: 'Set timeframe to 1 month',
+                dataGrouping: {
+                    forced: true,
+                    units: [
+                        ['month', [1]]
+                    ]
+                }
+            }],
+            selected: 4,
+            inputEnabled: false
+        },
+        series: [{
+            name: 'AAPL',
+            type: 'candlestick',
+            data: data,
+            color: '#000000',
+            upColor: '#ffffff',
+            lastPrice: {
+                enabled: true,
+                color: '#c0c0c0',
+                label: {
+                    enabled: true,
+                    backgroundColor: '#000000',
+                    padding: 2,
+                    shape: 'rect',
+                    borderRadius: 0
+                }
+            }
+        }],
+        tooltip: {
+            fixed: true,
+            format: '{series.name} {point.open:.2f} {point.high:.2f} ' +
+                '{point.low:.2f} {point.close:.2f}'
+        },
+        xAxis: {
+            crosshair: {
+                snap: false,
+                label: {
+                    enabled: true,
+                    format: '{value:%d %b %k:%M}'
+                }
+            },
+            startOnTick: true,
+            labels: {
+                distance: 4,
+                formatter() {
+                    const isAboveD1 =
+                        this.chart.series[0].currentDataGrouping.unitRange >=
+                        86400000;
+
+                    if (this.isFirst || isAboveD1) {
+                        return this.chart.time.dateFormat(
+                            '%d %b %Y', this.value
+                        );
+                    }
+                    return this.chart.time.dateFormat(
+                        '%d %b %k:%M', this.value
+                    );
+                }
+            }
+        },
+        yAxis: {
+            crosshair: {
+                snap: false,
+                label: {
+                    enabled: true,
+                    format: '{value:.2f}'
+                }
+            },
+            left: 35,
+            title: {
+                text: 'Price'
+            }
+        }
+    });
+})();
+
+		</script>
+	</body>
+</html>

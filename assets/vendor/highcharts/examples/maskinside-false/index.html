@@ -1,0 +1,63 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Highstock Example</title>
+
+		<style type="text/css">
+#container {
+    height: 400px;
+    min-width: 310px;
+}
+
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: #141414;
+        color: #ddd;
+    }
+    a {
+        color: #2caffe;
+    }
+}
+		</style>
+	</head>
+	<body>
+<div id="container"></div>
+
+<script src="../../code/highstock.js"></script>
+<script src="../../code/modules/exporting.js"></script>
+<script src="../../code/themes/adaptive.js"></script>
+
+
+
+		<script type="text/javascript">
+(async () => {
+
+    const usdeur = await fetch(
+        'https://www.highcharts.com/samples/data/usdeur.json'
+    ).then(response => response.json());
+
+    Highcharts.stockChart('container', {
+
+        title: {
+            text: 'Navigator mask is outside zoomed range'
+        },
+
+        navigator: {
+            maskInside: false
+        },
+
+        rangeSelector: {
+            selected: 4
+        },
+
+        series: [{
+            name: 'USD to EUR',
+            data: usdeur
+        }]
+    });
+})();
+		</script>
+	</body>
+</html>

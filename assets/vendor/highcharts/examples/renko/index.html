@@ -1,0 +1,97 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Highstock Example</title>
+
+		<style type="text/css">
+* {
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        Helvetica,
+        Arial,
+        "Apple Color Emoji",
+        "Segoe UI Emoji",
+        "Segoe UI Symbol",
+        sans-serif;
+}
+
+.highcharts-figure {
+    min-width: 310px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.highcharts-figure p {
+    margin: 10px;
+}
+
+.highcharts-description {
+    margin: 0.3rem 10px;
+}
+
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: #141414;
+        color: #ddd;
+    }
+    a {
+        color: #2caffe;
+    }
+}
+		</style>
+	</head>
+	<body>
+<script src="../../code/highstock.js"></script>
+<script src="../../code/modules/renko.js"></script>
+<script src="../../code/modules/exporting.js"></script>
+<script src="../../code/modules/export-data.js"></script>
+<script src="../../code/themes/adaptive.js"></script>
+
+<figure class="highcharts-figure">
+    <div id="container"></div>
+    <p class="highcharts-description">
+        Renko series in technical analysis is designed to filter out minor
+        fluctuations in price data by focusing solely on significant price
+        movements. Unlike typical charting methods that consider time and
+        volume, Renko charts are only influenced by price changes. Each brick in
+        a Renko chart represents a movement in price up or down by a predefined
+        amount, known as the brick size or box size. Bricks are placed in the
+        next column only when the movement in the price is opposite to the
+        direction of the previous brick, effectively highlighting trends and
+        reversals.
+
+        <p>This series requires a <code>[Date, Close Price]</code> format data
+            and all of the calculations are done under the hood.</p>
+    </p>
+</figure>
+
+
+
+		<script type="text/javascript">
+(async () => {
+    const linearData = await fetch(
+        'https://www.highcharts.com/samples/data/aapl-c.json'
+    ).then(response => response.json());
+
+    Highcharts.stockChart('container', {
+        title: {
+            text: 'AAPL Stock Price on Renko chart'
+        },
+        series: [
+            {
+                name: 'AAPL',
+                type: 'renko',
+                data: linearData
+            }
+        ]
+    });
+})();
+
+		</script>
+	</body>
+</html>
