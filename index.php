@@ -163,12 +163,6 @@
                     <div class="kpi-value" id="kpiDistricts">0</div>
                 </div>
             </div>
-            <!-- <div class="col-md-4 col-lg-2">
-                <div class="kpi-card">
-                    <div class="kpi-label">Active Users</div>
-                    <div class="kpi-value" id="kpiUsers">0</div>
-                </div>
-            </div> -->
         </div>
 
         <div class="row g-3 mt-1">
@@ -184,40 +178,25 @@
                     <div id="saleChart" class="chart-box"></div>
                 </div>
             </div>
-            <!-- <div class="col-12">
-                <div class="chart-card">
-                    <h6 class="chart-title">Daily Survey Trend</h6>
-                    <div id="trendChart" class="chart-box"></div>
-                </div>
-            </div> -->
-            <div class="card mt-3">
-                <div class="card-header">
-                    <b>Survey Records</b>
-                </div>
 
-                <div class="card-body table-responsive">
-
-                    <table class="table table-sm table-bordered" id="surveyTable">
-
-                        <thead class="table-dark">
-                            <tr>
-                                <th>Sr.</th>
-                                <th>District</th>
-                                <th>Pump</th>
-                                <th>Sale</th>
-                                <th>Queue</th>
-                                <th>Overpriced</th>
-                                <th>Survey Time</th>
-                                <th>User</th>
-                                <th>Storage Pic</th>
-                                <th>Queue Pic</th>
-                            </tr>
-                        </thead>
-
-                        <tbody></tbody>
-
-                    </table>
-
+            <div class="col-12">
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <b>Survey Records</b>
+                    </div>
+                    <div class="card-body table-responsive">
+                        <!-- 
+                            IMPORTANT: thead is intentionally left EMPTY.
+                            DataTables will generate the <th> headers from the
+                            `columns[].title` definitions in dashboard.js.
+                            Having both hardcoded <th> tags AND a columns[] array
+                            causes duplicate / misaligned columns.
+                        -->
+                        <table class="table table-sm table-bordered" id="surveyTable">
+                            <thead class="table-dark"></thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
@@ -242,7 +221,6 @@
         </div>
     </div>
 
-    
     <script src="assets/vendor/bootstrap/js/bootstrap.bundle.js"></script>
     <script src="assets/vendor/highcharts/code/highcharts.js"></script>
 
@@ -250,7 +228,6 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
     <!-- DataTables -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
     <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
 
