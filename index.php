@@ -207,8 +207,7 @@
                                 <th>Sale</th>
                                 <th>Queue</th>
                                 <th>Overpriced</th>
-                                <th>Survey Time</th>
-                                <th>User</th>
+                                <th>Date Time</th>
                                 <th>Storage Pic</th>
                                 <th>Queue Pic</th>
                             </tr>

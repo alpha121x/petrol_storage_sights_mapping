@@ -3,7 +3,6 @@ require([
   "esri/views/MapView",
   "esri/layers/GraphicsLayer",
   "esri/layers/MapImageLayer",
-  "esri/widgets/Legend",
   "esri/widgets/LayerList",
   "esri/Graphic",
   "esri/geometry/Extent",
@@ -12,28 +11,12 @@ require([
   MapView,
   GraphicsLayer,
   MapImageLayer,
-  Legend,
   LayerList,
   Graphic,
-  Extent,
+  Extent
 ) {
-  /* ---------------- FIX HIGHCHARTS ---------------- */
 
-  if (window.Highcharts) {
-    Highcharts.setOptions({
-      exporting: { enabled: false },
-    });
-  }
-
-  const HighchartsRef = window.Highcharts || null;
-
-  const state = {
-    districtId: "",
-    startDate: "",
-    endDate: "",
-  };
-
-  /* ---------------- ARCGIS BOUNDARY SERVICE ---------------- */
+  /* ---------------- MAP LAYERS ---------------- */
 
   const boundaryLayer = new MapImageLayer({
     url: "https://map3.urbanunit.gov.pk:6443/arcgis/rest/services/Punjab/PB_Petrol_Pump_Availability_Survey_8433_06032026/MapServer",
@@ -43,15 +26,8 @@ require([
     ],
   });
 
-  const fuelLayer = new GraphicsLayer({
-    title: "Fuel Availability",
-    visible: true,
-  });
-
-  const priceLayer = new GraphicsLayer({
-    title: "Overpriced Status",
-    visible: false,
-  });
+  const fuelLayer = new GraphicsLayer({ title: "Fuel Availability" });
+  const priceLayer = new GraphicsLayer({ title: "Overpriced Status", visible:false });
 
   /* ---------------- MAP ---------------- */
 
@@ -63,128 +39,21 @@ require([
   const view = new MapView({
     container: "viewDiv",
     map: map,
-    center: [69.3451, 30.3753],
-    zoom: 5,
+    center: [72.7, 31.17],
+    zoom: 6,
   });
 
-  /* ---------------- LEGEND ---------------- */
-
-  /* ---------------- LEGEND ---------------- */
-
-  /* ---------------- LEGEND ---------------- */
-
-  function createCustomLegend() {
-    const legendHTML = `
-    <div style="
-      background: white;
-      padding: 10px;
-      border-radius: 4px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-      font-family: Arial, sans-serif;
-      font-size: 12px;
-      max-width: 200px;
-    ">
-      <div style="font-weight: bold; margin-bottom: 8px; border-bottom: 1px solid #ddd; padding-bottom: 5px;">
-        Fuel Availability
-      </div>
-      
-      <div style="display: flex; align-items: center; margin: 5px 0;">
-        <div style="
-          width: 12px; 
-          height: 12px; 
-          border-radius: 50%; 
-          background: rgb(46, 204, 113);
-          border: 1px solid white;
-          margin-right: 8px;
-          box-shadow: 0 0 0 1px #ddd;
-        "></div>
-        <span>Fuel Available</span>
-      </div>
-      
-      <div style="display: flex; align-items: center; margin: 5px 0;">
-        <div style="
-          width: 12px; 
-          height: 12px; 
-          border-radius: 50%; 
-          background: rgb(241, 196, 15);
-          border: 1px solid white;
-          margin-right: 8px;
-          box-shadow: 0 0 0 1px #ddd;
-        "></div>
-        <span>Limited Fuel</span>
-      </div>
-      
-      <div style="display: flex; align-items: center; margin: 5px 0;">
-        <div style="
-          width: 12px; 
-          height: 12px; 
-          border-radius: 50%; 
-          background: rgb(231, 76, 60);
-          border: 1px solid white;
-          margin-right: 8px;
-          box-shadow: 0 0 0 1px #ddd;
-        "></div>
-        <span>No Fuel</span>
-      </div>
-      
-      <div style="margin-top: 12px; font-weight: bold; border-bottom: 1px solid #ddd; padding-bottom: 5px;">
-        Overpriced Status
-      </div>
-      
-      <div style="display: flex; align-items: center; margin: 5px 0;">
-        <div style="
-          width: 12px; 
-          height: 12px; 
-          border-radius: 50%; 
-          background: rgb(231, 76, 60);
-          border: 1px solid white;
-          margin-right: 8px;
-          box-shadow: 0 0 0 1px #ddd;
-        "></div>
-        <span>Overpriced</span>
-      </div>
-      
-      <div style="display: flex; align-items: center; margin: 5px 0;">
-        <div style="
-          width: 12px; 
-          height: 12px; 
-          border-radius: 50%; 
-          background: rgb(46, 204, 113);
-          border: 1px solid white;
-          margin-right: 8px;
-          box-shadow: 0 0 0 1px #ddd;
-        "></div>
-        <span>Normal Price</span>
-      </div>
-    </div>
-  `;
-
-    const legendDiv = document.createElement("div");
-    legendDiv.innerHTML = legendHTML;
-    legendDiv.id = "customLegend";
-
-    view.ui.add(legendDiv, "bottom-left");
-  }
-
-  // Call this after view is created
-  view.when(() => {
-    createCustomLegend();
-  });
-
-  /* ---------------- LAYER TOGGLE CONTROL ---------------- */
+  /* ---------------- LAYER LIST ---------------- */
 
   const layerList = new LayerList({
     view: view,
     listItemCreatedFunction: function (event) {
       const item = event.item;
 
-      if (item.layer === boundaryLayer) {
-        item.visible = true;
-        item.panel = null;
-      }
-
       if (item.layer === fuelLayer || item.layer === priceLayer) {
+
         item.watch("visible", function (val) {
+
           if (item.layer === fuelLayer && val) {
             priceLayer.visible = false;
           }
@@ -192,6 +61,7 @@ require([
           if (item.layer === priceLayer && val) {
             fuelLayer.visible = false;
           }
+
         });
       }
     },
@@ -199,464 +69,113 @@ require([
 
   view.ui.add(layerList, "top-right");
 
-  /* ---------------- DISTRICT ZOOM ---------------- */
-
-  async function zoomToDistrict(districtId) {
-    if (!districtId) {
-      await view.when();
-
-      view.goTo({
-        center: [72.7097, 31.1704],
-        zoom: 6,
-      });
-
-      return;
-    }
-
-    try {
-      const res = await fetch(
-        `services/get_district_extent.php?district_id=${districtId}`,
-      );
-
-      const ext = await res.json();
-
-      await view.when();
-
-      view.goTo(
-        new Extent({
-          xmin: Number(ext.xmin),
-          ymin: Number(ext.ymin),
-          xmax: Number(ext.xmax),
-          ymax: Number(ext.ymax),
-          spatialReference: { wkid: 4326 },
-        }).expand(1.2),
-      );
-    } catch (e) {
-      console.error("Extent load failed", e);
-    }
-  }
-
-  /* ---------------- LOADER ---------------- */
-
-  function showLoader() {
-    document.getElementById("dashboardLoader")?.classList.remove("d-none");
-  }
-
-  function hideLoader() {
-    document.getElementById("dashboardLoader")?.classList.add("d-none");
-  }
-
-  /* ---------------- FILTER HANDLER ---------------- */
-
-  function withFilters(url) {
-    const full = new URL(url, window.location.href);
-
-    if (state.districtId)
-      full.searchParams.set("district_id", state.districtId);
-
-    if (state.startDate) full.searchParams.set("start_date", state.startDate);
-
-    if (state.endDate) full.searchParams.set("end_date", state.endDate);
-
-    return full.toString();
-  }
-
-  function num(value) {
-    const parsed = Number(value);
-    return Number.isFinite(parsed) ? parsed : 0;
-  }
-
-  function setCard(id, value) {
-    const el = document.getElementById(id);
-    if (el) el.textContent = Intl.NumberFormat().format(num(value));
-  }
-
-  /* ---------------- KPI CARDS ---------------- */
-
-  function setKpis(summary) {
-    setCard("kpiTotal", summary.total_surveys);
-    setCard("kpiAvailable", summary.sale_available_count);
-    setCard("kpiQueue", summary.queue_count);
-    setCard("kpiOverpriced", summary.overpriced_count);
-    setCard("kpiDistricts", summary.total_districts);
-    setCard("kpiUsers", summary.active_users);
-
-    document.getElementById("recordBadge").textContent =
-      `Pumps Surveyed: ${Intl.NumberFormat().format(num(summary.total_surveys))}`;
-  }
-
-  /* ---------------- CHARTS ---------------- */
-
-  function renderDistrictChart(rows) {
-    if (!HighchartsRef) return;
-
-    HighchartsRef.chart("districtChart", {
-      chart: { type: "column", backgroundColor: "transparent" },
-      title: { text: null },
-      xAxis: {
-        categories: rows.map((x) => x.district || "Unknown"),
-        crosshair: true,
-      },
-      yAxis: { min: 0, title: { text: "Surveys" } },
-      legend: { enabled: false },
-      credits: { enabled: false },
-      series: [
-        {
-          name: "Surveys",
-          color: "#2c73bf",
-          data: rows.map((x) => num(x.total)),
-        },
-      ],
-    });
-  }
-
-  function renderSaleChart(rows) {
-    if (!HighchartsRef) return;
-
-    HighchartsRef.chart("saleChart", {
-      chart: { type: "pie", backgroundColor: "transparent" },
-      title: { text: null },
-      credits: { enabled: false },
-      series: [
-        {
-          name: "Count",
-          colorByPoint: true,
-          data: rows.map((x) => ({
-            name: x.label || "Unknown",
-            y: num(x.total),
-          })),
-        },
-      ],
-    });
-  }
-
-  function renderOverpriceChart(rows) {
-    if (!HighchartsRef) return;
-
-    HighchartsRef.chart("overpriceChart", {
-      chart: { type: "column" },
-      title: { text: null },
-
-      xAxis: {
-        categories: rows.map((x) => x.district),
-      },
-
-      yAxis: {
-        title: { text: "Overpriced Reports" },
-      },
-
-      series: [
-        {
-          name: "Overpriced",
-          data: rows.map((x) => Number(x.total)),
-          color: "#dc3545",
-        },
-      ],
-
-      credits: { enabled: false },
-    });
-  }
-
-  /* ---------------- POPUP CONTENT ---------------- */
+  /* ---------------- POPUP HTML ---------------- */
 
   function popupHtml(attrs) {
-    const fields = [
-      "district",
-      "storage_name",
-      "address",
-      "sale_availability",
-      "queue",
-      "overpriced",
-      "remarks",
-      "survey_time",
-      "lat",
-      "lng",
-    ];
 
-    const rows = fields
-      .map(
-        (key) =>
-          `<tr>
-      <th style="text-align:left;padding:4px 8px;border:1px solid #ddd;background:#f7f7f7;">${key}</th>
-      <td style="padding:4px 8px;border:1px solid #ddd;">${attrs[key] ?? ""}</td>
-    </tr>`,
-      )
-      .join("");
+    let storageImg = attrs.storgae_pic
+      ? `<img src="${attrs.storgae_pic}" width="200">`
+      : "";
 
-    /* ---- Images ---- */
-
-    let storageImg = "";
-    let queueImg = "";
-
-    if (attrs.storgae_pic) {
-      storageImg = `
-      <div style="margin-top:8px;">
-        <b>Storage Image</b><br>
-        <img src="${attrs.storgae_pic}" style="max-width:220px;border-radius:4px;border:1px solid #ccc;">
-      </div>
-    `;
-    }
-
-    if (attrs.queue_pic) {
-      queueImg = `
-      <div style="margin-top:8px;">
-        <b>Queue Image</b><br>
-        <img src="${attrs.queue_pic}" style="max-width:220px;border-radius:4px;border:1px solid #ccc;">
-      </div>
-    `;
-    }
+    let queueImg = attrs.queue_pic
+      ? `<img src="${attrs.queue_pic}" width="200">`
+      : "";
 
     return `
-    <div>
-      <table style="border-collapse:collapse;width:100%;">
-        ${rows}
-      </table>
-
-      ${storageImg}
-      ${queueImg}
-
-    </div>
-  `;
+      <b>${attrs.storage_name || ""}</b><br>
+      District: ${attrs.district || ""}<br>
+      Sale: ${attrs.sale_availability || ""}<br>
+      Queue: ${attrs.queue || ""}<br>
+      Overpriced: ${attrs.overpriced || ""}<br><br>
+      ${storageImg}<br>${queueImg}
+    `;
   }
 
-  /* ---------------- LOAD STORAGE POINTS ---------------- */
+  /* ---------------- LOAD MAP POINTS ---------------- */
 
-  async function loadPoints() {
-    const res = await fetch(
-      withFilters("services/get_storage_final_points.php"),
-    );
-
-    if (!res.ok) throw new Error("Map points request failed.");
-
-    const data = await res.json();
+  window.loadMapPoints = function(points) {
 
     fuelLayer.removeAll();
     priceLayer.removeAll();
 
-    (data.points || []).forEach((item) => {
-      const lat = Number(item.lat);
-      const lng = Number(item.lng);
+    points.forEach((p) => {
 
-      if (!Number.isFinite(lat) || !Number.isFinite(lng)) return;
+      const attrs = p.attributes || {};
+      const lat = Number(p.lat);
+      const lng = Number(p.lng);
 
-      const attrs = item.attributes || {};
+      if (!lat || !lng) return;
 
-      let color = [231, 76, 60];
+      let fuelColor = [231,76,60];
 
-      const status = (attrs.sale_availability || "").toLowerCase();
+      if ((attrs.sale_availability || "").toLowerCase().includes("sale"))
+        fuelColor = [46,204,113];
 
-      if (status.includes("limited")) color = [241, 196, 15];
-      else if (status.includes("sale")) color = [46, 204, 113];
+      if ((attrs.sale_availability || "").toLowerCase().includes("limited"))
+        fuelColor = [241,196,15];
 
       const fuelGraphic = new Graphic({
-        geometry: {
-          type: "point",
-          longitude: lng,
-          latitude: lat,
+        geometry:{ type:"point", latitude:lat, longitude:lng },
+        symbol:{
+          type:"simple-marker",
+          size:8,
+          color:fuelColor,
+          outline:{color:"white",width:1}
         },
-        symbol: {
-          type: "simple-marker",
-          style: "circle",
-          size: 8,
-          color: color,
-          outline: { color: "white", width: 1 },
-        },
-        attributes: attrs,
-        popupTemplate: {
-          title: attrs.storage_name || "Storage Point",
-          content: () => popupHtml(attrs),
-        },
+        attributes:attrs,
+        popupTemplate:{
+          title: attrs.storage_name || "Pump",
+          content: popupHtml(attrs)
+        }
       });
 
       fuelLayer.add(fuelGraphic);
 
-      const overpriced = (attrs.overpriced || "").toLowerCase();
-
-      const priceColor = overpriced.includes("yes")
-        ? [231, 76, 60]
-        : [46, 204, 113];
-
       const priceGraphic = new Graphic({
-        geometry: {
-          type: "point",
-          longitude: lng,
-          latitude: lat,
+        geometry:{ type:"point", latitude:lat, longitude:lng },
+        symbol:{
+          type:"simple-marker",
+          size:8,
+          color: (attrs.overpriced || "").toLowerCase()=="yes"
+            ? [231,76,60]
+            : [46,204,113],
+          outline:{color:"white",width:1}
         },
-        symbol: {
-          type: "simple-marker",
-          style: "circle",
-          size: 8,
-          color: priceColor,
-          outline: { color: "white", width: 1 },
-        },
-        attributes: attrs,
-        popupTemplate: {
-          title: attrs.storage_name || "Storage Point",
-          content: () => popupHtml(attrs),
-        },
+        attributes:attrs,
+        popupTemplate:{
+          title: attrs.storage_name || "Pump",
+          content: popupHtml(attrs)
+        }
       });
 
       priceLayer.add(priceGraphic);
+
     });
-  }
 
-  /* ---------------- DASHBOARD DATA ---------------- */
+  };
 
-  async function loadDashboardData() {
-    const res = await fetch(
-      withFilters("services/get_storage_dashboard_data.php"),
+  /* ---------------- ZOOM DISTRICT ---------------- */
+
+  window.zoomToDistrict = async function(districtId){
+
+    if(!districtId){
+      view.goTo({center:[72.7,31.17],zoom:6});
+      return;
+    }
+
+    const res = await fetch(`services/get_district_extent.php?district_id=${districtId}`);
+    const ext = await res.json();
+
+    view.goTo(
+      new Extent({
+        xmin:Number(ext.xmin),
+        ymin:Number(ext.ymin),
+        xmax:Number(ext.xmax),
+        ymax:Number(ext.ymax),
+        spatialReference:{wkid:4326}
+      }).expand(1.2)
     );
 
-    if (!res.ok) throw new Error("Dashboard API request failed.");
+  };
 
-    return res.json();
-  }
-
-  /* ---------------- DOWNLOAD EXCEL ---------------- */
-
-  async function downloadExcel() {
-    showLoader();
-
-    try {
-      const url = new URL(
-        "services/download_storage_raw_excel.php",
-        window.location.href,
-      );
-
-      if (state.districtId)
-        url.searchParams.set("district_id", state.districtId);
-
-      if (state.startDate) url.searchParams.set("start_date", state.startDate);
-
-      if (state.endDate) url.searchParams.set("end_date", state.endDate);
-
-      window.location.href = url.toString();
-    } finally {
-      setTimeout(hideLoader, 500);
-    }
-  }
-
-  async function refreshDashboard() {
-    showLoader();
-
-    try {
-      const data = await loadDashboardData();
-
-      setKpis(data.summary || {});
-
-      await loadPoints();
-
-      await loadSurveyTable(); // ← THIS WAS MISSING
-
-      renderDistrictChart(data.district_breakdown || []);
-      renderSaleChart(data.sale_breakdown || []);
-      renderOverpriceChart(data.overprice_districts || []);
-
-      const districtSelect = document.getElementById("districtFilter");
-
-      if (!districtSelect.dataset.loaded) {
-        districtSelect.innerHTML = '<option value="">All Districts</option>';
-
-        (data.districts || []).forEach((d) => {
-          const option = document.createElement("option");
-
-          option.value = d.district_id;
-          option.textContent = d.district;
-
-          districtSelect.appendChild(option);
-        });
-
-        districtSelect.dataset.loaded = "1";
-      }
-    } finally {
-      hideLoader();
-    }
-  }
-
-  async function loadSurveyTable() {
-    const res = await fetch(
-      withFilters("services/get_storage_records_table.php"),
-    );
-
-    const rows = await res.json();
-
-    const tbody = document.querySelector("#surveyTable tbody");
-
-    tbody.innerHTML = "";
-
-    rows.forEach((r) => {
-      const storageImg = r.storgae_pic
-        ? `<img src="${r.storgae_pic}" width="60">`
-        : "";
-
-      const queueImg = r.queue_pic
-        ? `<img src="${r.queue_pic}" width="60">`
-        : "";
-
-      const tr = document.createElement("tr");
-
-      tr.innerHTML = `
-      <td>${r.raw_id}</td>
-      <td>${r.district}</td>
-      <td>${r.storage_name}</td>
-      <td>${r.sale_availability}</td>
-      <td>${r.queue}</td>
-      <td>${r.overpriced}</td>
-      <td>${r.survey_time}</td>
-      <td>${r.username}</td>
-      <td>${storageImg}</td>
-      <td>${queueImg}</td>
-    `;
-
-      tbody.appendChild(tr);
-    });
-  }
-
-  /* ---------------- FILTER EVENTS ---------------- */
-
-  document.getElementById("applyBtn").addEventListener("click", async () => {
-    state.districtId = document.getElementById("districtFilter").value;
-
-    state.startDate = document.getElementById("startDateFilter").value;
-
-    state.endDate = document.getElementById("endDateFilter").value;
-
-    await refreshDashboard();
-
-    zoomToDistrict(state.districtId);
-  });
-
-  document
-    .getElementById("downloadExcelBtn")
-    ?.addEventListener("click", async () => {
-      state.districtId = document.getElementById("districtFilter").value;
-
-      state.startDate = document.getElementById("startDateFilter").value;
-
-      state.endDate = document.getElementById("endDateFilter").value;
-
-      await downloadExcel();
-    });
-
-  document.getElementById("resetBtn").addEventListener("click", async () => {
-    document.getElementById("districtFilter").value = "";
-    document.getElementById("startDateFilter").value = "";
-    document.getElementById("endDateFilter").value = "";
-
-    state.districtId = "";
-    state.startDate = "";
-    state.endDate = "";
-
-    await refreshDashboard();
-
-    zoomToDistrict("");
-  });
-
-  /* ---------------- INITIAL LOAD ---------------- */
-
-  refreshDashboard().catch((error) => {
-    hideLoader();
-    console.error(error);
-    alert("Unable to load dashboard.");
-  });
 });
