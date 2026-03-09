@@ -205,7 +205,7 @@ view.ui.add(legend, "bottom-left");
     setCard("kpiUsers", summary.active_users);
 
     document.getElementById("recordBadge").textContent =
-      `Records: ${Intl.NumberFormat().format(num(summary.total_surveys))}`;
+      `Pumps Surveyed: ${Intl.NumberFormat().format(num(summary.total_surveys))}`;
   }
 
   /* ---------------- CHARTS ---------------- */
