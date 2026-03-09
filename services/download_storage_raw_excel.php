@@ -16,7 +16,7 @@ try {
 
     if ($startDate !== "" && !$isValidDate($startDate)) {
         http_response_code(400);
-        echo "Invalid start_date format. Use YYYY-MM-DD.";
+        echo "Invalid start_date format. Use YYYY-MM-DD."; 
         exit;
     }
 
@@ -35,7 +35,7 @@ try {
     $sql = "SELECT raw_id, data::text AS data_json FROM petrol_storage.tbl_storgae_raw ORDER BY raw_id ASC";
     $stmt = $conn->query($sql);
 
-    $filename = "petrol_storage_raw_" . date("Ymd_His") . ".csv";
+    $filename = "petrol_storage_" . date("Ymd_His") . ".csv";
     header("Content-Type: text/csv; charset=UTF-8");
     header("Content-Disposition: attachment; filename=\"{$filename}\"");
     header("Pragma: no-cache");
