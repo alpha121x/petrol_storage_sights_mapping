@@ -71,21 +71,105 @@ require([
 
   /* ---------------- LEGEND ---------------- */
 
-  const legend = new Legend({
-    view: view,
-    layerInfos: [
-      {
-        layer: fuelLayer,
-        title: "Fuel Availability",
-      },
-      {
-        layer: priceLayer,
-        title: "Overpriced Status",
-      },
-    ],
-  });
+/* ---------------- LEGEND ---------------- */
 
-  view.ui.add(legend, "bottom-left");
+function createCustomLegend() {
+  const legendHTML = `
+    <div style="
+      background: white;
+      padding: 10px;
+      border-radius: 4px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      font-family: Arial, sans-serif;
+      font-size: 12px;
+      max-width: 200px;
+    ">
+      <div style="font-weight: bold; margin-bottom: 8px; border-bottom: 1px solid #ddd; padding-bottom: 5px;">
+        Fuel Availability
+      </div>
+      
+      <div style="display: flex; align-items: center; margin: 5px 0;">
+        <div style="
+          width: 12px; 
+          height: 12px; 
+          border-radius: 50%; 
+          background: rgb(46, 204, 113);
+          border: 1px solid white;
+          margin-right: 8px;
+          box-shadow: 0 0 0 1px #ddd;
+        "></div>
+        <span>Fuel Available</span>
+      </div>
+      
+      <div style="display: flex; align-items: center; margin: 5px 0;">
+        <div style="
+          width: 12px; 
+          height: 12px; 
+          border-radius: 50%; 
+          background: rgb(241, 196, 15);
+          border: 1px solid white;
+          margin-right: 8px;
+          box-shadow: 0 0 0 1px #ddd;
+        "></div>
+        <span>Limited Fuel</span>
+      </div>
+      
+      <div style="display: flex; align-items: center; margin: 5px 0;">
+        <div style="
+          width: 12px; 
+          height: 12px; 
+          border-radius: 50%; 
+          background: rgb(231, 76, 60);
+          border: 1px solid white;
+          margin-right: 8px;
+          box-shadow: 0 0 0 1px #ddd;
+        "></div>
+        <span>No Fuel</span>
+      </div>
+      
+      <div style="margin-top: 12px; font-weight: bold; border-bottom: 1px solid #ddd; padding-bottom: 5px;">
+        Overpriced Status
+      </div>
+      
+      <div style="display: flex; align-items: center; margin: 5px 0;">
+        <div style="
+          width: 12px; 
+          height: 12px; 
+          border-radius: 50%; 
+          background: rgb(231, 76, 60);
+          border: 1px solid white;
+          margin-right: 8px;
+          box-shadow: 0 0 0 1px #ddd;
+        "></div>
+        <span>Overpriced</span>
+      </div>
+      
+      <div style="display: flex; align-items: center; margin: 5px 0;">
+        <div style="
+          width: 12px; 
+          height: 12px; 
+          border-radius: 50%; 
+          background: rgb(46, 204, 113);
+          border: 1px solid white;
+          margin-right: 8px;
+          box-shadow: 0 0 0 1px #ddd;
+        "></div>
+        <span>Normal Price</span>
+      </div>
+    </div>
+  `;
+
+  const legendDiv = document.createElement("div");
+  legendDiv.innerHTML = legendHTML;
+  legendDiv.id = "customLegend";
+  
+  view.ui.add(legendDiv, "bottom-left");
+}
+
+// Call this after view is created
+view.when(() => {
+  createCustomLegend();
+});
 
   /* ---------------- LAYER TOGGLE CONTROL ---------------- */
 
