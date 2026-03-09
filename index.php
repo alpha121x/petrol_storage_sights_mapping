@@ -94,6 +94,14 @@
                 height: 390px;
             }
         }
+
+        .img-preview {
+            transition: transform .2s;
+        }
+
+        .img-preview:hover {
+            transform: scale(1.2);
+        }
     </style>
 </head>
 
@@ -241,7 +249,17 @@
         </div>
     </div>
 
-    
+    <div class="modal fade" id="imageModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-body text-center">
+                    <img id="modalImage" src="" class="img-fluid rounded">
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <script src="assets/vendor/bootstrap/js/bootstrap.bundle.js"></script>
     <script src="assets/vendor/highcharts/code/highcharts.js"></script>
 

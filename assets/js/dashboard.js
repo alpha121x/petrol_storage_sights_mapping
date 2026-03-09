@@ -1,7 +1,7 @@
 const state = {
   districtId: "",
   startDate: "",
-  endDate: ""
+  endDate: "",
 };
 
 let surveyTable = null;
@@ -9,7 +9,6 @@ let surveyTable = null;
 /* ---------- FILTER URL ---------- */
 
 function withFilters(url) {
-
   const full = new URL(url, window.location.href);
 
   if (state.districtId) full.searchParams.set("district_id", state.districtId);
@@ -22,19 +21,18 @@ function withFilters(url) {
 /* ---------- MAP POINTS ---------- */
 
 async function loadPoints() {
-
   const res = await fetch(withFilters("services/get_storage_final_points.php"));
   const data = await res.json();
 
-  if (window.loadMapPoints)
-    window.loadMapPoints(data.points || []);
+  if (window.loadMapPoints) window.loadMapPoints(data.points || []);
 }
 
 /* ---------- DASHBOARD DATA ---------- */
 
 async function loadDashboardData() {
-
-  const res = await fetch(withFilters("services/get_storage_dashboard_data.php"));
+  const res = await fetch(
+    withFilters("services/get_storage_dashboard_data.php"),
+  );
 
   return res.json();
 }
@@ -42,116 +40,136 @@ async function loadDashboardData() {
 /* ---------- KPI CARDS ---------- */
 
 function setKpis(summary) {
-
   document.getElementById("kpiTotal").textContent = summary.total_surveys || 0;
-  document.getElementById("kpiAvailable").textContent = summary.sale_available_count || 0;
+  document.getElementById("kpiAvailable").textContent =
+    summary.sale_available_count || 0;
   document.getElementById("kpiQueue").textContent = summary.queue_count || 0;
-  document.getElementById("kpiOverpriced").textContent = summary.overpriced_count || 0;
-  document.getElementById("kpiDistricts").textContent = summary.total_districts || 0;
+  document.getElementById("kpiOverpriced").textContent =
+    summary.overpriced_count || 0;
+  document.getElementById("kpiDistricts").textContent =
+    summary.total_districts || 0;
 
   document.getElementById("recordBadge").textContent =
     `Pumps Surveyed: ${summary.total_surveys || 0}`;
 }
 
+/* ---------- LOAD DISTRICTS ---------- */
+
+async function loadDistricts() {
+  const res = await fetch("services/get_districts.php");
+  const districts = await res.json();
+
+  const select = document.getElementById("districtFilter");
+
+  select.innerHTML = '<option value="">All Districts</option>';
+
+  districts.forEach((d) => {
+    const option = document.createElement("option");
+
+    option.value = d.district_id;
+    option.textContent = d.district;
+
+    select.appendChild(option);
+  });
+}
+
 /* ---------- DISTRICT CHART ---------- */
 
 function renderDistrictChart(rows) {
-
   Highcharts.chart("districtChart", {
-
     chart: {
-      type: "column"
+      type: "column",
     },
 
     title: {
-      text: null
+      text: null,
     },
 
     xAxis: {
-      categories: rows.map(r => r.district)
+      categories: rows.map((r) => r.district),
     },
 
     yAxis: {
-      title: { text: "Surveys" }
+      title: { text: "Surveys" },
     },
 
-    series: [{
-      name: "Surveys",
-      data: rows.map(r => Number(r.total)),
-      color: "#2c73bf"
-    }],
+    series: [
+      {
+        name: "Surveys",
+        data: rows.map((r) => Number(r.total)),
+        color: "#2c73bf",
+      },
+    ],
 
-    credits: { enabled: false }
-
+    credits: { enabled: false },
   });
 }
 
 /* ---------- SALE PIE CHART ---------- */
 
 function renderSaleChart(rows) {
-
   Highcharts.chart("saleChart", {
-
     chart: {
-      type: "pie"
+      type: "pie",
     },
 
     title: {
-      text: null
+      text: null,
     },
 
-    series: [{
-      name: "Count",
-      colorByPoint: true,
-      data: rows.map(r => ({
-        name: r.label,
-        y: Number(r.total)
-      }))
-    }],
+    series: [
+      {
+        name: "Count",
+        colorByPoint: true,
+        data: rows.map((r) => ({
+          name: r.label,
+          y: Number(r.total),
+        })),
+      },
+    ],
 
-    credits: { enabled: false }
-
+    credits: { enabled: false },
   });
 }
 
 /* ---------- OVERPRICE CHART ---------- */
 
 function renderOverpriceChart(rows) {
-
   Highcharts.chart("overpriceChart", {
-
     chart: {
-      type: "column"
+      type: "column",
     },
 
     title: {
-      text: null
+      text: null,
     },
 
     xAxis: {
-      categories: rows.map(r => r.district)
+      categories: rows.map((r) => r.district),
     },
 
     yAxis: {
-      title: { text: "Overpriced Reports" }
+      title: { text: "Overpriced Reports" },
     },
 
-    series: [{
-      name: "Overpriced",
-      data: rows.map(r => Number(r.total)),
-      color: "#dc3545"
-    }],
+    series: [
+      {
+        name: "Overpriced",
+        data: rows.map((r) => Number(r.total)),
+        color: "#dc3545",
+      },
+    ],
 
-    credits: { enabled: false }
-
+    credits: { enabled: false },
   });
 }
 
 /* ---------- TABLE ---------- */
 
 async function loadSurveyTable() {
-
-  const res = await fetch(withFilters("services/get_storage_records_table.php"));
+  const res = await fetch(
+    withFilters("services/get_storage_records_table.php"),
+  );
   const rows = await res.json();
 
   if (surveyTable) {
@@ -160,7 +178,6 @@ async function loadSurveyTable() {
   }
 
   surveyTable = $("#surveyTable").DataTable({
-
     data: rows,
     pageLength: 10,
     deferRender: true,
@@ -170,7 +187,7 @@ async function loadSurveyTable() {
         data: null,
         render: function (data, type, row, meta) {
           return meta.row + meta.settings._iDisplayStart + 1;
-        }
+        },
       },
       { data: "district" },
       { data: "storage_name" },
@@ -180,21 +197,34 @@ async function loadSurveyTable() {
       { data: "survey_time" },
       {
         data: "storgae_pic",
-        render: data => data ? `<img src="${data}" width="60">` : ""
+        render: (data) =>
+          data
+            ? `<img src="${data}" width="60" class="img-preview" style="cursor:pointer">`
+            : "",
       },
       {
         data: "queue_pic",
-        render: data => data ? `<img src="${data}" width="60">` : ""
-      }
-    ]
-
+        render: (data) =>
+          data
+            ? `<img src="${data}" width="60" class="img-preview" style="cursor:pointer">`
+            : "",
+      },
+    ],
   });
 }
+
+$(document).on("click", ".img-preview", function () {
+  const src = $(this).attr("src");
+
+  $("#modalImage").attr("src", src);
+
+  const modal = new bootstrap.Modal(document.getElementById("imageModal"));
+  modal.show();
+});
 
 /* ---------- DASHBOARD REFRESH ---------- */
 
 async function refreshDashboard() {
-
   const data = await loadDashboardData();
 
   setKpis(data.summary || {});
@@ -210,29 +240,25 @@ async function refreshDashboard() {
 /* ---------- FILTER EVENTS ---------- */
 
 document.getElementById("applyBtn").addEventListener("click", async () => {
-
   state.districtId = document.getElementById("districtFilter").value;
   state.startDate = document.getElementById("startDateFilter").value;
   state.endDate = document.getElementById("endDateFilter").value;
 
   await refreshDashboard();
 
-  if (window.zoomToDistrict)
-    window.zoomToDistrict(state.districtId);
+  if (window.zoomToDistrict) window.zoomToDistrict(state.districtId);
 });
 
 document.getElementById("resetBtn").addEventListener("click", async () => {
-
   state.districtId = "";
   state.startDate = "";
   state.endDate = "";
 
   await refreshDashboard();
 
-  if (window.zoomToDistrict)
-    window.zoomToDistrict("");
+  if (window.zoomToDistrict) window.zoomToDistrict("");
 });
 
 /* ---------- INITIAL LOAD ---------- */
-
+loadDistricts();
 refreshDashboard();

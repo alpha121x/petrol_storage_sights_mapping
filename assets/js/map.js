@@ -43,6 +43,68 @@ require([
     zoom: 6,
   });
 
+  /* ---------------- CUSTOM LEGEND ---------------- */
+
+function createCustomLegend() {
+
+  const legendHTML = `
+  <div style="
+    background:white;
+    padding:10px;
+    border-radius:6px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.2);
+    font-family:Arial;
+    font-size:12px;
+    max-width:200px;
+  ">
+
+    <div style="font-weight:bold;margin-bottom:6px;border-bottom:1px solid #ddd;padding-bottom:4px;">
+      Fuel Availability
+    </div>
+
+    <div style="display:flex;align-items:center;margin:4px 0;">
+      <div style="width:12px;height:12px;border-radius:50%;background:#2ecc71;margin-right:6px;"></div>
+      Fuel Available
+    </div>
+
+    <div style="display:flex;align-items:center;margin:4px 0;">
+      <div style="width:12px;height:12px;border-radius:50%;background:#f1c40f;margin-right:6px;"></div>
+      Limited Fuel
+    </div>
+
+    <div style="display:flex;align-items:center;margin:4px 0;">
+      <div style="width:12px;height:12px;border-radius:50%;background:#e74c3c;margin-right:6px;"></div>
+      No Fuel
+    </div>
+
+    <div style="font-weight:bold;margin-top:8px;border-bottom:1px solid #ddd;padding-bottom:4px;">
+      Overpriced Status
+    </div>
+
+    <div style="display:flex;align-items:center;margin:4px 0;">
+      <div style="width:12px;height:12px;border-radius:50%;background:#e74c3c;margin-right:6px;"></div>
+      Overpriced
+    </div>
+
+    <div style="display:flex;align-items:center;margin:4px 0;">
+      <div style="width:12px;height:12px;border-radius:50%;background:#2ecc71;margin-right:6px;"></div>
+      Normal Price
+    </div>
+
+  </div>
+  `;
+
+  const legendDiv = document.createElement("div");
+  legendDiv.innerHTML = legendHTML;
+
+  view.ui.add(legendDiv, "bottom-left");
+
+}
+
+view.when(() => {
+  createCustomLegend();
+});
+
   /* ---------------- LAYER LIST ---------------- */
 
   const layerList = new LayerList({
