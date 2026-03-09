@@ -75,6 +75,10 @@ async function loadSurveyTable() {
         },
       },
     ],
+
+    initComplete: function () {
+      $("#surveyTable").css("visibility", "visible");
+    },
   });
 }
 
