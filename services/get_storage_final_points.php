@@ -69,7 +69,9 @@ try {
             user_id,
             district_id,
             lat,
-            lng
+            lng,
+            storgae_pic,
+            queue_pic
         FROM petrol_storage.v_storage_final
         WHERE {$whereSql}
         ORDER BY raw_id ASC

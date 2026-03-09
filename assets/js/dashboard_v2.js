@@ -7,8 +7,16 @@ require([
   "esri/widgets/LayerList",
   "esri/Graphic",
   "esri/geometry/Extent",
-], function (Map, MapView, GraphicsLayer, MapImageLayer, Legend, LayerList, Graphic, Extent) {
-
+], function (
+  Map,
+  MapView,
+  GraphicsLayer,
+  MapImageLayer,
+  Legend,
+  LayerList,
+  Graphic,
+  Extent,
+) {
   /* ---------------- FIX HIGHCHARTS ---------------- */
 
   if (window.Highcharts) {
@@ -37,12 +45,12 @@ require([
 
   const fuelLayer = new GraphicsLayer({
     title: "Fuel Availability",
-    visible: true
+    visible: true,
   });
 
   const priceLayer = new GraphicsLayer({
     title: "Overpriced Status",
-    visible: false
+    visible: false,
   });
 
   /* ---------------- MAP ---------------- */
@@ -61,55 +69,48 @@ require([
 
   /* ---------------- LEGEND ---------------- */
 
- /* ---------------- LEGEND ---------------- */
+  /* ---------------- LEGEND ---------------- */
 
-const legend = new Legend({
-  view: view,
-  layerInfos: [
-    {
-      layer: fuelLayer,
-      title: "Fuel Availability"
-    },
-    {
-      layer: priceLayer,
-      title: "Overpriced Status"
-    }
-  ]
-});
+  const legend = new Legend({
+    view: view,
+    layerInfos: [
+      {
+        layer: fuelLayer,
+        title: "Fuel Availability",
+      },
+      {
+        layer: priceLayer,
+        title: "Overpriced Status",
+      },
+    ],
+  });
 
-view.ui.add(legend, "bottom-left");
-
+  view.ui.add(legend, "bottom-left");
 
   /* ---------------- LAYER TOGGLE CONTROL ---------------- */
 
   const layerList = new LayerList({
     view: view,
-    listItemCreatedFunction: function(event){
+    listItemCreatedFunction: function (event) {
+      const item = event.item;
 
-  const item = event.item;
-
-  if(item.layer === boundaryLayer){
-    item.visible = true;
-    item.panel = null;
-  }
-
-  if(item.layer === fuelLayer || item.layer === priceLayer){
-
-    item.watch("visible", function(val){
-
-      if(item.layer === fuelLayer && val){
-        priceLayer.visible = false;
+      if (item.layer === boundaryLayer) {
+        item.visible = true;
+        item.panel = null;
       }
 
-      if(item.layer === priceLayer && val){
-        fuelLayer.visible = false;
+      if (item.layer === fuelLayer || item.layer === priceLayer) {
+        item.watch("visible", function (val) {
+          if (item.layer === fuelLayer && val) {
+            priceLayer.visible = false;
+          }
+
+          if (item.layer === priceLayer && val) {
+            fuelLayer.visible = false;
+          }
+        });
       }
-
-    });
-
-  }
-
-}
+    },
   });
 
   view.ui.add(layerList, "top-right");
@@ -117,9 +118,7 @@ view.ui.add(legend, "bottom-left");
   /* ---------------- DISTRICT ZOOM ---------------- */
 
   async function zoomToDistrict(districtId) {
-
     if (!districtId) {
-
       await view.when();
 
       view.goTo({
@@ -131,9 +130,8 @@ view.ui.add(legend, "bottom-left");
     }
 
     try {
-
       const res = await fetch(
-        `services/get_district_extent.php?district_id=${districtId}`
+        `services/get_district_extent.php?district_id=${districtId}`,
       );
 
       const ext = await res.json();
@@ -147,9 +145,8 @@ view.ui.add(legend, "bottom-left");
           xmax: Number(ext.xmax),
           ymax: Number(ext.ymax),
           spatialReference: { wkid: 4326 },
-        }).expand(1.2)
+        }).expand(1.2),
       );
-
     } catch (e) {
       console.error("Extent load failed", e);
     }
@@ -168,17 +165,14 @@ view.ui.add(legend, "bottom-left");
   /* ---------------- FILTER HANDLER ---------------- */
 
   function withFilters(url) {
-
     const full = new URL(url, window.location.href);
 
     if (state.districtId)
       full.searchParams.set("district_id", state.districtId);
 
-    if (state.startDate)
-      full.searchParams.set("start_date", state.startDate);
+    if (state.startDate) full.searchParams.set("start_date", state.startDate);
 
-    if (state.endDate)
-      full.searchParams.set("end_date", state.endDate);
+    if (state.endDate) full.searchParams.set("end_date", state.endDate);
 
     return full.toString();
   }
@@ -196,7 +190,6 @@ view.ui.add(legend, "bottom-left");
   /* ---------------- KPI CARDS ---------------- */
 
   function setKpis(summary) {
-
     setCard("kpiTotal", summary.total_surveys);
     setCard("kpiAvailable", summary.sale_available_count);
     setCard("kpiQueue", summary.queue_count);
@@ -211,150 +204,184 @@ view.ui.add(legend, "bottom-left");
   /* ---------------- CHARTS ---------------- */
 
   function renderDistrictChart(rows) {
-
     if (!HighchartsRef) return;
 
     HighchartsRef.chart("districtChart", {
       chart: { type: "column", backgroundColor: "transparent" },
       title: { text: null },
       xAxis: {
-        categories: rows.map(x => x.district || "Unknown"),
-        crosshair: true
+        categories: rows.map((x) => x.district || "Unknown"),
+        crosshair: true,
       },
       yAxis: { min: 0, title: { text: "Surveys" } },
       legend: { enabled: false },
       credits: { enabled: false },
-      series: [{
-        name: "Surveys",
-        color: "#2c73bf",
-        data: rows.map(x => num(x.total))
-      }]
+      series: [
+        {
+          name: "Surveys",
+          color: "#2c73bf",
+          data: rows.map((x) => num(x.total)),
+        },
+      ],
     });
-
   }
 
   function renderSaleChart(rows) {
-
     if (!HighchartsRef) return;
 
     HighchartsRef.chart("saleChart", {
       chart: { type: "pie", backgroundColor: "transparent" },
       title: { text: null },
       credits: { enabled: false },
-      series: [{
-        name: "Count",
-        colorByPoint: true,
-        data: rows.map(x => ({
-          name: x.label || "Unknown",
-          y: num(x.total)
-        }))
-      }]
+      series: [
+        {
+          name: "Count",
+          colorByPoint: true,
+          data: rows.map((x) => ({
+            name: x.label || "Unknown",
+            y: num(x.total),
+          })),
+        },
+      ],
     });
-
   }
 
-  function renderOverpriceChart(rows){
-
+  function renderOverpriceChart(rows) {
     if (!HighchartsRef) return;
 
-    HighchartsRef.chart("overpriceChart",{
+    HighchartsRef.chart("overpriceChart", {
+      chart: { type: "column" },
+      title: { text: null },
 
-      chart:{ type:"column" },
-      title:{ text:null },
-
-      xAxis:{
-        categories: rows.map(x=>x.district)
+      xAxis: {
+        categories: rows.map((x) => x.district),
       },
 
-      yAxis:{
-        title:{ text:"Overpriced Reports"}
+      yAxis: {
+        title: { text: "Overpriced Reports" },
       },
 
-      series:[{
-        name:"Overpriced",
-        data: rows.map(x=>Number(x.total)),
-        color:"#dc3545"
-      }],
+      series: [
+        {
+          name: "Overpriced",
+          data: rows.map((x) => Number(x.total)),
+          color: "#dc3545",
+        },
+      ],
 
-      credits:{enabled:false}
-
+      credits: { enabled: false },
     });
-
   }
 
   /* ---------------- POPUP CONTENT ---------------- */
 
   function popupHtml(attrs) {
-
     const fields = [
-      "raw_id","district","storage_name","address",
-      "sale_availability","queue","overpriced","remarks",
-      "survey_time","username","user_id","district_id","lat","lng"
+      "district",
+      "storage_name",
+      "address",
+      "sale_availability",
+      "queue",
+      "overpriced",
+      "remarks",
+      "survey_time",
+      "lat",
+      "lng",
     ];
 
-    const rows = fields.map(key =>
-      `<tr>
+    const rows = fields
+      .map(
+        (key) =>
+          `<tr>
       <th style="text-align:left;padding:4px 8px;border:1px solid #ddd;background:#f7f7f7;">${key}</th>
       <td style="padding:4px 8px;border:1px solid #ddd;">${attrs[key] ?? ""}</td>
-      </tr>`
-    ).join("");
+    </tr>`,
+      )
+      .join("");
 
-    return `<table style="border-collapse:collapse;width:100%;">${rows}</table>`;
+    /* ---- Images ---- */
+
+    let storageImg = "";
+    let queueImg = "";
+
+    if (attrs.storgae_pic) {
+      storageImg = `
+      <div style="margin-top:8px;">
+        <b>Storage Image</b><br>
+        <img src="${attrs.storgae_pic}" style="max-width:220px;border-radius:4px;border:1px solid #ccc;">
+      </div>
+    `;
+    }
+
+    if (attrs.queue_pic) {
+      queueImg = `
+      <div style="margin-top:8px;">
+        <b>Queue Image</b><br>
+        <img src="${attrs.queue_pic}" style="max-width:220px;border-radius:4px;border:1px solid #ccc;">
+      </div>
+    `;
+    }
+
+    return `
+    <div>
+      <table style="border-collapse:collapse;width:100%;">
+        ${rows}
+      </table>
+
+      ${storageImg}
+      ${queueImg}
+
+    </div>
+  `;
   }
 
   /* ---------------- LOAD STORAGE POINTS ---------------- */
 
   async function loadPoints() {
-
     const res = await fetch(
-      withFilters("services/get_storage_final_points.php")
+      withFilters("services/get_storage_final_points.php"),
     );
 
-    if (!res.ok)
-      throw new Error("Map points request failed.");
+    if (!res.ok) throw new Error("Map points request failed.");
 
     const data = await res.json();
 
     fuelLayer.removeAll();
     priceLayer.removeAll();
 
-    (data.points || []).forEach(item => {
-
+    (data.points || []).forEach((item) => {
       const lat = Number(item.lat);
       const lng = Number(item.lng);
 
-      if (!Number.isFinite(lat) || !Number.isFinite(lng))
-        return;
+      if (!Number.isFinite(lat) || !Number.isFinite(lng)) return;
 
       const attrs = item.attributes || {};
 
-      let color = [231,76,60];
+      let color = [231, 76, 60];
 
       const status = (attrs.sale_availability || "").toLowerCase();
 
-      if(status.includes("limited"))
-        color = [241,196,15];
-      else if(status.includes("sale"))
-        color = [46,204,113];
+      if (status.includes("limited")) color = [241, 196, 15];
+      else if (status.includes("sale")) color = [46, 204, 113];
 
       const fuelGraphic = new Graphic({
-        geometry:{
-          type:"point",
-          longitude:lng,
-          latitude:lat
+        geometry: {
+          type: "point",
+          longitude: lng,
+          latitude: lat,
         },
-        symbol:{
-          type:"simple-marker",
-          style:"circle",
-          size:8,
-          color:color,
-          outline:{color:"white",width:1}
+        symbol: {
+          type: "simple-marker",
+          style: "circle",
+          size: 8,
+          color: color,
+          outline: { color: "white", width: 1 },
         },
-        attributes:attrs,
-        popupTemplate:{
-          title:attrs.storage_name || "Storage Point",
-          content:()=>popupHtml(attrs)
-        }
+        attributes: attrs,
+        popupTemplate: {
+          title: attrs.storage_name || "Storage Point",
+          content: () => popupHtml(attrs),
+        },
       });
 
       fuelLayer.add(fuelGraphic);
@@ -362,88 +389,73 @@ view.ui.add(legend, "bottom-left");
       const overpriced = (attrs.overpriced || "").toLowerCase();
 
       const priceColor = overpriced.includes("yes")
-        ? [231,76,60]
-        : [46,204,113];
+        ? [231, 76, 60]
+        : [46, 204, 113];
 
       const priceGraphic = new Graphic({
-        geometry:{
-          type:"point",
-          longitude:lng,
-          latitude:lat
+        geometry: {
+          type: "point",
+          longitude: lng,
+          latitude: lat,
         },
-        symbol:{
-          type:"simple-marker",
-          style:"circle",
-          size:8,
-          color:priceColor,
-          outline:{color:"white",width:1}
+        symbol: {
+          type: "simple-marker",
+          style: "circle",
+          size: 8,
+          color: priceColor,
+          outline: { color: "white", width: 1 },
         },
-        attributes:attrs,
-        popupTemplate:{
-          title:attrs.storage_name || "Storage Point",
-          content:()=>popupHtml(attrs)
-        }
+        attributes: attrs,
+        popupTemplate: {
+          title: attrs.storage_name || "Storage Point",
+          content: () => popupHtml(attrs),
+        },
       });
 
       priceLayer.add(priceGraphic);
-
     });
-
   }
 
   /* ---------------- DASHBOARD DATA ---------------- */
 
   async function loadDashboardData() {
-
     const res = await fetch(
-      withFilters("services/get_storage_dashboard_data.php")
+      withFilters("services/get_storage_dashboard_data.php"),
     );
 
-    if (!res.ok)
-      throw new Error("Dashboard API request failed.");
+    if (!res.ok) throw new Error("Dashboard API request failed.");
 
     return res.json();
-
   }
 
   /* ---------------- DOWNLOAD EXCEL ---------------- */
 
-  async function downloadExcel(){
-
+  async function downloadExcel() {
     showLoader();
 
-    try{
-
+    try {
       const url = new URL(
         "services/download_storage_raw_excel.php",
-        window.location.href
+        window.location.href,
       );
 
-      if(state.districtId)
+      if (state.districtId)
         url.searchParams.set("district_id", state.districtId);
 
-      if(state.startDate)
-        url.searchParams.set("start_date", state.startDate);
+      if (state.startDate) url.searchParams.set("start_date", state.startDate);
 
-      if(state.endDate)
-        url.searchParams.set("end_date", state.endDate);
+      if (state.endDate) url.searchParams.set("end_date", state.endDate);
 
       window.location.href = url.toString();
-
-    } finally{
-
-      setTimeout(hideLoader,500);
-
+    } finally {
+      setTimeout(hideLoader, 500);
     }
-
   }
 
-  async function refreshDashboard(){
-
+  async function refreshDashboard() {
     showLoader();
 
-    try{
-
+    try {
       const data = await loadDashboardData();
 
       setKpis(data.summary || {});
@@ -456,70 +468,52 @@ view.ui.add(legend, "bottom-left");
 
       const districtSelect = document.getElementById("districtFilter");
 
-      if(!districtSelect.dataset.loaded){
+      if (!districtSelect.dataset.loaded) {
+        districtSelect.innerHTML = '<option value="">All Districts</option>';
 
-        districtSelect.innerHTML =
-          '<option value="">All Districts</option>';
-
-        (data.districts || []).forEach(d => {
-
+        (data.districts || []).forEach((d) => {
           const option = document.createElement("option");
 
           option.value = d.district_id;
           option.textContent = d.district;
 
           districtSelect.appendChild(option);
-
         });
 
         districtSelect.dataset.loaded = "1";
       }
-
-    } finally{
-
+    } finally {
       hideLoader();
-
     }
-
   }
 
   /* ---------------- FILTER EVENTS ---------------- */
 
   document.getElementById("applyBtn").addEventListener("click", async () => {
+    state.districtId = document.getElementById("districtFilter").value;
 
-    state.districtId =
-      document.getElementById("districtFilter").value;
+    state.startDate = document.getElementById("startDateFilter").value;
 
-    state.startDate =
-      document.getElementById("startDateFilter").value;
-
-    state.endDate =
-      document.getElementById("endDateFilter").value;
+    state.endDate = document.getElementById("endDateFilter").value;
 
     await refreshDashboard();
 
     zoomToDistrict(state.districtId);
-
   });
 
-  document.getElementById("downloadExcelBtn")
-  ?.addEventListener("click", async () => {
+  document
+    .getElementById("downloadExcelBtn")
+    ?.addEventListener("click", async () => {
+      state.districtId = document.getElementById("districtFilter").value;
 
-    state.districtId =
-      document.getElementById("districtFilter").value;
+      state.startDate = document.getElementById("startDateFilter").value;
 
-    state.startDate =
-      document.getElementById("startDateFilter").value;
+      state.endDate = document.getElementById("endDateFilter").value;
 
-    state.endDate =
-      document.getElementById("endDateFilter").value;
-
-    await downloadExcel();
-
-  });
+      await downloadExcel();
+    });
 
   document.getElementById("resetBtn").addEventListener("click", async () => {
-
     document.getElementById("districtFilter").value = "";
     document.getElementById("startDateFilter").value = "";
     document.getElementById("endDateFilter").value = "";
@@ -531,17 +525,13 @@ view.ui.add(legend, "bottom-left");
     await refreshDashboard();
 
     zoomToDistrict("");
-
   });
 
   /* ---------------- INITIAL LOAD ---------------- */
 
   refreshDashboard().catch((error) => {
-
     hideLoader();
     console.error(error);
     alert("Unable to load dashboard.");
-
   });
-
 });
