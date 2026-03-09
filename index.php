@@ -9,6 +9,7 @@
     <link rel="icon" href="public/gop_favicon.png" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://js.arcgis.com/4.29/esri/themes/light/main.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
     <style>
         body {
             margin: 0;
@@ -189,6 +190,36 @@
                     <div id="trendChart" class="chart-box"></div>
                 </div>
             </div> -->
+            <div class="card mt-3">
+                <div class="card-header">
+                    <b>Survey Records</b>
+                </div>
+
+                <div class="card-body table-responsive">
+
+                    <table class="table table-sm table-bordered" id="surveyTable">
+
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Sr.</th>
+                                <th>District</th>
+                                <th>Pump</th>
+                                <th>Sale</th>
+                                <th>Queue</th>
+                                <th>Overpriced</th>
+                                <th>Survey Time</th>
+                                <th>User</th>
+                                <th>Storage Pic</th>
+                                <th>Queue Pic</th>
+                            </tr>
+                        </thead>
+
+                        <tbody></tbody>
+
+                    </table>
+
+                </div>
+            </div>
 
             <div class="col-12">
                 <div class="chart-card">
@@ -210,11 +241,24 @@
             <span class="visually-hidden">Loading...</span>
         </div>
     </div>
+
+    
     <script src="assets/vendor/bootstrap/js/bootstrap.bundle.js"></script>
-    <script src="assets/vendor/highcharts/code/highcharts.js"> </script>
+    <script src="assets/vendor/highcharts/code/highcharts.js"></script>
+
+    <!-- jQuery FIRST -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <!-- DataTables -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+
+    <!-- ArcGIS ALWAYS LAST -->
     <script src="https://js.arcgis.com/4.29/"></script>
 
-    <script src="assets/js/dashboard_v2.js?v=<?= filemtime(__DIR__ . '/assets/js/dashboard_v2.js') ?>"></script>
+    <script src="assets/js/map.js"></script>
+    <script src="assets/js/dashboard.js"></script>
 </body>
 
 </html>

@@ -71,10 +71,10 @@ require([
 
   /* ---------------- LEGEND ---------------- */
 
-/* ---------------- LEGEND ---------------- */
+  /* ---------------- LEGEND ---------------- */
 
-function createCustomLegend() {
-  const legendHTML = `
+  function createCustomLegend() {
+    const legendHTML = `
     <div style="
       background: white;
       padding: 10px;
@@ -159,17 +159,17 @@ function createCustomLegend() {
     </div>
   `;
 
-  const legendDiv = document.createElement("div");
-  legendDiv.innerHTML = legendHTML;
-  legendDiv.id = "customLegend";
-  
-  view.ui.add(legendDiv, "bottom-left");
-}
+    const legendDiv = document.createElement("div");
+    legendDiv.innerHTML = legendHTML;
+    legendDiv.id = "customLegend";
 
-// Call this after view is created
-view.when(() => {
-  createCustomLegend();
-});
+    view.ui.add(legendDiv, "bottom-left");
+  }
+
+  // Call this after view is created
+  view.when(() => {
+    createCustomLegend();
+  });
 
   /* ---------------- LAYER TOGGLE CONTROL ---------------- */
 
@@ -546,6 +546,8 @@ view.when(() => {
 
       await loadPoints();
 
+      await loadSurveyTable(); // ← THIS WAS MISSING
+
       renderDistrictChart(data.district_breakdown || []);
       renderSaleChart(data.sale_breakdown || []);
       renderOverpriceChart(data.overprice_districts || []);
@@ -569,6 +571,45 @@ view.when(() => {
     } finally {
       hideLoader();
     }
+  }
+
+  async function loadSurveyTable() {
+    const res = await fetch(
+      withFilters("services/get_storage_records_table.php"),
+    );
+
+    const rows = await res.json();
+
+    const tbody = document.querySelector("#surveyTable tbody");
+
+    tbody.innerHTML = "";
+
+    rows.forEach((r) => {
+      const storageImg = r.storgae_pic
+        ? `<img src="${r.storgae_pic}" width="60">`
+        : "";
+
+      const queueImg = r.queue_pic
+        ? `<img src="${r.queue_pic}" width="60">`
+        : "";
+
+      const tr = document.createElement("tr");
+
+      tr.innerHTML = `
+      <td>${r.raw_id}</td>
+      <td>${r.district}</td>
+      <td>${r.storage_name}</td>
+      <td>${r.sale_availability}</td>
+      <td>${r.queue}</td>
+      <td>${r.overpriced}</td>
+      <td>${r.survey_time}</td>
+      <td>${r.username}</td>
+      <td>${storageImg}</td>
+      <td>${queueImg}</td>
+    `;
+
+      tbody.appendChild(tr);
+    });
   }
 
   /* ---------------- FILTER EVENTS ---------------- */
