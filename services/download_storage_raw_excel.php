@@ -102,7 +102,6 @@ try {
         }
 
         $csvRow = [
-            $row["raw_id"] ?? null,
             $payload["district"] ?? null,
             $payload["storage_name"] ?? null,
             $payload["address"] ?? null,
@@ -113,10 +112,7 @@ try {
             $payload["kerosene_capacity"] ?? null,
             $payload["kerosene_capacity_gallons"] ?? null,
             $payload["survey_date_time"] ?? null,
-            // $payload["username"] ?? null,
-            // $payload["user_id"] ?? null,
             $payload["district_id"] ?? null,
-            // $payload["android_id"] ?? null
         ];
 
         fputcsv($out, $csvRow);
