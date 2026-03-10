@@ -158,32 +158,32 @@
     </section>
 
     <main class="container-fluid py-3">
-        <div class="row g-3 mb-1">
-            <div class="col-md-4 col-lg-2">
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-5 g-3 mb-1">
+            <div class="col">
                 <div class="kpi-card">
                     <div class="kpi-label">Total Pumps Surveyed</div>
                     <div class="kpi-value" id="kpiTotal">0</div>
                 </div>
             </div>
-            <div class="col-md-4 col-lg-2">
+            <div class="col">
                 <div class="kpi-card">
                     <div class="kpi-label">Sale Available</div>
                     <div class="kpi-value" id="kpiAvailable">0</div>
                 </div>
             </div>
-            <div class="col-md-4 col-lg-2">
+            <div class="col">
                 <div class="kpi-card">
                     <div class="kpi-label">Queue's Reported</div>
                     <div class="kpi-value" id="kpiQueue">0</div>
                 </div>
             </div>
-            <div class="col-md-4 col-lg-2">
+            <div class="col">
                 <div class="kpi-card">
                     <div class="kpi-label">Overpricing Reported</div>
                     <div class="kpi-value" id="kpiOverpriced">0</div>
                 </div>
             </div>
-            <div class="col-md-4 col-lg-2">
+            <div class="col">
                 <div class="kpi-card">
                     <div class="kpi-label">Districts Coverage</div>
                     <div class="kpi-value" id="kpiDistricts">0</div>
