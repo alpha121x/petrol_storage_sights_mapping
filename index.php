@@ -23,6 +23,19 @@
             background: linear-gradient(120deg, #0f3a6d, #195498, #2c73bf);
         }
 
+        .header-nav .btn {
+            border-color: rgba(255, 255, 255, 0.5);
+            color: #fff;
+            background: transparent;
+        }
+
+        .header-nav .btn:hover,
+        .header-nav .btn:focus {
+            color: #0f3a6d;
+            background: #fff;
+            border-color: #fff;
+        }
+
         .filter-panel {
             background: #ffffff;
         }
@@ -111,7 +124,12 @@
             <div>
                 <h4 class="mb-0">Petrol Storage Analytics Dashboard</h4>
             </div>
-            <div class="badge text-bg-light px-3 py-2" id="recordBadge">Pumps Surveyed: 0</div>
+            <div class="d-flex flex-wrap gap-2 header-nav">
+                <a href="#graphicalViewSection" class="btn btn-sm btn-outline-light">Graphicial View</a>
+                <a href="#mapViewSection" class="btn btn-sm btn-outline-light">Map View</a>
+                <a href="#surveyRecordsSection" class="btn btn-sm btn-outline-light">Survey Records</a>
+                <a href="#surveyProgressSection" class="btn btn-sm btn-outline-light">Survey Progress</a>
+            </div>
         </div>
     </header>
 
@@ -161,44 +179,38 @@
             </div>
             <div class="col-md-4 col-lg-2">
                 <div class="kpi-card">
-                    <div class="kpi-label">Overpriced Pumps</div>
+                    <div class="kpi-label">Overpricing Reported</div>
                     <div class="kpi-value" id="kpiOverpriced">0</div>
                 </div>
             </div>
             <div class="col-md-4 col-lg-2">
                 <div class="kpi-card">
-                    <div class="kpi-label">Districts</div>
+                    <div class="kpi-label">Districts Coverage</div>
                     <div class="kpi-value" id="kpiDistricts">0</div>
                 </div>
             </div>
-            <!-- <div class="col-md-4 col-lg-2">
-                <div class="kpi-card">
-                    <div class="kpi-label">Active Users</div>
-                    <div class="kpi-value" id="kpiUsers">0</div>
-                </div>
-            </div> -->
         </div>
 
-        <div class="row g-3 mt-1">
-            <div class="col-lg-6">
+        <div class="row g-3 mt-1" id="graphicalViewSection">
+            <div class="col-lg-8">
                 <div class="chart-card">
-                    <h6 class="chart-title">District-wise Records (Top 10)</h6>
-                    <div id="districtChart" class="chart-box"></div>
+                    <h6 class="chart-title">Overpricing Hotspots</h6>
+                    <div id="overpriceChart" class="chart-box"></div>
                 </div>
             </div>
-            <div class="col-lg-6">
+            <div class="col-lg-4">
                 <div class="chart-card">
                     <h6 class="chart-title">Sale Availability</h6>
                     <div id="saleChart" class="chart-box"></div>
                 </div>
             </div>
-            <!-- <div class="col-12">
-                <div class="chart-card">
-                    <h6 class="chart-title">Daily Survey Trend</h6>
-                    <div id="trendChart" class="chart-box"></div>
+            <div class="col-12">
+                <div class="chart-card p-0 overflow-hidden" id="mapViewSection">
+                    <h6 class="chart-title p-3 pb-0">Storage Points Map</h6>
+                    <div id="viewDiv"></div>
                 </div>
-            </div> -->
-            <div class="card mt-3">
+            </div>
+            <div class="card mt-3" id="surveyRecordsSection">
                 <div class="card-header">
                     <b>Survey Records</b>
                 </div>
@@ -218,8 +230,6 @@
                                 <th>Date Time</th>
                                 <th>Storage Pic</th>
                                 <th>Queue Pic</th>
-                                 <th>Storage Pic Link</th>
-                                <th>Queue Pic Link</th>
                             </tr>
                         </thead>
 
@@ -229,17 +239,10 @@
 
                 </div>
             </div>
-
-            <div class="col-12">
-                <div class="chart-card">
-                    <h6 class="chart-title">Overpricing Hotspots</h6>
-                    <div id="overpriceChart" class="chart-box"></div>
-                </div>
-            </div>
-            <div class="col-12">
-                <div class="chart-card p-0 overflow-hidden">
-                    <h6 class="chart-title p-3 pb-0">Storage Points Map</h6>
-                    <div id="viewDiv"></div>
+             <div class="col-12">
+                <div class="chart-card" id="surveyProgressSection">
+                    <h6 class="chart-title">District-wise Survey Progress (Top 10)</h6>
+                    <div id="districtChart" class="chart-box"></div>
                 </div>
             </div>
         </div>

@@ -161,7 +161,6 @@ try {
         )
         GROUP BY district
         ORDER BY total DESC
-        LIMIT 10
     ";
 
     /* ---------------- DISTRICT LIST ---------------- */

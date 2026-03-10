@@ -72,9 +72,6 @@ function setKpis(summary) {
     summary.overpriced_count || 0;
   document.getElementById("kpiDistricts").textContent =
     summary.total_districts || 0;
-
-  document.getElementById("recordBadge").textContent =
-    `Pumps Surveyed: ${summary.total_surveys || 0}`;
 }
 
 /* ---------- LOAD DISTRICTS ---------- */
@@ -129,20 +126,34 @@ function renderDistrictChart(rows) {
 /* ---------- SALE PIE CHART ---------- */
 
 function renderSaleChart(rows) {
+  const total = rows.reduce((sum, r) => sum + Number(r.total || 0), 0);
+  const percentageRows = rows.map((r) => ({
+    name: r.label,
+    y: total > 0 ? Number(((Number(r.total || 0) / total) * 100).toFixed(2)) : 0,
+  }));
+
   Highcharts.chart("saleChart", {
     chart: { type: "pie" },
     title: { text: null },
+    tooltip: {
+      pointFormat: "<b>{point.y:.2f}%</b>",
+    },
 
     series: [
       {
-        name: "Count",
+        name: "Percentage",
         colorByPoint: true,
-        data: rows.map((r) => ({
-          name: r.label,
-          y: Number(r.total),
-        })),
+        data: percentageRows,
       },
     ],
+    plotOptions: {
+      pie: {
+        dataLabels: {
+          enabled: true,
+          format: "{point.name}: {point.y:.2f}%",
+        },
+      },
+    },
 
     credits: { enabled: false },
   });
@@ -226,8 +237,6 @@ async function loadSurveyTable() {
             : "";
         },
       },
-      { data: "storgae_pic" },
-      { data: "queue_pic" },
     ],
   });
 }
