@@ -218,6 +218,8 @@
                                 <th>Date Time</th>
                                 <th>Storage Pic</th>
                                 <th>Queue Pic</th>
+                                 <th>Storage Pic Link</th>
+                                <th>Queue Pic Link</th>
                             </tr>
                         </thead>
 

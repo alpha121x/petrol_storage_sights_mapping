@@ -207,7 +207,6 @@ async function loadSurveyTable() {
       { data: "queue" },
       { data: "overpriced" },
       { data: "survey_time" },
-
       {
         data: "storgae_pic",
         render: (data) => {
@@ -227,6 +226,8 @@ async function loadSurveyTable() {
             : "";
         },
       },
+      { data: "storgae_pic" },
+      { data: "storgae_pic" },
     ],
   });
 }
