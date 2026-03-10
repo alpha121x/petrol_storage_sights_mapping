@@ -6,6 +6,16 @@ const state = {
 
 let surveyTable = null;
 
+/* ---------- LOADER ---------- */
+
+function showLoader() {
+  document.getElementById("dashboardLoader")?.classList.remove("d-none");
+}
+
+function hideLoader() {
+  document.getElementById("dashboardLoader")?.classList.add("d-none");
+}
+
 /* ---------- FILTER URL ---------- */
 
 function withFilters(url) {
@@ -215,14 +225,6 @@ async function loadSurveyTable() {
   });
 }
 
-$(document).on("click", ".img-preview", function () {
-  const src = $(this).attr("src");
-
-  $("#modalImage").attr("src", src);
-
-  const modal = new bootstrap.Modal(document.getElementById("imageModal"));
-  modal.show();
-});
 
 /* ---------- DASHBOARD REFRESH ---------- */
 
@@ -278,11 +280,20 @@ document.getElementById("resetBtn").addEventListener("click", async () => {
   if (window.zoomToDistrict) window.zoomToDistrict("");
 });
 
+
+$(document).on("click", ".img-preview", function () {
+  const src = $(this).attr("src");
+
+  $("#modalImage").attr("src", src);
+
+  const modal = new bootstrap.Modal(document.getElementById("imageModal"));
+  modal.show();
+});
+
+
 /* ---------- DOWNLOAD EXCEL BUTTON ---------- */
 
-document
-  .getElementById("downloadExcelBtn")
-  .addEventListener("click", async () => {
+document.getElementById("downloadExcelBtn").addEventListener("click", async () => {
     state.districtId = document.getElementById("districtFilter").value;
     state.startDate = document.getElementById("startDateFilter").value;
     state.endDate = document.getElementById("endDateFilter").value;
