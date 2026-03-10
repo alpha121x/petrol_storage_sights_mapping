@@ -29,6 +29,27 @@ function hideLoader() {
   document.getElementById("dashboardLoader")?.classList.add("d-none");
 }
 
+/* ---------- BACK TO TOP ---------- */
+
+const backToTopBtn = document.getElementById("backToTopBtn");
+
+function toggleBackToTopButton() {
+  if (!backToTopBtn) return;
+
+  if (window.scrollY > 300) {
+    backToTopBtn.classList.add("show");
+    return;
+  }
+
+  backToTopBtn.classList.remove("show");
+}
+
+window.addEventListener("scroll", toggleBackToTopButton);
+
+backToTopBtn?.addEventListener("click", () => {
+  window.scrollTo({ top: 0, behavior: "smooth" });
+});
+
 /* ---------- FILTER URL ---------- */
 
 function withFilters(url) {

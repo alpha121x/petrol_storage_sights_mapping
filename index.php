@@ -115,6 +115,22 @@
         .img-preview:hover {
             transform: scale(1.2);
         }
+
+        #backToTopBtn {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            z-index: 1040;
+            display: none;
+            border-radius: 20px;
+            box-shadow: 0 6px 20px rgba(10, 25, 41, 0.2);
+        }
+
+        #backToTopBtn.show {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
     </style>
 </head>
 
@@ -122,7 +138,7 @@
     <header class="dash-header py-3 px-3 px-md-4">
         <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
             <div>
-                <h4 class="mb-0">Petrol Storage Analytics Dashboard</h4>
+                <h4 class="mb-0" href="index.php">Petrol Storage Analytics Dashboard</h4>
             </div>
             <div class="d-flex flex-wrap gap-2 header-nav">
                 <a href="#graphicalViewSection" class="btn btn-sm btn-outline-light">Graphicial View</a>
@@ -263,6 +279,10 @@
             </div>
         </div>
     </div>
+
+    <button id="backToTopBtn" class="btn btn-primary" type="button" aria-label="Back to top" title="Back to top">
+         ↑
+    </button>
 
 
     <script src="assets/vendor/bootstrap/js/bootstrap.bundle.js"></script>
