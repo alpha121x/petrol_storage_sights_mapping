@@ -60,6 +60,9 @@ try {
             district,
             storage_name,
             address,
+            fuel_type,
+            petrol_price,
+            diesel_price,
             sale_availability,
             \"queue\",
             overpriced,
@@ -112,4 +115,3 @@ try {
     ]);
     exit;
 }
-

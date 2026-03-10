@@ -23,15 +23,18 @@ if(!empty($_GET["end_date"])){
 $whereSql = implode(" AND ", $where);
 
 $sql = "
-SELECT
-raw_id,
-district,
-storage_name,
-address,
-sale_availability,
-queue,
-overpriced,
-remarks,
+	SELECT
+	raw_id,
+	district,
+	storage_name,
+	address,
+	fuel_type,
+	petrol_price,
+	diesel_price,
+	sale_availability,
+	queue,
+	overpriced,
+	remarks,
 survey_time,
 username,
 lat,
