@@ -20,6 +20,7 @@ require([
 
   const boundaryLayer = new MapImageLayer({
     url: "https://map3.urbanunit.gov.pk:6443/arcgis/rest/services/Punjab/PB_Petrol_Pump_Availability_Survey_8433_06032026/MapServer",
+    title: "Administrative Boundaries",
     sublayers: [
       { id: 2, title: "Districts", visible: true },
       { id: 3, title: "Tehsils", visible: false },
