@@ -240,6 +240,9 @@
                                 <th>Sr.</th>
                                 <th>District</th>
                                 <th>Pump</th>
+                                <th>Fuel Type</th>
+                                <th>Petrol Price</th>
+                                <th>Diesel Price</th>
                                 <th>Sale</th>
                                 <th>Queue</th>
                                 <th>Overpriced</th>
