@@ -81,13 +81,7 @@ try {
                 END
             )::int AS overpriced_count,
 
-            SUM(
-                CASE
-                    WHEN COALESCE(NULLIF(trim(COALESCE(\"queue\"::text,'')),''),'0') <> '0'
-                    THEN 1
-                    ELSE 0
-                END
-            )::int AS queue_count
+          SUM(CASE WHEN queue ilike 'yes' THEN 1 ELSE 0 END) AS queue_count
 
         FROM petrol_storage.v_storage_final
         WHERE {$whereSql}
