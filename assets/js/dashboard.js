@@ -56,7 +56,6 @@ function setKpis(summary) {
 /* ---------- LOAD DISTRICTS ---------- */
 
 async function loadDistricts() {
-
   const res = await fetch("services/get_districts.php");
   const data = await res.json();
 
@@ -67,16 +66,13 @@ async function loadDistricts() {
   select.innerHTML = '<option value="">All Districts</option>';
 
   districts.forEach((d) => {
-
     const option = document.createElement("option");
 
     option.value = d.district_id;
     option.textContent = d.district_name;
 
     select.appendChild(option);
-
   });
-
 }
 
 /* ---------- DISTRICT CHART ---------- */
@@ -243,6 +239,23 @@ async function refreshDashboard() {
   await loadSurveyTable();
 }
 
+/* ---------- DOWNLOAD EXCEL ---------- */
+
+async function downloadExcel() {
+  const url = new URL(
+    "services/download_storage_raw_excel.php",
+    window.location.href,
+  );
+
+  if (state.districtId) url.searchParams.set("district_id", state.districtId);
+
+  if (state.startDate) url.searchParams.set("start_date", state.startDate);
+
+  if (state.endDate) url.searchParams.set("end_date", state.endDate);
+
+  window.location.href = url.toString();
+}
+
 /* ---------- FILTER EVENTS ---------- */
 
 document.getElementById("applyBtn").addEventListener("click", async () => {
@@ -264,6 +277,18 @@ document.getElementById("resetBtn").addEventListener("click", async () => {
 
   if (window.zoomToDistrict) window.zoomToDistrict("");
 });
+
+/* ---------- DOWNLOAD EXCEL BUTTON ---------- */
+
+document
+  .getElementById("downloadExcelBtn")
+  .addEventListener("click", async () => {
+    state.districtId = document.getElementById("districtFilter").value;
+    state.startDate = document.getElementById("startDateFilter").value;
+    state.endDate = document.getElementById("endDateFilter").value;
+
+    await downloadExcel();
+  });
 
 /* ---------- INITIAL LOAD ---------- */
 loadDistricts();

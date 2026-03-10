@@ -16,7 +16,7 @@ try {
 
     if ($startDate !== "" && !$isValidDate($startDate)) {
         http_response_code(400);
-        echo "Invalid start_date format. Use YYYY-MM-DD."; 
+        echo "Invalid start_date format. Use YYYY-MM-DD.";
         exit;
     }
 
@@ -51,16 +51,17 @@ try {
         "storage_name",
         "address",
         "sale_availability",
-        "people_standing_in_queues",
-        "prices_overpriced",
+        "queue",
+        "overpriced",
         "remarks",
-        "kerosene_capacity",
-        "kerosene_capacity_gallons",
-        "survey_date_time",
-        // "username",
-        // "user_id",
+        "survey_time",
+        "username",
+        "user_id",
         "district_id",
-        // "android_id"
+        "lat",
+        "lng",
+        "storgae_pic",
+        "queue_pic"
     ];
     fputcsv($out, $csvHeaders);
 
