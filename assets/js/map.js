@@ -15,6 +15,16 @@ require([
   Graphic,
   Extent
 ) {
+  const imageProxyBase = new URL("services/image_proxy.php?url=", window.location.href).toString();
+
+  function toImageProxyUrl(rawValue) {
+    const value = String(rawValue || "").trim();
+    if (!value) return "";
+
+    // DB values may arrive as protocol-relative URLs on secure hosting.
+    const normalized = value.startsWith("//") ? `http:${value}` : value;
+    return `${imageProxyBase}${encodeURIComponent(normalized)}`;
+  }
 
   /* ---------------- MAP LAYERS ---------------- */
 
@@ -135,13 +145,15 @@ view.when(() => {
   /* ---------------- POPUP HTML ---------------- */
 
   function popupHtml(attrs) {
+    const storageSrc = toImageProxyUrl(attrs.storgae_pic);
+    const queueSrc = toImageProxyUrl(attrs.queue_pic);
 
-    let storageImg = attrs.storgae_pic
-      ? `<img src="${attrs.storgae_pic}" width="200">`
+    let storageImg = storageSrc
+      ? `<img src="${storageSrc}" width="200">`
       : "";
 
-    let queueImg = attrs.queue_pic
-      ? `<img src="${attrs.queue_pic}" width="200">`
+    let queueImg = queueSrc
+      ? `<img src="${queueSrc}" width="200">`
       : "";
 
     return `

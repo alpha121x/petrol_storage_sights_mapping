@@ -5,6 +5,19 @@ const state = {
 };
 
 let surveyTable = null;
+const imageProxyBase = new URL(
+  "services/image_proxy.php?url=",
+  window.location.href
+).toString();
+
+function toImageProxyUrl(rawValue) {
+  const value = String(rawValue || "").trim();
+  if (!value) return "";
+
+  // DB values may be protocol-relative (//host/path) and fail on HTTPS.
+  const normalized = value.startsWith("//") ? `http:${value}` : value;
+  return `${imageProxyBase}${encodeURIComponent(normalized)}`;
+}
 
 /* ---------- LOADER ---------- */
 
@@ -197,18 +210,22 @@ async function loadSurveyTable() {
 
       {
         data: "storgae_pic",
-        render: (data) =>
-          data
-            ? `<img src="${data}" width="60" class="img-preview" style="cursor:pointer">`
-            : "",
+        render: (data) => {
+          const src = toImageProxyUrl(data);
+          return src
+            ? `<img src="${src}" width="60" class="img-preview" style="cursor:pointer">`
+            : "";
+        },
       },
 
       {
         data: "queue_pic",
-        render: (data) =>
-          data
-            ? `<img src="${data}" width="60" class="img-preview" style="cursor:pointer">`
-            : "",
+        render: (data) => {
+          const src = toImageProxyUrl(data);
+          return src
+            ? `<img src="${src}" width="60" class="img-preview" style="cursor:pointer">`
+            : "";
+        },
       },
     ],
   });
