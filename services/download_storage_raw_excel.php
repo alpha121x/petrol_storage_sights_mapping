@@ -32,7 +32,22 @@ try {
 
     $sql = "
         SELECT 
-            DISTINCT (district)
+            raw_id,
+            district,
+            storage_name,
+            address,
+            sale_availability,
+            queue,
+            overpriced,
+            remarks,
+            survey_time,
+            username,
+            user_id,
+            district_id,
+            lat,
+            lng,
+            storgae_pic,
+            queue_pic
         FROM petrol_storage.v_storage_final
         $whereSql
         ORDER BY survey_time DESC
