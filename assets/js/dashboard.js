@@ -41,7 +41,7 @@ async function loadPoints() {
 
 async function loadDashboardData() {
   const res = await fetch(
-    withFilters("services/get_storage_dashboard_data.php"),
+    withFilters("services/get_storage_dashboard_data.php")
   );
 
   return res.json();
@@ -53,7 +53,8 @@ function setKpis(summary) {
   document.getElementById("kpiTotal").textContent = summary.total_surveys || 0;
   document.getElementById("kpiAvailable").textContent =
     summary.sale_available_count || 0;
-  document.getElementById("kpiQueue").textContent = summary.queue_count || 0;
+  document.getElementById("kpiQueue").textContent =
+    summary.queue_count || 0;
   document.getElementById("kpiOverpriced").textContent =
     summary.overpriced_count || 0;
   document.getElementById("kpiDistricts").textContent =
@@ -89,13 +90,8 @@ async function loadDistricts() {
 
 function renderDistrictChart(rows) {
   Highcharts.chart("districtChart", {
-    chart: {
-      type: "column",
-    },
-
-    title: {
-      text: null,
-    },
+    chart: { type: "column" },
+    title: { text: null },
 
     xAxis: {
       categories: rows.map((r) => r.district),
@@ -121,13 +117,8 @@ function renderDistrictChart(rows) {
 
 function renderSaleChart(rows) {
   Highcharts.chart("saleChart", {
-    chart: {
-      type: "pie",
-    },
-
-    title: {
-      text: null,
-    },
+    chart: { type: "pie" },
+    title: { text: null },
 
     series: [
       {
@@ -148,13 +139,8 @@ function renderSaleChart(rows) {
 
 function renderOverpriceChart(rows) {
   Highcharts.chart("overpriceChart", {
-    chart: {
-      type: "column",
-    },
-
-    title: {
-      text: null,
-    },
+    chart: { type: "column" },
+    title: { text: null },
 
     xAxis: {
       categories: rows.map((r) => r.district),
@@ -180,8 +166,9 @@ function renderOverpriceChart(rows) {
 
 async function loadSurveyTable() {
   const res = await fetch(
-    withFilters("services/get_storage_records_table.php"),
+    withFilters("services/get_storage_records_table.php")
   );
+
   const rows = await res.json();
 
   if (surveyTable) {
@@ -207,6 +194,7 @@ async function loadSurveyTable() {
       { data: "queue" },
       { data: "overpriced" },
       { data: "survey_time" },
+
       {
         data: "storgae_pic",
         render: (data) =>
@@ -214,6 +202,7 @@ async function loadSurveyTable() {
             ? `<img src="${data}" width="60" class="img-preview" style="cursor:pointer">`
             : "",
       },
+
       {
         data: "queue_pic",
         render: (data) =>
@@ -225,82 +214,145 @@ async function loadSurveyTable() {
   });
 }
 
-
 /* ---------- DASHBOARD REFRESH ---------- */
 
 async function refreshDashboard() {
-  const data = await loadDashboardData();
+  showLoader();
 
-  setKpis(data.summary || {});
+  try {
 
-  renderDistrictChart(data.district_breakdown || []);
-  renderSaleChart(data.sale_breakdown || []);
-  renderOverpriceChart(data.overprice_districts || []);
+    const data = await loadDashboardData();
 
-  await loadPoints();
-  await loadSurveyTable();
+    setKpis(data.summary || {});
+
+    renderDistrictChart(data.district_breakdown || []);
+    renderSaleChart(data.sale_breakdown || []);
+    renderOverpriceChart(data.overprice_districts || []);
+
+    await loadPoints();
+    await loadSurveyTable();
+
+  } finally {
+
+    hideLoader();
+
+  }
 }
 
 /* ---------- DOWNLOAD EXCEL ---------- */
 
 async function downloadExcel() {
-  const url = new URL(
-    "services/download_storage_raw_excel.php",
-    window.location.href,
-  );
 
-  if (state.districtId) url.searchParams.set("district_id", state.districtId);
+  showLoader();
 
-  if (state.startDate) url.searchParams.set("start_date", state.startDate);
+  try {
 
-  if (state.endDate) url.searchParams.set("end_date", state.endDate);
+    const url = new URL(
+      "services/download_storage_raw_excel.php",
+      window.location.href
+    );
 
-  window.location.href = url.toString();
+    if (state.districtId)
+      url.searchParams.set("district_id", state.districtId);
+
+    if (state.startDate)
+      url.searchParams.set("start_date", state.startDate);
+
+    if (state.endDate)
+      url.searchParams.set("end_date", state.endDate);
+
+    window.location.href = url.toString();
+
+  } finally {
+
+    setTimeout(hideLoader, 500);
+
+  }
+
 }
 
 /* ---------- FILTER EVENTS ---------- */
 
 document.getElementById("applyBtn").addEventListener("click", async () => {
+
+  showLoader();
+
   state.districtId = document.getElementById("districtFilter").value;
   state.startDate = document.getElementById("startDateFilter").value;
   state.endDate = document.getElementById("endDateFilter").value;
 
   await refreshDashboard();
 
-  if (window.zoomToDistrict) window.zoomToDistrict(state.districtId);
+  if (window.zoomToDistrict)
+    window.zoomToDistrict(state.districtId);
+
 });
 
 document.getElementById("resetBtn").addEventListener("click", async () => {
+
+  showLoader();
+
   state.districtId = "";
   state.startDate = "";
   state.endDate = "";
 
+  document.getElementById("districtFilter").value = "";
+  document.getElementById("startDateFilter").value = "";
+  document.getElementById("endDateFilter").value = "";
+
   await refreshDashboard();
 
-  if (window.zoomToDistrict) window.zoomToDistrict("");
+  if (window.zoomToDistrict)
+    window.zoomToDistrict("");
+
 });
 
+/* ---------- IMAGE PREVIEW MODAL ---------- */
 
 $(document).on("click", ".img-preview", function () {
+
   const src = $(this).attr("src");
 
   $("#modalImage").attr("src", src);
 
-  const modal = new bootstrap.Modal(document.getElementById("imageModal"));
-  modal.show();
-});
+  const modal = new bootstrap.Modal(
+    document.getElementById("imageModal")
+  );
 
+  modal.show();
+
+});
 
 /* ---------- DOWNLOAD EXCEL BUTTON ---------- */
 
-document.getElementById("downloadExcelBtn").addEventListener("click", async () => {
+document.getElementById("downloadExcelBtn")
+  .addEventListener("click", async () => {
+
     state.districtId = document.getElementById("districtFilter").value;
     state.startDate = document.getElementById("startDateFilter").value;
     state.endDate = document.getElementById("endDateFilter").value;
 
     await downloadExcel();
-  });
+
+});
 
 /* ---------- INITIAL LOAD ---------- */
-loadDistricts();
-refreshDashboard();
+
+async function initDashboard() {
+
+  showLoader();
+
+  try {
+
+    await loadDistricts();
+    await refreshDashboard();
+
+  } finally {
+
+    hideLoader();
+
+  }
+
+}
+
+initDashboard();
