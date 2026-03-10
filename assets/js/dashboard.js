@@ -236,8 +236,28 @@ async function loadSurveyTable() {
       { data: "district" },
       { data: "storage_name" },
       { data: "fuel_type" },
-      { data: "petrol_price" },
-      { data: "diesel_price" },
+      {
+        data: null,
+        render: function (data, type, row) {
+          const fuelType = String(row.fuel_type || "").toLowerCase();
+          const petrolPrice = row.petrol_price ?? "";
+          const dieselPrice = row.diesel_price ?? "";
+
+          if (fuelType.includes("petrol") && !fuelType.includes("diesel")) {
+            return petrolPrice;
+          }
+
+          if (fuelType.includes("diesel") && !fuelType.includes("petrol")) {
+            return dieselPrice;
+          }
+
+          if (fuelType.includes("petrol") && fuelType.includes("diesel")) {
+            return `Petrol: ${petrolPrice} | Diesel: ${dieselPrice}`;
+          }
+
+          return petrolPrice || dieselPrice || "";
+        },
+      },
       { data: "sale_availability" },
       { data: "queue" },
       { data: "overpriced" },
