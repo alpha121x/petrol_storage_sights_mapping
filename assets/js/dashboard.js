@@ -227,7 +227,7 @@ async function loadSurveyTable() {
         },
       },
       { data: "storgae_pic" },
-      { data: "storgae_pic" },
+      { data: "queue_pic" },
     ],
   });
 }
