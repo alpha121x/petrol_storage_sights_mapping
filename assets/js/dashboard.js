@@ -56,21 +56,27 @@ function setKpis(summary) {
 /* ---------- LOAD DISTRICTS ---------- */
 
 async function loadDistricts() {
+
   const res = await fetch("services/get_districts.php");
-  const districts = await res.json();
+  const data = await res.json();
+
+  const districts = data.districts || [];
 
   const select = document.getElementById("districtFilter");
 
   select.innerHTML = '<option value="">All Districts</option>';
 
   districts.forEach((d) => {
+
     const option = document.createElement("option");
 
     option.value = d.district_id;
-    option.textContent = d.district;
+    option.textContent = d.district_name;
 
     select.appendChild(option);
+
   });
+
 }
 
 /* ---------- DISTRICT CHART ---------- */
