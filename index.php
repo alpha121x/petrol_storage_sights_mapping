@@ -248,6 +248,7 @@
                                 <th>Date Time</th>
                                 <th>Storage Pic</th>
                                 <th>Queue Pic</th>
+                                <th>Remarks</th>
                             </tr>
                         </thead>
 

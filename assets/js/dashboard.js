@@ -225,6 +225,13 @@ async function loadSurveyTable() {
     data: rows,
     pageLength: 10,
     deferRender: true,
+    createdRow: function (row, data) {
+      const overpricedValue = String(data.overpriced || "").trim().toLowerCase();
+
+      if (overpricedValue === "yes") {
+        row.classList.add("table-danger");
+      }
+    },
 
     columns: [
       {
@@ -280,6 +287,10 @@ async function loadSurveyTable() {
             ? `<img src="${src}" width="60" class="img-preview" style="cursor:pointer">`
             : "";
         },
+      },
+      {
+        data: "remarks",
+        render: (data) => data ?? "",
       },
     ],
   });
