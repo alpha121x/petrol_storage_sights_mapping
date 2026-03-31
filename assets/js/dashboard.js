@@ -148,9 +148,15 @@ function renderDistrictChart(rows) {
 
 function renderSaleChart(rows) {
   const total = rows.reduce((sum, r) => sum + Number(r.total || 0), 0);
+  const saleColors = {
+    "No Sale": "#dc3545",
+    "Limited Sale": "#fd7e14",
+    "Sale Available": "#198754",
+  };
   const percentageRows = rows.map((r) => ({
     name: r.label,
     y: total > 0 ? Number(((Number(r.total || 0) / total) * 100).toFixed(2)) : 0,
+    color: saleColors[r.label] || "#6c757d",
   }));
 
   Highcharts.chart("saleChart", {
@@ -163,7 +169,6 @@ function renderSaleChart(rows) {
     series: [
       {
         name: "Percentage",
-        colorByPoint: true,
         data: percentageRows,
       },
     ],
