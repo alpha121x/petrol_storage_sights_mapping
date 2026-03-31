@@ -208,13 +208,13 @@
         </div>
 
         <div class="row g-3 mt-1" id="graphicalViewSection">
-            <div class="col-lg-8">
+            <div class="col-lg-9">
                 <div class="chart-card">
                     <h6 class="chart-title">Overpricing Hotspots</h6>
                     <div id="overpriceChart" class="chart-box"></div>
                 </div>
             </div>
-            <div class="col-lg-4">
+            <div class="col-lg-3">
                 <div class="chart-card">
                     <h6 class="chart-title">Sale Availability</h6>
                     <div id="saleChart" class="chart-box"></div>
