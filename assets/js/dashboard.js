@@ -189,10 +189,23 @@ function renderOverpriceChart(rows) {
 
     xAxis: {
       categories: rows.map((r) => r.district),
+      labels: {
+        rotation: -45,
+      },
+      min: 0,
+      max: Math.min(rows.length, 10) - 1,
+      scrollbar: {
+        enabled: rows.length > 10,
+      },
     },
 
     yAxis: {
       title: { text: "Overpriced Reports" },
+      min: 0,
+    },
+
+    tooltip: {
+      pointFormat: "<b>{point.y}</b> overpriced reports",
     },
 
     series: [
@@ -438,3 +451,4 @@ async function initDashboard() {
 }
 
 initDashboard();
+

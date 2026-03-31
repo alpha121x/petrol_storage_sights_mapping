@@ -144,17 +144,32 @@ try {
     /* ---------------- OVERPRICE HOTSPOTS ---------------- */
 
     $overpriceSql = "
-        SELECT
-            district,
-            COUNT(*)::int AS total
-        FROM petrol_storage.v_storage_final
-        WHERE {$whereSql}
-        AND (
-            lower(COALESCE(overpriced::text,'')) LIKE '%yes%'
-            OR lower(COALESCE(overpriced::text,'')) LIKE '%over%'
+        WITH district_scope AS (
+            SELECT DISTINCT
+                district_id,
+                district
+            FROM petrol_storage.v_storage_final
+            WHERE district_id IS NOT NULL
+        ),
+        overpriced_totals AS (
+            SELECT
+                district_id,
+                COUNT(*)::int AS total
+            FROM petrol_storage.v_storage_final
+            WHERE {$whereSql}
+            AND (
+                lower(COALESCE(overpriced::text,'')) LIKE '%yes%'
+                OR lower(COALESCE(overpriced::text,'')) LIKE '%over%'
+            )
+            GROUP BY district_id
         )
-        GROUP BY district
-        ORDER BY total DESC
+        SELECT
+            ds.district,
+            COALESCE(ot.total, 0)::int AS total
+        FROM district_scope ds
+        LEFT JOIN overpriced_totals ot
+            ON ot.district_id = ds.district_id
+        ORDER BY total DESC, ds.district ASC
     ";
 
     /* ---------------- DISTRICT LIST ---------------- */
