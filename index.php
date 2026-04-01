@@ -312,21 +312,21 @@
 </head>
 
 <body>
-    <header class="dash-header py-3 px-3 px-md-4">
+    <header class="dash-header py-2 px-3 px-md-4">
         <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
             <div>
                 <h4 class="mb-0" href="index.php">Petrol Storage Analytics Dashboard</h4>
             </div>
-            <div class="d-flex flex-wrap gap-2 header-nav">
+            <!-- <div class="d-flex flex-wrap gap-2 header-nav">
                 <a href="#graphicalViewSection" class="btn btn-sm btn-outline-light">Graphicial View</a>
                 <a href="#mapViewSection" class="btn btn-sm btn-outline-light">Map View</a>
                 <a href="#surveyRecordsSection" class="btn btn-sm btn-outline-light">Survey Records</a>
                 <a href="#surveyProgressSection" class="btn btn-sm btn-outline-light">Survey Progress</a>
-            </div>
+            </div> -->
         </div>
     </header>
 
-    <section class="container-fluid py-3 filter-panel border-bottom">
+    <section class="container-fluid py-1 filter-panel border-bottom">
         <div class="row g-2 align-items-end">
             <div class="col-md-3 col-sm-6">
                 <label for="districtFilter" class="form-label fw-semibold">District</label>
