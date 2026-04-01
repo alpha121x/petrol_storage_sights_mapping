@@ -120,26 +120,68 @@ async function loadDistricts() {
 /* ---------- DISTRICT CHART ---------- */
 
 function renderDistrictChart(rows) {
+  const sortedRows = [...rows].sort((a, b) => Number(b.total) - Number(a.total));
+
   Highcharts.chart("districtChart", {
-    chart: { type: "column" },
+    chart: {
+      type: "bar",
+      backgroundColor: "transparent",
+      spacingTop: 10,
+      spacingLeft: 10,
+      spacingRight: 18,
+      spacingBottom: 10,
+    },
     title: { text: null },
 
     xAxis: {
-      categories: rows.map((r) => r.district),
+      categories: sortedRows.map((r) => r.district),
+      lineColor: "#d9e2ec",
+      tickColor: "#d9e2ec",
+      labels: {
+        style: {
+          color: "#35506e",
+          fontSize: "11px",
+          fontWeight: "600",
+        },
+      },
     },
 
     yAxis: {
       title: { text: "Surveys" },
+      gridLineColor: "#e8eef5",
+      labels: {
+        style: {
+          color: "#5f7186",
+        },
+      },
     },
 
     series: [
       {
         name: "Surveys",
-        data: rows.map((r) => Number(r.total)),
-        color: "#2c73bf",
+        data: sortedRows.map((r) => ({
+          y: Number(r.total),
+          color: "#2c73bf",
+        })),
+        borderRadius: 6,
+        pointPadding: 0.12,
+        groupPadding: 0.08,
+        dataLabels: {
+          enabled: true,
+          inside: false,
+          style: {
+            color: "#123357",
+            textOutline: "none",
+            fontWeight: "600",
+          },
+        },
       },
     ],
 
+    legend: { enabled: false },
+    tooltip: {
+      pointFormat: "<b>{point.y}</b> surveys",
+    },
     credits: { enabled: false },
   });
 }
@@ -187,27 +229,100 @@ function renderSaleChart(rows) {
 
 /* ---------- OVERPRICE CHART ---------- */
 
+function getSeverityColor(value, max) {
+  if (!max || value <= 0) return "#d9dee5";
+
+  const ratio = value / max;
+
+  if (ratio >= 0.85) return "#ef2b2d";
+  if (ratio >= 0.65) return "#ff9800";
+  if (ratio >= 0.45) return "#ffe433";
+  return "#5eb91e";
+}
+
 function renderOverpriceChart(rows) {
+  const sortedRows = [...rows].sort((a, b) => Number(b.total) - Number(a.total));
+  const maxValue = Math.max(...sortedRows.map((r) => Number(r.total || 0)), 0);
+
   Highcharts.chart("overpriceChart", {
-    chart: { type: "column" },
+    chart: {
+      type: "bar",
+      backgroundColor: "transparent",
+      spacingTop: 0,
+      spacingLeft: 0,
+      spacingRight: 18,
+      spacingBottom: 10,
+    },
     title: { text: null },
 
     xAxis: {
-      categories: rows.map((r) => r.district),
+      categories: sortedRows.map((r) => r.district),
+      lineWidth: 0,
+      tickWidth: 0,
+      labels: {
+        style: {
+          color: "#1e3550",
+          fontSize: "11px",
+          fontWeight: "700",
+        },
+      },
     },
 
     yAxis: {
       title: { text: "Overpriced Reports" },
+      gridLineColor: "#e8eef5",
+      labels: {
+        style: {
+          color: "#5f7186",
+        },
+      },
     },
 
     series: [
       {
         name: "Overpriced",
-        data: rows.map((r) => Number(r.total)),
-        color: "#dc3545",
+        data: sortedRows.map((r) => {
+          const total = Number(r.total || 0);
+
+          return {
+            y: total,
+            color: getSeverityColor(total, maxValue),
+          };
+        }),
+        borderRadius: 7,
+        pointWidth: 16,
+        dataLabels: {
+          enabled: true,
+          inside: false,
+          align: "left",
+          x: 8,
+          style: {
+            color: "#20354b",
+            textOutline: "none",
+            fontWeight: "600",
+          },
+          formatter() {
+            return this.y;
+          },
+        },
       },
     ],
 
+    legend: { enabled: false },
+    tooltip: {
+      pointFormat: "<b>{point.y}</b> overpriced reports",
+    },
+    plotOptions: {
+      series: {
+        animation: {
+          duration: 500,
+        },
+      },
+      bar: {
+        groupPadding: 0.12,
+        pointPadding: 0.08,
+      },
+    },
     credits: { enabled: false },
   });
 }
@@ -443,3 +558,4 @@ async function initDashboard() {
 }
 
 initDashboard();
+

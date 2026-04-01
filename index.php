@@ -81,7 +81,141 @@
 
         #viewDiv {
             width: 100%;
-            height: 470px;
+            height: 480px;
+        }
+
+        .chart-box.chart-box-tall {
+            height: 480px;
+        }
+
+        .reference-board {
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .reference-grid {
+            display: grid;
+            grid-template-columns: 130px minmax(0, 1fr);
+        }
+
+        .reference-tabs {
+            background: linear-gradient(180deg, #2b6da8, #256196);
+            padding: 12px 0;
+        }
+
+        .reference-tab {
+            display: block;
+            width: 100%;
+            padding: 14px 16px;
+            border: 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+            background: transparent;
+            color: #fff;
+            text-align: left;
+            font-weight: 600;
+            line-height: 1.15;
+        }
+
+        .reference-tab.active {
+            background: linear-gradient(90deg, #56be1f, #67cb2f);
+            position: relative;
+        }
+
+        .reference-tab.active::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            right: -12px;
+            transform: translateY(-50%);
+            border-top: 12px solid transparent;
+            border-bottom: 12px solid transparent;
+            border-left: 12px solid #67cb2f;
+        }
+
+        .reference-main {
+            background: #f5f5f6;
+            padding: 14px;
+        }
+
+        .reference-stage {
+            border: 1px solid #d8dde6;
+            background: #fff;
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.7);
+        }
+
+        .reference-header {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            padding: 16px 18px 12px;
+        }
+
+        .reference-subtitle {
+            margin: 6px 0 0;
+            color: #566677;
+            font-size: 0.9rem;
+        }
+
+        .reference-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            align-items: center;
+            padding: 12px 18px;
+            margin: 0 18px 14px;
+            border: 1px solid #ded9d9;
+            background: #f4f1f1;
+        }
+
+        .reference-legend-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #3a434d;
+            font-weight: 700;
+        }
+
+        .reference-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .reference-body {
+            display: grid;
+            grid-template-columns: minmax(0, 1.35fr) minmax(300px, 0.55fr);
+            gap: 18px;
+            padding: 0 18px 18px;
+            align-items: start;
+        }
+
+        .map-card,
+        .ranking-card,
+        .sale-card {
+            border: 1px solid #d8dde6;
+            background: #fff;
+        }
+
+        .map-card {
+            padding: 12px;
+        }
+
+        .ranking-card {
+            padding: 14px 10px 10px 0;
+        }
+
+        .sale-card {
+            margin: 0 18px 18px;
+            padding: 14px 18px;
+        }
+
+        .ranking-note {
+            padding: 0 14px 8px 14px;
+            color: #617283;
+            font-size: 0.82rem;
         }
 
         .loader-overlay {
@@ -105,6 +239,26 @@
 
             #viewDiv {
                 height: 390px;
+            }
+        }
+
+        @media (max-width: 991px) {
+            .reference-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .reference-body {
+                grid-template-columns: 1fr;
+            }
+
+            .reference-tabs {
+                display: grid;
+                grid-template-columns: repeat(4, minmax(0, 1fr));
+                padding: 0;
+            }
+
+            .reference-tab.active::after {
+                display: none;
             }
         }
 
@@ -208,22 +362,48 @@
         </div>
 
         <div class="row g-3 mt-1" id="graphicalViewSection">
-            <div class="col-lg-9">
-                <div class="chart-card">
-                    <h6 class="chart-title">Overpricing Hotspots</h6>
-                    <div id="overpriceChart" class="chart-box"></div>
-                </div>
-            </div>
-            <div class="col-lg-3">
-                <div class="chart-card">
-                    <h6 class="chart-title">Sale Availability</h6>
-                    <div id="saleChart" class="chart-box"></div>
-                </div>
-            </div>
             <div class="col-12">
-                <div class="chart-card p-0 overflow-hidden" id="mapViewSection">
-                    <h6 class="chart-title p-3 pb-0">Storage Points Map</h6>
-                    <div id="viewDiv"></div>
+                <div class="chart-card reference-board" id="mapViewSection">
+                    <div class="reference-grid">
+                        <div class="reference-tabs">
+                            <button type="button" class="reference-tab">Storage<br>Overview</button>
+                            <button type="button" class="reference-tab active">District Vs<br>Overpricing</button>
+                            <button type="button" class="reference-tab">Survey<br>Progress</button>
+                            <button type="button" class="reference-tab">Sale<br>Distribution</button>
+                        </div>
+                        <div class="reference-main">
+                            <div class="reference-stage">
+                                <div class="reference-header">
+                                    <div>
+                                        <h6 class="chart-title mb-0">District Wise Overpricing Distribution</h6>
+                                        <p class="reference-subtitle">Map and district ranking are grouped together, and sale availability now sits below like the reference.</p>
+                                    </div>
+                                </div>
+                                <div class="reference-legend">
+                                    <span class="reference-legend-item"><span class="reference-dot" style="background:#d9dee5;"></span>Below</span>
+                                    <span class="reference-legend-item"><span class="reference-dot" style="background:#5eb91e;"></span>Average</span>
+                                    <span class="reference-legend-item"><span class="reference-dot" style="background:#ffe433;"></span>High</span>
+                                    <span class="reference-legend-item"><span class="reference-dot" style="background:#ff9800;"></span>Very High</span>
+                                    <span class="reference-legend-item"><span class="reference-dot" style="background:#ef2b2d;"></span>Critical</span>
+                                </div>
+                                <div class="reference-body">
+                                    <div class="map-card">
+                                        <h6 class="chart-title mb-2">Punjab Storage Map</h6>
+                                        <div id="viewDiv"></div>
+                                    </div>
+                                    <div class="ranking-card">
+                                        <h6 class="chart-title ps-3 mb-2">District Ranking</h6>
+                                        <div class="ranking-note">Highest overpricing districts appear on top, with stronger colors for higher values.</div>
+                                        <div id="overpriceChart" class="chart-box chart-box-tall"></div>
+                                    </div>
+                                </div>
+                                <div class="sale-card">
+                                    <h6 class="chart-title">Sale Availability</h6>
+                                    <div id="saleChart" class="chart-box"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="card mt-3" id="surveyRecordsSection">
