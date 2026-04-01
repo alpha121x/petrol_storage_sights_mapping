@@ -186,7 +186,7 @@
 
         .reference-body {
             display: grid;
-            grid-template-columns: minmax(0, 1.35fr) minmax(300px, 0.55fr);
+            grid-template-columns: minmax(0, 1.7fr) minmax(260px, 0.45fr);
             gap: 0;
             padding: 0 18px 18px;
             align-items: start;
@@ -202,7 +202,7 @@
         }
 
         .map-card {
-            padding: 12px;
+            padding: 10px;
             border-right: 1px solid #d8dde6;
         }
 

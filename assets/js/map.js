@@ -6,6 +6,7 @@ require([
   "esri/widgets/LayerList",
   "esri/Graphic",
   "esri/geometry/Extent",
+  "esri/Basemap",
 ], function (
   Map,
   MapView,
@@ -13,7 +14,8 @@ require([
   MapImageLayer,
   LayerList,
   Graphic,
-  Extent
+  Extent,
+  Basemap
 ) {
   const imageProxyBase = new URL("services/image_proxy.php?url=", window.location.href).toString();
 
@@ -42,16 +44,34 @@ require([
 
   /* ---------------- MAP ---------------- */
 
+  const punjabExtent = new Extent({
+    xmin: 69.15,
+    ymin: 27.65,
+    xmax: 75.55,
+    ymax: 34.55,
+    spatialReference: { wkid: 4326 },
+  });
+
+  const plainBasemap = new Basemap({
+    baseLayers: [],
+    referenceLayers: [],
+  });
+
   const map = new Map({
-    basemap: "gray-vector",
-    layers: [boundaryLayer, fuelLayer, priceLayer],
+    basemap: plainBasemap,
+    layers: [fuelLayer, priceLayer, boundaryLayer],
   });
 
   const view = new MapView({
     container: "viewDiv",
     map: map,
-    center: [72.7, 31.17],
-    zoom: 6,
+    extent: punjabExtent,
+    constraints: {
+      minZoom: 5,
+    },
+    ui: {
+      components: ["zoom", "attribution"],
+    },
   });
 
   /* ---------------- CUSTOM LEGEND ---------------- */
@@ -120,6 +140,7 @@ view.when(() => {
 
   const layerList = new LayerList({
     view: view,
+    container: document.createElement("div"),
     listItemCreatedFunction: function (event) {
       const item = event.item;
 
@@ -139,8 +160,6 @@ view.when(() => {
       }
     },
   });
-
-  view.ui.add(layerList, "top-right");
 
   /* ---------------- POPUP HTML ---------------- */
 
@@ -234,7 +253,7 @@ view.when(() => {
   window.zoomToDistrict = async function(districtId){
 
     if(!districtId){
-      view.goTo({center:[72.7,31.17],zoom:6});
+      view.goTo(punjabExtent.expand(1.02));
       return;
     }
 
@@ -254,3 +273,9 @@ view.when(() => {
   };
 
 });
+
+
+
+
+
+
