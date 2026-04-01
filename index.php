@@ -240,6 +240,19 @@
             background: #fff;
         }
 
+        #recordsPanel .section-card {
+            margin: 0;
+            width: 100%;
+            padding: 14px 18px 18px;
+            border: 0;
+        }
+
+        #recordsPanel .table-responsive,
+        #recordsPanel .dataTables_wrapper,
+        #recordsPanel table {
+            width: 100% !important;
+        }
+
         .ranking-note {
             padding: 0 14px 8px 14px;
             color: #617283;
