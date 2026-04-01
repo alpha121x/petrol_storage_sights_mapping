@@ -96,6 +96,34 @@ function setKpis(summary) {
     summary.total_districts || 0;
 }
 
+/* ---------- LEFT NAV PANELS ---------- */
+
+function showReferencePanel(panelId) {
+  document.querySelectorAll(".reference-panel").forEach((panel) => {
+    panel.classList.toggle("active", panel.id === panelId);
+  });
+
+  document.querySelectorAll(".reference-tab[data-panel-target]").forEach((button) => {
+    button.classList.toggle(
+      "active",
+      button.getAttribute("data-panel-target") === panelId
+    );
+  });
+
+  if (panelId === "overpricingPanel") {
+    setTimeout(() => {
+      window.dispatchEvent(new Event("resize"));
+    }, 50);
+  }
+}
+
+function initReferencePanels() {
+  document.querySelectorAll(".reference-tab[data-panel-target]").forEach((button) => {
+    button.addEventListener("click", () => {
+      showReferencePanel(button.getAttribute("data-panel-target"));
+    });
+  });
+}
 /* ---------- LOAD DISTRICTS ---------- */
 
 async function loadDistricts() {
@@ -617,6 +645,7 @@ async function initDashboard() {
 
   try {
 
+    initReferencePanels();
     await loadDistricts();
     await refreshDashboard();
 
@@ -629,6 +658,8 @@ async function initDashboard() {
 }
 
 initDashboard();
+
+
 
 
 

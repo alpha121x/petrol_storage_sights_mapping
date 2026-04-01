@@ -137,6 +137,14 @@
             padding: 14px;
         }
 
+        .reference-panel {
+            display: none;
+        }
+
+        .reference-panel.active {
+            display: block;
+        }
+
         .reference-stage {
             border: 1px solid #d8dde6;
             background: #fff;
@@ -213,6 +221,13 @@
         .sale-card {
             margin: 0 18px 18px;
             padding: 14px 18px;
+        }
+
+        .section-card {
+            margin: 0 18px 18px;
+            padding: 14px 18px;
+            border: 1px solid #d8dde6;
+            background: #fff;
         }
 
         .ranking-note {
@@ -374,76 +389,71 @@
                 <div class="chart-card reference-board" id="mapViewSection">
                     <div class="reference-grid">
                         <div class="reference-tabs">
-                            <button type="button" class="reference-tab">Storage<br>Overview</button>
-                            <button type="button" class="reference-tab active">District Vs<br>Overpricing</button>
-                            <button type="button" class="reference-tab">Survey<br>Progress</button>
-                            <button type="button" class="reference-tab">Sale<br>Distribution</button>
+                            <button type="button" class="reference-tab" data-panel-target="recordsPanel">Storage<br>Overview</button>
+                            <button type="button" class="reference-tab active" data-panel-target="overpricingPanel">District Vs<br>Overpricing</button>
+                            <button type="button" class="reference-tab" data-panel-target="progressPanel">Survey<br>Progress</button>
+                            <button type="button" class="reference-tab" data-panel-target="salePanel">Sale<br>Distribution</button>
                         </div>
                         <div class="reference-main">
                             <div class="reference-stage">
-                                <div class="reference-header">
-                                    <div>
-                                        <h6 class="chart-title mb-0">District Wise Overpricing Distribution</h6>
-                                        <!-- <p class="reference-subtitle">Map and district ranking are grouped together, and sale availability now sits below like the reference.</p> -->
+                                <div class="reference-panel active" id="overpricingPanel">
+                                    <div class="reference-header">
+                                        <div>
+                                            <h6 class="chart-title mb-0">District Wise Overpricing Distribution</h6>
+                                        </div>
+                                    </div>
+                                    <div class="reference-body">
+                                        <div class="map-card">
+                                            <h6 class="chart-title mb-2">Punjab Storage Map</h6>
+                                            <div id="viewDiv"></div>
+                                        </div>
+                                        <div class="ranking-card">
+                                            <h6 class="chart-title ps-3 mb-2">District Ranking</h6>
+                                            <div id="overpriceChart" class="chart-box chart-box-tall"></div>
+                                        </div>
                                     </div>
                                 </div>
-                               
-                                <div class="reference-body">
-                                    <div class="map-card">
-                                        <h6 class="chart-title mb-2">Punjab Storage Map</h6>
-                                        <div id="viewDiv"></div>
-                                    </div>
-                                    <div class="ranking-card">
-                                        <h6 class="chart-title ps-3 mb-2">District Ranking</h6>
-                                        <!-- <div class="ranking-note">Highest overpricing districts appear on top, with stronger colors for higher values.</div> -->
-                                        <div id="overpriceChart" class="chart-box chart-box-tall"></div>
+                                <div class="reference-panel" id="salePanel">
+                                    <div class="section-card">
+                                        <h6 class="chart-title">Sale Availability</h6>
+                                        <div id="saleChart" class="chart-box"></div>
                                     </div>
                                 </div>
-                                <div class="sale-card">
-                                    <h6 class="chart-title">Sale Availability</h6>
-                                    <div id="saleChart" class="chart-box"></div>
+                                <div class="reference-panel" id="progressPanel">
+                                    <div class="section-card">
+                                        <h6 class="chart-title">District-wise Survey Progress (Top 10)</h6>
+                                        <div id="districtChart" class="chart-box"></div>
+                                    </div>
+                                </div>
+                                <div class="reference-panel" id="recordsPanel">
+                                    <div class="section-card">
+                                        <h6 class="chart-title">Survey Records</h6>
+                                        <div class="table-responsive">
+                                            <table class="table table-sm table-bordered" id="surveyTable">
+                                                <thead class="table-dark">
+                                                    <tr>
+                                                        <th>Sr.</th>
+                                                        <th>District</th>
+                                                        <th>Pump</th>
+                                                        <th>Fuel Type</th>
+                                                        <th>Price</th>
+                                                        <th>Sale</th>
+                                                        <th>Queue</th>
+                                                        <th>Overpriced</th>
+                                                        <th>Date Time</th>
+                                                        <th>Storage Pic</th>
+                                                        <th>Queue Pic</th>
+                                                        <th>Remarks</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody></tbody>
+                                            </table>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-            <div class="card mt-3" id="surveyRecordsSection">
-                <div class="card-header">
-                    <b>Survey Records</b>
-                </div>
-
-                <div class="card-body table-responsive">
-
-                    <table class="table table-sm table-bordered" id="surveyTable">
-
-                        <thead class="table-dark">
-                            <tr>
-                                <th>Sr.</th>
-                                <th>District</th>
-                                <th>Pump</th>
-                                <th>Fuel Type</th>
-                                <th>Price</th>
-                                <th>Sale</th>
-                                <th>Queue</th>
-                                <th>Overpriced</th>
-                                <th>Date Time</th>
-                                <th>Storage Pic</th>
-                                <th>Queue Pic</th>
-                                <th>Remarks</th>
-                            </tr>
-                        </thead>
-
-                        <tbody></tbody>
-
-                    </table>
-
-                </div>
-            </div>
-             <div class="col-12">
-                <div class="chart-card" id="surveyProgressSection">
-                    <h6 class="chart-title">District-wise Survey Progress (Top 10)</h6>
-                    <div id="districtChart" class="chart-box"></div>
                 </div>
             </div>
         </div>
