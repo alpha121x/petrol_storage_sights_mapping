@@ -96,11 +96,6 @@ function setKpis(summary) {
     summary.total_districts || 0;
 }
 
-function getDateOnlyValue(value) {
-  const match = String(value || "").match(/^\d{4}-\d{2}-\d{2}/);
-  return match ? match[0] : "";
-}
-
 function formatDateLabel(value) {
   const text = String(value || "").trim();
   if (!text) return "";
@@ -151,21 +146,6 @@ function setDateRangeBanner(dateRange) {
   }
 
   banner.textContent = "Showing all available data.";
-}
-
-function syncDateInputs(dateRange, force = false) {
-  const startInput = document.getElementById("startDateFilter");
-  const endInput = document.getElementById("endDateFilter");
-
-  if (!startInput || !endInput || !dateRange) return;
-
-  if ((force || !startInput.value) && dateRange.min) {
-    startInput.value = getDateOnlyValue(dateRange.min);
-  }
-
-  if ((force || !endInput.value) && dateRange.max) {
-    endInput.value = getDateOnlyValue(dateRange.max);
-  }
 }
 
 function hasValidDateRange(startDate, endDate) {
@@ -606,7 +586,6 @@ async function refreshDashboard() {
     setDistrictLookup(data.districts || []);
     setKpis(data.summary || {});
     setDateRangeBanner(data.date_range || {});
-    syncDateInputs(data.date_range || {}, !state.startDate && !state.endDate);
 
     renderDistrictChart(data.district_breakdown || []);
     renderSaleChart(data.sale_breakdown || []);
@@ -756,6 +735,9 @@ async function initDashboard() {
 }
 
 initDashboard();
+
+
+
 
 
 
