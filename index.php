@@ -317,12 +317,6 @@
             <div>
                 <h4 class="mb-0" href="index.php">Petrol Storage Analytics Dashboard</h4>
             </div>
-            <!-- <div class="d-flex flex-wrap gap-2 header-nav">
-                <a href="#graphicalViewSection" class="btn btn-sm btn-outline-light">Graphicial View</a>
-                <a href="#mapViewSection" class="btn btn-sm btn-outline-light">Map View</a>
-                <a href="#surveyRecordsSection" class="btn btn-sm btn-outline-light">Survey Records</a>
-                <a href="#surveyProgressSection" class="btn btn-sm btn-outline-light">Survey Progress</a>
-            </div> -->
         </div>
     </header>
 
