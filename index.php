@@ -40,6 +40,16 @@
             background: #ffffff;
         }
 
+        .date-range-banner {
+            padding: 8px 12px;
+            border: 1px solid #d5e5f6;
+            border-radius: 10px;
+            background: #eef5ff;
+            color: #1b4d83;
+            font-size: 0.92rem;
+            font-weight: 600;
+        }
+
         .kpi-card {
             border: 0;
             border-radius: 12px;
@@ -341,6 +351,9 @@
                 <button id="resetBtn" class="btn btn-outline-secondary">Reset</button>
                 <button id="downloadExcelBtn" class="btn btn-primary">Download Excel</button>
             </div>
+            <div class="col-12">
+                <div id="activeDateRange" class="date-range-banner">Showing all available data.</div>
+            </div>
         </div>
     </section>
 
@@ -492,3 +505,4 @@
 </body>
 
 </html>
+

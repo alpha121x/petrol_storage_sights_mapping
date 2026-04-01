@@ -166,6 +166,16 @@ try {
         ORDER BY district
     ";
 
+    /* ---------------- DATE RANGE ---------------- */
+
+    $dateRangeSql = "
+        SELECT
+            MIN(survey_time) AS min_survey_time,
+            MAX(survey_time) AS max_survey_time
+        FROM petrol_storage.v_storage_final
+        WHERE {$whereSql}
+    ";
+
     /* ---------------- EXECUTION ---------------- */
 
     $run = function ($sql, $params) use ($conn) {
@@ -184,6 +194,7 @@ try {
     $users = $run($userSql, $params)->fetchAll(PDO::FETCH_ASSOC);
     $overprice = $run($overpriceSql, $params)->fetchAll(PDO::FETCH_ASSOC);
     $districtList = $run($districtListSql, [])->fetchAll(PDO::FETCH_ASSOC);
+    $dateRange = $run($dateRangeSql, $params)->fetch(PDO::FETCH_ASSOC) ?: [];
 
     echo json_encode([
         "summary" => $summary,
@@ -192,7 +203,11 @@ try {
         "daily_trend" => $trend,
         "top_users" => $users,
         "overprice_districts" => $overprice,
-        "districts" => $districtList
+        "districts" => $districtList,
+        "date_range" => [
+            "min" => $dateRange["min_survey_time"] ?? null,
+            "max" => $dateRange["max_survey_time"] ?? null,
+        ]
     ]);
 
     exit;
@@ -208,3 +223,8 @@ try {
 
     exit;
 }
+
+
+
+
+

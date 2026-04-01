@@ -96,6 +96,86 @@ function setKpis(summary) {
     summary.total_districts || 0;
 }
 
+function getDateOnlyValue(value) {
+  const match = String(value || "").match(/^\d{4}-\d{2}-\d{2}/);
+  return match ? match[0] : "";
+}
+
+function formatDateLabel(value) {
+  const text = String(value || "").trim();
+  if (!text) return "";
+
+  const match = text.match(/^(\d{4})-(\d{2})-(\d{2})(?:[ T](\d{2}):(\d{2})(?::(\d{2})(?:\.(\d+))?)?)?$/);
+  if (!match) return text;
+
+  const [, year, month, day, hour = "00", minute = "00", second = "00"] = match;
+  const date = new Date(Number(year), Number(month) - 1, Number(day), Number(hour), Number(minute), Number(second));
+
+  if (Number.isNaN(date.getTime())) return text;
+
+  const hasTime = text.includes(":");
+  return date.toLocaleString(undefined, hasTime ? {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    second: "2-digit",
+  } : {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+}
+
+function setDateRangeBanner(dateRange) {
+  const banner = document.getElementById("activeDateRange");
+  if (!banner) return;
+
+  const fromDate = dateRange?.min || state.startDate;
+  const toDate = dateRange?.max || state.endDate;
+
+  if (fromDate && toDate) {
+    banner.textContent = `Showing data from ${formatDateLabel(fromDate)} to ${formatDateLabel(toDate)}.`;
+    return;
+  }
+
+  if (fromDate) {
+    banner.textContent = `Showing data from ${formatDateLabel(fromDate)} onward.`;
+    return;
+  }
+
+  if (toDate) {
+    banner.textContent = `Showing data up to ${formatDateLabel(toDate)}.`;
+    return;
+  }
+
+  banner.textContent = "Showing all available data.";
+}
+
+function syncDateInputs(dateRange, force = false) {
+  const startInput = document.getElementById("startDateFilter");
+  const endInput = document.getElementById("endDateFilter");
+
+  if (!startInput || !endInput || !dateRange) return;
+
+  if ((force || !startInput.value) && dateRange.min) {
+    startInput.value = getDateOnlyValue(dateRange.min);
+  }
+
+  if ((force || !endInput.value) && dateRange.max) {
+    endInput.value = getDateOnlyValue(dateRange.max);
+  }
+}
+
+function hasValidDateRange(startDate, endDate) {
+  if (startDate && endDate && startDate > endDate) {
+    alert("Start date cannot be after end date.");
+    return false;
+  }
+
+  return true;
+}
 /* ---------- LEFT NAV PANELS ---------- */
 
 function showReferencePanel(panelId) {
@@ -525,6 +605,8 @@ async function refreshDashboard() {
 
     setDistrictLookup(data.districts || []);
     setKpis(data.summary || {});
+    setDateRangeBanner(data.date_range || {});
+    syncDateInputs(data.date_range || {}, !state.startDate && !state.endDate);
 
     renderDistrictChart(data.district_breakdown || []);
     renderSaleChart(data.sale_breakdown || []);
@@ -576,11 +658,19 @@ async function downloadExcel() {
 
 document.getElementById("applyBtn").addEventListener("click", async () => {
 
+  const nextDistrictId = document.getElementById("districtFilter").value;
+  const nextStartDate = document.getElementById("startDateFilter").value;
+  const nextEndDate = document.getElementById("endDateFilter").value;
+
+  if (!hasValidDateRange(nextStartDate, nextEndDate)) {
+    return;
+  }
+
   showLoader();
 
-  state.districtId = document.getElementById("districtFilter").value;
-  state.startDate = document.getElementById("startDateFilter").value;
-  state.endDate = document.getElementById("endDateFilter").value;
+  state.districtId = nextDistrictId;
+  state.startDate = nextStartDate;
+  state.endDate = nextEndDate;
 
   await refreshDashboard();
 
@@ -629,9 +719,17 @@ $(document).on("click", ".img-preview", function () {
 document.getElementById("downloadExcelBtn")
   .addEventListener("click", async () => {
 
-    state.districtId = document.getElementById("districtFilter").value;
-    state.startDate = document.getElementById("startDateFilter").value;
-    state.endDate = document.getElementById("endDateFilter").value;
+    const nextDistrictId = document.getElementById("districtFilter").value;
+    const nextStartDate = document.getElementById("startDateFilter").value;
+    const nextEndDate = document.getElementById("endDateFilter").value;
+
+    if (!hasValidDateRange(nextStartDate, nextEndDate)) {
+      return;
+    }
+
+    state.districtId = nextDistrictId;
+    state.startDate = nextStartDate;
+    state.endDate = nextEndDate;
 
     await downloadExcel();
 
@@ -658,6 +756,11 @@ async function initDashboard() {
 }
 
 initDashboard();
+
+
+
+
+
 
 
 
