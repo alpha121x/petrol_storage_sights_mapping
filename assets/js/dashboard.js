@@ -244,16 +244,23 @@ function renderOverpriceChart(rows) {
   const sortedRows = [...rows].sort((a, b) => Number(b.total) - Number(a.total));
   const maxValue = Math.max(...sortedRows.map((r) => Number(r.total || 0)), 0);
   const totalValue = sortedRows.reduce((sum, r) => sum + Number(r.total || 0), 0);
-  const axisMax = maxValue > 0 ? Math.ceil(maxValue * 1.15) : 1;
+  const axisMax = maxValue > 0 ? Math.ceil(maxValue * 1.12) : 1;
+  const chartHeight = Math.max(420, sortedRows.length * 14 + 90);
+  const chartContainer = document.getElementById("overpriceChart");
+
+  if (chartContainer) {
+    chartContainer.style.height = `${chartHeight}px`;
+  }
 
   Highcharts.chart("overpriceChart", {
     chart: {
       type: "bar",
       backgroundColor: "transparent",
+      height: chartHeight,
       spacingTop: 0,
-      spacingLeft: 6,
-      spacingRight: 24,
-      spacingBottom: 10,
+      spacingLeft: 0,
+      spacingRight: 12,
+      spacingBottom: 4,
     },
     title: { text: null },
 
@@ -261,10 +268,15 @@ function renderOverpriceChart(rows) {
       categories: sortedRows.map((r) => r.district),
       lineWidth: 0,
       tickWidth: 0,
+      offset: 0,
       labels: {
+        step: 1,
+        reserveSpace: true,
+        autoRotation: [0],
+        x: -2,
         style: {
           color: "#1e3550",
-          fontSize: "11px",
+          fontSize: "10px",
           fontWeight: "700",
         },
       },
@@ -276,12 +288,14 @@ function renderOverpriceChart(rows) {
       max: axisMax,
       tickPositions: [0, Math.round(axisMax / 2), axisMax],
       gridLineColor: "#e8eef5",
+      gridLineWidth: 1,
       lineColor: "#3c434a",
       lineWidth: 1,
+      endOnTick: true,
       labels: {
         style: {
           color: "#475866",
-          fontSize: "11px",
+          fontSize: "10px",
         },
       },
     },
@@ -302,17 +316,20 @@ function renderOverpriceChart(rows) {
           };
         }),
         borderRadius: 0,
-        pointWidth: 10,
+        pointWidth: 8,
         dataLabels: {
           enabled: true,
+          allowOverlap: true,
+          crop: false,
+          overflow: "allow",
           inside: false,
           align: "left",
-          x: 6,
+          x: 4,
           style: {
             color: "#20354b",
             textOutline: "none",
             fontWeight: "600",
-            fontSize: "10px",
+            fontSize: "9px",
           },
           formatter() {
             return `${Highcharts.numberFormat(this.point.custom.percentage, 2)}%`;
@@ -334,8 +351,8 @@ function renderOverpriceChart(rows) {
         },
       },
       bar: {
-        groupPadding: 0.04,
-        pointPadding: 0.02,
+        groupPadding: 0.02,
+        pointPadding: 0.01,
       },
     },
     credits: { enabled: false },
@@ -573,5 +590,7 @@ async function initDashboard() {
 }
 
 initDashboard();
+
+
 
 

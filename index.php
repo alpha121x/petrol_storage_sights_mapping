@@ -187,24 +187,27 @@
         .reference-body {
             display: grid;
             grid-template-columns: minmax(0, 1.35fr) minmax(300px, 0.55fr);
-            gap: 18px;
+            gap: 0;
             padding: 0 18px 18px;
             align-items: start;
+            border: 1px solid #d8dde6;
+            background: #fff;
+            overflow: hidden;
         }
 
         .map-card,
         .ranking-card,
         .sale-card {
-            border: 1px solid #d8dde6;
             background: #fff;
         }
 
         .map-card {
             padding: 12px;
+            border-right: 1px solid #d8dde6;
         }
 
         .ranking-card {
-            padding: 14px 10px 10px 0;
+            padding: 8px 6px 6px 0;
         }
 
         .sale-card {
@@ -249,6 +252,11 @@
 
             .reference-body {
                 grid-template-columns: 1fr;
+            }
+
+            .map-card {
+                border-right: 0;
+                border-bottom: 1px solid #d8dde6;
             }
 
             .reference-tabs {
@@ -379,13 +387,7 @@
                                         <!-- <p class="reference-subtitle">Map and district ranking are grouped together, and sale availability now sits below like the reference.</p> -->
                                     </div>
                                 </div>
-                                <div class="reference-legend">
-                                    <span class="reference-legend-item"><span class="reference-dot" style="background:#d9dee5;"></span>Below</span>
-                                    <span class="reference-legend-item"><span class="reference-dot" style="background:#5eb91e;"></span>Average</span>
-                                    <span class="reference-legend-item"><span class="reference-dot" style="background:#ffe433;"></span>High</span>
-                                    <span class="reference-legend-item"><span class="reference-dot" style="background:#ff9800;"></span>Very High</span>
-                                    <span class="reference-legend-item"><span class="reference-dot" style="background:#ef2b2d;"></span>Critical</span>
-                                </div>
+                               
                                 <div class="reference-body">
                                     <div class="map-card">
                                         <h6 class="chart-title mb-2">Punjab Storage Map</h6>
@@ -393,7 +395,7 @@
                                     </div>
                                     <div class="ranking-card">
                                         <h6 class="chart-title ps-3 mb-2">District Ranking</h6>
-                                        <div class="ranking-note">Highest overpricing districts appear on top, with stronger colors for higher values.</div>
+                                        <!-- <div class="ranking-note">Highest overpricing districts appear on top, with stronger colors for higher values.</div> -->
                                         <div id="overpriceChart" class="chart-box chart-box-tall"></div>
                                     </div>
                                 </div>
