@@ -299,7 +299,7 @@
 
             .reference-tabs {
                 display: grid;
-                grid-template-columns: repeat(4, minmax(0, 1fr));
+                grid-template-columns: repeat(5, minmax(0, 1fr));
                 padding: 0;
             }
 
@@ -412,6 +412,7 @@
                             <button type="button" class="reference-tab" data-panel-target="recordsPanel">Storage<br>Overview</button>
                             <button type="button" class="reference-tab active" data-panel-target="overpricingPanel">District Vs<br>Overpricing</button>
                             <button type="button" class="reference-tab" data-panel-target="progressPanel">Survey<br>Progress</button>
+                            <button type="button" class="reference-tab" data-panel-target="timelinePanel">Timeline</button>
                             <button type="button" class="reference-tab" data-panel-target="salePanel">Sale<br>Distribution</button>
                         </div>
                         <div class="reference-main">
@@ -443,6 +444,12 @@
                                     <div class="section-card">
                                         <h6 class="chart-title">District-wise Survey Progress (Top 10)</h6>
                                         <div id="districtChart" class="chart-box"></div>
+                                    </div>
+                                </div>
+                                <div class="reference-panel" id="timelinePanel">
+                                    <div class="section-card">
+                                        <h6 class="chart-title">Date-wise Pumps Timeline</h6>
+                                        <div id="timelineChart" class="chart-box"></div>
                                     </div>
                                 </div>
                                 <div class="reference-panel" id="recordsPanel">
@@ -490,6 +497,45 @@
             <div class="modal-content">
                 <div class="modal-body text-center">
                     <img id="modalImage" src="" class="img-fluid rounded">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="salePumpModal" tabindex="-1" aria-labelledby="salePumpModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div>
+                        <h5 class="modal-title" id="salePumpModalLabel">Sale Pumps</h5>
+                        <div class="text-muted small" id="salePumpModalSummary">0 pumps found.</div>
+                    </div>
+                    <div class="d-flex align-items-center gap-2 ms-auto">
+                        <button type="button" class="btn btn-success btn-sm" id="downloadSaleCsvBtn">Download CSV</button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table class="table table-sm table-bordered align-middle mb-0">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>District</th>
+                                    <th>Pump</th>
+                                    <th>Fuel Type</th>
+                                    <th>Price</th>
+                                    <th>Sale</th>
+                                    <th>Queue</th>
+                                    <th>Overpriced</th>
+                                    <th>Date Time</th>
+                                    <th>Storage Pic</th>
+                                    <th>Queue Pic</th>
+                                    <th>Remarks</th>
+                                </tr>
+                            </thead>
+                            <tbody id="salePumpModalBody"></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

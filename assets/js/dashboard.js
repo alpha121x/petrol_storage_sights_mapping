@@ -6,6 +6,9 @@ const state = {
 
 let surveyTable = null;
 let districtLookup = new Map();
+let latestSurveyRows = [];
+let saleModalRows = [];
+let activeSaleModalLabel = "";
 const imageProxyBase = new URL(
   "services/image_proxy.php?url=",
   window.location.href
@@ -229,6 +232,152 @@ function setDistrictLookup(rows) {
   );
 }
 
+function normalizeSaleAvailability(value) {
+  const text = String(value || "").trim().toLowerCase();
+
+  if (!text) return "Unknown";
+  if (text.includes("limited")) return "Limited Sale";
+  if (text.includes("sale") && !text.includes("no")) return "Sale Available";
+  if (text.includes("no")) return "No Sale";
+  return "Unknown";
+}
+
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+function getPumpPrice(row) {
+  const fuelType = String(row?.fuel_type || "").toLowerCase();
+  const petrolPrice = row?.petrol_price ?? "";
+  const dieselPrice = row?.diesel_price ?? "";
+
+  if (fuelType.includes("petrol") && !fuelType.includes("diesel")) {
+    return petrolPrice;
+  }
+
+  if (fuelType.includes("diesel") && !fuelType.includes("petrol")) {
+    return dieselPrice;
+  }
+
+  if (fuelType.includes("petrol") && fuelType.includes("diesel")) {
+    return `Petrol: ${petrolPrice} | Diesel: ${dieselPrice}`;
+  }
+
+  return petrolPrice || dieselPrice || "";
+}
+
+function toCsvValue(value) {
+  const text = String(value ?? "").replace(/\r?\n|\r/g, " ");
+  return `"${text.replace(/"/g, '""')}"`;
+}
+
+function downloadSaleModalCsv() {
+  if (!saleModalRows.length) return;
+
+  const headers = [
+    "District",
+    "Pump",
+    "Fuel Type",
+    "Price",
+    "Sale",
+    "Queue",
+    "Overpriced",
+    "Date Time",
+    "Remarks",
+  ];
+
+  const lines = [headers.map(toCsvValue).join(",")];
+
+  saleModalRows.forEach((row) => {
+    lines.push(
+      [
+        row.district,
+        row.storage_name,
+        row.fuel_type,
+        getPumpPrice(row),
+        normalizeSaleAvailability(row.sale_availability),
+        row.queue,
+        row.overpriced,
+        row.survey_time,
+        row.remarks,
+      ].map(toCsvValue).join(",")
+    );
+  });
+
+  const blob = new Blob([lines.join("\r\n")], { type: "text/csv;charset=utf-8;" });
+  const link = document.createElement("a");
+  const safeLabel = activeSaleModalLabel.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+
+  link.href = URL.createObjectURL(blob);
+  link.download = `${safeLabel || "sale-pumps"}-pumps.csv`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(link.href);
+}
+
+function openSalePumpModal(label) {
+  const normalizedLabel = String(label || "").trim();
+  saleModalRows = latestSurveyRows.filter(
+    (row) => normalizeSaleAvailability(row.sale_availability) === normalizedLabel
+  );
+  activeSaleModalLabel = normalizedLabel;
+
+  const title = document.getElementById("salePumpModalLabel");
+  const summary = document.getElementById("salePumpModalSummary");
+  const body = document.getElementById("salePumpModalBody");
+  const downloadBtn = document.getElementById("downloadSaleCsvBtn");
+
+  if (title) {
+    title.textContent = `${normalizedLabel} Pumps`;
+  }
+
+  if (summary) {
+    summary.textContent = `${formatDashboardNumber(saleModalRows.length)} pumps found.`;
+  }
+
+  if (downloadBtn) {
+    downloadBtn.disabled = saleModalRows.length === 0;
+  }
+
+  if (body) {
+    if (!saleModalRows.length) {
+      body.innerHTML = '<tr><td colspan="11" class="text-center py-4 text-muted">No pumps found for this sale category.</td></tr>';
+    } else {
+      body.innerHTML = saleModalRows.map((row) => {
+        const storagePicSrc = toImageProxyUrl(row.storgae_pic);
+        const queuePicSrc = toImageProxyUrl(row.queue_pic);
+
+        return `
+        <tr>
+          <td>${escapeHtml(row.district)}</td>
+          <td>${escapeHtml(row.storage_name)}</td>
+          <td>${escapeHtml(row.fuel_type)}</td>
+          <td>${escapeHtml(getPumpPrice(row))}</td>
+          <td>${escapeHtml(normalizeSaleAvailability(row.sale_availability))}</td>
+          <td>${escapeHtml(row.queue)}</td>
+          <td>${escapeHtml(row.overpriced)}</td>
+          <td>${escapeHtml(row.survey_time)}</td>
+          <td>${storagePicSrc ? `<img src="${storagePicSrc}" width="60" class="img-preview" style="cursor:pointer">` : ""}</td>
+          <td>${queuePicSrc ? `<img src="${queuePicSrc}" width="60" class="img-preview" style="cursor:pointer">` : ""}</td>
+          <td>${escapeHtml(row.remarks)}</td>
+        </tr>
+      `;
+      }).join("");
+    }
+  }
+
+  const modalElement = document.getElementById("salePumpModal");
+  if (!modalElement) return;
+
+  bootstrap.Modal.getOrCreateInstance(modalElement).show();
+}
+
 function getDistrictIdByName(name) {
   return districtLookup.get(String(name || "").trim().toLowerCase()) || "";
 }
@@ -324,6 +473,85 @@ function renderDistrictChart(rows) {
   });
 }
 
+/* ---------- TIME LINE CHART ---------- */
+
+function renderTimelineChart(rows) {
+  const trendRows = [...rows].sort(
+    (a, b) => new Date(a.survey_date) - new Date(b.survey_date)
+  );
+
+  Highcharts.chart("timelineChart", {
+    chart: {
+      type: "line",
+      backgroundColor: "transparent",
+      spacingTop: 10,
+      spacingLeft: 10,
+      spacingRight: 18,
+      spacingBottom: 10,
+    },
+    title: { text: null },
+    xAxis: {
+      categories: trendRows.map((row) => formatDateLabel(row.survey_date)),
+      lineColor: "#d9e2ec",
+      tickColor: "#d9e2ec",
+      labels: {
+        rotation: -35,
+        style: {
+          color: "#35506e",
+          fontSize: "11px",
+          fontWeight: "600",
+        },
+      },
+    },
+    yAxis: {
+      min: 0,
+      title: { text: "Pumps" },
+      gridLineColor: "#e8eef5",
+      allowDecimals: false,
+      labels: {
+        formatter() {
+          return formatDashboardNumber(this.value);
+        },
+        style: {
+          color: "#5f7186",
+        },
+      },
+    },
+    tooltip: {
+      shared: true,
+      pointFormatter() {
+        return `<span style="color:${this.color}">&bull;</span> <b>${formatDashboardNumber(this.y)}</b> pumps`;
+      },
+    },
+    plotOptions: {
+      line: {
+        lineWidth: 3,
+        marker: {
+          enabled: true,
+          radius: 4,
+          lineWidth: 2,
+          lineColor: "#ffffff",
+          fillColor: "#2c73bf",
+        },
+      },
+      series: {
+        animation: {
+          duration: 500,
+        },
+      },
+    },
+    series: [
+      {
+        name: "Pumps",
+        color: "#2c73bf",
+        data: trendRows.map((row) => Number(row.total || 0)),
+      },
+    ],
+    legend: { enabled: false },
+    credits: { enabled: false },
+  });
+}
+
 /* ---------- SALE PIE CHART ---------- */
 
 function renderSaleChart(rows) {
@@ -354,9 +582,17 @@ function renderSaleChart(rows) {
     ],
     plotOptions: {
       pie: {
+        cursor: "pointer",
         dataLabels: {
           enabled: true,
           format: "{point.name}: {point.y:.2f}%",
+        },
+        point: {
+          events: {
+            click: function () {
+              openSalePumpModal(this.name);
+            },
+          },
         },
       },
     },
@@ -514,6 +750,7 @@ async function loadSurveyTable() {
   );
 
   const rows = await res.json();
+  latestSurveyRows = rows;
 
   if (surveyTable) {
     surveyTable.clear().rows.add(rows).draw();
@@ -609,6 +846,7 @@ async function refreshDashboard() {
     setDateRangeBanner(data.date_range || {});
 
     renderDistrictChart(data.district_breakdown || []);
+    renderTimelineChart(data.daily_trend || []);
     renderSaleChart(data.sale_breakdown || []);
     renderOverpriceChart(data.overprice_districts || []);
 
@@ -713,6 +951,10 @@ $(document).on("click", ".img-preview", function () {
   modal.show();
 
 });
+
+
+document.getElementById("downloadSaleCsvBtn")
+  ?.addEventListener("click", downloadSaleModalCsv);
 
 /* ---------- DOWNLOAD EXCEL BUTTON ---------- */
 
