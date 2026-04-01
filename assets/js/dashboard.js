@@ -84,16 +84,28 @@ async function loadDashboardData() {
 
 /* ---------- KPI CARDS ---------- */
 
+function formatDashboardNumber(value) {
+  const numericValue = Number(value || 0);
+
+  if (!Number.isFinite(numericValue)) {
+    return "0";
+  }
+
+  return numericValue.toLocaleString("en-US");
+}
+
 function setKpis(summary) {
-  document.getElementById("kpiTotal").textContent = summary.total_surveys || 0;
+  document.getElementById("kpiTotal").textContent = formatDashboardNumber(
+    summary.total_surveys
+  );
   document.getElementById("kpiAvailable").textContent =
-    summary.sale_available_count || 0;
+    formatDashboardNumber(summary.sale_available_count);
   document.getElementById("kpiQueue").textContent =
-    summary.queue_count || 0;
+    formatDashboardNumber(summary.queue_count);
   document.getElementById("kpiOverpriced").textContent =
-    summary.overpriced_count || 0;
+    formatDashboardNumber(summary.overpriced_count);
   document.getElementById("kpiDistricts").textContent =
-    summary.total_districts || 0;
+    formatDashboardNumber(summary.total_districts);
 }
 
 function formatDateLabel(value) {
@@ -237,11 +249,13 @@ async function zoomChartDistrict(districtName) {
 /* ---------- DISTRICT CHART ---------- */
 
 function renderDistrictChart(rows) {
-  const sortedRows = [...rows].sort((a, b) => Number(b.total) - Number(a.total));
+  const sortedRows = [...rows]
+    .sort((a, b) => Number(b.total) - Number(a.total))
+    .slice(0, 10);
 
   Highcharts.chart("districtChart", {
     chart: {
-      type: "bar",
+      type: "column",
       backgroundColor: "transparent",
       spacingTop: 10,
       spacingLeft: 10,
@@ -255,6 +269,7 @@ function renderDistrictChart(rows) {
       lineColor: "#d9e2ec",
       tickColor: "#d9e2ec",
       labels: {
+        rotation: -45,
         style: {
           color: "#35506e",
           fontSize: "11px",
@@ -264,11 +279,29 @@ function renderDistrictChart(rows) {
     },
 
     yAxis: {
+      min: 0,
       title: { text: "Surveys" },
       gridLineColor: "#e8eef5",
+      allowDecimals: false,
       labels: {
+        formatter() {
+          return formatDashboardNumber(this.value);
+        },
         style: {
           color: "#5f7186",
+        },
+      },
+    },
+
+    plotOptions: {
+      column: {
+        borderRadius: 4,
+        pointPadding: 0.18,
+        groupPadding: 0.1,
+      },
+      series: {
+        dataLabels: {
+          enabled: false,
         },
       },
     },
@@ -276,28 +309,16 @@ function renderDistrictChart(rows) {
     series: [
       {
         name: "Surveys",
-        data: sortedRows.map((r) => ({
-          y: Number(r.total),
-          color: "#2c73bf",
-        })),
-        borderRadius: 6,
-        pointPadding: 0.12,
-        groupPadding: 0.08,
-        dataLabels: {
-          enabled: true,
-          inside: false,
-          style: {
-            color: "#123357",
-            textOutline: "none",
-            fontWeight: "600",
-          },
-        },
+        color: "#2c73bf",
+        data: sortedRows.map((r) => Number(r.total)),
       },
     ],
 
     legend: { enabled: false },
     tooltip: {
-      pointFormat: "<b>{point.y}</b> surveys",
+      pointFormatter() {
+        return `<b>${formatDashboardNumber(this.y)}</b> surveys`;
+      },
     },
     credits: { enabled: false },
   });
