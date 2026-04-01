@@ -245,7 +245,7 @@ function renderOverpriceChart(rows) {
   const maxValue = Math.max(...sortedRows.map((r) => Number(r.total || 0)), 0);
   const totalValue = sortedRows.reduce((sum, r) => sum + Number(r.total || 0), 0);
   const axisMax = maxValue > 0 ? Math.ceil(maxValue * 1.12) : 1;
-  const chartHeight = Math.max(420, sortedRows.length * 14 + 90);
+  const chartHeight = Math.max(380, sortedRows.length * 12 + 84);
   const chartContainer = document.getElementById("overpriceChart");
 
   if (chartContainer) {
@@ -276,7 +276,7 @@ function renderOverpriceChart(rows) {
         x: -2,
         style: {
           color: "#1e3550",
-          fontSize: "10px",
+          fontSize: "9px",
           fontWeight: "700",
         },
       },
@@ -316,7 +316,7 @@ function renderOverpriceChart(rows) {
           };
         }),
         borderRadius: 0,
-        pointWidth: 8,
+        pointWidth: 7,
         dataLabels: {
           enabled: true,
           allowOverlap: true,
@@ -329,7 +329,7 @@ function renderOverpriceChart(rows) {
             color: "#20354b",
             textOutline: "none",
             fontWeight: "600",
-            fontSize: "9px",
+            fontSize: "8px",
           },
           formatter() {
             return `${Highcharts.numberFormat(this.point.custom.percentage, 2)}%`;
@@ -351,8 +351,8 @@ function renderOverpriceChart(rows) {
         },
       },
       bar: {
-        groupPadding: 0.02,
-        pointPadding: 0.01,
+        groupPadding: 0.01,
+        pointPadding: 0.005,
       },
     },
     credits: { enabled: false },
@@ -590,6 +590,8 @@ async function initDashboard() {
 }
 
 initDashboard();
+
+
 
 
 
