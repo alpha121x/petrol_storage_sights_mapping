@@ -243,14 +243,16 @@ function getSeverityColor(value, max) {
 function renderOverpriceChart(rows) {
   const sortedRows = [...rows].sort((a, b) => Number(b.total) - Number(a.total));
   const maxValue = Math.max(...sortedRows.map((r) => Number(r.total || 0)), 0);
+  const totalValue = sortedRows.reduce((sum, r) => sum + Number(r.total || 0), 0);
+  const axisMax = maxValue > 0 ? Math.ceil(maxValue * 1.15) : 1;
 
   Highcharts.chart("overpriceChart", {
     chart: {
       type: "bar",
       backgroundColor: "transparent",
       spacingTop: 0,
-      spacingLeft: 0,
-      spacingRight: 18,
+      spacingLeft: 6,
+      spacingRight: 24,
       spacingBottom: 10,
     },
     title: { text: null },
@@ -269,11 +271,17 @@ function renderOverpriceChart(rows) {
     },
 
     yAxis: {
-      title: { text: "Overpriced Reports" },
+      title: { text: null },
+      min: 0,
+      max: axisMax,
+      tickPositions: [0, Math.round(axisMax / 2), axisMax],
       gridLineColor: "#e8eef5",
+      lineColor: "#3c434a",
+      lineWidth: 1,
       labels: {
         style: {
-          color: "#5f7186",
+          color: "#475866",
+          fontSize: "11px",
         },
       },
     },
@@ -283,26 +291,31 @@ function renderOverpriceChart(rows) {
         name: "Overpriced",
         data: sortedRows.map((r) => {
           const total = Number(r.total || 0);
+          const percentage = totalValue > 0 ? (total / totalValue) * 100 : 0;
 
           return {
             y: total,
             color: getSeverityColor(total, maxValue),
+            custom: {
+              percentage,
+            },
           };
         }),
-        borderRadius: 7,
-        pointWidth: 16,
+        borderRadius: 0,
+        pointWidth: 10,
         dataLabels: {
           enabled: true,
           inside: false,
           align: "left",
-          x: 8,
+          x: 6,
           style: {
             color: "#20354b",
             textOutline: "none",
             fontWeight: "600",
+            fontSize: "10px",
           },
           formatter() {
-            return this.y;
+            return `${Highcharts.numberFormat(this.point.custom.percentage, 2)}%`;
           },
         },
       },
@@ -310,7 +323,9 @@ function renderOverpriceChart(rows) {
 
     legend: { enabled: false },
     tooltip: {
-      pointFormat: "<b>{point.y}</b> overpriced reports",
+      pointFormatter() {
+        return `<b>${this.y}</b> overpriced reports<br><b>${Highcharts.numberFormat(this.custom.percentage, 2)}%</b> of all overpricing reports`;
+      },
     },
     plotOptions: {
       series: {
@@ -319,8 +334,8 @@ function renderOverpriceChart(rows) {
         },
       },
       bar: {
-        groupPadding: 0.12,
-        pointPadding: 0.08,
+        groupPadding: 0.04,
+        pointPadding: 0.02,
       },
     },
     credits: { enabled: false },
@@ -558,4 +573,5 @@ async function initDashboard() {
 }
 
 initDashboard();
+
 

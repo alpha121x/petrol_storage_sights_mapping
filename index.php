@@ -376,7 +376,7 @@
                                 <div class="reference-header">
                                     <div>
                                         <h6 class="chart-title mb-0">District Wise Overpricing Distribution</h6>
-                                        <p class="reference-subtitle">Map and district ranking are grouped together, and sale availability now sits below like the reference.</p>
+                                        <!-- <p class="reference-subtitle">Map and district ranking are grouped together, and sale availability now sits below like the reference.</p> -->
                                     </div>
                                 </div>
                                 <div class="reference-legend">
