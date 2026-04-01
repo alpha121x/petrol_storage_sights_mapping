@@ -42,6 +42,31 @@ require([
   const fuelLayer = new GraphicsLayer({ title: "Fuel Availability" });
   const priceLayer = new GraphicsLayer({ title: "Overpriced Status", visible:false });
 
+  const highlightLayer = new MapImageLayer({
+    url: "https://map3.urbanunit.gov.pk:6443/arcgis/rest/services/Punjab/PB_Petrol_Pump_Availability_Survey_8433_06032026/MapServer",
+    title: "Selected District",
+    visible: false,
+    sublayers: [
+      {
+        id: 2,
+        title: "Selected District",
+        visible: true,
+        definitionExpression: "1=0",
+        renderer: {
+          type: "simple",
+          symbol: {
+            type: "simple-fill",
+            color: [255, 230, 0, 0.12],
+            outline: {
+              color: [255, 145, 0, 1],
+              width: 2.5,
+            },
+          },
+        },
+      },
+    ],
+  });
+
   /* ---------------- MAP ---------------- */
 
   const punjabExtent = new Extent({
@@ -59,7 +84,7 @@ require([
 
   const map = new Map({
     basemap: plainBasemap,
-    layers: [fuelLayer, priceLayer, boundaryLayer],
+    layers: [fuelLayer, priceLayer, boundaryLayer, highlightLayer],
   });
 
   const view = new MapView({
@@ -253,9 +278,14 @@ view.when(() => {
   window.zoomToDistrict = async function(districtId){
 
     if(!districtId){
+      highlightLayer.visible = false;
+      highlightLayer.sublayers.getItemAt(0).definitionExpression = "1=0";
       view.goTo(punjabExtent.expand(1.02));
       return;
     }
+
+    highlightLayer.visible = true;
+    highlightLayer.sublayers.getItemAt(0).definitionExpression = `id = ${Number(districtId)}`;
 
     const res = await fetch(`services/get_district_extent.php?district_id=${districtId}`);
     const ext = await res.json();
@@ -273,6 +303,8 @@ view.when(() => {
   };
 
 });
+
+
 
 
 

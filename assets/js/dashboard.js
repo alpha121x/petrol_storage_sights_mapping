@@ -5,6 +5,7 @@ const state = {
 };
 
 let surveyTable = null;
+let districtLookup = new Map();
 const imageProxyBase = new URL(
   "services/image_proxy.php?url=",
   window.location.href
@@ -115,6 +116,34 @@ async function loadDistricts() {
 
     select.appendChild(option);
   });
+}
+
+/* ---------- DISTRICT LOOKUP ---------- */
+
+function setDistrictLookup(rows) {
+  districtLookup = new Map(
+    (rows || []).map((row) => [
+      String(row.district || "").trim().toLowerCase(),
+      String(row.district_id || "").trim(),
+    ])
+  );
+}
+
+function getDistrictIdByName(name) {
+  return districtLookup.get(String(name || "").trim().toLowerCase()) || "";
+}
+
+async function zoomChartDistrict(districtName) {
+  const districtId = getDistrictIdByName(districtName);
+
+  if (!districtId || !window.zoomToDistrict) return;
+
+  state.districtId = districtId;
+
+  const districtFilter = document.getElementById("districtFilter");
+  if (districtFilter) districtFilter.value = districtId;
+
+  await window.zoomToDistrict(districtId);
 }
 
 /* ---------- DISTRICT CHART ---------- */
@@ -312,6 +341,7 @@ function renderOverpriceChart(rows) {
             color: getSeverityColor(total, maxValue),
             custom: {
               percentage,
+              district: r.district,
             },
           };
         }),
@@ -348,6 +378,14 @@ function renderOverpriceChart(rows) {
       series: {
         animation: {
           duration: 500,
+        },
+        cursor: "pointer",
+        point: {
+          events: {
+            click: function () {
+              zoomChartDistrict(this.custom?.district);
+            },
+          },
         },
       },
       bar: {
@@ -457,6 +495,7 @@ async function refreshDashboard() {
 
     const data = await loadDashboardData();
 
+    setDistrictLookup(data.districts || []);
     setKpis(data.summary || {});
 
     renderDistrictChart(data.district_breakdown || []);
@@ -590,6 +629,9 @@ async function initDashboard() {
 }
 
 initDashboard();
+
+
+
 
 
 
