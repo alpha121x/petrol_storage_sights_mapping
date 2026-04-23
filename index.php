@@ -1,3 +1,17 @@
+<?php
+require_once __DIR__ . '/services/auth.php';
+
+if (isset($_GET['logout'])) {
+    logout_user();
+    header('Location: login.php');
+    exit;
+}
+
+require_login();
+$currentUser = current_user();
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -339,6 +353,10 @@
         <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
             <div>
                 <h4 class="mb-0" href="index.php">Petrol Storage Analytics Dashboard</h4>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+                <span class="small">Welcome! <?= htmlspecialchars($currentUser['username'] ?? 'admin', ENT_QUOTES, 'UTF-8') ?></span>
+                <a class="btn btn-sm btn-outline-light" href="index.php?logout=1">Logout</a>
             </div>
         </div>
     </header>
