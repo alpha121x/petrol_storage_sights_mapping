@@ -3,9 +3,6 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
 }
 
-const DASHBOARD_USERNAME = 'admin';
-const DASHBOARD_PASSWORD = 'admin123';
-
 function current_user(): ?array
 {
     return $_SESSION['dashboard_user'] ?? null;
@@ -18,19 +15,71 @@ function is_logged_in(): bool
 
 function login_user(string $username, string $password): bool
 {
-    $username = trim($username);
+    require __DIR__ . '/db_config.php';
 
-    if (!hash_equals(DASHBOARD_USERNAME, $username) || !hash_equals(DASHBOARD_PASSWORD, $password)) {
+    $username = trim($username);
+    $password = trim($password);
+
+    if ($username === '' || $password === '') {
+        return false;
+    }
+
+    $sql = "
+        SELECT
+            id,
+            user_name,
+            cell_no,
+            user_password,
+            district_id,
+            tehsil_id,
+            is_active,
+            tehsil_name,
+            district_name,
+            assign_ddo,
+            web_login
+        FROM public.tbl_users_f
+        WHERE user_name = :username
+          AND web_login IS TRUE
+        LIMIT 1
+    ";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->execute([':username' => $username]);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if (!$user || !password_matches($password, (string) $user['user_password'])) {
         return false;
     }
 
     session_regenerate_id(true);
     $_SESSION['dashboard_user'] = [
-        'username' => $username,
+        'id' => $user['id'],
+        'username' => $user['user_name'],
+        'cell_no' => $user['cell_no'],
+        'district_id' => $user['district_id'],
+        'tehsil_id' => $user['tehsil_id'],
+        'is_active' => $user['is_active'],
+        'tehsil_name' => $user['tehsil_name'],
+        'district_name' => $user['district_name'],
+        'assign_ddo' => $user['assign_ddo'],
+        'web_login' => $user['web_login'],
         'login_time' => date('Y-m-d H:i:s'),
     ];
 
     return true;
+}
+
+function password_matches(string $plainPassword, string $storedPassword): bool
+{
+    if ($storedPassword === '') {
+        return false;
+    }
+
+    if (password_get_info($storedPassword)['algo'] !== 0) {
+        return password_verify($plainPassword, $storedPassword);
+    }
+
+    return hash_equals($storedPassword, $plainPassword);
 }
 
 function logout_user(): void
