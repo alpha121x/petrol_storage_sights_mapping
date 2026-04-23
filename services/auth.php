@@ -47,7 +47,7 @@ function login_user(string $username, string $password): bool
     $stmt->execute([':username' => $username]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if (!$user || !password_matches($password, (string) $user['user_password'])) {
+    if (!$user || !hash_equals((string) $user['user_password'], $password)) {
         return false;
     }
 
@@ -67,19 +67,6 @@ function login_user(string $username, string $password): bool
     ];
 
     return true;
-}
-
-function password_matches(string $plainPassword, string $storedPassword): bool
-{
-    if ($storedPassword === '') {
-        return false;
-    }
-
-    if (password_get_info($storedPassword)['algo'] !== 0) {
-        return password_verify($plainPassword, $storedPassword);
-    }
-
-    return hash_equals($storedPassword, $plainPassword);
 }
 
 function logout_user(): void
